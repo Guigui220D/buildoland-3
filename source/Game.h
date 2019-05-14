@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics.hpp>
+
 class Game
 {
     public:
@@ -11,4 +13,7 @@ class Game
         void exit();
 
     private:
+        sf::RenderWindow window;
+
+        unsigned int framerate_target = 60;
 };

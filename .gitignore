@@ -1,0 +1,8 @@
+# Build Results
+bin/
+obj/
+
+# Code::Blocks files
+*.cbp
+*.depend
+*.layout

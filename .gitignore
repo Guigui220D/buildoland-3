@@ -2,6 +2,9 @@
 bin/
 obj/
 
+# Dlls
+*.dll
+
 # Code::Blocks files
 *.cbp
 *.depend

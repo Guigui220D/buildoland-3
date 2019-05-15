@@ -6,7 +6,7 @@
 
 ### Engine :
 
-- [ ] Multi-layer state system
+- [x] Multi-layer state system
 - [ ] Event manager
 - [ ] Resource manager(s)
 - [ ] GUI system

@@ -17,10 +17,7 @@ bool State::handleEvent(sf::Event& event)
     return false;
 }
 
-void State::update(float delta_time)
-{
-
-}
+void State::update(float delta_time) {}
 
 void State::draw(sf::RenderTarget& target) const
 {

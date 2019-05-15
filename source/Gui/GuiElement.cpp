@@ -32,6 +32,7 @@ void GuiElement::debugDraw(sf::RenderTarget& target) const
     sf::View v;
     v.setSize(sf::Vector2f(1.f, 1.f));
     v.setViewport(zone);
+    target.setView(v);
     //Draw green rectangle
     target.draw(rectangle);
     useView(target);

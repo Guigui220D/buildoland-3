@@ -9,7 +9,7 @@
 - [x] Multi-layer state system
 - [ ] Event manager
 - [ ] Resource manager(s)
-- [ ] GUI system
+- [x] GUI system
 - [ ] Loading screen (state)
 
 ### Game : 

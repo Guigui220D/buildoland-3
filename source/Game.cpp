@@ -37,6 +37,7 @@ int Game::run()
             {
             case sf::Event::Closed:
                 window.close();
+                break;
             default:
                 {
                     for (int i = states_stack.size() - 1; i >= 0; i--)
@@ -47,6 +48,7 @@ int Game::run()
                             break;
                     }
                 }
+                break;
             }
         }
 
@@ -55,6 +57,16 @@ int Game::run()
         window.clear();
         draw();
         window.display();
+
+        for (auto i = states_stack.begin(); i != states_stack.end(); )
+        {
+            if ((*i)->mustBeDestroyed)
+            {
+                (*i).reset();
+                states_stack.erase(i);
+            }
+            else i++;
+        }
     }
     return 0;
 }
@@ -68,13 +80,15 @@ void Game::exit()
 
 void Game::draw()
 {
-    int i;
-    for (i = states_stack.size() - 1; i >= 0; i--)
+    if (states_stack.empty())
+        return;
+    unsigned int i;
+    for (i = states_stack.size() - 1; i > 0; i--)
     {
         if (!states_stack.at(i)->isDrawTransparent())
             break;
     }
-    for (i; i < states_stack.size(); i++)
+    for (; i < states_stack.size(); i++)
         states_stack.at(i)->draw(window);
 }
 

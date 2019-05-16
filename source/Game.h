@@ -37,6 +37,7 @@ class Game
 
         //All the states currently loaded
         std::vector<std::unique_ptr<State>> states_stack;
+        unsigned int nextStateId = 0;
 
         /**
          * Draws states that need to be on the window

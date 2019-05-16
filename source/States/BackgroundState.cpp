@@ -1,5 +1,7 @@
 #include "BackgroundState.h"
 
+#include <iostream>
+
 #include "../Game.h"
 
 BackgroundState::BackgroundState(Game* game, unsigned int id) :

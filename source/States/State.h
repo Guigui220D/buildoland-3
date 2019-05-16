@@ -43,6 +43,8 @@ class State
 
         inline Game* getGame() const { return game; }
 
+        bool mustBeDestroyed = false;
+
     protected:
         // If true, the next state should be updated/drawn
         bool update_transparent, draw_transparent;

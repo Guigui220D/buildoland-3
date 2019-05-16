@@ -1,5 +1,6 @@
-# super-duper-octo-enigma
+# Easy Life Inc
 Don't mind the name, it was choosed by GitHub, but this is not the game's name.
+This name too is temporary, that's why I don't change the repos name.
 
 This is a new game by Guigui220D about robots taking over the world.
 

@@ -28,6 +28,8 @@ class Game
          */
         void exit();
 
+        inline sf::RenderWindow& getWindow() { return window; }
+
     private:
         sf::RenderWindow window;
 

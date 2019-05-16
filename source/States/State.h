@@ -2,10 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+class Game;
+
 class State
 {
     public:
-        State(unsigned int id = 0);
+        State(Game* game, unsigned int id = 0);
         virtual ~State();
 
         /**
@@ -39,10 +41,13 @@ class State
          */
         inline unsigned int getID() const { return id; }
 
+        inline Game* getGame() const { return game; }
+
     protected:
         // If true, the next state should be updated/drawn
         bool update_transparent, draw_transparent;
 
     private:
+        Game* game;
         unsigned int id;
 };

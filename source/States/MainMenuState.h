@@ -6,7 +6,7 @@
 class MainMenuState : public State
 {
     public:
-        MainMenuState(unsigned int id = 0);
+        MainMenuState(Game* game, unsigned int id = 0);
         virtual ~MainMenuState();
 
         virtual bool handleEvent(sf::Event& event) override;

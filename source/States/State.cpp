@@ -1,6 +1,7 @@
 #include "State.h"
 
-State::State(unsigned int id) :
+State::State(Game* game, unsigned int id) :
+    game(game),
     id(id)
 {
     update_transparent  = true;

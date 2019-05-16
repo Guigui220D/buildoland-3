@@ -1,7 +1,7 @@
 #include "MainMenuState.h"
 
-MainMenuState::MainMenuState(unsigned int id) :
-    State(id),
+MainMenuState::MainMenuState(Game* game, unsigned int id) :
+    State(game, id),
     test_ge_1(sf::Vector2u(800, 600), sf::FloatRect(0.1, 0.5, 0.8, 0.1), 8, GuiAlign::Center, GuiAlign::Center)
 {
     update_transparent = false;

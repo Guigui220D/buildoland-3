@@ -1,6 +1,6 @@
 #include "Game.h"
 
-#include "States/MainMenuState.h"
+#include "States/States.h"
 
 Game::Game() :
     window(sf::VideoMode(800, 600), "What's the name?")
@@ -16,8 +16,10 @@ Game::~Game()
 int Game::init()
 {
     window.setFramerateLimit(framerate_target);
+
+    states_stack.push_back(std::make_unique<BackgroundState>(this));
     //Test
-        states_stack.push_back(std::make_unique<MainMenuState>());
+        states_stack.push_back(std::make_unique<MainMenuState>(this));
     return 0;
 }
 
@@ -66,13 +68,14 @@ void Game::exit()
 
 void Game::draw()
 {
-    for (int i = states_stack.size() - 1; i >= 0; i--)
+    int i;
+    for (i = states_stack.size() - 1; i >= 0; i--)
     {
-        std::unique_ptr<State>& state = states_stack.at(i);
-        state->draw(window);
-        if (!state->isDrawTransparent())
+        if (!states_stack.at(i)->isDrawTransparent())
             break;
     }
+    for (i; i < states_stack.size(); i++)
+        states_stack.at(i)->draw(window);
 }
 
 void Game::update(float delta_time)

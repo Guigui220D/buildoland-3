@@ -1,17 +1,7 @@
 # TODO
 
-### General :
+### Game :
 
-- [ ] Choose a name
+- [ ] Finish the game
 
-### Engine :
-
-- [x] Multi-layer state system
-- [ ] Event manager
-- [ ] Resource manager(s)
-- [x] GUI system
-- [ ] Loading screen (state)
-
-### Game : 
-
-- [ ] Main loading screen (for general assets)
+See : https://github.com/Guigui220D/super-duper-octo-enigma/projects

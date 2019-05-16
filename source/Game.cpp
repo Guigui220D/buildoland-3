@@ -17,9 +17,9 @@ int Game::init()
 {
     window.setFramerateLimit(framerate_target);
 
-    states_stack.push_back(std::make_unique<BackgroundState>(this));
+    addState(new BackgroundState(this));
     //Test
-        states_stack.push_back(std::make_unique<MainMenuState>(this));
+        addState(new MainMenuState(this));
     return 0;
 }
 
@@ -67,6 +67,9 @@ int Game::run()
             }
             else i++;
         }
+        for (State*& state : states_to_add)
+            states_stack.push_back(std::unique_ptr<State>(state));
+        states_to_add.clear();
     }
     return 0;
 }
@@ -76,6 +79,11 @@ void Game::exit()
 
 }
 
+
+void Game::addState(State* state)
+{
+    states_stack.push_back(std::unique_ptr<State>(state));
+}
 
 
 void Game::draw()

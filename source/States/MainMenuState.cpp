@@ -17,7 +17,7 @@ bool MainMenuState::handleEvent(sf::Event& event)
     switch (event.type)
     {
     case sf::Event::MouseButtonPressed:
-        mustBeDestroyed = true;
+        //mustBeDestroyed = true;
         return true;
     case sf::Event::Resized:
         test_ge_1.calculateView(sf::Vector2u(event.size.width, event.size.height));

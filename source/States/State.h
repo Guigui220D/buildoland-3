@@ -35,12 +35,16 @@ class State
          * @return True if the states underneath should be drawn
          */
         inline bool isDrawTransparent() const { return draw_transparent; }
+
         /**
          * To get the ID of the state. The id of a state is used if we need remove a state that is not at the top or bottom
          * @return The id of the state
          */
         inline unsigned int getID() const { return id; }
-
+        /**
+         * To get the the game this state belongs to
+         * @return The pointer to the game
+         */
         inline Game* getGame() const { return game; }
 
         bool mustBeDestroyed = false;

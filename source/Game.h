@@ -28,6 +28,17 @@ class Game
          */
         void exit();
 
+        /**
+         * Adds a state to the states  stack using its pointer
+         * The pointer will be then managed and deleted automatically
+         * @param state : the pointer to the state
+         */
+        void addState(State* state);
+
+        /**
+         * Gets a reference to the window this game owns
+         * @return A reference to the render window
+         */
         inline sf::RenderWindow& getWindow() { return window; }
 
     private:
@@ -37,7 +48,7 @@ class Game
 
         //All the states currently loaded
         std::vector<std::unique_ptr<State>> states_stack;
-        unsigned int nextStateId = 0;
+        std::vector<State*> states_to_add;
 
         /**
          * Draws states that need to be on the window

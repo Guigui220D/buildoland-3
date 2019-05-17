@@ -13,6 +13,11 @@ State::~State()
     //dtor
 }
 
+void State::init()
+{
+
+}
+
 bool State::handleEvent(sf::Event& event)
 {
     return false;

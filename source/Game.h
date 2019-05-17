@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "State.h"
+#include "States/State.h"
 
 class Game
 {
@@ -29,11 +29,18 @@ class Game
         void exit();
 
         /**
-         * Adds a state to the states  stack using its pointer
+         * Adds a state to the top of the states stack using its pointer
          * The pointer will be then managed and deleted automatically
          * @param state : the pointer to the state
          */
-        void addState(State* state);
+        void addStateOnTop(State* state, bool init = false);
+        /**
+         * Adds a state to the states stack using its pointer just under the top
+         * The pointer will be then managed and deleted automatically
+         * Used by LoadingScreenState
+         * @param state : the pointer to the state
+         */
+        void addStateUnderTop(State* state, bool init = false);
 
         /**
          * Gets a reference to the window this game owns

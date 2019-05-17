@@ -11,6 +11,7 @@ class BackgroundState : public State
         BackgroundState(Game* game, unsigned int id = 0);
         virtual ~BackgroundState();
 
+        virtual void init() override;
         virtual bool handleEvent(sf::Event& event) override;
         virtual void draw(sf::RenderTarget& target) const override;
 

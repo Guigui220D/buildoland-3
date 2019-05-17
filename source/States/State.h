@@ -7,9 +7,11 @@ class Game;
 class State
 {
     public:
+        //The constructor should not take time! every time consuming action should be done in a init function
         State(Game* game, unsigned int id = 0);
         virtual ~State();
 
+        virtual void init();
         /**
          * Takes an event and handle it, or not.
          * @param event : the even to handle
@@ -47,7 +49,7 @@ class State
          */
         inline Game* getGame() const { return game; }
 
-        bool mustBeDestroyed = false;
+        bool must_be_destroyed = false;
 
     protected:
         // If true, the next state should be updated/drawn

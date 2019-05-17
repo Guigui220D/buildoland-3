@@ -1,5 +1,8 @@
 #include "Game.h"
 
+#include <iostream>
+#include <assert.h>
+
 #include "States/States.h"
 
 Game::Game() :
@@ -17,9 +20,9 @@ int Game::init()
 {
     window.setFramerateLimit(framerate_target);
 
-    addState(new BackgroundState(this));
+    addStateOnTop(new BackgroundState(this), true);
     //Test
-        addState(new MainMenuState(this));
+        addStateOnTop(new LoadingScreenState<MainMenuState>(false, true, this, 0));
     return 0;
 }
 
@@ -37,6 +40,9 @@ int Game::run()
             {
             case sf::Event::Closed:
                 window.close();
+                break;
+            case sf::Event::KeyPressed:
+                std::cout << states_stack.size() << "\n";
                 break;
             default:
                 {
@@ -60,7 +66,7 @@ int Game::run()
 
         for (auto i = states_stack.begin(); i != states_stack.end(); )
         {
-            if ((*i)->mustBeDestroyed)
+            if ((*i)->must_be_destroyed)
             {
                 (*i).reset();
                 states_stack.erase(i);
@@ -80,9 +86,19 @@ void Game::exit()
 }
 
 
-void Game::addState(State* state)
+void Game::addStateOnTop(State* state, bool init)
 {
+    if (init)
+        state->init();
     states_stack.push_back(std::unique_ptr<State>(state));
+}
+
+void Game::addStateUnderTop(State* state, bool init)
+{
+    assert(states_stack.size() >= 1);
+    if (init)
+        state->init();
+    states_stack.insert(states_stack.end() - 1, std::unique_ptr<State>(state));
 }
 
 

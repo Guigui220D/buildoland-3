@@ -2,6 +2,7 @@
 
 #include <iostream>
 
+#include "States.h"
 #include "../Game.h"
 
 BackgroundState::BackgroundState(Game* game, unsigned int id) :
@@ -11,10 +12,6 @@ BackgroundState::BackgroundState(Game* game, unsigned int id) :
     draw_transparent = false;
 
     view = game->getWindow().getView();
-    //Temporary!! Texture manager
-        background_texture.loadFromFile("Res/Temp/background.png");
-        background_rectangle.setTexture(&background_texture);
-        background_rectangle.setSize(sf::Vector2f(800.f, 600.f));
 }
 
 BackgroundState::~BackgroundState()
@@ -22,8 +19,18 @@ BackgroundState::~BackgroundState()
     //dtor
 }
 
+void BackgroundState::init()
+{
+    //Temporary!! Texture manager
+        background_texture.loadFromFile("Res/Temp/background.png");
+        background_rectangle.setTexture(&background_texture);
+        background_rectangle.setSize(sf::Vector2f(800.f, 600.f));
+}
+
 bool BackgroundState::handleEvent(sf::Event& event)
 {
+    if (event.type == sf::Event::MouseButtonPressed)
+        getGame()->addStateOnTop(new LoadingScreenState<MainMenuState>(true, true, getGame(), 0));
     return true;
 }
 

@@ -22,5 +22,5 @@ void GuiLoadingIcon::draw(sf::RenderTarget& target) const
 
 void GuiLoadingIcon::update(float delta_time)
 {
-    icon.rotate(delta_time * 500.f);
+    icon.rotate(delta_time * 100.f);
 }

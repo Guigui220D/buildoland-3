@@ -1,7 +1,5 @@
 #pragma once
 
-#include <atomic>
-
 #include "../Gui/GuiLoadingIcon.h"
 #include "State.h"
 
@@ -30,6 +28,7 @@ class LoadingScreenState : public State
         sf::Mutex done_mutex;
         bool done = false;
         bool working = false;
+        sf::Clock working_time;
 
         sf::Clock fade_clock;
         int fade = 0;

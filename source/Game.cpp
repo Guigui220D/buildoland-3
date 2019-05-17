@@ -3,6 +3,7 @@
 #include <iostream>
 #include <assert.h>
 
+#include "States/LoadingScreenState.h"
 #include "States/States.h"
 
 Game::Game() :

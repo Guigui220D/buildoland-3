@@ -3,6 +3,7 @@
 #include <iostream>
 
 #include "States.h"
+#include "LoadingScreenState.h"
 #include "../Game.h"
 
 BackgroundState::BackgroundState(Game* game, unsigned int id) :

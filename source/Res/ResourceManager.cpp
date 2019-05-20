@@ -4,10 +4,11 @@ const std::string ResourceManager::AUDIO_REPERTORY_NAME = "Res/";
 const std::string ResourceManager::TEXTURE_REPERTORY_NAME = "Res/";
 const std::string ResourceManager::FONT_REPERTORY_NAME = "Res/";
 
-ResourceManager::ResourceManager(unsigned int maxSounds)
+ResourceManager::ResourceManager() :
+    maxSoundsPlaying(32)
 {
-    maxSoundsPlaying = maxSounds;
-
+    //Make fallback assets
+    //Checkerboard texture
     sf::Image errorImage;
     errorImage.create(2, 2);
     errorImage.setPixel(0, 0, sf::Color(255, 0, 255));
@@ -130,7 +131,10 @@ sf::Music* ResourceManager::getMusic(const std::string name)
 {
     auto i = musics.find(name);
     if (i == musics.end())
+    {
         std::cerr << "Music \"" << name << "\" could not be found." << std::endl;
+        return &errorMusic;
+    }
     return (*i).second;
 }
 
@@ -138,7 +142,10 @@ sf::SoundBuffer* ResourceManager::getSound(const std::string name)
 {
     auto i = sounds.find(name);
     if (i == sounds.end())
+    {
         std::cerr << "Sound \"" << name << "\" could not be found." << std::endl;
+        return &errorSound;
+    }
     return (*i).second;
 }
 
@@ -157,6 +164,9 @@ sf::Font* ResourceManager::getFont(const std::string name)
 {
     auto i = fonts.find(name);
     if (i == fonts.end())
+    {
         std::cerr << "Font \"" << name << "\" could not be found." << std::endl;
+        return &errorFont;
+    }
     return (*i).second;
 }

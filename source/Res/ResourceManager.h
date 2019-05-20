@@ -10,7 +10,7 @@
 class ResourceManager
 {
     public:
-        ResourceManager(unsigned int maxSounds = 32);
+        ResourceManager();
         ~ResourceManager();
 
         static const std::string AUDIO_REPERTORY_NAME;
@@ -125,6 +125,9 @@ class ResourceManager
         std::unordered_map<std::string, sf::Font*> fonts;
 
         sf::Texture errorTexture;
+        sf::Music errorMusic;
+        sf::SoundBuffer errorSound;
+        sf::Font errorFont;
 
         std::vector<sf::Sound*> playingSounds;
         unsigned int maxSoundsPlaying;

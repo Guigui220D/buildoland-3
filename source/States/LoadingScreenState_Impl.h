@@ -29,8 +29,9 @@ LoadingScreenState<T>::~LoadingScreenState()
 template <class T>
 void LoadingScreenState<T>::load()
 {
-    //sf::Clock clk;
-    //while (clk.getElapsedTime().asSeconds() < .2f);
+    sf::Clock clk;
+    state_being_loaded->init();
+    while (clk.getElapsedTime().asSeconds() < .2f);
     done_mutex.lock();
     done = true;
     done_mutex.unlock();

@@ -116,29 +116,29 @@ bool ResourceManager::loadFontFromFile(const std::string path, const std::string
 
 
 
-sf::Music* ResourceManager::getMusic(const std::string name)
+sf::Music& ResourceManager::getMusic(const std::string name)
 {
     auto i = musics.find(name);
     if (i == musics.end())
     {
         std::cerr << "Music \"" << name << "\" could not be found." << std::endl;
-        return &error_music;
+        return error_music;
     }
-    return (*i).second;
+    return *(*i).second;
 }
 
-sf::SoundBuffer* ResourceManager::getSound(const std::string name)
+sf::SoundBuffer& ResourceManager::getSound(const std::string name)
 {
     auto i = sounds.find(name);
     if (i == sounds.end())
     {
         std::cerr << "Sound \"" << name << "\" could not be found." << std::endl;
-        return &error_sound;
+        return error_sound;
     }
-    return (*i).second;
+    return *(*i).second;
 }
 
-sf::Texture* ResourceManager::getTexture(const std::string name)
+sf::Texture& ResourceManager::getTexture(const std::string name)
 {
     auto i = textures.find(name);
     if (i == textures.end())
@@ -146,16 +146,16 @@ sf::Texture* ResourceManager::getTexture(const std::string name)
         std::cerr << "Texture \"" << name << "\" could not be found." << std::endl;
         return getErrorTexture();
     }
-    return (*i).second;
+    return *(*i).second;
 }
 
-sf::Font* ResourceManager::getFont(const std::string name)
+sf::Font& ResourceManager::getFont(const std::string name)
 {
     auto i = fonts.find(name);
     if (i == fonts.end())
     {
         std::cerr << "Font \"" << name << "\" could not be found." << std::endl;
-        return &error_font;
+        return error_font;
     }
-    return (*i).second;
+    return *(*i).second;
 }

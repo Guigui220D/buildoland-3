@@ -83,31 +83,31 @@ class ResourceManager
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
          */
-        sf::Music* getMusic(const std::string name);
+        sf::Music& getMusic(const std::string name);
         /**
          * Gets a pointer to a sound using its name
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
          */
-        sf::SoundBuffer* getSound(const std::string name);
+        sf::SoundBuffer& getSound(const std::string name);
         /**
          * Gets a pointer to a texture using its name
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
          */
-        sf::Texture* getTexture(const std::string name);
+        sf::Texture& getTexture(const std::string name);
         /**
          * Gets a pointer to a font using its name
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
          */
-        sf::Font* getFont(const std::string name);
+        sf::Font& getFont(const std::string name);
 
         /**
          * Gets the default checkerboard texture in case of error
          * @return A pointer to the checkerboard texture
          */
-        inline sf::Texture* getErrorTexture() { return &error_texture; };
+        inline sf::Texture& getErrorTexture() { return error_texture; };
 
     private:
         std::unordered_map<std::string, sf::Music*> musics;

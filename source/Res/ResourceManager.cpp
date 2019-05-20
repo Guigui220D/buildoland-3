@@ -4,16 +4,15 @@ const std::string ResourceManager::AUDIO_REPERTORY_NAME = "Res/";
 const std::string ResourceManager::TEXTURE_REPERTORY_NAME = "Res/";
 const std::string ResourceManager::FONT_REPERTORY_NAME = "Res/";
 
-ResourceManager::ResourceManager() :
-    maxSoundsPlaying(32)
+ResourceManager::ResourceManager()
 {
     //Make fallback assets
     //Checkerboard texture
-    sf::Image errorImage;
-    errorImage.create(2, 2);
-    errorImage.setPixel(0, 0, sf::Color(255, 0, 255));
-    errorImage.setPixel(1, 1, sf::Color(255, 0, 255));
-    errorTexture.loadFromImage(errorImage);
+    sf::Image error_image;
+    error_image.create(2, 2);
+    error_image.setPixel(0, 0, sf::Color(255, 0, 255));
+    error_image.setPixel(1, 1, sf::Color(255, 0, 255));
+    error_texture.loadFromImage(error_image);
 }
 
 ResourceManager::~ResourceManager()
@@ -30,16 +29,6 @@ ResourceManager::~ResourceManager()
     //Delete fonts
     for (auto i = fonts.begin(); i != fonts.end(); i++)
         delete (*i).second;
-}
-
-void ResourceManager::addPlayingSound(sf::Sound* sound)
-{
-    playingSounds.push_back(sound);
-    if (playingSounds.size() > maxSoundsPlaying)
-    {
-        delete playingSounds.at(0);
-        playingSounds.erase(playingSounds.begin());
-    }
 }
 
 
@@ -133,7 +122,7 @@ sf::Music* ResourceManager::getMusic(const std::string name)
     if (i == musics.end())
     {
         std::cerr << "Music \"" << name << "\" could not be found." << std::endl;
-        return &errorMusic;
+        return &error_music;
     }
     return (*i).second;
 }
@@ -144,7 +133,7 @@ sf::SoundBuffer* ResourceManager::getSound(const std::string name)
     if (i == sounds.end())
     {
         std::cerr << "Sound \"" << name << "\" could not be found." << std::endl;
-        return &errorSound;
+        return &error_sound;
     }
     return (*i).second;
 }
@@ -166,7 +155,7 @@ sf::Font* ResourceManager::getFont(const std::string name)
     if (i == fonts.end())
     {
         std::cerr << "Font \"" << name << "\" could not be found." << std::endl;
-        return &errorFont;
+        return &error_font;
     }
     return (*i).second;
 }

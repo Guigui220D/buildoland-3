@@ -107,16 +107,7 @@ class ResourceManager
          * Gets the default checkerboard texture in case of error
          * @return A pointer to the checkerboard texture
          */
-        inline sf::Texture* getErrorTexture() { return &errorTexture; };
-
-        //This is used to manage sounds that are playing, to delete them.
-        /**
-         * Adds a sound pointer to a list of sounds currently being player
-         * Used to prevent sounds from stopping when the variable goes out of the scope
-         * After passing the sound pointer to this you can expect it to manage it
-         * @param sound : a pointer to the sound you played
-         */
-        void addPlayingSound(sf::Sound* sound);
+        inline sf::Texture* getErrorTexture() { return &error_texture; };
 
     private:
         std::unordered_map<std::string, sf::Music*> musics;
@@ -124,11 +115,8 @@ class ResourceManager
         std::unordered_map<std::string, sf::Texture*> textures;
         std::unordered_map<std::string, sf::Font*> fonts;
 
-        sf::Texture errorTexture;
-        sf::Music errorMusic;
-        sf::SoundBuffer errorSound;
-        sf::Font errorFont;
-
-        std::vector<sf::Sound*> playingSounds;
-        unsigned int maxSoundsPlaying;
+        sf::Texture error_texture;
+        sf::Music error_music;
+        sf::SoundBuffer error_sound;
+        sf::Font error_font;
 };

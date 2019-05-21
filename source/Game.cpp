@@ -65,6 +65,7 @@ int Game::run()
         draw();
         window.display();
 
+        //Remove states
         for (auto i = states_stack.begin(); i != states_stack.end(); )
         {
             if ((*i)->must_be_destroyed)
@@ -74,9 +75,17 @@ int Game::run()
             }
             else i++;
         }
-        for (State*& state : states_to_add)
+        //Add states on top
+        for (State*& state : states_to_add_on_top)
             states_stack.push_back(std::unique_ptr<State>(state));
-        states_to_add.clear();
+        states_to_add_on_top.clear();
+        //Add states under the top
+        if (state_to_add_under_the_top)
+        {
+            assert(states_stack.size());
+            states_stack.insert(states_stack.end() - 1, std::unique_ptr<State>(state_to_add_under_the_top));
+            state_to_add_under_the_top = nullptr;
+        }
     }
     return 0;
 }
@@ -91,15 +100,15 @@ void Game::addStateOnTop(State* state, bool init)
 {
     if (init)
         state->init();
-    states_stack.push_back(std::unique_ptr<State>(state));
+    states_to_add_on_top.push_back(state);
 }
 
 void Game::addStateUnderTop(State* state, bool init)
 {
-    assert(states_stack.size() >= 1);
+    assert(!state_to_add_under_the_top);
     if (init)
         state->init();
-    states_stack.insert(states_stack.end() - 1, std::unique_ptr<State>(state));
+    state_to_add_under_the_top = state;
 }
 
 

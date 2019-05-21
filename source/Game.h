@@ -55,7 +55,8 @@ class Game
 
         //All the states currently loaded
         std::vector<std::unique_ptr<State>> states_stack;
-        std::vector<State*> states_to_add;
+        std::vector<State*> states_to_add_on_top;
+        State* state_to_add_under_the_top; //Wow long name
 
         /**
          * Draws states that need to be on the window

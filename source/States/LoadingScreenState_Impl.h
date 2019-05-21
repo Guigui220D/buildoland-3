@@ -10,7 +10,7 @@ LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game* gam
     fade_in(fade_in),
     fade_out(fade_out),
     view(sf::Vector2f(.5f, .5f), sf::Vector2f(1.f, 1.f)),
-    loading_icon(game->getWindow().getSize())
+    loading_icon(game)
 {
     update_transparent = false;
 

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "State.h"
-#include "../Gui/GuiElement.h"
+#include "../Gui/GuiButton.h"
 
 class MainMenuState : public State
 {
@@ -10,10 +10,11 @@ class MainMenuState : public State
         virtual ~MainMenuState();
 
         virtual bool handleEvent(sf::Event& event) override;
+        virtual void update(float delta_time) override;
         virtual void draw(sf::RenderTarget& target) const override;
 
     private:
-        GuiElement test_ge_1;
+        GuiButton test_button_1;
         //GuiElement test_ge_2;
         //GuiElement test_ge_3;
 

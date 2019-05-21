@@ -10,6 +10,8 @@ enum GuiAlign
     BottomOrRight = 1
 };
 
+class Game;
+
 class GuiElement
 {
     public:
@@ -18,7 +20,7 @@ class GuiElement
          * @param zone : The place where the element should be fit on the screen (values between 0 and 1)
          * @param aspect_ratio : the ratio of the element (not of the zone), it's the width divided by the height
          */
-        GuiElement(sf::Vector2u window_size, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align);
+        GuiElement(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align);
         virtual ~GuiElement();
 
         /**
@@ -70,14 +72,31 @@ class GuiElement
          * @return The vertical align
          */
         inline GuiAlign getValignAlign() const { return halign; }
+        /**
+         * To get the the game this element belongs to
+         * @return The pointer to the game
+         */
+        inline Game* getGame() const { return game; }
 
     protected:
         /**
          * Sets the view to the calculated view, please use when drawing
          */
         inline void useView(sf::RenderTarget& target) const { target.setView(calculated_view); }
+        /**
+         * Gets the calculated view
+         * @return The view
+         */
+        inline sf::View getView() const { return calculated_view; }
+        /**
+         * Gets the aspect ratio
+         * @return The ratio
+         */
+        inline float getAspectRatio() const { return ratio; }
 
     private:
+        Game* game;
+
         sf::FloatRect zone;
         float ratio;
         GuiAlign halign, valign;

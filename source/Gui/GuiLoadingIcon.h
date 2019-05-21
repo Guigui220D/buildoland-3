@@ -1,13 +1,11 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-
 #include "GuiElement.h"
 
 class GuiLoadingIcon : public GuiElement
 {
     public:
-        GuiLoadingIcon(sf::Vector2u window_size);
+        GuiLoadingIcon(Game* game);
         virtual ~GuiLoadingIcon();
 
         virtual void draw(sf::RenderTarget& target) const override;

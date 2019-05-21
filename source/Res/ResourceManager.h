@@ -79,18 +79,6 @@ class ResourceManager
 
         //Get assets
         /**
-         * Gets a pointer to a music using its name
-         * @param name : the name used previously to register the resource
-         * @return The pointer to the resource
-         */
-        sf::Music& getMusic(const std::string name);
-        /**
-         * Gets a pointer to a sound using its name
-         * @param name : the name used previously to register the resource
-         * @return The pointer to the resource
-         */
-        sf::SoundBuffer& getSound(const std::string name);
-        /**
          * Gets a pointer to a texture using its name
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
@@ -110,6 +98,22 @@ class ResourceManager
         inline sf::Texture& getErrorTexture() { return error_texture; };
 
     private:
+        friend class AudioManager;
+        //Get audio
+        //These are private because they should only be accessed through Audio manager which is a friend
+        /**
+         * Gets a pointer to a music using its name
+         * @param name : the name used previously to register the resource
+         * @return The pointer to the resource
+         */
+        sf::Music& getMusic(const std::string name);
+        /**
+         * Gets a pointer to a sound using its name
+         * @param name : the name used previously to register the resource
+         * @return The pointer to the resource
+         */
+        sf::SoundBuffer& getSound(const std::string name);
+
         std::unordered_map<std::string, sf::Music*> musics;
         std::unordered_map<std::string, sf::SoundBuffer*> sounds;
         std::unordered_map<std::string, sf::Texture*> textures;

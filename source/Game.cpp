@@ -10,7 +10,7 @@ Game::Game()
 {
     settings_manager.load();
     auto& ws = settings_manager.window_settings;
-    auto& as = settings_manager.window_settings;
+    //auto& as = settings_manager.window_settings;
 
     window.create(sf::VideoMode(ws.size_x, ws.size_y), "What's the name?", ws.type);
 }

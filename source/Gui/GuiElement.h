@@ -24,6 +24,10 @@ class GuiElement
         virtual ~GuiElement();
 
         /**
+         * Inits, loads the resources needed for that element and prepares things
+         */
+        virtual void init();
+        /**
          * Takes an event and handle it, or not.
          * @param event : the even to handle
          * @return True if the event was caught by the gui element

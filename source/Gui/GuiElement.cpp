@@ -17,6 +17,8 @@ GuiElement::~GuiElement()
     //dtor
 }
 
+void GuiElement::init() {}
+
 bool GuiElement::handleEvent(sf::Event& event)
 {
     return false;

@@ -13,10 +13,8 @@ GuiManager::~GuiManager()
 
 void GuiManager::initEverything()
 {
-    /* INIT HERE
     for (auto i = begin(); i < end(); i++)
-        (*i)->
-        */
+        (*i)->init();
 }
 
 void GuiManager::updateWindowSize(sf::Vector2u window_size)

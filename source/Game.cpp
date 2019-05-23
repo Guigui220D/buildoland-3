@@ -6,10 +6,13 @@
 #include "States/LoadingScreenState.h"
 #include "States/States.h"
 
-Game::Game() :
-    window(sf::VideoMode(800, 600), "What's the name?")
+Game::Game()
 {
-    //ctor
+    settings_manager.load();
+    auto& ws = settings_manager.window_settings;
+    auto& as = settings_manager.window_settings;
+
+    window.create(sf::VideoMode(ws.size_x, ws.size_y), "What's the name?", ws.type);
 }
 
 Game::~Game()

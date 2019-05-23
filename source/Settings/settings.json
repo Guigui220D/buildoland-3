@@ -1,0 +1,13 @@
+{
+	"window": {
+		"type": "bordered",
+		"size_x": 800,
+		"size_y": 600
+	},
+	"audio": {
+		"sound_enabled": true,
+		"music_enabled": true,
+		"sound_volume": 100,
+		"music_volume": 100
+	}
+}

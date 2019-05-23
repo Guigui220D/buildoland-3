@@ -13,6 +13,8 @@ BackgroundState::BackgroundState(Game* game, unsigned int id) :
     draw_transparent = false;
 
     view = game->getWindow().getView();
+    view.setSize(sf::Vector2f(800.f, 600.f));
+    view.setCenter(view.getSize() / 2.f);
 }
 
 BackgroundState::~BackgroundState()

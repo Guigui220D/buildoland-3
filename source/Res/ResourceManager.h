@@ -10,12 +10,12 @@
 class ResourceManager
 {
     public:
-        ResourceManager();
-        ~ResourceManager();
-
         static const std::string AUDIO_REPERTORY_NAME;
         static const std::string FONT_REPERTORY_NAME;
         static const std::string TEXTURE_REPERTORY_NAME;
+
+        ResourceManager();
+        ~ResourceManager();
 
         //Add assets
         /**

@@ -6,6 +6,7 @@
 #include <SFML/Graphics.hpp>
 
 #include "States/State.h"
+#include "Settings/SettingsManager.h"
 
 class Game
 {
@@ -50,6 +51,8 @@ class Game
 
     private:
         sf::RenderWindow window;
+
+        SettingsManager settings_manager;
 
         unsigned int framerate_target = 60;
 

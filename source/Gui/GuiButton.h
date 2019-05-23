@@ -12,6 +12,10 @@ class GuiButton : public GuiElement
         virtual void draw(sf::RenderTarget& target) const override;
         //virtual void update(float delta_time) override;
 
+        /**
+        * To check if this button has been clicked since the last call of this function
+        * @return True if it has been clicked
+        */
         inline bool hasBeenClicked()
         {
             if (clicked)

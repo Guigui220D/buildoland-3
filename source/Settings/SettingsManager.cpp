@@ -72,19 +72,23 @@ void SettingsManager::load()
 
 void SettingsManager::loadDefaultValues()
 {
-    {   //Window settings
-        window_settings.type = sf::Style::Default;
-        window_settings.size_x = 800;
-        window_settings.size_y = 600;
-        window_settings.fps_limit = 0;
-        window_settings.vsync_enabled = true;
-    }
-    {   //Audio settings
-        audio_settings.sound_enabled = true;
-        audio_settings.music_enabled = true;
-        audio_settings.sound_volume = 100;
-        audio_settings.music_volume = 100;
-    }
+    // https://tomeko.net/online_tools/cpp_text_escape.php
+    json =
+    "{\n"
+    "\t\"window\": {\n"
+    "\t\t\"type\": \"bordered\",\n"
+    "\t\t\"size_x\": 800,\n"
+    "\t\t\"size_y\": 600,\n"
+    "\t\t\"fps_limit\": 0,\n"
+    "\t\t\"vsync_enabled\": true\n"
+    "\t},\n"
+    "\t\"audio\": {\n"
+    "\t\t\"sound_enabled\": true,\n"
+    "\t\t\"music_enabled\": true,\n"
+    "\t\t\"sound_volume\": 100,\n"
+    "\t\t\"music_volume\": 100\n"
+    "\t}\n"
+    "}\n"_json;
 }
 
 void SettingsManager::save()

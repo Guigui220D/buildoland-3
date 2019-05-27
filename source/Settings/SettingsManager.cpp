@@ -27,6 +27,8 @@ void SettingsManager::load()
         auto type = window.find("type");
         auto size_x = window.find("size_x");
         auto size_y = window.find("size_y");
+        auto fps_limit = window.find("fps_limit");
+        auto vsync_enabled = window.find("vsync_enabled");
 
         if (type != end)
         {
@@ -42,6 +44,10 @@ void SettingsManager::load()
             window_settings.size_x = size_x->get<int>();
         if (size_y != end)
             window_settings.size_y = size_y->get<int>();
+        if (fps_limit != end)
+            window_settings.fps_limit = fps_limit->get<int>();
+        if (vsync_enabled != end)
+            window_settings.vsync_enabled = vsync_enabled->get<bool>();
     }
 
     {   //Audio settings
@@ -70,6 +76,8 @@ void SettingsManager::loadDefaultValues()
         window_settings.type = sf::Style::Default;
         window_settings.size_x = 800;
         window_settings.size_y = 600;
+        window_settings.fps_limit = 0;
+        window_settings.vsync_enabled = true;
     }
     {   //Audio settings
         audio_settings.sound_enabled = true;

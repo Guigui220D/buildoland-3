@@ -2,7 +2,9 @@
 	"window": {
 		"type": "bordered",
 		"size_x": 800,
-		"size_y": 600
+		"size_y": 600,
+		"fps_limit": 0,
+		"vsync_enabled": true
 	},
 	"audio": {
 		"sound_enabled": true,

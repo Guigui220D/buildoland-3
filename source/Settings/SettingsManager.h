@@ -23,6 +23,8 @@ class SettingsManager
             int type;   //Sf::style
             unsigned int size_x;
             unsigned int size_y;
+            unsigned int fps_limit;
+            bool vsync_enabled;
         } window_settings;
 
         struct

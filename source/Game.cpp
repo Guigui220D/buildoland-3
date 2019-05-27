@@ -13,6 +13,8 @@ Game::Game()
     //auto& as = settings_manager.window_settings;
 
     window.create(sf::VideoMode(ws.size_x, ws.size_y), "What's the name?", ws.type);
+    window.setFramerateLimit(ws.fps_limit);
+    window.setVerticalSyncEnabled(ws.vsync_enabled);
 }
 
 Game::~Game()
@@ -22,8 +24,6 @@ Game::~Game()
 
 int Game::init()
 {
-    window.setFramerateLimit(framerate_target);
-
     addStateOnTop(new BackgroundState(this), true);
     //Test
         addStateOnTop(new LoadingScreenState<MainMenuState>(false, true, this, 0));

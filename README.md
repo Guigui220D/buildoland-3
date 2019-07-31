@@ -1,11 +1,11 @@
-# Easy Life Inc
-Don't mind the name, it was choosed by GitHub, but this is not the game's name.
-This name too is temporary, that's why I don't change the repos name.
+# Buildoland 3
 
-This is a new game by Guigui220D about robots taking over the world.
+After Buildoland 1, and Buildoland 2, games that were both discontinued for not really valid reasons, i'm doing Buildoland 3!
 
-After the two version of Buildoland, I didn't want to stop and decided to make a new game with the knowledge I got from my past projects.
-The game will be topdown-view, but not (or just not visibly) tile-based, will not be based on construction, and there won't be any multiplayer mode.
-BUT, this time I want to make an actual game and not just an engine, and there will be a story, fights and choices to make.
+Buildoland is a 2D topdown view building game with an infinite world that can be played alone of in multiplayer!
 
-This project won't be public until it actually looks good.
+Although I took a lot of inspiration from Minecraft, the goal is not to make a 2D minecraft.
+
+This game will stay in a private repos until it's actually playable.
+
+For unexplaiable reasons, the codename fo this game is Super Duper Octo Enigma.

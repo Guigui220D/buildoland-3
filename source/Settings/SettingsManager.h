@@ -6,9 +6,14 @@
 
 #include "../Res/Json.h"
 
+//This class can load and save settings
+
+//NOT FINISHED YET
 class SettingsManager
 {
-    public:
+    private:
+        friend class Game;
+
         static const std::string SETTINGS_FILE_PATH;
 
         SettingsManager();
@@ -35,6 +40,5 @@ class SettingsManager
             unsigned int music_volume;
         } audio_settings;
 
-    private:
         nlohmann::json json;
 };

@@ -7,6 +7,7 @@
 
 #include "States/State.h"
 #include "Settings/SettingsManager.h"
+#include "Block/GameBlocks.h"
 
 class Game
 {
@@ -59,7 +60,7 @@ class Game
         //All the states currently loaded
         std::vector<std::unique_ptr<State>> states_stack;
         std::vector<State*> states_to_add_on_top;
-        State* state_to_add_under_the_top; //Wow long name
+        State* state_to_add_under_the_top = nullptr; //Wow long name
 
         /**
          * Draws states that need to be on the window
@@ -70,4 +71,6 @@ class Game
          * @param delta_time : the seconds that have passed since the last update
          */
         void update(float delta_time);
+
+        GameBlocks gameBlocksManager;
 };

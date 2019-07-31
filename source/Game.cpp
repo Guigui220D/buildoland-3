@@ -12,9 +12,11 @@ Game::Game()
     auto& ws = settings_manager.window_settings;
     //auto& as = settings_manager.window_settings;
 
-    window.create(sf::VideoMode(ws.size_x, ws.size_y), "What's the name?", ws.type);
+    window.create(sf::VideoMode(ws.size_x, ws.size_y), "BuildOLand 3", ws.type);
     window.setFramerateLimit(ws.fps_limit);
     window.setVerticalSyncEnabled(ws.vsync_enabled);
+
+    gameBlocksManager.initBlocks();
 }
 
 Game::~Game()
@@ -46,7 +48,7 @@ int Game::run()
                 window.close();
                 break;
             case sf::Event::KeyPressed:
-                std::cout << states_stack.size() << "\n";
+                std::cout << states_stack.size() << std::endl;
                 break;
             default:
                 {
@@ -119,6 +121,7 @@ void Game::draw()
 {
     if (states_stack.empty())
         return;
+
     unsigned int i;
     for (i = states_stack.size() - 1; i > 0; i--)
     {

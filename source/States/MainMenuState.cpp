@@ -36,7 +36,10 @@ bool MainMenuState::handleEvent(sf::Event& event)
 void MainMenuState::update(float delta_time)
 {
     if (test_button_1.hasBeenClicked())
+    {
+        getGame()->addStateOnTop(new GameState(getGame(), 0));
         must_be_destroyed = true;
+    }
 }
 
 void MainMenuState::draw(sf::RenderTarget& target) const

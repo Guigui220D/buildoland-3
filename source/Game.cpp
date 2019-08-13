@@ -6,6 +6,8 @@
 #include "States/LoadingScreenState.h"
 #include "States/States.h"
 
+#include "World/Chunk.h"
+
 Game::Game()
 {
     settings_manager.load();

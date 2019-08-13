@@ -18,19 +18,18 @@ Chunk::~Chunk()
     //dtor
 }
 
-void Chunk::generateVertices()
+void Chunk::generateVertices() const
 {
     //Ground
     if (!ground_vertices_pos_ready)
     {
-        ground_vertices.clear();
         for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
             {
-                ground_vertices[x + y * CHUNK_SIZE + 0].position = sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE);
-                ground_vertices[x + y * CHUNK_SIZE + 1].position = sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE);
-                ground_vertices[x + y * CHUNK_SIZE + 2].position = sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE);
-                ground_vertices[x + y * CHUNK_SIZE + 3].position = sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].position = sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].position = sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].position = sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].position = sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE);
             }
         ground_vertices_pos_ready = true;
     }
@@ -39,10 +38,10 @@ void Chunk::generateVertices()
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
-            ground_vertices[x + y * CHUNK_SIZE + 0].color = sf::Color::White;
-            ground_vertices[x + y * CHUNK_SIZE + 1].color = sf::Color::Red;
-            ground_vertices[x + y * CHUNK_SIZE + 2].color = sf::Color::Yellow;
-            ground_vertices[x + y * CHUNK_SIZE + 3].color = sf::Color::Green;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].color = sf::Color::Red;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].color = sf::Color::Red;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].color = sf::Color::Yellow;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].color = sf::Color::Green;
         }
 
     //Block

@@ -16,11 +16,11 @@ class Chunk
 
         inline bool isReady() const { return ready; }
 
-        inline sf::VertexArray& getGroundVertexArray()
+        inline sf::VertexArray& getGroundVertexArray() const
             { if (!vertices_ready) generateVertices(); return ground_vertices; }
-        inline sf::VertexArray& getBlockSidesVertexArray()
+        inline sf::VertexArray& getBlockSidesVertexArray() const
             { if (!vertices_ready) generateVertices(); return block_side_vertices; }
-        inline sf::VertexArray& getBlockTopsVertexArray()
+        inline sf::VertexArray& getBlockTopsVertexArray() const
             { if (!vertices_ready) generateVertices(); return block_top_vertices; }
 
     private:
@@ -29,9 +29,8 @@ class Chunk
         Arr2D<unsigned short> blocks, grounds;
         const sf::Vector2i pos;
 
-        sf::VertexArray ground_vertices, block_side_vertices, block_top_vertices;
-        bool vertices_ready = false;
-        bool ground_vertices_pos_ready = false;
+        mutable sf::VertexArray ground_vertices, block_side_vertices, block_top_vertices;
+        mutable bool vertices_ready = false, ground_vertices_pos_ready = false;
 
-        void generateVertices();
+        void generateVertices() const;
 };

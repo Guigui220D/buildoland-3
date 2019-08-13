@@ -3,7 +3,6 @@
 #include <iostream>
 #include <assert.h>
 
-#include "States/LoadingScreenState.h"
 #include "States/States.h"
 
 Game::Game()
@@ -15,9 +14,6 @@ Game::Game()
     window.create(sf::VideoMode(ws.size_x, ws.size_y), "BuildOLand 3", ws.type);
     window.setFramerateLimit(ws.fps_limit);
     window.setVerticalSyncEnabled(ws.vsync_enabled);
-
-    gameBlocksManager.initBlocks();
-    gameGroundsManager.initGrounds();
 }
 
 Game::~Game()
@@ -29,7 +25,7 @@ int Game::init()
 {
     addStateOnTop(new BackgroundState(this), true);
     //Test
-        addStateOnTop(new LoadingScreenState<MainMenuState>(false, true, this, 0));
+        addStateOnTop(new LoadingScreenGameInitState<MainMenuState>(false, true, this, 0));
     return 0;
 }
 

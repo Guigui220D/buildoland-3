@@ -17,7 +17,13 @@ class LoadingScreenState : public State
         void update(float delta_time) override;
         void draw(sf::RenderTarget& target) const override;
 
-    private:
+    protected:
+        /**
+         * The task to be done before initializing the next state
+         * Should be overriden
+         */
+        virtual void task();
+
         State* state_being_loaded;
         /**
          * Loads the state to be loaded, this function is supposed to be async
@@ -37,10 +43,6 @@ class LoadingScreenState : public State
         sf::View view;
         sf::RectangleShape background;
         GuiLoadingIcon loading_icon;
-
-    private:
 };
 
-//Because the way templates work i can't use a normal cpp file???
 #include "LoadingScreenState_Impl.h"
-

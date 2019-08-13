@@ -53,6 +53,9 @@ class Game
         inline sf::RenderWindow& getWindow() { return window; }
 
     private:
+        template<class T>
+        friend class LoadingScreenGameInitState;
+
         sf::RenderWindow window;
 
         SettingsManager settings_manager;

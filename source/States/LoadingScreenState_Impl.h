@@ -30,14 +30,20 @@ template <class T>
 void LoadingScreenState<T>::load()
 {
     sf::Clock clk;
+    task();
     state_being_loaded->init();
-    while (clk.getElapsedTime().asSeconds() < .2f);
+    //while (clk.getElapsedTime().asSeconds() < .2f); //Lol, making fake loading time
     done_mutex.lock();
     done = true;
     done_mutex.unlock();
     return;
 }
 
+template <class T>
+void LoadingScreenState<T>::task()
+{
+
+}
 
 template <class T>
 bool LoadingScreenState<T>::handleEvent(sf::Event& event)

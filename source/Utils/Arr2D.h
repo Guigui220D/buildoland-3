@@ -1,4 +1,6 @@
 #include <assert.h>
+#include <cstdint>
+#include <new>
 
 template <typename T>
 class Arr2D

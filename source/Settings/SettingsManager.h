@@ -4,7 +4,7 @@
 
 #include <SFML/Window.hpp>
 
-#include "../Res/Json.h"
+#include "../Utils/Json.h"
 
 //This class can load and save settings
 

@@ -10,8 +10,14 @@ This game will stay in a private repos until it's actually playable.
 
 For unexplaiable reasons, the codename fo this game is Super Duper Octo Enigma.
 
-###Previous versions
+### Dependencies & Libraries
 
-Buildoland 1 : https://github.com/Guigui220D/OldBuildoland
+This project needs SFML 2.5.1 : https://www.sfml-dev.org/
 
-Buildoland 2 : https://github.com/Guigui220D/BuildOLand
+This project uses nlohmann::json : https://github.com/nlohmann/json
+
+### Previous versions
+
+Buildoland 1 : https://github.com/Guigui220D/OldBuildoland https://guiguii.itch.io/buildoland-2
+
+Buildoland 2 : https://github.com/Guigui220D/BuildOLand https://guiguii.itch.io/buildoland

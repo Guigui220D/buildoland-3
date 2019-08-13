@@ -26,15 +26,15 @@ class GameBlocks
          * @param id : the id of the block you want
          * @return The pointer to the block
          */
-        Block const * getBlockByID(unsigned short id);
+        Block const * getBlockByID(unsigned short id) const;
         /**
          * Gets a pointer to a block using its name
          * @param name : the name of the block
          * @return The pointer to the block
          */
-        Block const * getBlockByName(const std::string name);
+        Block const * getBlockByName(const std::string name) const;
 
-        //Put blocks here*
+        //Put blocks here
         BlockAir const * const AIR = new BlockAir();
         BlockStone const * const STONE = new BlockStone();
 

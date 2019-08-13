@@ -7,7 +7,9 @@
 
 #include "States/State.h"
 #include "Settings/SettingsManager.h"
+
 #include "Block/GameBlocks.h"
+#include "Ground/GameGrounds.h"
 
 class Game
 {
@@ -73,4 +75,5 @@ class Game
         void update(float delta_time);
 
         GameBlocks gameBlocksManager;
+        GameGrounds gameGroundsManager;
 };

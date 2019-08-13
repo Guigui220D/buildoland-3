@@ -17,6 +17,7 @@ Game::Game()
     window.setVerticalSyncEnabled(ws.vsync_enabled);
 
     gameBlocksManager.initBlocks();
+    gameGroundsManager.initGrounds();
 }
 
 Game::~Game()

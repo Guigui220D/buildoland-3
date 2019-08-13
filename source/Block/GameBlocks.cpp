@@ -37,7 +37,7 @@ void GameBlocks::addBlock(Block const * block)
     std::cout << "Added block \"" << name << "\" with id " << id << std::endl;
 }
 
-Block const * GameBlocks::getBlockByID(unsigned short id)
+Block const * GameBlocks::getBlockByID(unsigned short id) const
 {
     if (id >= blocks.size())
         return AIR;
@@ -45,7 +45,7 @@ Block const * GameBlocks::getBlockByID(unsigned short id)
     return blocks.at(id);
 }
 
-Block const * GameBlocks::getBlockByName(const std::string name)
+Block const * GameBlocks::getBlockByName(const std::string name) const
 {
     auto ptr = names.find(name);
 

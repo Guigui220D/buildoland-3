@@ -9,11 +9,11 @@ class BackgroundState : public State
 {
     public:
         BackgroundState(Game* game, unsigned int id = 0);
-        virtual ~BackgroundState();
+        ~BackgroundState();
 
-        virtual void init() override;
-        virtual bool handleEvent(sf::Event& event) override;
-        virtual void draw(sf::RenderTarget& target) const override;
+        void init() override;
+        bool handleEvent(sf::Event& event) override;
+        void draw(sf::RenderTarget& target) const override;
 
     private:
         sf::Texture background_texture;

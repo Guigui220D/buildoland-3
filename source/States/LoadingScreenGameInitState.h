@@ -32,6 +32,7 @@ template <class T>
 void LoadingScreenGameInitState<T>::task()
 {
     //We can access that because Game has LoadingScreenGameInitState as a friend
+    this->getGame()->loadResources();
     this->getGame()->gameBlocksManager.initBlocks();
     this->getGame()->gameGroundsManager.initGrounds();
 }

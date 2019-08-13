@@ -5,7 +5,8 @@
 
 #include "States/States.h"
 
-Game::Game()
+Game::Game() :
+    audioManager(resourceManager)
 {
     settings_manager.load();
     auto& ws = settings_manager.window_settings;
@@ -23,9 +24,7 @@ Game::~Game()
 
 int Game::init()
 {
-    addStateOnTop(new BackgroundState(this), true);
-    //Test
-        addStateOnTop(new LoadingScreenGameInitState<MainMenuState>(false, true, this, 0));
+    addStateOnTop(new LoadingScreenGameInitState<MainMenuState>(false, true, this, 0));
     return 0;
 }
 

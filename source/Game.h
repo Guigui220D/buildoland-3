@@ -6,7 +6,10 @@
 #include <SFML/Graphics.hpp>
 
 #include "States/State.h"
+
 #include "Settings/SettingsManager.h"
+#include "Res/ResourceManager.h"
+#include "Res/AudioManager.h"
 
 #include "Block/GameBlocks.h"
 #include "Ground/GameGrounds.h"
@@ -18,7 +21,8 @@ class Game
         ~Game();
 
         /**
-         * Initializes everything the game needs (assets, managers, etc...)
+         * Should only be used for adding the first states
+         * Resources are loaded async by one of the states
          * @return A code, 0 if success
          */
         int init();
@@ -60,6 +64,14 @@ class Game
 
         SettingsManager settings_manager;
 
+        GameBlocks gameBlocksManager;
+        GameGrounds gameGroundsManager;
+
+        ResourceManager resourceManager;
+        AudioManager audioManager;
+
+        void loadResources();
+
         unsigned int framerate_target = 60;
 
         //All the states currently loaded
@@ -76,7 +88,4 @@ class Game
          * @param delta_time : the seconds that have passed since the last update
          */
         void update(float delta_time);
-
-        GameBlocks gameBlocksManager;
-        GameGrounds gameGroundsManager;
 };

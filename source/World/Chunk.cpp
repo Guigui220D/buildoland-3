@@ -8,13 +8,13 @@
 const size_t Chunk::CHUNK_SIZE = 8;
 
 Chunk::Chunk(Game* game, sf::Vector2i pos) :
-    game(game),
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
     ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
     block_side_vertices(sf::Quads),
-    block_top_vertices(sf::Quads)
+    block_top_vertices(sf::Quads),
+    game(game)
 {
     ready = true;
 }
@@ -44,10 +44,12 @@ void Chunk::generateVertices() const
         {
             sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
             const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (0 + ground->getTextureRotation(ground_pos)) % 4].texCoords = ground->getTexCoordA(ground_pos);
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (1 + ground->getTextureRotation(ground_pos)) % 4].texCoords = ground->getTexCoordB(ground_pos);
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (2 + ground->getTextureRotation(ground_pos)) % 4].texCoords = ground->getTexCoordC(ground_pos);
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (3 + ground->getTextureRotation(ground_pos)) % 4].texCoords = ground->getTexCoordD(ground_pos);
+            TextRect tr = ground->getTextureVertices(ground_pos);
+            uint8_t rot = ground->getTextureRotation(ground_pos);
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (0 + rot) % 4].texCoords = tr.vertA;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (1 + rot) % 4].texCoords = tr.vertB;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (2 + rot) % 4].texCoords = tr.vertC;
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (3 + rot) % 4].texCoords = tr.vertD;
         }
 
     //Block

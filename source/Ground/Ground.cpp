@@ -1,7 +1,6 @@
 #include "Ground.h"
 
-const size_t Ground::TILESET_WIDTH = 16;
-const size_t Ground::TEXTURE_WIDTH = 16;
+const TilesetHelper<16, 16, 0> Ground::tilesetHelper;
 
 Ground::Ground(const std::string name) :
     name(name)

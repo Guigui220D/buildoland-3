@@ -138,7 +138,7 @@ sf::SoundBuffer& ResourceManager::getSound(const std::string name)
     return *(*i).second;
 }
 
-sf::Texture& ResourceManager::getTexture(const std::string name)
+const sf::Texture& ResourceManager::getTexture(const std::string name) const
 {
     auto i = textures.find(name);
     if (i == textures.end())
@@ -149,7 +149,7 @@ sf::Texture& ResourceManager::getTexture(const std::string name)
     return *(*i).second;
 }
 
-sf::Font& ResourceManager::getFont(const std::string name)
+const sf::Font& ResourceManager::getFont(const std::string name) const
 {
     auto i = fonts.find(name);
     if (i == fonts.end())

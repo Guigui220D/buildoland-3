@@ -4,7 +4,7 @@
 
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
-    test_chunk(sf::Vector2i(0, 0)),
+    test_chunk(game, sf::Vector2i(0, 0)),
     my_view(sf::Vector2f(), sf::Vector2f(20.f, 20.f))
 {
     update_transparent = false;
@@ -38,7 +38,7 @@ void GameState::update(float delta_time)
 void GameState::draw(sf::RenderTarget& target) const
 {
     target.setView(my_view);
-    target.draw(test_chunk.getGroundVertexArray());
+    target.draw(test_chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
 }
 
 void GameState::updateView()

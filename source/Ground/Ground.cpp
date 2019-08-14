@@ -1,5 +1,8 @@
 #include "Ground.h"
 
+const size_t Ground::TILESET_WIDTH = 16;
+const size_t Ground::TEXTURE_WIDTH = 16;
+
 Ground::Ground(const std::string name) :
     name(name)
 {
@@ -9,14 +12,4 @@ Ground::Ground(const std::string name) :
 Ground::~Ground()
 {
     //dtor
-}
-
-uint32_t Ground::getTextureNumber(sf::Vector2i ground_pos) const
-{
-    return 0;
-}
-
-uint8_t Ground::getTextureRotation(sf::Vector2i ground_pos) const
-{
-    return 0;
 }

@@ -83,19 +83,19 @@ class ResourceManager
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
          */
-        sf::Texture& getTexture(const std::string name);
+        const sf::Texture& getTexture(const std::string name) const;
         /**
          * Gets a pointer to a font using its name
          * @param name : the name used previously to register the resource
          * @return The pointer to the resource
          */
-        sf::Font& getFont(const std::string name);
+        const sf::Font& getFont(const std::string name) const;
 
         /**
          * Gets the default checkerboard texture in case of error
          * @return A pointer to the checkerboard texture
          */
-        inline sf::Texture& getErrorTexture() { return error_texture; };
+        inline const sf::Texture& getErrorTexture() const { return error_texture; };
 
     private:
         friend class AudioManager;

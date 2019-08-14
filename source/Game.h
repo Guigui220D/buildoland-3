@@ -55,6 +55,26 @@ class Game
          * @return A reference to the render window
          */
         inline sf::RenderWindow& getWindow() { return window; }
+        /**
+         * Gets a reference to the blocks manager
+         * @return A reference to the blocks manager
+         */
+        inline const GameBlocks& getBlocksManager() const { return gameBlocksManager; }
+        /**
+         * Gets a reference to the grounds manager
+         * @return A reference to the grounds manager
+         */
+        inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
+        /**
+         * Gets a reference to the resource manager
+         * @return A reference to the resource manager
+         */
+        inline const ResourceManager& getResourceManager() const { return resourceManager; }
+        /**
+         * Gets a reference to the audio manager
+         * @return A reference to the audio manager
+         */
+        inline AudioManager& getAudioManager() { return audioManager; }
 
     private:
         template<class T>

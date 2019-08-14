@@ -4,13 +4,19 @@
 
 #include "../Utils/Arr2D.h"
 
+#include "../Ground/GameGrounds.h"
+
+class Game;
+
 class Chunk
 {
     public:
         static const size_t CHUNK_SIZE;
 
-        Chunk(sf::Vector2i pos);
+        Chunk(Game* game, sf::Vector2i pos);
         ~Chunk();
+
+        inline Game* getGame() const { return game; }
 
         inline sf::Vector2i getPos() const { return pos; }
 
@@ -33,4 +39,6 @@ class Chunk
         mutable bool vertices_ready = false, ground_vertices_pos_ready = false;
 
         void generateVertices() const;
+
+        Game* game;
 };

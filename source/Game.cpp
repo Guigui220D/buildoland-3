@@ -43,9 +43,6 @@ int Game::run()
             case sf::Event::Closed:
                 window.close();
                 break;
-            case sf::Event::KeyPressed:
-                std::cout << states_stack.size() << std::endl;
-                break;
             default:
                 {
                     for (int i = states_stack.size() - 1; i >= 0; i--)

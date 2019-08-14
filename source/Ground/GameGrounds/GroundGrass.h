@@ -14,15 +14,15 @@ class GroundGrass : public Ground
         inline bool hasSurfaceDetails(sf::Vector2i ground_pos) const override { return true; }
         inline uint32_t getSurfaceDetailNumber(sf::Vector2i ground_pos) const override
         {
-            if ((ground_pos.x + ground_pos.y) % 5 == 4)
-            {
+            if (std::rand() % 10 == 0)
                 return 8;
-            }
-            if ((ground_pos.x + ground_pos.y) % 7 == 6)
-            {
+            if (std::rand() % 10 == 0)
                 return 9;
-            }
             return 0;
+        }
+        inline uint8_t getSurfaceDetailRotation(sf::Vector2i ground_pos) const
+        {
+            return std::rand() % 4;
         }
 
     protected:

@@ -2,7 +2,7 @@
 
 #include "State.h"
 
-#include "../World/Chunk.h"
+#include "../World/World.h"
 
 class GameState : public State
 {
@@ -15,7 +15,8 @@ class GameState : public State
         void draw(sf::RenderTarget& target) const override;
 
     private:
-        Chunk test_chunk;
+        World test_world;
+
         sf::View my_view;
 
         void updateView();

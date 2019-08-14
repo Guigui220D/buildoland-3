@@ -20,10 +20,7 @@ Chunk::Chunk(Game* game, sf::Vector2i pos) :
     block_top_vertices(sf::Quads),
     game(game)
 {
-    //Tmp
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
-            for (size_t y = 0; y < CHUNK_SIZE; y++)
-                grounds.set(x, y, std::rand() % 4);
+    regenerate();
 
     ready = true;
 }
@@ -31,6 +28,16 @@ Chunk::Chunk(Game* game, sf::Vector2i pos) :
 Chunk::~Chunk()
 {
     //dtor
+}
+
+//For testing
+void Chunk::regenerate()
+{
+    //Tmp
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+            for (size_t y = 0; y < CHUNK_SIZE; y++)
+                grounds.set(x, y, std::rand() % 4);
+    vertices_ready = false;
 }
 
 void Chunk::generateVertices() const

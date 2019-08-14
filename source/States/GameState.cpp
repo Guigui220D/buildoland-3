@@ -4,12 +4,14 @@
 
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
-    test_chunk(game, sf::Vector2i(0, 0)),
+    test_world(game),
     my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f))
 {
     update_transparent = false;
     draw_transparent = false;
     updateView();
+
+    test_world.getChunk(sf::Vector2i(0, 0));
 }
 
 GameState::~GameState()
@@ -25,6 +27,10 @@ bool GameState::handleEvent(sf::Event& event)
         updateView();
         return true;
 
+    case sf::Event::KeyPressed:
+        test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
+        return true;
+
     default:
         return true;
     }
@@ -38,8 +44,11 @@ void GameState::update(float delta_time)
 void GameState::draw(sf::RenderTarget& target) const
 {
     target.setView(my_view);
-    target.draw(test_chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
-    target.draw(test_chunk.getGroundDetailsVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_DETAILS"));
+
+    const Chunk& chunk = test_world.getChunkConst(sf::Vector2i(0, 0));
+
+    target.draw(chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
+    target.draw(chunk.getGroundDetailsVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_DETAILS"));
 }
 
 void GameState::updateView()

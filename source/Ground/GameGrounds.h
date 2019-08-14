@@ -3,6 +3,8 @@
 #include "Ground.h"
 
 #include "GameGrounds/GroundStone.h"
+#include "GameGrounds/GroundSand.h"
+#include "GameGrounds/GroundGrass.h"
 
 #include <vector>
 #include <map>
@@ -35,6 +37,8 @@ class GameGrounds
 
         //Put grounds here
         GroundStone const * const STONE = new GroundStone();
+        GroundSand const * const SAND = new GroundSand();
+        GroundGrass const * const GRASS = new GroundGrass();
 
     private:
         std::vector<Ground const *> grounds;

@@ -19,6 +19,8 @@ void GameGrounds::initGrounds()
     grounds.clear();
     //Add all grounds here
     addGround(STONE);
+    addGround(SAND);
+    addGround(GRASS);
 }
 
 void GameGrounds::addGround(Ground const * ground)

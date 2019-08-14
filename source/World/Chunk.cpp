@@ -5,6 +5,9 @@
 #include "../Ground/Ground.h"
 #include "../Block/Block.h"
 
+//TMP
+#include <cstdlib>
+
 const size_t Chunk::CHUNK_SIZE = 8;
 
 Chunk::Chunk(Game* game, sf::Vector2i pos) :
@@ -16,6 +19,11 @@ Chunk::Chunk(Game* game, sf::Vector2i pos) :
     block_top_vertices(sf::Quads),
     game(game)
 {
+    //Tmp
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+            for (size_t y = 0; y < CHUNK_SIZE; y++)
+                grounds.set(x, y, std::rand() % 4);
+
     ready = true;
 }
 

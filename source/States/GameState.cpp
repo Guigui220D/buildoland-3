@@ -5,7 +5,7 @@
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
     test_chunk(game, sf::Vector2i(0, 0)),
-    my_view(sf::Vector2f(), sf::Vector2f(20.f, 20.f))
+    my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f))
 {
     update_transparent = false;
     draw_transparent = false;
@@ -52,13 +52,13 @@ void GameState::updateView()
 	if (window.getSize().y > window.getSize().x)
 	{
 		float ratio = (float)window.getSize().y / window.getSize().x;
-		float y_size = ratio * 20;
-		my_view.setSize(sf::Vector2f(20, y_size));
+		float y_size = ratio * 10;
+		my_view.setSize(sf::Vector2f(10, y_size));
 	}
 	else
 	{
 		float ratio = (float)window.getSize().x / window.getSize().y;
-		float x_size = ratio * 20;
-		my_view.setSize(sf::Vector2f(x_size, 20));
+		float x_size = ratio * 10;
+		my_view.setSize(sf::Vector2f(x_size, 10));
 	}
 }

@@ -15,6 +15,7 @@ Chunk::Chunk(Game* game, sf::Vector2i pos) :
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
     ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
+    ground_detail_vertices(sf::Quads),
     block_side_vertices(sf::Quads),
     block_top_vertices(sf::Quads),
     game(game)
@@ -34,7 +35,15 @@ Chunk::~Chunk()
 
 void Chunk::generateVertices() const
 {
-    //Ground
+    generateGroundVertices();
+    generateGroundDetailVertices();
+    generateBlockSideVertices();
+    generateBlockTopVertices();
+    vertices_ready = true;
+}
+
+void Chunk::generateGroundVertices() const
+{
     if (!ground_vertices_pos_ready)
     {
         for (size_t x = 0; x < CHUNK_SIZE; x++)
@@ -52,20 +61,44 @@ void Chunk::generateVertices() const
         {
             sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
             const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
+
             TextRect tr = ground->getTextureVertices(ground_pos);
-            uint8_t rot = ground->getTextureRotation(ground_pos);
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (0 + rot) % 4].texCoords = tr.vertA;
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (1 + rot) % 4].texCoords = tr.vertB;
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (2 + rot) % 4].texCoords = tr.vertC;
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + (3 + rot) % 4].texCoords = tr.vertD;
+
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].texCoords = tr.verts[0];
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].texCoords = tr.verts[1];
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].texCoords = tr.verts[2];
+            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].texCoords = tr.verts[3];
         }
-
-    //Block
-    //Sides
-        //TODO
-
-    //Tops
-        //TODO
-
-    vertices_ready = true;
 }
+
+void Chunk::generateGroundDetailVertices() const
+{
+    ground_detail_vertices.clear();
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        {
+            sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
+            const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
+
+            if (!ground->hasSurfaceDetails(ground_pos))
+                continue;
+
+            TextRect tr = ground->getSurfaceDetailVertices(ground_pos);
+
+            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE), tr.verts[0]));
+            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE), tr.verts[1]));
+            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE), tr.verts[2]));
+            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE), tr.verts[3]));
+        }
+}
+
+void Chunk::generateBlockSideVertices() const
+{
+
+}
+
+void Chunk::generateBlockTopVertices() const
+{
+
+}
+

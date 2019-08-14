@@ -39,6 +39,7 @@ void GameState::draw(sf::RenderTarget& target) const
 {
     target.setView(my_view);
     target.draw(test_chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
+    target.draw(test_chunk.getGroundDetailsVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_DETAILS"));
 }
 
 void GameState::updateView()

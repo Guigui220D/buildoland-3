@@ -8,8 +8,8 @@ class GroundStone : public Ground
         GroundStone();
         ~GroundStone();
 
-        inline uint32_t getTextureNumber(sf::Vector2i ground_pos) const override { return 1; }
-        inline uint8_t getTextureRotation(sf::Vector2i ground_pos) const override { return (ground_pos.x + ground_pos.y) % 4; }
+        inline uint32_t getTextureNumber(GroundInfo info) const override { return 1; }
+        inline uint8_t getTextureRotation(GroundInfo info) const override { return (info.getPos().x + info.getPos().y) % 4; }
 
     protected:
 

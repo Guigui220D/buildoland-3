@@ -13,7 +13,7 @@ class Chunk
     public:
         static const size_t CHUNK_SIZE;
 
-        Chunk(Game* game, sf::Vector2i pos);
+        Chunk(World* world, sf::Vector2i pos);
         ~Chunk();
 
         /**
@@ -86,4 +86,5 @@ class Chunk
         void generateBlockTopVertices() const;
 
         Game* game;
+        World* world;
 };

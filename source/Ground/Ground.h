@@ -5,6 +5,8 @@
 
 #include "../Utils/TilesetHelper.h"
 
+#include "GroundInfo.h"
+
 class Ground
 {
     public:
@@ -16,16 +18,16 @@ class Ground
 
         inline const std::string getName() const { return name; }
 
-        virtual inline uint32_t getTextureNumber(sf::Vector2i ground_pos) const { return 0; }
-        virtual inline uint8_t getTextureRotation(sf::Vector2i ground_pos) const { return 0; }
+        virtual inline uint32_t getTextureNumber(GroundInfo info) const { return 0; }
+        virtual inline uint8_t getTextureRotation(GroundInfo info) const { return 0; }
 
-        inline TextRect getTextureVertices(sf::Vector2i ground_pos) const { return tilesetHelper.getFourVertices(getTextureNumber(ground_pos), getTextureRotation(ground_pos)); }
+        inline TextRect getTextureVertices(GroundInfo info) const { return tilesetHelper.getFourVertices(getTextureNumber(info), getTextureRotation(info)); }
 
-        virtual inline bool hasSurfaceDetails(sf::Vector2i ground_pos) const { return false; }
-        virtual inline uint32_t getSurfaceDetailNumber(sf::Vector2i ground_pos) const { return 0; }
-        virtual inline uint8_t getSurfaceDetailRotation(sf::Vector2i ground_pos) const { return 0; }
+        virtual inline bool hasSurfaceDetails(GroundInfo info) const { return false; }
+        virtual inline uint32_t getSurfaceDetailNumber(GroundInfo info) const { return 0; }
+        virtual inline uint8_t getSurfaceDetailRotation(GroundInfo info) const { return 0; }
 
-        inline TextRect getSurfaceDetailVertices(sf::Vector2i ground_pos) const { return tilesetHelperDetails.getFourVertices(getSurfaceDetailNumber(ground_pos), getSurfaceDetailRotation(ground_pos)); }
+        inline TextRect getSurfaceDetailVertices(GroundInfo info) const { return tilesetHelperDetails.getFourVertices(getSurfaceDetailNumber(info), getSurfaceDetailRotation(info)); }
 
     private:
         std::string name;

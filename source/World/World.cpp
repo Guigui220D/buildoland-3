@@ -41,7 +41,7 @@ Chunk& World::getChunk(sf::Vector2i pos)
     if (chunk_ptr == chunks.end())
     {
         std::cout << "New chunk generated : " << pos.x << "; " << pos.y << std::endl;
-        Chunk* new_chunk = new Chunk(game, pos);
+        Chunk* new_chunk = new Chunk(this, pos);
         chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
         return *new_chunk;
     }

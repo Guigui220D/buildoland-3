@@ -4,13 +4,14 @@
 
 #include "../Ground/Ground.h"
 #include "../Block/Block.h"
+#include "World.h"
 
 //TMP
 #include <cstdlib>
 
 const size_t Chunk::CHUNK_SIZE = 8;
 
-Chunk::Chunk(Game* game, sf::Vector2i pos) :
+Chunk::Chunk(World* world, sf::Vector2i pos) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
@@ -18,7 +19,8 @@ Chunk::Chunk(Game* game, sf::Vector2i pos) :
     ground_detail_vertices(sf::Quads),
     block_side_vertices(sf::Quads),
     block_top_vertices(sf::Quads),
-    game(game)
+    game(world->getGame()),
+    world(world)
 {
     regenerate();
 
@@ -69,7 +71,7 @@ void Chunk::generateGroundVertices() const
             sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
             const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
 
-            TextRect tr = ground->getTextureVertices(ground_pos);
+            TextRect tr = ground->getTextureVertices(GroundInfo(world, ground_pos));
 
             ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].texCoords = tr.verts[0];
             ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].texCoords = tr.verts[1];
@@ -87,10 +89,12 @@ void Chunk::generateGroundDetailVertices() const
             sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
             const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
 
-            if (!ground->hasSurfaceDetails(ground_pos))
+            GroundInfo gi(world, ground_pos);
+
+            if (!ground->hasSurfaceDetails(gi))
                 continue;
 
-            TextRect tr = ground->getSurfaceDetailVertices(ground_pos);
+            TextRect tr = ground->getSurfaceDetailVertices(gi);
 
             ground_detail_vertices.append(sf::Vertex(sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE), tr.verts[0]));
             ground_detail_vertices.append(sf::Vertex(sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE), tr.verts[1]));

@@ -73,7 +73,7 @@ void Chunk::generateGroundVertices() const
             sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
             const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
 
-            TextRect tr = ground->getTextureVertices(GroundInfo(world, ground_pos));
+            Quad tr = ground->getTextureVertices(GroundInfo(world, ground_pos));
 
             ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].texCoords = tr.verts[0];
             ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].texCoords = tr.verts[1];
@@ -96,12 +96,10 @@ void Chunk::generateGroundDetailVertices() const
             if (!ground->hasSurfaceDetails(gi))
                 continue;
 
-            TextRect tr = ground->getSurfaceDetailVertices(gi);
+            auto details = ground->getSurfaceDetails(gi);
 
-            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE), tr.verts[0]));
-            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE), tr.verts[1]));
-            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE), tr.verts[2]));
-            ground_detail_vertices.append(sf::Vertex(sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE), tr.verts[3]));
+            for (size_t i = 0; i < details.getVertexCount(); i++)
+                ground_detail_vertices.append(details[i]);
         }
 }
 

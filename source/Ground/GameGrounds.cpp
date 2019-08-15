@@ -34,6 +34,7 @@ void GameGrounds::addGround(Ground const * ground)
 
     names.emplace(name, id);
     grounds.push_back(ground);
+    ground->id = id;
 
     std::cout << "Added ground \"" << name << "\" with id " << id << std::endl;
 }

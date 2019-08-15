@@ -8,6 +8,9 @@ class GroundSand : public Ground
         GroundSand();
         ~GroundSand();
 
+        inline bool hasTextureBleedings() const override { return true; }
+        inline uint32_t getBleedingForNeighborGrounds(GroundInfo info) const override { return 3; }
+
     protected:
 
     private:

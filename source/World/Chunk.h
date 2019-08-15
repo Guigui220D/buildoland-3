@@ -10,6 +10,8 @@ class Game;
 
 class Chunk
 {
+    friend class World;
+
     public:
         static const size_t CHUNK_SIZE;
 

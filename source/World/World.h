@@ -10,7 +10,6 @@ class Game;
 
 class World
 {
-    friend class Chunk;
     public:
         World(Game* game);
         World(Game* game, int seed);
@@ -48,7 +47,15 @@ class World
          */
         inline bool isChunkLoaded(sf::Vector2i pos) const { return chunks.find(utils::combine(pos.x, pos.y)) != chunks.end(); }
 
+        uint16_t getBlock(sf::Vector2i pos, bool load);
+        uint16_t getGround(sf::Vector2i pos, bool load);
 
+        static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos) { return sf::Vector2i(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE); }
+        static inline sf::Vector2i getBlockPosInChunk(sf::Vector2i block_pos)
+        {
+            sf::Vector2i chunk_pos = getChunkPosFromBlockPos(block_pos);
+            return sf::Vector2i(block_pos.x - chunk_pos.x * Chunk::CHUNK_SIZE, block_pos.y - chunk_pos.y * Chunk::CHUNK_SIZE);
+        }
 
     protected:
 

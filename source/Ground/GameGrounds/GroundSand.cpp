@@ -1,7 +1,7 @@
 #include "GroundSand.h"
 
 GroundSand::GroundSand() :
-    Ground("sand")
+    Ground("sand", 2)
 {
     //ctor
 }

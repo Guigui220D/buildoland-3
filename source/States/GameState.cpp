@@ -47,7 +47,7 @@ void GameState::draw(sf::RenderTarget& target) const
 
     const Chunk& chunk = test_world.getChunkConst(sf::Vector2i(0, 0));
 
-    target.draw(chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
+    target.draw(chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_ROTATION_TEST"));
     target.draw(chunk.getGroundDetailsVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_DETAILS"));
 }
 

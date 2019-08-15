@@ -8,9 +8,6 @@ class GroundGrass : public Ground
         GroundGrass();
         ~GroundGrass();
 
-        inline uint32_t getTextureNumber(GroundInfo info) const override { return 3; }
-        inline uint8_t getTextureRotation(GroundInfo info) const override { return (info.getPos().x + info.getPos().y) % 4; }
-
         inline bool hasSurfaceDetails(GroundInfo info) const override { return true; }
         inline uint32_t getSurfaceDetailNumber(GroundInfo info) const override
         {

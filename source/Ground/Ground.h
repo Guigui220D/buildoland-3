@@ -14,13 +14,13 @@ class Ground
         static const TilesetHelper<16, 16, 0> tilesetHelper;
         static const TilesetHelper<16, 8, 0> tilesetHelperDetails;
 
-        Ground(const std::string name);
+        Ground(const std::string name, uint32_t default_texture);
         virtual ~Ground();
 
         inline const std::string getName() const { return name; }
 
-        virtual inline uint32_t getTextureNumber(GroundInfo info) const { return 0; }
-        virtual inline uint8_t getTextureRotation(GroundInfo info) const { return 0; }
+        virtual inline uint32_t getTextureNumber(GroundInfo info) const { return default_texture; }
+        virtual inline uint8_t getTextureRotation(GroundInfo info) const { return getRandomInt(info) % 4; }
 
         inline TextRect getTextureVertices(GroundInfo info) const { return tilesetHelper.getFourVertices(getTextureNumber(info), getTextureRotation(info)); }
 
@@ -30,8 +30,10 @@ class Ground
 
         inline TextRect getSurfaceDetailVertices(GroundInfo info) const { return tilesetHelperDetails.getFourVertices(getSurfaceDetailNumber(info), getSurfaceDetailRotation(info)); }
 
-        int getRandomInt(GroundInfo info) const;
+        static uint32_t getRandomInt(GroundInfo info);
 
     private:
         std::string name;
+
+        uint32_t default_texture;
 };

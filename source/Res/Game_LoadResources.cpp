@@ -13,6 +13,7 @@ void Game::loadResources()
 
     fail_count +=
         !resourceManager.loadTextureFromFile("Terrain/grounds.png", "GROUND_TEXTURES") +
+        !resourceManager.loadTextureFromFile("Terrain/grounds_tests.png", "GROUND_ROTATION_TEST") +
         !resourceManager.loadTextureFromFile("Terrain/ground_details.png", "GROUND_DETAILS");
 
     std::cout << "Resources loaded in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;

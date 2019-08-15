@@ -72,7 +72,7 @@ class Chunk
     private:
         bool ready = false;
 
-        Arr2D<unsigned short> blocks, grounds;
+        Arr2D<uint16_t> blocks, grounds;
         const sf::Vector2i pos;
 
         mutable sf::VertexArray ground_vertices, ground_detail_vertices, block_side_vertices, block_top_vertices;

@@ -26,7 +26,7 @@ class GameBlocks
          * @param id : the id of the block you want
          * @return The pointer to the block
          */
-        Block const * getBlockByID(unsigned short id) const;
+        Block const * getBlockByID(uint16_t id) const;
         /**
          * Gets a pointer to a block using its name
          * @param name : the name of the block
@@ -40,7 +40,7 @@ class GameBlocks
 
     private:
         std::vector<Block const *> blocks;
-        std::map<std::string, unsigned short> names;
+        std::map<std::string, uint16_t> names;
 
         /**
          * Adds a block to the block list and its name

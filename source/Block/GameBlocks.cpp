@@ -28,8 +28,8 @@ void GameBlocks::addBlock(Block const * block)
     //Fail if the name is already used
     assert(names.find(name) == names.end());
     //Fail if theres more blocks than the id system can allow (very unlikely)
-    assert(blocks.size() < std::numeric_limits<unsigned short>::max() - 1);
-    unsigned short id = (unsigned short)blocks.size();
+    assert(blocks.size() < std::numeric_limits<uint16_t>::max() - 1);
+    uint16_t id = (uint16_t)blocks.size();
 
     names.emplace(name, id);
     blocks.push_back(block);
@@ -52,7 +52,7 @@ Block const * GameBlocks::getBlockByName(const std::string name) const
     if (ptr != names.end())
         return AIR;
 
-    unsigned short id = ptr->second;
+    uint16_t id = ptr->second;
     assert(id < blocks.size());
 
     return blocks.at(id);

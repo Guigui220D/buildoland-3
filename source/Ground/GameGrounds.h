@@ -27,7 +27,7 @@ class GameGrounds
          * @param id : the id of the ground you want
          * @return The pointer to the ground
          */
-        Ground const * getGroundByID(unsigned short id) const;
+        Ground const * getGroundByID(uint16_t id) const;
         /**
          * Gets a pointer to a ground using its name
          * @param name : the name of the ground
@@ -42,7 +42,7 @@ class GameGrounds
 
     private:
         std::vector<Ground const *> grounds;
-        std::map<std::string, unsigned short> names;
+        std::map<std::string, uint16_t> names;
 
         /**
          * Adds a ground to the ground list and its name

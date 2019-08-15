@@ -29,8 +29,8 @@ void GameGrounds::addGround(Ground const * ground)
     //Fail if the name is already used
     assert(names.find(name) == names.end());
     //Fail if theres more grounds than the id system can allow (very unlikely)
-    assert(grounds.size() < std::numeric_limits<unsigned short>::max() - 1);
-    unsigned short id = (unsigned short)grounds.size();
+    assert(grounds.size() < std::numeric_limits<uint16_t>::max() - 1);
+    uint16_t id = (uint16_t)grounds.size();
 
     names.emplace(name, id);
     grounds.push_back(ground);
@@ -38,7 +38,7 @@ void GameGrounds::addGround(Ground const * ground)
     std::cout << "Added ground \"" << name << "\" with id " << id << std::endl;
 }
 
-Ground const * GameGrounds::getGroundByID(unsigned short id) const
+Ground const * GameGrounds::getGroundByID(uint16_t id) const
 {
     if (id >= grounds.size())
         return STONE;
@@ -53,7 +53,7 @@ Ground const * GameGrounds::getGroundByName(const std::string name) const
     if (ptr != names.end())
         return STONE;
 
-    unsigned short id = ptr->second;
+    uint16_t id = ptr->second;
     assert(id < grounds.size());
 
     return grounds.at(id);

@@ -10,6 +10,7 @@ class Game;
 
 class World
 {
+    friend class Chunk;
     public:
         World(Game* game);
         World(Game* game, int seed);
@@ -20,7 +21,6 @@ class World
          * @return A pointer to the game
          */
         inline Game* getGame() const { return game; }
-
         /**
          * Gets the seed of the world
          * @return The seed
@@ -47,6 +47,8 @@ class World
          * @return True if the chunk exists
          */
         inline bool isChunkLoaded(sf::Vector2i pos) const { return chunks.find(utils::combine(pos.x, pos.y)) != chunks.end(); }
+
+
 
     protected:
 

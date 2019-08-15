@@ -4,6 +4,7 @@
 #include <SFML/System.hpp>
 
 #include "../Utils/TilesetHelper.h"
+#include "../Utils/Utils.h"
 
 #include "GroundInfo.h"
 
@@ -28,6 +29,8 @@ class Ground
         virtual inline uint8_t getSurfaceDetailRotation(GroundInfo info) const { return 0; }
 
         inline TextRect getSurfaceDetailVertices(GroundInfo info) const { return tilesetHelperDetails.getFourVertices(getSurfaceDetailNumber(info), getSurfaceDetailRotation(info)); }
+
+        int getRandomInt(GroundInfo info) const;
 
     private:
         std::string name;

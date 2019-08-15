@@ -41,6 +41,12 @@ class World
          * @return The reference to the chunk
          */
         Chunk& getChunk(sf::Vector2i pos);
+        /**
+         * To check whether a chunk is loaded or not
+         * @param pos : the position of the chunk
+         * @return True if the chunk exists
+         */
+        inline bool isChunkLoaded(sf::Vector2i pos) const { return chunks.find(utils::combine(pos.x, pos.y)) != chunks.end(); }
 
     protected:
 

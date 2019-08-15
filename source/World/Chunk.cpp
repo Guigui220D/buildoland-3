@@ -38,12 +38,14 @@ void Chunk::regenerate()
     //Tmp
     for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
-                grounds.set(x, y, std::rand() % 4);
+                grounds.set(x, y, std::rand() % 3);
     vertices_ready = false;
 }
 
 void Chunk::generateVertices() const
 {
+    if (!ready)
+        return;
     generateGroundVertices();
     generateGroundDetailVertices();
     generateBlockSideVertices();

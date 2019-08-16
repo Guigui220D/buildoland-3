@@ -20,4 +20,7 @@ class GameState : public State
         sf::View my_view;
 
         void updateView();
+
+        sf::Clock anim_clock;
+        int anim_frame = 0;
 };

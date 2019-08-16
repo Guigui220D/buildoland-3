@@ -16,13 +16,35 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
     ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
-    ground_detail_vertices(sf::Quads),
     block_side_vertices(sf::Quads),
     block_top_vertices(sf::Quads),
     game(world->getGame()),
     world(world)
 {
-    regenerate();
+    for (int i = 0; i < 4; i++)
+    {
+        ground_detail_vertices.at(i).setPrimitiveType(sf::Quads);
+        ground_detail_vertices.at(i).clear();
+    }
+
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+            for (size_t y = 0; y < CHUNK_SIZE; y++)
+                {
+                    if (x >= 6)
+                    {
+                        grounds.set(x, y, 3);
+                    }
+                    else if (x >= 4)
+                    {
+                        grounds.set(x, y, 1);
+                    }
+                    else if (x >= 2)
+                    {
+                        grounds.set(x, y, 2);
+                    }
+                    else
+                        grounds.set(x, y, 0);
+                }
 
     ready = true;
 }
@@ -38,7 +60,7 @@ void Chunk::regenerate()
     //Tmp
     for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
-                grounds.set(x, y, std::rand() % 3);
+                grounds.set(x, y, std::rand() % 4);
     vertices_ready = false;
 }
 
@@ -84,23 +106,26 @@ void Chunk::generateGroundVertices() const
 
 void Chunk::generateGroundDetailVertices() const
 {
-    ground_detail_vertices.clear();
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
-        for (size_t y = 0; y < CHUNK_SIZE; y++)
-        {
-            sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
-            const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
+    for (int frame = 0; frame < 4; frame++)
+    {
+        ground_detail_vertices[frame].clear();
+        for (size_t x = 0; x < CHUNK_SIZE; x++)
+            for (size_t y = 0; y < CHUNK_SIZE; y++)
+            {
+                sf::Vector2i ground_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
+                const Ground* ground = game->getGroundsManager().getGroundByID(grounds.get(x, y));
 
-            GroundInfo gi(world, ground_pos);
+                GroundInfo gi(world, ground_pos);
 
-            if (!ground->hasSurfaceDetails(gi))
-                continue;
+                if (!ground->hasSurfaceDetails(gi))
+                    continue;
 
-            auto details = ground->getSurfaceDetails(gi);
+                auto details = ground->getSurfaceDetails(gi, frame);
 
-            for (size_t i = 0; i < details.getVertexCount(); i++)
-                ground_detail_vertices.append(details[i]);
-        }
+                for (size_t i = 0; i < details.getVertexCount(); i++)
+                    ground_detail_vertices[frame].append(details[i]);
+            }
+    }
 }
 
 void Chunk::generateBlockSideVertices() const

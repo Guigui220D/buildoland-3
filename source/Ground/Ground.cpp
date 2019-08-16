@@ -28,7 +28,7 @@ uint32_t Ground::getRandomInt(GroundInfo info)
     return XXH32(&pos, sizeof(pos), info.getWorld()->getSeed());
 }
 
-sf::VertexArray Ground::getSurfaceDetails(GroundInfo info) const
+sf::VertexArray Ground::getSurfaceDetails(GroundInfo info, int frame) const
 {
     sf::VertexArray bleedings(sf::Quads);
     addNeighborsBleeding(info, bleedings);

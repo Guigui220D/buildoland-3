@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <array>
 
 #include "../Utils/Arr2D.h"
 
@@ -48,8 +49,8 @@ class Chunk
          * The texture to be used with that vertex array is "GROUND_DETAILS"
          * @return The vertex array
          */
-        inline sf::VertexArray& getGroundDetailsVertexArray() const
-            { if (!vertices_ready) generateVertices(); return ground_detail_vertices; }
+        inline sf::VertexArray& getGroundDetailsVertexArray(int frame) const
+            { if (!vertices_ready) generateVertices(); return ground_detail_vertices.at(frame); }
         /**
          * Gets the vertex array to draw the sides of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
@@ -77,7 +78,9 @@ class Chunk
         Arr2D<uint16_t> blocks, grounds;
         const sf::Vector2i pos;
 
-        mutable sf::VertexArray ground_vertices, ground_detail_vertices, block_side_vertices, block_top_vertices;
+        mutable sf::VertexArray ground_vertices, block_side_vertices, block_top_vertices;
+        mutable std::array<sf::VertexArray, 4> ground_detail_vertices;
+
         mutable bool vertices_ready = false, ground_vertices_pos_ready = false;
 
         void generateVertices() const;

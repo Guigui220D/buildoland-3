@@ -24,7 +24,7 @@ class Ground
         inline Quad getTextureVertices(GroundInfo info) const { return tilesetHelper.getFourVertices(getTextureNumber(info), getTextureRotation(info)); }
 
         virtual inline bool hasSurfaceDetails(GroundInfo info) const { return true; }
-        virtual sf::VertexArray getSurfaceDetails(GroundInfo info) const;
+        virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const;
 
     protected:
         virtual inline uint32_t getTextureNumber(GroundInfo info) const { return default_texture; }

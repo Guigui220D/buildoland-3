@@ -16,6 +16,8 @@ This project needs SFML 2.5.1 : https://www.sfml-dev.org/
 
 This project uses nlohmann::json : https://github.com/nlohmann/json
 
+This project uses xxHash for c++ : https://github.com/Cyan4973/xxHash
+
 ### Previous versions
 
 Buildoland 1 : https://github.com/Guigui220D/OldBuildoland https://guiguii.itch.io/buildoland-2

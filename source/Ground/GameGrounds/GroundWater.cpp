@@ -1,7 +1,7 @@
 #include "GroundWater.h"
 
 GroundWater::GroundWater() :
-    Ground("water", 4)
+    Ground("water", 2)
 {
     //ctor
 }
@@ -15,26 +15,18 @@ sf::VertexArray GroundWater::getSurfaceDetails(GroundInfo info, int frame) const
 {
     sf::VertexArray va;
 
-    TextQuad detail;
+    int var = Ground::getRandomInt(info) % 3;
 
-    switch (frame)
-    {
-    case 0:
-        detail = utils::getSquare(Ground::tilesetHelperDetails.getFourVertices(10, 0), info.getPos());
-        break;
-    case 1:
-    case 3:
-        detail = utils::getSquare(Ground::tilesetHelperDetails.getFourVertices(11, 0), info.getPos());
-        break;
-    case 2:
-        detail = utils::getSquare(Ground::tilesetHelperDetails.getFourVertices(12, 0), info.getPos());
-        break;
-    }
+    TextQuad detail1, detail2;
 
-    for (int i = 0; i < 4; i++)
-            va.append(detail.verts[i]);
+    if (frame == 3)
+        frame = 1;
 
     addNeighborsBleeding(info, va);
+    detail1 = utils::getSquare(Ground::tilesetHelperDetails.getFourVertices(16 + frame, 0), info.getPos());
+
+    for (int i = 0; i < 4; i++)
+            va.append(detail1.verts[i]);
 
     return va;
 }

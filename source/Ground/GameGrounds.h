@@ -37,10 +37,10 @@ class GameGrounds
         Ground const * getGroundByName(const std::string name) const;
 
         //Put grounds here
+        GroundWater const * const WATER = new GroundWater();
         GroundStone const * const STONE = new GroundStone();
         GroundSand const * const SAND = new GroundSand();
         GroundGrass const * const GRASS = new GroundGrass();
-        GroundWater const * const WATER = new GroundWater();
 
     private:
         std::vector<Ground const *> grounds;

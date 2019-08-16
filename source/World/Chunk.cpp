@@ -30,20 +30,7 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
                 {
-                    if (x >= 6)
-                    {
-                        grounds.set(x, y, 3);
-                    }
-                    else if (x >= 4)
-                    {
-                        grounds.set(x, y, 1);
-                    }
-                    else if (x >= 2)
-                    {
-                        grounds.set(x, y, 2);
-                    }
-                    else
-                        grounds.set(x, y, 0);
+                    grounds.set(x, y, (x / 2) % 4);
                 }
 
     ready = true;

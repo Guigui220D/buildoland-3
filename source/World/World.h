@@ -57,10 +57,15 @@ class World
             return sf::Vector2i(block_pos.x - chunk_pos.x * Chunk::CHUNK_SIZE, block_pos.y - chunk_pos.y * Chunk::CHUNK_SIZE);
         }
 
+        inline const GameBlocks& getBlocksManager() const { return gameBlocksManager; }
+        inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
+
     protected:
 
     private:
         Game* game;
+        const GameBlocks& gameBlocksManager;
+        const GameGrounds& gameGroundsManager;
         int seed;
 
         std::map<int64_t, std::unique_ptr<Chunk>> chunks;

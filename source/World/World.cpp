@@ -1,11 +1,14 @@
 #include "World.h"
 
 #include "../Utils/Utils.h"
+#include "../Game.h"
 
 #include <iostream>
 
 World::World(Game* game) :
-    game(game)
+    game(game),
+    gameBlocksManager(game->getBlocksManager()),
+    gameGroundsManager(game->getGroundsManager())
 {
     std::srand(time(0));
     seed = std::rand() << 16 | std::rand();
@@ -13,6 +16,8 @@ World::World(Game* game) :
 
 World::World(Game* game, int seed) :
     game(game),
+    gameBlocksManager(game->getBlocksManager()),
+    gameGroundsManager(game->getGroundsManager()),
     seed(seed)
 {
 }

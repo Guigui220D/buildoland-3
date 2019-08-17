@@ -3,6 +3,8 @@
 #include <SFML/System.hpp>
 
 class World;
+class GameBlocks;
+class GameGrounds;
 
 class GroundInfo
 {
@@ -14,6 +16,9 @@ class GroundInfo
 
         inline World* getWorld() const { return world; }
         inline sf::Vector2i getPos() const { return ground_pos; }
+
+        const GameGrounds& getGroundsManager() const;
+        const GameBlocks& getBlocksManager() const;
 
     private:
         World* world;

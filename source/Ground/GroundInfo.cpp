@@ -6,8 +6,3 @@ const GameGrounds& GroundInfo::getGroundsManager() const
 {
     return world->getGroundsManager();
 }
-
-const GameBlocks& GroundInfo::getBlocksManager() const
-{
-    return world->getBlocksManager();
-}

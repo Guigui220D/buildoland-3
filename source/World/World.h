@@ -10,6 +10,9 @@ class Game;
 class Block;
 class Ground;
 
+class GameBlocks;
+class GameGrounds;
+
 class World
 {
     public:

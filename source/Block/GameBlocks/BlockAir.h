@@ -8,6 +8,9 @@ class BlockAir : public Block
         BlockAir();
         virtual ~BlockAir();
 
+        inline bool hasVolume(BlockInfo info) const override { return false; }
+        inline bool occults(BlockInfo info) const override { return false; }
+
     protected:
 
     private:

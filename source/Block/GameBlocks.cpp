@@ -37,6 +37,7 @@ void GameBlocks::addBlock(Block const * block)
 
     names.emplace(name, id);
     blocks.push_back(block);
+    block->id = id;
 
     std::cout << "Added block \"" << name << "\" with id " << id << std::endl;
 }

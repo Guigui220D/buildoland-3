@@ -54,6 +54,7 @@ void GameState::draw(sf::RenderTarget& target) const
 
     target.draw(chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
     target.draw(chunk.getGroundDetailsVertexArray(anim_frame), &getGame()->getResourceManager().getTexture("GROUND_DETAILS"));
+    target.draw(chunk.getBlockTopsVertexArray(), &getGame()->getResourceManager().getTexture("BLOCK_TEXTURES"));
 }
 
 void GameState::updateView()

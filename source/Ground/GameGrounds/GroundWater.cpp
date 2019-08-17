@@ -15,8 +15,6 @@ sf::VertexArray GroundWater::getSurfaceDetails(GroundInfo info, int frame) const
 {
     sf::VertexArray va;
 
-    int var = Ground::getRandomInt(info) % 3;
-
     TextQuad detail1, detail2;
 
     if (frame == 3)

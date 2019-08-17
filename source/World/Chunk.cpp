@@ -27,29 +27,7 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
         ground_detail_vertices.at(i).clear();
     }
 
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
-            for (size_t y = 0; y < CHUNK_SIZE; y++)
-                {
-                    switch (x)
-                    {
-                    case 0:
-                    case 1:
-                        grounds.set(x, y, GameGrounds::WATER->getId());
-                        break;
-                    case 2:
-                    case 3:
-                        grounds.set(x, y, GameGrounds::SAND->getId());
-                        break;
-                    case 4:
-                    case 5:
-                        grounds.set(x, y, GameGrounds::GRASS->getId());
-                        break;
-                    case 6:
-                    case 7:
-                        grounds.set(x, y, GameGrounds::STONE->getId());
-                        break;
-                    }
-                }
+    regenerate();
 
     ready = true;
 }
@@ -64,8 +42,11 @@ void Chunk::regenerate()
 {
     //Tmp
     for (size_t x = 0; x < CHUNK_SIZE; x++)
-            for (size_t y = 0; y < CHUNK_SIZE; y++)
-                grounds.set(x, y, std::rand() % 4);
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        {
+            grounds.set(x, y, std::rand() % 4);
+            blocks.set(x, y, !(std::rand() % 10));
+        }
     vertices_ready = false;
 }
 
@@ -140,6 +121,22 @@ void Chunk::generateBlockSideVertices() const
 
 void Chunk::generateBlockTopVertices() const
 {
+    block_top_vertices = sf::VertexArray(sf::Quads);
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        {
+            sf::Vector2i block_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
+            const Block* block = game->getBlocksManager().getBlockByID(blocks.get(x, y));
 
+            BlockInfo bi(world, block_pos);
+
+            if (block == GameBlocks::AIR)
+                continue;
+
+            TextQuad top = block->getTopVertices(bi);
+
+            for (size_t i = 0; i < 4; i++)
+                block_top_vertices.append(top.verts[i]);
+        }
 }
 

@@ -42,57 +42,14 @@ bool Ground::acceptsTextureBleedings(GroundInfo info, const Ground* other) const
 
 void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array) const
 {
-    //Up
+    for (int i = 0; i < 4; i++)
     {
-        sf::Vector2i opos = info.getPos() + sf::Vector2i(0, -1);
+        sf::Vector2i opos = info.getPos() + utils::getRelativeBlock(i);
         uint16_t oid = info.getWorld()->getGround(opos, false);
-        //TO CHANGE
-            const Ground* other_ground = info.getGroundsManager().getGroundByID(oid);
+        const Ground* other_ground = info.getGroundsManager().getGroundByID(oid);
         if (acceptsTextureBleedings(info, other_ground))
         {
-            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos)), 0);
-            TextQuad quad = utils::getSquare(tex, info.getPos());
-            for (int i = 0; i < 4; i++)
-                vertex_array.append(quad.verts[i]);
-        }
-    }
-    //Right
-    {
-        sf::Vector2i opos = info.getPos() + sf::Vector2i(1, 0);
-        uint16_t oid = info.getWorld()->getGround(opos, false);
-        //TO CHANGE
-            const Ground* other_ground = info.getGroundsManager().getGroundByID(oid);
-        if (acceptsTextureBleedings(info, other_ground))
-        {
-            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos)), 1);
-            TextQuad quad = utils::getSquare(tex, info.getPos());
-            for (int i = 0; i < 4; i++)
-                vertex_array.append(quad.verts[i]);
-        }
-    }
-    //Down
-    {
-        sf::Vector2i opos = info.getPos() + sf::Vector2i(0, 1);
-        uint16_t oid = info.getWorld()->getGround(opos, false);
-        //TO CHANGE
-            const Ground* other_ground = info.getGroundsManager().getGroundByID(oid);
-        if (acceptsTextureBleedings(info, other_ground))
-        {
-            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos)), 2);
-            TextQuad quad = utils::getSquare(tex, info.getPos());
-            for (int i = 0; i < 4; i++)
-                vertex_array.append(quad.verts[i]);
-        }
-    }
-    //Left
-    {
-        sf::Vector2i opos = info.getPos() + sf::Vector2i(-1, 0);
-        uint16_t oid = info.getWorld()->getGround(opos, false);
-        //TO CHANGE
-            const Ground* other_ground = info.getGroundsManager().getGroundByID(oid);
-        if (acceptsTextureBleedings(info, other_ground))
-        {
-            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos)), 3);
+            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos)), i);
             TextQuad quad = utils::getSquare(tex, info.getPos());
             for (int i = 0; i < 4; i++)
                 vertex_array.append(quad.verts[i]);

@@ -3,6 +3,12 @@
 #include <limits>
 #include <iostream>
 
+GroundWater  const * const   GameGrounds::WATER  = new GroundWater();
+GroundStone  const * const   GameGrounds::STONE  = new GroundStone();
+GroundSand   const * const   GameGrounds::SAND   = new GroundSand();
+GroundGrass  const * const   GameGrounds::GRASS  = new GroundGrass();
+
+
 GameGrounds::GameGrounds()
 {
     //ctor

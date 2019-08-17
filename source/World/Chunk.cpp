@@ -30,7 +30,25 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
                 {
-                    grounds.set(x, y, (x / 2) % 4);
+                    switch (x)
+                    {
+                    case 0:
+                    case 1:
+                        grounds.set(x, y, GameGrounds::WATER->getId());
+                        break;
+                    case 2:
+                    case 3:
+                        grounds.set(x, y, GameGrounds::SAND->getId());
+                        break;
+                    case 4:
+                    case 5:
+                        grounds.set(x, y, GameGrounds::GRASS->getId());
+                        break;
+                    case 6:
+                    case 7:
+                        grounds.set(x, y, GameGrounds::STONE->getId());
+                        break;
+                    }
                 }
 
     ready = true;

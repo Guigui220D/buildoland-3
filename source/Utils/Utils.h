@@ -22,4 +22,21 @@ class utils
             tq.verts[3] = sf::Vertex(sf::Vector2f(-.5f + pos.x, 0.5f + pos.y), tex.verts[3]);
             return tq;
         }
+
+        static sf::Vector2i getRelativeBlock(int direction)
+        {
+            switch (direction)
+            {
+            case 0:
+                return sf::Vector2i(0, -1);
+            case 1:
+                return sf::Vector2i(1, 0);
+            case 2:
+                return sf::Vector2i(0, 1);
+            case 3:
+                return sf::Vector2i(-1, 0);
+            default:
+                return sf::Vector2i(0, 0);
+            }
+        }
 };

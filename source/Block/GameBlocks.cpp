@@ -3,6 +3,10 @@
 #include <limits>
 #include <iostream>
 
+BlockAir    const * const GameBlocks::AIR   = new BlockAir();
+BlockStone  const * const GameBlocks::STONE = new BlockStone();
+
+
 GameBlocks::GameBlocks()
 {
     //ctor

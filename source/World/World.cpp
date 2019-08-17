@@ -91,3 +91,13 @@ uint16_t World::getGround(sf::Vector2i pos, bool load)
     }
     return getChunk(chunk_pos).grounds.get(getBlockPosInChunk(pos).x, getBlockPosInChunk(pos).y);
 }
+
+const Block* World::getBlockPtr(sf::Vector2i pos, bool load)
+{
+    return gameBlocksManager.getBlockByID(getBlock(pos, load));
+}
+
+const Ground* World::getGroundPtr(sf::Vector2i pos, bool load)
+{
+    return gameGroundsManager.getGroundByID(getGround(pos, load));
+}

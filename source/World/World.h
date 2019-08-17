@@ -7,6 +7,8 @@
 #include <memory>
 
 class Game;
+class Block;
+class Ground;
 
 class World
 {
@@ -47,17 +49,58 @@ class World
          */
         inline bool isChunkLoaded(sf::Vector2i pos) const { return chunks.find(utils::combine(pos.x, pos.y)) != chunks.end(); }
 
+        /**
+         * Gets a block id from its position
+         * @param pos : the position of the block
+         * @return The id of the block
+         */
         uint16_t getBlock(sf::Vector2i pos, bool load);
+        /**
+         * Gets a ground id from its position
+         * @param pos : the position of the ground
+         * @return The id of the ground
+         */
         uint16_t getGround(sf::Vector2i pos, bool load);
 
+        /**
+         * Gets a block from its position
+         * @param pos : the position of the block
+         * @return The pointer to the block
+         */
+        const Block* getBlockPtr(sf::Vector2i pos, bool load);
+        /**
+         * Gets a ground from its position
+         * @param pos : the position of the ground
+         * @return The pointer to the ground
+         */
+        const Ground* getGroundPtr(sf::Vector2i pos, bool load);
+
+        /**
+         * Calculate the position of the chunk that the block is in
+         * @param block_pos : the position of the block
+         * @return The position of the chunk
+         */
         static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos) { return sf::Vector2i(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE); }
+        /**
+         * Calculate the position of the block inside the chunk it is in
+         * @param block_pos : the position of the block
+         * @return The position of the block inside its chunk
+         */
         static inline sf::Vector2i getBlockPosInChunk(sf::Vector2i block_pos)
         {
             sf::Vector2i chunk_pos = getChunkPosFromBlockPos(block_pos);
             return sf::Vector2i(block_pos.x - chunk_pos.x * Chunk::CHUNK_SIZE, block_pos.y - chunk_pos.y * Chunk::CHUNK_SIZE);
         }
 
+        /**
+         * Get a reference to the blockManager of the game
+         * @return A reference to the blockManager
+         */
         inline const GameBlocks& getBlocksManager() const { return gameBlocksManager; }
+        /**
+         * Get a reference to the groundManager of the game
+         * @return A reference to the groundsManager
+         */
         inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
 
     protected:

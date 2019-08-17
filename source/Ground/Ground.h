@@ -76,7 +76,7 @@ class Ground
          * @param info : Info about the ground
          * @return The id of the texture to use
          */
-        virtual inline uint32_t getBleedingForNeighborGrounds(GroundInfo info) const { return 0; }
+        virtual inline uint32_t getBleedingForNeighborGrounds(GroundInfo info, int frame) const { return 0; }
 
         /**
          * To know if this ground will get the bleedings of an other specific ground
@@ -90,7 +90,7 @@ class Ground
          * @param info : Info about the ground
          * @param vertex_array : A reference to a vertex array to add the vertices on
          */
-        void addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array) const;
+        void addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array, int frame) const;
 
         /**
          * Get a random-looking int deterministically depending on the position of the ground and seed of the world

@@ -13,7 +13,7 @@ class GroundWater : public Ground
         virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const override;
 
         inline bool hasTextureBleedings() const override { return true; }
-        inline uint32_t getBleedingForNeighborGrounds(GroundInfo info) const override { return 5; }
+        inline uint32_t getBleedingForNeighborGrounds(GroundInfo info, int frame) const override { return 24 + frame; }
 
     protected:
 

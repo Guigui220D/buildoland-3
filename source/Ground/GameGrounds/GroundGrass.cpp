@@ -30,7 +30,7 @@ sf::VertexArray GroundGrass::getSurfaceDetails(GroundInfo info, int frame) const
             va.append(two_flowers.verts[i]);
     }
 
-    addNeighborsBleeding(info, va);
+    addNeighborsBleeding(info, va, frame);
 
     return va;
 }

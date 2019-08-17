@@ -31,7 +31,7 @@ uint32_t Ground::getRandomInt(GroundInfo info)
 sf::VertexArray Ground::getSurfaceDetails(GroundInfo info, int frame) const
 {
     sf::VertexArray bleedings(sf::Quads);
-    addNeighborsBleeding(info, bleedings);
+    addNeighborsBleeding(info, bleedings, frame);
     return bleedings;
 }
 
@@ -40,7 +40,7 @@ bool Ground::acceptsTextureBleedings(GroundInfo info, const Ground* other) const
     return (other == info.getWorld()->getGame()->getGroundsManager().WATER && other->getId() != getId()) || (other->hasTextureBleedings() && (other->getId() > id));
 }
 
-void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array) const
+void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array, int frame) const
 {
     for (int i = 0; i < 4; i++)
     {
@@ -48,7 +48,7 @@ void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array
         const Ground* other_ground = info.getWorld()->getGroundPtr(opos, false);
         if (acceptsTextureBleedings(info, other_ground))
         {
-            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos)), i);
+            Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos), frame), i);
             TextQuad quad = utils::getSquare(tex, info.getPos());
             for (int i = 0; i < 4; i++)
                 vertex_array.append(quad.verts[i]);

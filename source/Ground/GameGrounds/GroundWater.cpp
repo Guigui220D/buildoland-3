@@ -22,7 +22,7 @@ sf::VertexArray GroundWater::getSurfaceDetails(GroundInfo info, int frame) const
     if (frame == 3)
         frame = 1;
 
-    addNeighborsBleeding(info, va);
+    addNeighborsBleeding(info, va, frame);
     detail1 = utils::getSquare(Ground::tilesetHelperDetails.getFourVertices(16 + frame, 0), info.getPos());
 
     for (int i = 0; i < 4; i++)

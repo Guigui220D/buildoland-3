@@ -4,6 +4,10 @@
 
 #include "GameBlocks/BlockAir.h"
 #include "GameBlocks/BlockStone.h"
+#include "GameBlocks/BlockStoneBricks.h"
+#include "GameBlocks/BlockIron.h"
+#include "GameBlocks/BlockGold.h"
+#include "GameBlocks/BlockTree.h"
 
 #include <vector>
 #include <map>
@@ -35,8 +39,12 @@ class GameBlocks
         Block const * getBlockByName(const std::string name) const;
 
         //Put blocks here
-        static BlockAir     const * const AIR;
-        static BlockStone   const * const STONE;
+        static BlockAir         const * const AIR;
+        static BlockStone       const * const STONE;
+        static BlockStoneBricks const * const STONE_BRICKS;
+        static BlockIron        const * const IRON;
+        static BlockGold        const * const GOLD;
+        static BlockTree        const * const TREE;
 
     private:
         std::vector<Block const *> blocks;

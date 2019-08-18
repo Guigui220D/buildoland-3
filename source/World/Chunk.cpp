@@ -40,13 +40,20 @@ Chunk::~Chunk()
 //For testing
 void Chunk::regenerate()
 {
+    uint16_t tree_x, tree_y;
+    tree_x = std::rand() % 8;
+    tree_y = std::rand() % 8;
     //Tmp
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
             grounds.set(x, y, std::rand() % 4);
-            blocks.set(x, y, !(std::rand() % 10) && grounds.get(x, y) != GameGrounds::WATER->getId());
+            blocks.set(x, y, 0);
+            if (grounds.get(x, y) != GameGrounds::WATER->getId() && !(std::rand() % 5))
+                blocks.set(x, y, std::rand() % 5);
         }
+    blocks.set(tree_x, tree_y, GameBlocks::TREE->getId());
+    grounds.set(tree_x, tree_y, GameGrounds::GRASS->getId());
     vertices_ready = false;
 }
 
@@ -133,7 +140,7 @@ void Chunk::generateBlockSideVertices() const
             if (!block->hasVolume(bi))
                 continue;
 
-            if (block_down->occults(bi_down))
+            if (!block->alwaysVisible() && block_down->occults(bi_down))
                 continue;
 
             TextQuad side = block->getSideVertices(bi);

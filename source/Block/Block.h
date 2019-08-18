@@ -42,17 +42,22 @@ class Block
          */
         virtual inline bool occults(BlockInfo info) const { return true; }
         /**
+         * To know whether the block side should be rendered even if the block below it occults
+         * @return True if the block side is always visible
+         */
+        virtual inline bool alwaysVisible() const { return false; }
+        /**
          * Get four vertices ready to add to the chunk block tops vertex array
          * @param info : Info about the block
          * @return The 4 vertices describing the texture to use
          */
-        TextQuad getTopVertices(BlockInfo info) const;
+        virtual TextQuad getTopVertices(BlockInfo info) const;
         /**
          * Get four vertices ready to add to the chunk block sides vertex array
          * @param info : Info about the block
          * @return The 4 vertices describing the texture to use
          */
-        TextQuad getSideVertices(BlockInfo info) const;
+        virtual TextQuad getSideVertices(BlockInfo info) const;
 
     protected:
         /**

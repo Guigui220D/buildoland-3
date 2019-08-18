@@ -3,9 +3,12 @@
 #include <limits>
 #include <iostream>
 
-BlockAir    const * const GameBlocks::AIR   = new BlockAir();
-BlockStone  const * const GameBlocks::STONE = new BlockStone();
-
+BlockAir            const * const GameBlocks::AIR           = new BlockAir();
+BlockStone          const * const GameBlocks::STONE         = new BlockStone();
+BlockStoneBricks    const * const GameBlocks::STONE_BRICKS  = new BlockStoneBricks;
+BlockIron           const * const GameBlocks::IRON          = new BlockIron();
+BlockGold           const * const GameBlocks::GOLD          = new BlockGold();
+BlockTree           const * const GameBlocks::TREE          = new BlockTree();
 
 GameBlocks::GameBlocks()
 {
@@ -24,6 +27,10 @@ void GameBlocks::initBlocks()
     //Add all blocks here
     addBlock(AIR);
     addBlock(STONE);
+    addBlock(STONE_BRICKS);
+    addBlock(IRON);
+    addBlock(GOLD);
+    addBlock(TREE);
 }
 
 void GameBlocks::addBlock(Block const * block)

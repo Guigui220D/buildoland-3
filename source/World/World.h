@@ -16,6 +16,8 @@ class GameGrounds;
 class World
 {
     public:
+        //static int RENDER_DISTANCE = 3;
+
         World(Game* game);
         World(Game* game, int seed);
         virtual ~World();

@@ -24,20 +24,44 @@ bool GameState::handleEvent(sf::Event& event)
     switch (event.type)
     {
     case sf::Event::Resized:
+        {
+            sf::RenderWindow& window = getGame()->getWindow();
+            if (window.getSize().x < 200)
+                window.setSize(sf::Vector2u(200, window.getSize().y));
+            if (window.getSize().y < 200)
+                window.setSize(sf::Vector2u(window.getSize().x, 200));
+        }
         updateView();
-        return true;
+        break;
 
     case sf::Event::KeyPressed:
-        test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
-        return true;
+        if (event.key.code == sf::Keyboard::A)
+            test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
+        break;
+
+    case sf::Event::MouseWheelScrolled:
+        zoom += event.mouseWheelScroll.delta;
+        updateView();
+        break;
 
     default:
-        return true;
+        break;
     }
+    return true;
 }
 
 void GameState::update(float delta_time)
 {
+    //TEMPORARY
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+        my_view.setCenter(my_view.getCenter() + sf::Vector2f(-5.f * delta_time, 0));
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+        my_view.setCenter(my_view.getCenter() + sf::Vector2f(5.f * delta_time, 0));
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+        my_view.setCenter(my_view.getCenter() + sf::Vector2f(0, 5.f * delta_time));
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+        my_view.setCenter(my_view.getCenter() + sf::Vector2f(0, -5.f * delta_time));
+
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
         anim_clock.restart();
@@ -62,20 +86,16 @@ void GameState::updateView()
 {
     sf::RenderWindow& window = getGame()->getWindow();
     //Resize without deformation
-	if (window.getSize().x < 200)
-		window.setSize(sf::Vector2u(200, window.getSize().y));
-	if (window.getSize().y < 200)
-		window.setSize(sf::Vector2u(window.getSize().x, 200));
 	if (window.getSize().y > window.getSize().x)
 	{
 		float ratio = (float)window.getSize().y / window.getSize().x;
-		float y_size = ratio * 10;
-		my_view.setSize(sf::Vector2f(10, y_size));
+		float y_size = ratio * zoom;
+		my_view.setSize(sf::Vector2f(zoom, y_size));
 	}
 	else
 	{
 		float ratio = (float)window.getSize().x / window.getSize().y;
-		float x_size = ratio * 10;
-		my_view.setSize(sf::Vector2f(x_size, 10));
+		float x_size = ratio * zoom;
+		my_view.setSize(sf::Vector2f(x_size, zoom));
 	}
 }

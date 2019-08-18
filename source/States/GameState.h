@@ -21,6 +21,8 @@ class GameState : public State
 
         void updateView();
 
+        float zoom = 10.f;
+
         sf::Clock anim_clock;
         int anim_frame = 0;
 };

@@ -47,6 +47,12 @@ class Block
          * @return The 4 vertices describing the texture to use
          */
         TextQuad getTopVertices(BlockInfo info) const;
+        /**
+         * Get four vertices ready to add to the chunk block sides vertex array
+         * @param info : Info about the block
+         * @return The 4 vertices describing the texture to use
+         */
+        TextQuad getSideVertices(BlockInfo info) const;
 
     protected:
         /**
@@ -55,6 +61,17 @@ class Block
          * @return The id to use in the tileset
          */
         virtual inline uint32_t getTopTextureNumber(BlockInfo info) const { return default_texture; }
+        /**
+         * Get the id of the texture to use for the side of the block, in the tileset
+         * @param info : Info about the block
+         * @return The id to use in the tileset
+         */
+        virtual inline uint32_t getSideTextureNumber(BlockInfo info) const { return default_texture; }
+        /**
+         * To know whether the side should be darkened or not
+         * @return True if the side should be darkened
+         */
+        virtual inline bool darkenSide() const { return true; }
 
     private:
         std::string name;

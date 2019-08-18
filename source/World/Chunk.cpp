@@ -45,7 +45,7 @@ void Chunk::regenerate()
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
             grounds.set(x, y, std::rand() % 4);
-            blocks.set(x, y, !(std::rand() % 10));
+            blocks.set(x, y, !(std::rand() % 10) && grounds.get(x, y) != GameGrounds::WATER->getId());
         }
     vertices_ready = false;
 }
@@ -116,12 +116,31 @@ void Chunk::generateGroundDetailVertices() const
 
 void Chunk::generateBlockSideVertices() const
 {
+    block_side_vertices.clear();
+    for (size_t x = 0; x < CHUNK_SIZE; x++)
+        for (size_t y = 0; y < CHUNK_SIZE; y++)
+        {
+            sf::Vector2i block_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
+            const Block* block = game->getBlocksManager().getBlockByID(blocks.get(x, y));
 
+            BlockInfo bi(world, block_pos);
+
+            if (block == GameBlocks::AIR)
+                continue;
+
+            if (!block->hasVolume(bi))
+                break;
+
+            TextQuad side = block->getSideVertices(bi);
+
+            for (size_t i = 0; i < 4; i++)
+                block_side_vertices.append(side.verts[i]);
+        }
 }
 
 void Chunk::generateBlockTopVertices() const
 {
-    block_top_vertices = sf::VertexArray(sf::Quads);
+    block_top_vertices.clear();
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {

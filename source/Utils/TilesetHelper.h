@@ -22,7 +22,7 @@ TilesetHelper<TextureSize, TilesetWidth, MarginSize>::TilesetHelper()
 template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>
 sf::FloatRect TilesetHelper<TextureSize, TilesetWidth, MarginSize>::getFloatRect(unsigned int number) const
 {
-    return sf::FloatRect((number % TilesetWidth) * TextureSize, (number / TilesetWidth) * TextureSize, TextureSize, TextureSize);
+    return sf::FloatRect((number % TilesetWidth) * (TextureSize + MarginSize * 2) + MarginSize, (number / TilesetWidth) * (TextureSize + MarginSize * 2) + MarginSize, TextureSize, TextureSize);
 }
 
 template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>

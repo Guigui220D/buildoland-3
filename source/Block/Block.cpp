@@ -1,6 +1,6 @@
 #include "Block.h"
 
-const TilesetHelper<16, 16, 0> Block::tilesetHelper;
+const TilesetHelper<16, 16, 1> Block::tilesetHelper;
 
 Block::Block(const std::string name,uint32_t default_texture) :
     name(name),

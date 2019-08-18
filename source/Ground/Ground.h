@@ -12,8 +12,8 @@ class Ground
 {
     friend class GameGrounds;
     public:
-        static const TilesetHelper<16, 16, 0> tilesetHelper;
-        static const TilesetHelper<16, 8, 0> tilesetHelperDetails;
+        static const TilesetHelper<16, 16, 1> tilesetHelper;
+        static const TilesetHelper<16, 8, 1> tilesetHelperDetails;
 
         Ground(const std::string name, uint32_t default_texture);
         virtual ~Ground();

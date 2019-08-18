@@ -122,14 +122,19 @@ void Chunk::generateBlockSideVertices() const
         {
             sf::Vector2i block_pos(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE);
             const Block* block = game->getBlocksManager().getBlockByID(blocks.get(x, y));
+            const Block* block_down = world->getBlockPtr(block_pos + sf::Vector2i(0, 1), false);
 
             BlockInfo bi(world, block_pos);
+            BlockInfo bi_down(world, block_pos + sf::Vector2i(0, 1));
 
             if (block == GameBlocks::AIR)
                 continue;
 
             if (!block->hasVolume(bi))
-                break;
+                continue;
+
+            if (block_down->occults(bi_down))
+                continue;
 
             TextQuad side = block->getSideVertices(bi);
 

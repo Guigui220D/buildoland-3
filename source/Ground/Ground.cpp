@@ -6,8 +6,8 @@
 #include "../Utils/XXHash.hpp"
 #include "../Utils/XXHash_bis.hpp"
 
-const TilesetHelper<16, 16, 0> Ground::tilesetHelper;
-const TilesetHelper<16, 8, 0> Ground::tilesetHelperDetails;
+const TilesetHelper<16, 16, 1> Ground::tilesetHelper;
+const TilesetHelper<16, 8, 1> Ground::tilesetHelperDetails;
 
 Ground::Ground(const std::string name, uint32_t default_texture) :
     name(name),

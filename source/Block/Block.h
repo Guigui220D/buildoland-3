@@ -11,7 +11,7 @@ class Block
 {
     friend class GameBlocks;
     public:
-        static const TilesetHelper<16, 16, 0> tilesetHelper;
+        static const TilesetHelper<16, 16, 1> tilesetHelper;
 
         Block(const std::string name, uint32_t default_texture);
         virtual ~Block();

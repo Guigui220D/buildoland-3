@@ -39,12 +39,12 @@ class GameBlocks
         Block const * getBlockByName(const std::string name) const;
 
         //Put blocks here
-        static BlockAir         const * const AIR;
-        static BlockStone       const * const STONE;
-        static BlockStoneBricks const * const STONE_BRICKS;
-        static BlockIron        const * const IRON;
-        static BlockGold        const * const GOLD;
-        static BlockTree        const * const TREE;
+        static Block const * const AIR;
+        static Block const * const STONE;
+        static Block const * const STONE_BRICKS;
+        static Block const * const IRON;
+        static Block const * const GOLD;
+        static Block const * const TREE;
 
     private:
         std::vector<Block const *> blocks;

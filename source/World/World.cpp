@@ -61,9 +61,10 @@ Chunk& World::getChunk(sf::Vector2i pos)
     return *chunk_ptr->second;
 }
 
-uint16_t World::getBlock(sf::Vector2i pos, bool load)
+uint16_t World::getBlockId(sf::Vector2i pos, bool load)
 {
     sf::Vector2i chunk_pos = sf::Vector2i(pos.x / Chunk::CHUNK_SIZE, pos.y / Chunk::CHUNK_SIZE);
+    sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
     {
         if (load)
@@ -72,17 +73,18 @@ uint16_t World::getBlock(sf::Vector2i pos, bool load)
             std::cout << "New chunk generated : " << chunk_pos.x << "; " << chunk_pos.y << std::endl;
             Chunk* new_chunk = new Chunk(this, chunk_pos);
             chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
-            return new_chunk->blocks.get(getBlockPosInChunk(pos).x, getBlockPosInChunk(pos).y);
+            return new_chunk->getBlockId(bp.x, bp.y);
         }
         else
             return 0;
     }
-    return getChunk(chunk_pos).blocks.get(getBlockPosInChunk(pos).x, getBlockPosInChunk(pos).y);
+    return getChunk(chunk_pos).getBlockId(bp.x, bp.y);
 }
 
-uint16_t World::getGround(sf::Vector2i pos, bool load)
+uint16_t World::getGroundId(sf::Vector2i pos, bool load)
 {
     sf::Vector2i chunk_pos = sf::Vector2i(pos.x / Chunk::CHUNK_SIZE, pos.y / Chunk::CHUNK_SIZE);
+    sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
     {
         if (load)
@@ -91,20 +93,20 @@ uint16_t World::getGround(sf::Vector2i pos, bool load)
             std::cout << "New chunk generated : " << chunk_pos.x << "; " << chunk_pos.y << std::endl;
             Chunk* new_chunk = new Chunk(this, chunk_pos);
             chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
-            return new_chunk->grounds.get(getBlockPosInChunk(pos).x, getBlockPosInChunk(pos).y);
+            return new_chunk->getGroundId(bp.x, bp.y);
         }
         else
             return 0;
     }
-    return getChunk(chunk_pos).grounds.get(getBlockPosInChunk(pos).x, getBlockPosInChunk(pos).y);
+    return getChunk(chunk_pos).getGroundId(bp.x, bp.y);
 }
 
-const Block* World::getBlockPtr(sf::Vector2i pos, bool load)
+const Block* World::getBlock(sf::Vector2i pos, bool load)
 {
-    return gameBlocksManager.getBlockByID(getBlock(pos, load));
+    return gameBlocksManager.getBlockByID(getBlockId(pos, load));
 }
 
-const Ground* World::getGroundPtr(sf::Vector2i pos, bool load)
+const Ground* World::getGround(sf::Vector2i pos, bool load)
 {
-    return gameGroundsManager.getGroundByID(getGround(pos, load));
+    return gameGroundsManager.getGroundByID(getGroundId(pos, load));
 }

@@ -65,26 +65,26 @@ class World
          * @param pos : the position of the block
          * @return The id of the block
          */
-        uint16_t getBlock(sf::Vector2i pos, bool load);
+        uint16_t getBlockId(sf::Vector2i pos, bool load);
         /**
          * Gets a ground id from its position
          * @param pos : the position of the ground
          * @return The id of the ground
          */
-        uint16_t getGround(sf::Vector2i pos, bool load);
+        uint16_t getGroundId(sf::Vector2i pos, bool load);
 
         /**
          * Gets a block from its position
          * @param pos : the position of the block
          * @return The pointer to the block
          */
-        const Block* getBlockPtr(sf::Vector2i pos, bool load);
+        const Block* getBlock(sf::Vector2i pos, bool load);
         /**
          * Gets a ground from its position
          * @param pos : the position of the ground
          * @return The pointer to the ground
          */
-        const Ground* getGroundPtr(sf::Vector2i pos, bool load);
+        const Ground* getGround(sf::Vector2i pos, bool load);
 
         /**
          * Calculate the position of the chunk that the block is in

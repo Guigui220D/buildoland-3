@@ -3,12 +3,12 @@
 #include <limits>
 #include <iostream>
 
-BlockAir            const * const GameBlocks::AIR           = new BlockAir();
-BlockStone          const * const GameBlocks::STONE         = new BlockStone();
-BlockStoneBricks    const * const GameBlocks::STONE_BRICKS  = new BlockStoneBricks;
-BlockIron           const * const GameBlocks::IRON          = new BlockIron();
-BlockGold           const * const GameBlocks::GOLD          = new BlockGold();
-BlockTree           const * const GameBlocks::TREE          = new BlockTree();
+Block const * const GameBlocks::AIR             = new BlockAir();
+Block const * const GameBlocks::STONE           = new BlockStone();
+Block const * const GameBlocks::STONE_BRICKS    = new BlockStoneBricks;
+Block const * const GameBlocks::IRON            = new BlockIron();
+Block const * const GameBlocks::GOLD            = new BlockGold();
+Block const * const GameBlocks::TREE            = new BlockTree();
 
 GameBlocks::GameBlocks()
 {

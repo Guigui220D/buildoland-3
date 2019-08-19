@@ -3,10 +3,10 @@
 #include <limits>
 #include <iostream>
 
-GroundWater  const * const   GameGrounds::WATER  = new GroundWater();
-GroundStone  const * const   GameGrounds::STONE  = new GroundStone();
-GroundSand   const * const   GameGrounds::SAND   = new GroundSand();
-GroundGrass  const * const   GameGrounds::GRASS  = new GroundGrass();
+Ground const * const GameGrounds::WATER = new GroundWater();
+Ground const * const GameGrounds::STONE = new GroundStone();
+Ground const * const GameGrounds::SAND  = new GroundSand();
+Ground const * const GameGrounds::GRASS = new GroundGrass();
 
 
 GameGrounds::GameGrounds()

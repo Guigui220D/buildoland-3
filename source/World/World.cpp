@@ -5,6 +5,8 @@
 
 #include <iostream>
 
+int unsigned World::RENDER_DISTANCE = 3;
+
 World::World(Game* game) :
     game(game),
     gameBlocksManager(game->getBlocksManager()),
@@ -25,6 +27,11 @@ World::World(Game* game, int seed) :
 World::~World()
 {
     //dtor
+}
+
+void World::updateLoadedChunk(sf::Vector2f center)
+{
+
 }
 
 const Chunk& World::getChunkConst(sf::Vector2i pos) const

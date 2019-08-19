@@ -25,4 +25,8 @@ class GameState : public State
 
         sf::Clock anim_clock;
         int anim_frame = 0;
+
+        sf::Texture const * const block_textures;
+        sf::Texture const * const ground_textures;
+        sf::Texture const * const ground_details_textures;
 };

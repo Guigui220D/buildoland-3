@@ -16,7 +16,7 @@ class GameGrounds;
 class World
 {
     public:
-        //static int RENDER_DISTANCE = 3;
+        static unsigned int RENDER_DISTANCE;
 
         World(Game* game);
         World(Game* game, int seed);
@@ -32,6 +32,12 @@ class World
          * @return The seed
          */
         inline int getSeed() const { return seed; }
+
+        /**
+         * Loads close chunks and unload other chunks
+         * @param center : the position of the player / the camera
+         */
+        void updateLoadedChunk(sf::Vector2f center);
 
         /**
          * Gets a const reference to a chunk with its position
@@ -107,6 +113,12 @@ class World
          * @return A reference to the groundsManager
          */
         inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
+
+        inline size_t getChunksCount() const { return chunks.size(); };
+        inline std::map<int64_t, std::unique_ptr<Chunk>>::const_iterator
+            getChunksBegin() const { return chunks.cbegin(); }
+        inline std::map<int64_t, std::unique_ptr<Chunk>>::const_iterator
+            getChunksEnd() const { return chunks.cend(); }
 
     protected:
 

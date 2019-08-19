@@ -9,7 +9,7 @@
 //TMP
 #include <cstdlib>
 
-const size_t Chunk::CHUNK_SIZE = 8;
+const size_t Chunk::CHUNK_SIZE = 16;
 
 Chunk::Chunk(World* world, sf::Vector2i pos) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
@@ -59,6 +59,7 @@ void Chunk::regenerate()
 
 void Chunk::generateVertices() const
 {
+    sf::Clock clk;
     if (!ready)
         return;
     generateGroundVertices();
@@ -66,6 +67,7 @@ void Chunk::generateVertices() const
     generateBlockSideVertices();
     generateBlockTopVertices();
     vertices_ready = true;
+    std::cout << "Chunk vertex array render took " << clk.getElapsedTime().asSeconds() << "s" << std::endl;
 }
 
 void Chunk::generateGroundVertices() const

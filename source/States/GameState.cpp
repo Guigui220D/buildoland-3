@@ -5,13 +5,18 @@
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
     test_world(game),
-    my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f))
+    my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
+    block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
+    ground_textures(&getGame()->getResourceManager().getTexture("GROUND_TEXTURES")),
+    ground_details_textures(&getGame()->getResourceManager().getTexture("GROUND_DETAILS"))
 {
     update_transparent = false;
     draw_transparent = false;
     updateView();
 
+
     test_world.getChunk(sf::Vector2i(0, 0));
+    test_world.getChunk(sf::Vector2i(1, 0));
 }
 
 GameState::~GameState()
@@ -67,19 +72,21 @@ void GameState::update(float delta_time)
         anim_clock.restart();
         anim_frame = (anim_frame + 1) % 4;
     }
+
+    test_world.updateLoadedChunk(my_view.getCenter());
 }
 
 void GameState::draw(sf::RenderTarget& target) const
 {
     target.setView(my_view);
 
-    //TEST
-    const Chunk& chunk = test_world.getChunkConst(sf::Vector2i(0, 0));
-
-    target.draw(chunk.getGroundVertexArray(), &getGame()->getResourceManager().getTexture("GROUND_TEXTURES"));
-    target.draw(chunk.getGroundDetailsVertexArray(anim_frame), &getGame()->getResourceManager().getTexture("GROUND_DETAILS"));
-    target.draw(chunk.getBlockSidesVertexArray(), &getGame()->getResourceManager().getTexture("BLOCK_TEXTURES"));
-    target.draw(chunk.getBlockTopsVertexArray(), &getGame()->getResourceManager().getTexture("BLOCK_TEXTURES"));
+    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+    {
+        target.draw(i->second->getGroundVertexArray(), ground_textures);
+        target.draw(i->second->getGroundDetailsVertexArray(anim_frame), ground_details_textures);
+        target.draw(i->second->getBlockSidesVertexArray(), block_textures);
+        target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+    }
 }
 
 void GameState::updateView()

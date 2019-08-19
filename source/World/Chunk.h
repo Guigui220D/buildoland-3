@@ -72,6 +72,8 @@ class Chunk
          */
         void regenerate();
 
+        inline sf::Vector2f getCenter() const { return sf::Vector2f(.5f * CHUNK_SIZE - .5f, .5f * CHUNK_SIZE - .5f); }
+
     private:
         bool ready = false;
 

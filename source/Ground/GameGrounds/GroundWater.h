@@ -8,8 +8,6 @@ class GroundWater : public Ground
         GroundWater();
         ~GroundWater();
 
-        inline uint8_t getTextureRotation(GroundInfo info) const override { return 0; }
-
         virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const override;
 
         inline bool hasTextureBleedings() const override { return true; }

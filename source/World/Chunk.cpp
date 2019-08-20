@@ -40,6 +40,8 @@ Chunk::~Chunk()
 //For testing
 void Chunk::regenerate()
 {
+    vertices_ready = false;
+
     uint16_t tree_x, tree_y;
     tree_x = std::rand() % 8;
     tree_y = std::rand() % 8;
@@ -54,7 +56,13 @@ void Chunk::regenerate()
         }
     setBlock(tree_x, tree_y, GameBlocks::TREE);
     setGround(tree_x, tree_y, GameGrounds::GRASS);
-    vertices_ready = false;
+
+    for (int i = 0; i < 4; i++)
+    {
+        sf::Vector2i chunk = pos + utils::getRelativeBlock(i);
+        if (world->isChunkLoaded(chunk))
+            world->getChunk(chunk).mustRedoVertexArrays();
+    }
 }
 
 const Block* Chunk::getBlock(int x, int y) const

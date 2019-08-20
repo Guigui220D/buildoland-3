@@ -105,15 +105,31 @@ class Chunk
         inline sf::VertexArray& getBlockTopsVertexArray() const
             { if (!vertices_ready) generateVertices(); return block_top_vertices; }
 
+        inline void mustRedoVertexArrays() const { vertices_ready = false; }
+
         //For testing
         /**
          * THIS IS A TESTING FUNCTION
          */
         void regenerate();
 
+        /**
+         * Gets the center of this chunk
+         * @return The center of this chunk
+         */
         inline sf::Vector2f getCenter() const { return sf::Vector2f(.5f * CHUNK_SIZE - .5f, .5f * CHUNK_SIZE - .5f); }
 
+        /**
+         * Gets the position of a block of this chunk in the world
+         * @param block_pos : The coordinates of the block in this chunk
+         * @return The global position
+         */
         inline sf::Vector2i getBlockPosInWorld(sf::Vector2i block_pos) const { return sf::Vector2i(block_pos.x + pos.x * CHUNK_SIZE, block_pos.y + pos.y * CHUNK_SIZE); }
+        /**
+         * Gets the position of a block of this chunk in the world
+         * @param x, y : The coordinates of the block in this chunk
+         * @return The global position
+         */
         inline sf::Vector2i getBlockPosInWorld(int x, int y) const { return sf::Vector2i(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE); }
 
     private:

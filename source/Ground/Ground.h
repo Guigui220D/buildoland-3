@@ -97,7 +97,7 @@ class Ground
          * @param info : Info about the ground, for position and seed
          * @return The pseudo-random int
          */
-        static uint32_t getRandomInt(GroundInfo info);
+        static uint32_t getRandomInt(GroundInfo info, int add = 0);
 
     private:
         std::string name;

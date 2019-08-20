@@ -21,11 +21,11 @@ Ground::~Ground()
     //dtor
 }
 
-uint32_t Ground::getRandomInt(GroundInfo info)
+uint32_t Ground::getRandomInt(GroundInfo info, int add)
 {
     //Pseudo random from seed and ground position
     sf::Vector2i pos = info.getPos();
-    return XXH32(&pos, sizeof(pos), info.getWorld()->getSeed());
+    return XXH32(&pos, sizeof(pos), info.getWorld()->getSeed() + add);
 }
 
 sf::VertexArray Ground::getSurfaceDetails(GroundInfo info, int frame) const

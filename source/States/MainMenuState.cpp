@@ -37,8 +37,8 @@ void MainMenuState::update(float delta_time)
 {
     if (test_button_1.hasBeenClicked())
     {
-        getGame()->addStateOnTop(new GameState(getGame(), 0));
-        must_be_destroyed = true;
+        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));
+        //must_be_destroyed = true;
     }
 }
 

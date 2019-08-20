@@ -50,7 +50,7 @@ void GuiElement::update(float delta_time) {}
 
 void GuiElement::calculateView(sf::Vector2u window_size)
 {
-    sf::View view(sf::FloatRect(0, 0, ratio, 1));
+    sf::View view(sf::FloatRect(0, 0, ratio, 1.f));
     sf::FloatRect zone_rect(zone.left * window_size.x, zone.top * window_size.y, zone.width * window_size.x, zone.height * window_size.y);
     float zone_ratio = zone_rect.width / zone_rect.height;
 

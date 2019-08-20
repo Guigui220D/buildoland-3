@@ -13,6 +13,7 @@ LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game* gam
     loading_icon(game)
 {
     update_transparent = false;
+    draw_transparent = true;
 
     background.setFillColor(sf::Color::Black);
     background.setSize(sf::Vector2f(1.f, 1.f));
@@ -30,9 +31,10 @@ template <class T>
 void LoadingScreenState<T>::load()
 {
     sf::Clock clk;
-    task();
+    beforeInitTask();
     state_being_loaded->init();
-    //while (clk.getElapsedTime().asSeconds() < .2f); //Lol, making fake loading time
+    afterInitTask();
+    //while (clk.getElapsedTime().asSeconds() < 2.f); //Lol, making fake loading time
     done_mutex.lock();
     done = true;
     done_mutex.unlock();
@@ -40,10 +42,10 @@ void LoadingScreenState<T>::load()
 }
 
 template <class T>
-void LoadingScreenState<T>::task()
-{
+void LoadingScreenState<T>::beforeInitTask() {}
 
-}
+template <class T>
+void LoadingScreenState<T>::afterInitTask() {}
 
 template <class T>
 bool LoadingScreenState<T>::handleEvent(sf::Event& event)
@@ -62,7 +64,7 @@ void LoadingScreenState<T>::update(float delta_time)
             std::cout << "Loading took " << working_time.getElapsedTime().asSeconds() << " seconds." << std::endl;
             working = false;
             fade_clock.restart();
-            getGame()->addStateUnderTop(state_being_loaded);
+            getGame()->addStateUnderTop(state_being_loaded, false);
         }
         fade -= fade_out ? fade_clock.restart().asMilliseconds() : 255;
         if (fade <= 0)
@@ -89,7 +91,11 @@ void LoadingScreenState<T>::update(float delta_time)
     background.setFillColor(sf::Color(0, 0, 0, fade));
     if (working)
         loading_icon.update(delta_time);
+    updateMore(delta_time);
 }
+
+template <class T>
+void LoadingScreenState<T>::updateMore(float delta_time) {}
 
 template <class T>
 void LoadingScreenState<T>::draw(sf::RenderTarget& target) const
@@ -98,6 +104,10 @@ void LoadingScreenState<T>::draw(sf::RenderTarget& target) const
     target.draw(background);
     if(working && working_time.getElapsedTime().asSeconds() > .3f)
         loading_icon.draw(target);
+    drawMore(target);
     //loading_icon.debugDraw(target);
 }
+
+template <class T>
+void LoadingScreenState<T>::drawMore(sf::RenderTarget& target) const {}
 

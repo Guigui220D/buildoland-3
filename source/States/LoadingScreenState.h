@@ -20,9 +20,14 @@ class LoadingScreenState : public State
     protected:
         /**
          * The task to be done before initializing the next state
-         * Should be overriden
+         * Should be overridden
          */
-        virtual void task();
+        virtual void beforeInitTask();
+        /**
+         * The task to be done after initializing the next state
+         * Should be overridden
+         */
+        virtual void afterInitTask();
 
         State* state_being_loaded;
         /**
@@ -43,6 +48,21 @@ class LoadingScreenState : public State
         sf::View view;
         sf::RectangleShape background;
         GuiLoadingIcon loading_icon;
+
+    protected:
+        inline uint8_t getFade() { return fade; };
+
+    private:
+        /**
+         * To draw more on child classes without breaking this class's draw
+         * @param target : the render target to draw on
+         */
+        virtual void drawMore(sf::RenderTarget& target) const;
+        /**
+         * To update more on child classes without breaking this class's update function
+         * @param delta_time : the time elapsed
+         */
+        virtual void updateMore(float delta_time);
 };
 
 #include "LoadingScreenState_Impl.h"

@@ -41,14 +41,14 @@ class Game
          * The pointer will be then managed and deleted automatically
          * @param state : the pointer to the state
          */
-        void addStateOnTop(State* state, bool init = false);
+        void addStateOnTop(State* state, bool init = true);
         /**
          * Adds a state to the states stack using its pointer just under the top
          * The pointer will be then managed and deleted automatically
          * Used by LoadingScreenState
          * @param state : the pointer to the state
          */
-        void addStateUnderTop(State* state, bool init = false);
+        void addStateUnderTop(State* state, bool init = true);
 
         /**
          * Gets a reference to the window this game owns
@@ -77,8 +77,7 @@ class Game
         inline AudioManager& getAudioManager() { return audioManager; }
 
     private:
-        template<class T>
-        friend class LoadingScreenGameInitState;
+        friend class TitleScreenState;
 
         sf::RenderWindow window;
 

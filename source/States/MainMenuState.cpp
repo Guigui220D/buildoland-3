@@ -1,7 +1,8 @@
 #include "MainMenuState.h"
 
 #include "../Game.h"
-#include "States.h"
+#include "LoadingScreenState.h"
+#include "GameState.h"
 
 MainMenuState::MainMenuState(Game* game, unsigned int id) :
     State(game, id),

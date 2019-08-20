@@ -1,6 +1,7 @@
 #pragma once
 
-#include "State.h"
+#include "GameState.h"
+#include "LoadingScreenState.h"
 #include "../Gui/GuiButton.h"
 
 class MainMenuState : public State

@@ -3,7 +3,7 @@
 #include <iostream>
 #include <assert.h>
 
-#include "States/States.h"
+#include "States/TitleScreenState.h"
 
 Game::Game() :
     audioManager(resourceManager)
@@ -24,7 +24,7 @@ Game::~Game()
 
 int Game::init()
 {
-    addStateOnTop(new LoadingScreenGameInitState<MainMenuState>(false, true, this, 0));
+    addStateOnTop(new TitleScreenState(this, 0));
     return 0;
 }
 

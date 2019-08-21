@@ -1,3 +1,5 @@
+![Title image](https://github.com/Guigui220D/super-duper-octo-enigma/blob/master/logo2.png)
+
 # Buildoland 3
 
 After Buildoland 1, and Buildoland 2, games that were both discontinued for not really valid reasons, i'm doing Buildoland 3!

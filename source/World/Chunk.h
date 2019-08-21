@@ -42,14 +42,19 @@ class Chunk
          * @param x y : the position of the block
          * @return The id of the block
          */
-        inline uint16_t getBlockId(int x, int y) const { return blocks.get(x, y); }
+        inline uint16_t getBlockId(int x, int y) const {
+                assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);
+                return blocks.get(x, y);
+            }
         /**
          * Gets a ground id from its position
          * @param x y : the position of the ground
          * @return The id of the ground
          */
-        inline uint16_t getGroundId(int x, int y) const { return grounds.get(x, y); }
-
+        inline uint16_t getGroundId(int x, int y) const {
+                assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);
+                return grounds.get(x, y);
+            }
         /**
          * Gets a block from its position
          * @param x y : the position of the block
@@ -64,17 +69,79 @@ class Chunk
         const Ground* getGround(int x, int y) const;
 
         /**
+         * Gets a block id from its position
+         * @param pos : the position of the block
+         * @return The id of the block
+         */
+        inline uint16_t getBlockId(sf::Vector2i pos) const { return getBlockId(pos.x, pos.y); }
+        /**
+         * Gets a ground id from its position
+         * @param pos : the position of the ground
+         * @return The id of the ground
+         */
+        inline uint16_t getGroundId(sf::Vector2i pos) const { return getGroundId(pos.x, pos.y); }
+        /**
          * Gets a block from its position
+         * @param pos : the position of the block
+         * @return The pointer to the block
+         */
+        inline const Block* getBlock(sf::Vector2i pos) const { return getBlock(pos.x, pos.y); }
+        /**
+         * Gets a ground from its position
+         * @param pos : the position of the ground
+         * @return The pointer to the ground
+         */
+        inline const Ground* getGround(sf::Vector2i pos) const { return getGround(pos.x, pos.y); }
+
+        /**
+         * Sets a block with its id
+         * @param x y : the position of the block
+         * @param id : the id of the new block
+         */
+        void setBlock(int x, int y, uint16_t id);
+        /**
+         * Sets a ground with its id
+         * @param x y : the position of the ground
+         * @param id : the id of the new ground
+         */
+        void setGround(int x, int y, uint16_t id);
+        /**
+         * Sets a block using a block pointer
          * @param x y : the position of the block
          * @param block : the block to set there
          */
         void setBlock(int x, int y, const Block* block);
         /**
-         * Gets a ground from its position
+         * Sets a ground using a ground pointer
          * @param x y : the position of the ground
          * @param ground : the ground to set there
          */
         void setGround(int x, int y, const Ground* ground);
+
+        /**
+         * Sets a block with its id
+         * @param pos : the position of the block
+         * @param id : the id of the new block
+         */
+        inline void setBlock(sf::Vector2i pos, uint16_t id) { setBlock(pos.x, pos.y, id); }
+        /**
+         * Sets a ground with its id
+         * @param pos : the position of the ground
+         * @param id : the id of the new ground
+         */
+        inline void setGround(sf::Vector2i pos, uint16_t id) { setGround(pos.x, pos.y, id); }
+        /**
+         * Sets a block using a block pointer
+         * @param pos : the position of the block
+         * @param block : the block to set there
+         */
+        inline void setBlock(sf::Vector2i pos, const Block* block) { setBlock(pos.x, pos.y, block); }
+        /**
+         * Sets a ground using a ground pointer
+         * @param pos : the position of the ground
+         * @param ground : the ground to set there
+         */
+        inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
 
         /**
          * Gets the vertex array to draw the ground
@@ -131,6 +198,12 @@ class Chunk
          * @return The global position
          */
         inline sf::Vector2i getBlockPosInWorld(int x, int y) const { return sf::Vector2i(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE); }
+
+        /**
+         * Notifies a neighbor chunk that its vertex array should be updated
+         * @param direction : the direction of the chunk (0, 1, 2, 3)
+         */
+        void notifyChunk(int direction) const;
 
     private:
         bool ready = false;

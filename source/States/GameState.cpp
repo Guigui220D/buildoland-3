@@ -42,6 +42,8 @@ bool GameState::handleEvent(sf::Event& event)
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::A)
             test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
+        if (event.key.code == sf::Keyboard::B)
+            test_world.getChunk(sf::Vector2i(0, 0)).setGround(15, 7, GameGrounds::GRASS);
         break;
 
     case sf::Event::MouseWheelScrolled:

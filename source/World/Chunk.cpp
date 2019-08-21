@@ -6,6 +6,7 @@
 #include "../Block/Block.h"
 #include "World.h"
 
+#include <assert.h>
 //TMP
 #include <cstdlib>
 
@@ -54,15 +55,19 @@ void Chunk::regenerate()
             if (getGround(x, y) != GameGrounds::WATER && !(std::rand() % 5))
                 blocks.set(x, y, std::rand() % 5);
         }
-    setBlock(tree_x, tree_y, GameBlocks::TREE);
-    setGround(tree_x, tree_y, GameGrounds::GRASS);
+    blocks.set(tree_x, tree_y, GameBlocks::TREE->getId());
+    grounds.set(tree_x, tree_y, GameGrounds::GRASS->getId());
 
     for (int i = 0; i < 4; i++)
-    {
-        sf::Vector2i chunk = pos + utils::getRelativeBlock(i);
-        if (world->isChunkLoaded(chunk))
-            world->getChunk(chunk).mustRedoVertexArrays();
-    }
+        notifyChunk(i);
+}
+
+void Chunk::notifyChunk(int direction) const
+{
+    assert(direction >= 0 && direction < 4);
+    sf::Vector2i chunk = pos + utils::getRelativeBlock(direction);
+    if (world->isChunkLoaded(chunk))
+        world->getChunk(chunk).mustRedoVertexArrays();
 }
 
 const Block* Chunk::getBlock(int x, int y) const
@@ -71,11 +76,60 @@ const Block* Chunk::getBlock(int x, int y) const
 const Ground* Chunk::getGround(int x, int y) const
     { return game->getGroundsManager().getGroundByID(getGroundId(x, y)); }
 
+
+void Chunk::setBlock(int x, int y, uint16_t id)
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    blocks.set(x, y, id);
+    if (x == 0)
+        notifyChunk(3);
+    if (y == 0)
+        notifyChunk(0);
+    if (x == CHUNK_SIZE - 1)
+        notifyChunk(1);
+    if (y == CHUNK_SIZE - 1)
+        notifyChunk(2);
+    vertices_ready = false;
+}
+
+void Chunk::setGround(int x, int y, uint16_t id)
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    grounds.set(x, y, id);
+    if (x == 0)
+        notifyChunk(3);
+    if (y == 0)
+        notifyChunk(0);
+    if (x == CHUNK_SIZE - 1)
+        notifyChunk(1);
+    if (y == CHUNK_SIZE - 1)
+        notifyChunk(2);
+    vertices_ready = false;
+}
+
 void Chunk::setBlock(int x, int y, const Block* block)
-    { blocks.set(x, y, block->getId()); }
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    setBlock(x, y, block->getId());
+}
 
 void Chunk::setGround(int x, int y, const Ground* ground)
-    { grounds.set(x, y, ground->getId()); }
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    setGround(x, y, ground->getId());
+}
 
 void Chunk::generateVertices() const
 {

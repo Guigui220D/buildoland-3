@@ -4,6 +4,7 @@
 #include "MainMenuState.h"
 
 #include "../Gui/GuiTitle.h"
+#include "../Gui/GuiImage.h"
 
 class TitleScreenState : public LoadingScreenState<MainMenuState>
 {
@@ -24,4 +25,5 @@ class TitleScreenState : public LoadingScreenState<MainMenuState>
         sf::Clock clk;
 
         GuiTitle title;
+        GuiImage sfml;
 };

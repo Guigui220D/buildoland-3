@@ -1,4 +1,4 @@
-![Title image](https://github.com/Guigui220D/super-duper-octo-enigma/blob/master/logo2.png)
+![Title image](https://github.com/Guigui220D/buildoland-3/blob/master/logo2.png)
 
 # Buildoland 3
 

@@ -116,6 +116,8 @@ class Chunk
          */
         inline sf::Vector2i getBlockPosInWorld(int x, int y) const { return sf::Vector2i(x + pos.x * CHUNK_SIZE, y + pos.y * CHUNK_SIZE); }
 
+        bool to_be_removed = false;
+
     private:
         bool ready = false;
 

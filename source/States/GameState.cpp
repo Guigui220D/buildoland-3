@@ -44,6 +44,8 @@ bool GameState::handleEvent(sf::Event& event)
             test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
         if (event.key.code == sf::Keyboard::B)
             test_world.getChunk(sf::Vector2i(0, 0)).setGround(15, 7, GameGrounds::GRASS);
+        if (event.key.code == sf::Keyboard::C)
+            test_world.getChunk(sf::Vector2i(0, 0)).to_be_removed = true;
         break;
 
     case sf::Event::MouseWheelScrolled:

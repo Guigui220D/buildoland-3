@@ -9,3 +9,7 @@ obj/
 *.cbp
 *.depend
 *.layout
+
+# xCode files
+*.xcodeproj
+*.plist

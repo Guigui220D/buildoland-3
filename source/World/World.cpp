@@ -32,12 +32,15 @@ World::~World()
 void World::updateLoadedChunk(sf::Vector2f center)
 {
 
+    //Remove chuncks too far of center
+    //Add chuncks not added, near center
 
-
+    //Unload all the chunks that need to be removed
     for (auto i = chunks.begin(); i != chunks.end();)
     {
         if (i->second->to_be_removed)
         {
+            //Removes the chunk from the map
             i = chunks.erase(i);
         }
         else

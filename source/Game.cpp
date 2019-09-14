@@ -134,4 +134,6 @@ void Game::update(float delta_time)
         if (!state->isUpdateTransparent())
             break;
     }
+
+    audioManager.update();
 }

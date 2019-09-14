@@ -31,11 +31,17 @@ World::~World()
 
 void World::updateLoadedChunk(sf::Vector2f center)
 {
+
+
+
     for (auto i = chunks.begin(); i != chunks.end();)
     {
         if (i->second->to_be_removed)
+        {
             i = chunks.erase(i);
-        i++;
+        }
+        else
+            i++;
     }
 }
 

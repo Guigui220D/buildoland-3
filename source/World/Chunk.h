@@ -33,10 +33,6 @@ class Chunk
 
         inline uint16_t getGroundId(int x, int y) const
         {
-            if (y >= CHUNK_SIZE)
-            {
-                std::cout << "test";
-            }
             assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);
 
             return grounds.get(x, y);

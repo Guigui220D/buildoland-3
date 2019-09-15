@@ -135,9 +135,9 @@ class World
         inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
 
         inline size_t getChunksCount() const { return chunks.size(); };
-        inline std::map<int64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksBegin() const { return chunks.cbegin(); }
-        inline std::map<int64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksEnd() const { return chunks.cend(); }
 
     protected:
@@ -148,5 +148,5 @@ class World
         const GameGrounds& gameGroundsManager;
         int seed;
 
-        std::map<int64_t, std::unique_ptr<Chunk>> chunks;
+        std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
 };

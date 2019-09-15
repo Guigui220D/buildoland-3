@@ -50,7 +50,7 @@ void World::updateLoadedChunk(sf::Vector2f center)
 
 const Chunk& World::getChunkConst(sf::Vector2i pos) const
 {
-    int64_t key = utils::combine(pos.x, pos.y);
+    uint64_t key = utils::combine(pos.x, pos.y);
     auto chunk_ptr = chunks.find(key);
 
     if (chunk_ptr == chunks.end())
@@ -61,7 +61,8 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
 
 Chunk& World::getChunk(sf::Vector2i pos)
 {
-    int64_t key = utils::combine(pos.x, pos.y);
+    uint64_t key = utils::combine(pos.x, pos.y);
+
     auto chunk_ptr = chunks.find(key);
 
     if (chunk_ptr == chunks.end())
@@ -83,7 +84,7 @@ uint16_t World::getBlockId(sf::Vector2i pos, bool load)
     {
         if (load)
         {
-            int64_t key = utils::combine(chunk_pos.x, chunk_pos.y);
+            uint64_t key = utils::combine(chunk_pos.x, chunk_pos.y);
             std::cout << "New chunk generated : " << chunk_pos.x << "; " << chunk_pos.y << std::endl;
             Chunk* new_chunk = new Chunk(this, chunk_pos);
             chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
@@ -103,7 +104,7 @@ uint16_t World::getGroundId(sf::Vector2i pos, bool load)
     {
         if (load)
         {
-            int64_t key = utils::combine(chunk_pos.x, chunk_pos.y);
+            uint64_t key = utils::combine(chunk_pos.x, chunk_pos.y);
             std::cout << "New chunk generated : " << chunk_pos.x << "; " << chunk_pos.y << std::endl;
             Chunk* new_chunk = new Chunk(this, chunk_pos);
             chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));

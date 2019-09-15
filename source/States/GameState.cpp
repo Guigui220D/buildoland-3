@@ -17,7 +17,14 @@ GameState::GameState(Game* game, unsigned int id) :
 
     test_world.getChunk(sf::Vector2i(0, 0));
     test_world.getChunk(sf::Vector2i(1, 0));
+    test_world.getChunk(sf::Vector2i(0, -1));
+    test_world.getChunk(sf::Vector2i(-1, 0));
     test_world.getChunk(sf::Vector2i(-1, -1));
+
+    std::cout << "Chunk " << 0 << ", " << 0 << " has key " << utils::combine(0, 0) << std::endl;
+    std::cout << "Chunk " << -1 << ", " << 0 << " has key " << utils::combine(-1, 0) << std::endl;
+    std::cout << "Chunk " << 0 << ", " << -1 << " has key " << utils::combine(0, -1) << std::endl;
+    std::cout << "Chunk " << -1 << ", " << -1 << " has key " << utils::combine(-1, -1) << std::endl;
 }
 
 GameState::~GameState()
@@ -43,7 +50,7 @@ bool GameState::handleEvent(sf::Event& event)
     case sf::Event::KeyPressed:
         if (event.key.code == sf::Keyboard::A)
             test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
-        if (event.key.code == sf::Keyboard::B)
+        //if (event.key.code == sf::Keyboard::B)
             //std::cout << test_world.getChunk(sf::Vector2i(-1, -1)).getBlockPosInWorld(15, 15) << std::endl;
         if (event.key.code == sf::Keyboard::C)
             test_world.getChunk(sf::Vector2i(0, 0)).to_be_removed = true;

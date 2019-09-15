@@ -8,9 +8,18 @@
 class utils
 {
     public:
-        static constexpr int64_t combine(int32_t a, int32_t b)
+        static constexpr uint64_t combine(int32_t a, int32_t b)
         {
-            return (((int64_t)a << 32) | b);
+            uint64_t lon = a;
+            lon <<= 32;
+            lon |= 0xFFFFFFFF & b;
+            return lon;
+            /*
+            uint64_t aa = a;
+            aa <<= 32;
+            uint64_t bb = b;
+            return aa | bb;
+            */
         }
 
         static TextQuad getSquare(Quad tex, sf::Vector2i pos)

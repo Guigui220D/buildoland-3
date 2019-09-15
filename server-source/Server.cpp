@@ -1,11 +1,15 @@
 #include "Server.h"
 
 #include <iostream>
+#include <assert.h>
 
-Server::Server() :
-    receiver_thread(Server::receiver, this)
+Server::Server(uint16_t client_port) :
+    receiver_thread(Server::receiver, this),
+    client_port(client_port)
 {
-    //ctor
+    #ifndef SOLO
+        assert(!client_port)
+    #endif // SOLO
 }
 
 Server::~Server()
@@ -24,6 +28,14 @@ bool Server::init(uint16_t port)
 
     server_socket.setBlocking(true);
 
+    receiver_thread.launch();
+
+    #ifdef SOLO
+        sf::Packet handshake;
+        handshake << 32;    //Test
+        server_socket.send(handshake, sf::IpAddress::LocalHost, client_port);
+    #endif // SOLO
+
     return true;
 }
 
@@ -35,8 +47,6 @@ void Server::run()
     bool run = true;
 
     sf::Clock test;
-
-    receiver_thread.launch();
 
     while (run)
     {

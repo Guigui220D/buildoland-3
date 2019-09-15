@@ -5,7 +5,7 @@
 class Server
 {
     public:
-        Server();
+        Server(uint16_t client_port);   //Leave client port to 0 if this is a multiplayer server, i just don't want to have ifdef's everywhere
         ~Server();
 
         bool init(uint16_t port);
@@ -21,4 +21,6 @@ class Server
 
         void receiver();
         sf::Thread receiver_thread;
+
+        uint16_t client_port;   //Only for local servers
 };

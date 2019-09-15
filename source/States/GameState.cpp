@@ -2,6 +2,9 @@
 
 #include "../Game.h"
 
+#include <string>
+#include <sstream>
+
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
     test_world(game),
@@ -20,16 +23,50 @@ GameState::GameState(Game* game, unsigned int id) :
     test_world.getChunk(sf::Vector2i(0, -1));
     test_world.getChunk(sf::Vector2i(-1, 0));
     test_world.getChunk(sf::Vector2i(-1, -1));
-
-    std::cout << "Chunk " << 0 << ", " << 0 << " has key " << utils::combine(0, 0) << std::endl;
-    std::cout << "Chunk " << -1 << ", " << 0 << " has key " << utils::combine(-1, 0) << std::endl;
-    std::cout << "Chunk " << 0 << ", " << -1 << " has key " << utils::combine(0, -1) << std::endl;
-    std::cout << "Chunk " << -1 << ", " << -1 << " has key " << utils::combine(-1, -1) << std::endl;
 }
 
 GameState::~GameState()
 {
     //dtor
+}
+
+void GameState::init()
+{
+    if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+    {
+        std::cerr << "Could not bind client to any port!" << std::endl;
+        must_be_destroyed = true;
+        return;
+    }
+    std::cout << "Bound client to " << client_socket.getLocalPort() << std::endl;
+
+    //TODO : Adapt this to other platforms
+    std::stringstream strs;
+    strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
+    std::cout << strs.str() << std::endl;
+    int code = system(strs.str().c_str());
+    if (code)
+    {
+        std::cerr << "Could not start server!" << std::endl;
+        must_be_destroyed = true;
+        return;
+    }
+
+    std::cout << "Server started : waiting for handshake..." << std::endl;
+
+    client_socket.setBlocking(true);
+
+    sf::Packet packet; sf::IpAddress address; uint16_t port;
+
+    client_socket.receive(packet, address, port);
+    if (address != sf::IpAddress::LocalHost)
+    {
+        std::cerr << "Received wrong packet!" << std::endl;
+        must_be_destroyed = true;
+        return;
+    }
+    std::cout << "Received handshake from local server!" << std::endl;
+
 }
 
 bool GameState::handleEvent(sf::Event& event)

@@ -38,7 +38,7 @@ void TitleScreenState::beforeInitTask()
 
 void TitleScreenState::afterInitTask()
 {
-    while (clk.getElapsedTime().asSeconds() < 3.f); //Because we want to see the title
+    while (clk.getElapsedTime().asSeconds() < 2.f); //Because we want to see the title
 }
 
 void TitleScreenState::drawMore(sf::RenderTarget& target) const

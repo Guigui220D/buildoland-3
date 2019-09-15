@@ -91,7 +91,15 @@ class World
          * @param block_pos : the position of the block
          * @return The position of the chunk
          */
-        static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos) { return sf::Vector2i(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE); }
+        static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos)
+        {
+            sf::Vector2i result(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE);
+            if (block_pos.x < 0)
+                result.x--;
+            if (block_pos.y < 0)
+                result.y--;
+            return result;
+        }
         /**
          * Calculate the position of the block inside the chunk it is in
          * @param block_pos : the position of the block
@@ -99,8 +107,20 @@ class World
          */
         static inline sf::Vector2i getBlockPosInChunk(sf::Vector2i block_pos)
         {
-            sf::Vector2i chunk_pos = getChunkPosFromBlockPos(block_pos);
-            return sf::Vector2i(block_pos.x - chunk_pos.x * Chunk::CHUNK_SIZE, block_pos.y - chunk_pos.y * Chunk::CHUNK_SIZE);
+            //sf::Vector2i chunk_pos = getChunkPosFromBlockPos(block_pos);
+            sf::Vector2i result(block_pos.x % Chunk::CHUNK_SIZE, block_pos.y % Chunk::CHUNK_SIZE);
+
+            if (result.x < 0)
+                result.x = Chunk::CHUNK_SIZE + result.x;
+            if (result.y < 0)
+                result.y = Chunk::CHUNK_SIZE + result.y;
+
+            assert(result.x >= 0);
+            assert(result.y >= 0);
+            assert(result.x < Chunk::CHUNK_SIZE);
+            assert(result.y < Chunk::CHUNK_SIZE);
+
+            return result;
         }
 
         /**

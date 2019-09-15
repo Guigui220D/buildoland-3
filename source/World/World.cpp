@@ -77,7 +77,7 @@ Chunk& World::getChunk(sf::Vector2i pos)
 
 uint16_t World::getBlockId(sf::Vector2i pos, bool load)
 {
-    sf::Vector2i chunk_pos = sf::Vector2i(pos.x / Chunk::CHUNK_SIZE, pos.y / Chunk::CHUNK_SIZE);
+    sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
     {
@@ -97,7 +97,7 @@ uint16_t World::getBlockId(sf::Vector2i pos, bool load)
 
 uint16_t World::getGroundId(sf::Vector2i pos, bool load)
 {
-    sf::Vector2i chunk_pos = sf::Vector2i(pos.x / Chunk::CHUNK_SIZE, pos.y / Chunk::CHUNK_SIZE);
+    sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
     {

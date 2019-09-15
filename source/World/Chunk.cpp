@@ -10,7 +10,7 @@
 //TMP
 #include <cstdlib>
 
-const size_t Chunk::CHUNK_SIZE = 16;
+const int Chunk::CHUNK_SIZE = 16;
 
 Chunk::Chunk(World* world, sf::Vector2i pos) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
@@ -41,6 +41,7 @@ Chunk::~Chunk()
 //For testing
 void Chunk::regenerate()
 {
+
     vertices_ready = false;
 
     uint16_t tree_x, tree_y;
@@ -60,6 +61,7 @@ void Chunk::regenerate()
 
     for (int i = 0; i < 4; i++)
         notifyChunk(i);
+
 }
 
 void Chunk::notifyChunk(int direction) const
@@ -71,10 +73,22 @@ void Chunk::notifyChunk(int direction) const
 }
 
 const Block* Chunk::getBlock(int x, int y) const
-    { return game->getBlocksManager().getBlockByID(getBlockId(x, y)); }
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    return game->getBlocksManager().getBlockByID(getBlockId(x, y));
+}
 
 const Ground* Chunk::getGround(int x, int y) const
-    { return game->getGroundsManager().getGroundByID(getGroundId(x, y)); }
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    return game->getGroundsManager().getGroundByID(getGroundId(x, y));
+}
 
 
 void Chunk::setBlock(int x, int y, uint16_t id)
@@ -148,18 +162,18 @@ void Chunk::generateGroundVertices() const
 {
     if (!ground_vertices_pos_ready)
     {
-        for (size_t x = 0; x < CHUNK_SIZE; x++)
-            for (size_t y = 0; y < CHUNK_SIZE; y++)
+        for (int x = 0; x < CHUNK_SIZE; x++)
+            for (int y = 0; y < CHUNK_SIZE; y++)
             {
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].position = sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE);
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].position = sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, -.5f + y + pos.y * CHUNK_SIZE);
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].position = sf::Vector2f(0.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE);
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].position = sf::Vector2f(-.5f + x + pos.x * CHUNK_SIZE, 0.5f + y + pos.y * CHUNK_SIZE);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + -.5f, pos.y * CHUNK_SIZE + y + -.5f);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + 0.5f, pos.y * CHUNK_SIZE + y + -.5f);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + 0.5f, pos.y * CHUNK_SIZE + y + 0.5f);
+                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + -.5f, pos.y * CHUNK_SIZE + y + 0.5f);
             }
         ground_vertices_pos_ready = true;
     }
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
-        for (size_t y = 0; y < CHUNK_SIZE; y++)
+    for (int x = 0; x < CHUNK_SIZE; x++)
+        for (int y = 0; y < CHUNK_SIZE; y++)
         {
             const Ground* ground = getGround(x, y);
 

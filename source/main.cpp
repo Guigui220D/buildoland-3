@@ -2,9 +2,14 @@
 
 #include <cstdlib>
 #include <ctime>
+#include <iostream>
+
+#include "Version.h"
 
 int main()
 {
+    std::cout << "Running Buildoland 3 version " << Version::VERSION << " (short: " << Version::VERSION_SHORT << ")\n" << std::endl;
+
     std::srand(std::time(nullptr));
 
     Game game;

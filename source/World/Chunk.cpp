@@ -12,7 +12,7 @@
 
 const int Chunk::CHUNK_SIZE = 16;
 
-Chunk::Chunk(World* world, sf::Vector2i pos) :
+Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
@@ -22,14 +22,27 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     game(world->getGame()),
     world(world)
 {
+    size_t header_size = sizeof(int) * 2 + 2;
+
+    if (packet.getDataSize() < getChunkDataSize() + header_size)
+    {
+        success = false;
+        return;
+    }
+
+    //Copying data
+    memcpy(blocks.getData(), packet.getData() + header_size, CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
+    memcpy(grounds.getData(), packet.getData() + header_size + CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t), CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
+
+    //Prepare vertices
     for (int i = 0; i < 4; i++)
     {
         ground_detail_vertices.at(i).setPrimitiveType(sf::Quads);
         ground_detail_vertices.at(i).clear();
     }
-
     regenerate();
 
+    success = true;
     ready = true;
 }
 
@@ -69,7 +82,7 @@ void Chunk::notifyChunk(int direction) const
     assert(direction >= 0 && direction < 4);
     sf::Vector2i chunk = pos + utils::getRelativeBlock(direction);
     if (world->isChunkLoaded(chunk))
-        world->getChunk(chunk).mustRedoVertexArrays();
+        world->getChunkConst(chunk).mustRedoVertexArrays();
 }
 
 const Block* Chunk::getBlock(int x, int y) const
@@ -217,7 +230,7 @@ void Chunk::generateBlockSideVertices() const
         {
             sf::Vector2i block_pos = getBlockPosInWorld(x, y);
             const Block* block = getBlock(x, y);
-            const Block* block_down = world->getBlock(block_pos + sf::Vector2i(0, 1), false);
+            const Block* block_down = world->getBlock(block_pos + sf::Vector2i(0, 1));
 
             BlockInfo bi(world, block_pos);
             BlockInfo bi_down(world, block_pos + sf::Vector2i(0, 1));

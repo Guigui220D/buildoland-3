@@ -31,7 +31,6 @@ World::~World()
 
 void World::updateLoadedChunk(sf::Vector2f center)
 {
-
     //Remove chuncks too far of center
     //Add chuncks not added, near center
 
@@ -48,6 +47,51 @@ void World::updateLoadedChunk(sf::Vector2f center)
     }
 }
 
+bool World::addChunk(sf::Packet packet)
+{
+    //We expect the packet to be of that size
+    //4 bytes per tile (2 for block and 2 for ground)
+    //8 bytes for the position
+    //2 bytes for the packet header
+    size_t expected_packet_size = Chunk::getChunkDataSize();
+    expected_packet_size += sizeof(int) * 2; //Position
+    expected_packet_size += 2;
+
+    if (packet.getDataSize() < expected_packet_size)
+    {
+        std::cerr << "Chunk packet is too small! Expected " << expected_packet_size << " bytes, got " << packet.getDataSize() << " bytes." << std::endl;
+        return false;
+    }
+
+    //Get chunk position
+    sf::Vector2i pos;
+    packet >> pos.x;
+    packet >> pos.y;
+
+    uint64_t key = utils::combine(pos.x, pos.y);
+
+    //Remove chunk if one already exists with that position
+    auto it = chunks.find(key);
+    if (it != chunks.end())
+        chunks.erase(it);
+
+    //Construct new chunk
+    bool success = true;
+
+    Chunk* new_chunk = new Chunk(this, pos, packet, success);
+
+    if (!success)
+    {
+        std::cerr << "A new chunk packet couldn't be parsed" << std::endl;
+        delete new_chunk;
+        return false;
+    }
+
+    //Add the new chunk!
+    chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
+    return true;
+}
+
 const Chunk& World::getChunkConst(sf::Vector2i pos) const
 {
     uint64_t key = utils::combine(pos.x, pos.y);
@@ -59,8 +103,11 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
     return *chunk_ptr->second;
 }
 
+/*
 Chunk& World::getChunk(sf::Vector2i pos)
 {
+    throw std::logic_error("World::getChunk(sf::Vector2i pos) : Not implemented!");
+
     uint64_t key = utils::combine(pos.x, pos.y);
 
     auto chunk_ptr = chunks.find(key);
@@ -75,53 +122,32 @@ Chunk& World::getChunk(sf::Vector2i pos)
 
     return *chunk_ptr->second;
 }
+*/
 
-uint16_t World::getBlockId(sf::Vector2i pos, bool load)
+uint16_t World::getBlockId(sf::Vector2i pos)
 {
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
-    {
-        if (load)
-        {
-            uint64_t key = utils::combine(chunk_pos.x, chunk_pos.y);
-            std::cout << "New chunk generated : " << chunk_pos.x << "; " << chunk_pos.y << std::endl;
-            Chunk* new_chunk = new Chunk(this, chunk_pos);
-            chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
-            return new_chunk->getBlockId(bp.x, bp.y);
-        }
-        else
-            return 0;
-    }
-    return getChunk(chunk_pos).getBlockId(bp.x, bp.y);
+        return 0;
+    return getChunkConst(chunk_pos).getBlockId(bp.x, bp.y);
 }
 
-uint16_t World::getGroundId(sf::Vector2i pos, bool load)
+uint16_t World::getGroundId(sf::Vector2i pos)
 {
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
-    {
-        if (load)
-        {
-            uint64_t key = utils::combine(chunk_pos.x, chunk_pos.y);
-            std::cout << "New chunk generated : " << chunk_pos.x << "; " << chunk_pos.y << std::endl;
-            Chunk* new_chunk = new Chunk(this, chunk_pos);
-            chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
-            return new_chunk->getGroundId(bp.x, bp.y);
-        }
-        else
-            return 0;
-    }
-    return getChunk(chunk_pos).getGroundId(bp.x, bp.y);
+        return 0;
+    return getChunkConst(chunk_pos).getGroundId(bp.x, bp.y);
 }
 
-const Block* World::getBlock(sf::Vector2i pos, bool load)
+const Block* World::getBlock(sf::Vector2i pos)
 {
-    return gameBlocksManager.getBlockByID(getBlockId(pos, load));
+    return gameBlocksManager.getBlockByID(getBlockId(pos));
 }
 
-const Ground* World::getGround(sf::Vector2i pos, bool load)
+const Ground* World::getGround(sf::Vector2i pos)
 {
-    return gameGroundsManager.getGroundByID(getGroundId(pos, load));
+    return gameGroundsManager.getGroundByID(getGroundId(pos));
 }

@@ -40,6 +40,14 @@ class World
         void updateLoadedChunk(sf::Vector2f center);
 
         /**
+         * Adds a chunk from a received packet
+         * The chunk won't be added if the data was invalid
+         * @param packet : the packet to unpack
+         * @return True if the chunk was added
+         */
+        bool addChunk(sf::Packet packet);
+
+        /**
          * Gets a const reference to a chunk with its position
          * An exception will be thrown if the chunk doesn't exist
          * @param pos : the position of the chunk
@@ -65,26 +73,26 @@ class World
          * @param pos : the position of the block
          * @return The id of the block
          */
-        uint16_t getBlockId(sf::Vector2i pos, bool load);
+        uint16_t getBlockId(sf::Vector2i pos);
         /**
          * Gets a ground id from its position
          * @param pos : the position of the ground
          * @return The id of the ground
          */
-        uint16_t getGroundId(sf::Vector2i pos, bool load);
+        uint16_t getGroundId(sf::Vector2i pos);
 
         /**
          * Gets a block from its position
          * @param pos : the position of the block
          * @return The pointer to the block
          */
-        const Block* getBlock(sf::Vector2i pos, bool load);
+        const Block* getBlock(sf::Vector2i pos);
         /**
          * Gets a ground from its position
          * @param pos : the position of the ground
          * @return The pointer to the ground
          */
-        const Ground* getGround(sf::Vector2i pos, bool load);
+        const Ground* getGround(sf::Vector2i pos);
 
         /**
          * Calculate the position of the chunk that the block is in

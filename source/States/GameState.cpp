@@ -2,8 +2,11 @@
 
 #include "../Game.h"
 
+#include <cstring>
 #include <string>
 #include <sstream>
+
+#include "../Version.h"
 
 //TEMPORARY
 #include <windows.h>
@@ -20,12 +23,7 @@ GameState::GameState(Game* game, unsigned int id) :
     draw_transparent = false;
     updateView();
 
-
-    test_world.getChunk(sf::Vector2i(0, 0));
-    test_world.getChunk(sf::Vector2i(1, 0));
-    test_world.getChunk(sf::Vector2i(0, -1));
-    test_world.getChunk(sf::Vector2i(-1, 0));
-    test_world.getChunk(sf::Vector2i(-1, -1));
+    //test_world.getChunk(sf::Vector2i());
 }
 
 GameState::~GameState()
@@ -95,6 +93,14 @@ void GameState::init()
     char vers[6];
     packet >> vers;
     vers[5] = 0;
+
+    if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
+    {
+        std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
+        must_be_destroyed = true;
+        return;
+    }
+
     std::cout << "Received handshake from local server! Its version is " << vers << std::endl;
     std::cout << std::endl;
 
@@ -119,12 +125,6 @@ bool GameState::handleEvent(sf::Event& event)
         break;
 
     case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::A)
-            test_world.getChunk(sf::Vector2i(0, 0)).regenerate();
-        //if (event.key.code == sf::Keyboard::B)
-            //std::cout << test_world.getChunk(sf::Vector2i(-1, -1)).getBlockPosInWorld(15, 15) << std::endl;
-        if (event.key.code == sf::Keyboard::C)
-            test_world.getChunk(sf::Vector2i(0, 0)).to_be_removed = true;
         break;
 
     case sf::Event::MouseWheelScrolled:

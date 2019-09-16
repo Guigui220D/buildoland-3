@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 #include <array>
 
 #include "../Utils/Arr2D.h"
@@ -16,7 +17,9 @@ class Chunk
     public:
         static const int CHUNK_SIZE;
 
-        Chunk(World* world, sf::Vector2i pos);
+        static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
+
+        Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success);
         ~Chunk();
 
         inline Game* getGame() const { return game; }

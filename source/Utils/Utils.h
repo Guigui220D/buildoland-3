@@ -14,12 +14,6 @@ class utils
             lon <<= 32;
             lon |= 0xFFFFFFFF & b;
             return lon;
-            /*
-            uint64_t aa = a;
-            aa <<= 32;
-            uint64_t bb = b;
-            return aa | bb;
-            */
         }
 
         static TextQuad getSquare(Quad tex, sf::Vector2i pos)

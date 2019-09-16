@@ -45,7 +45,7 @@ void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array
     for (int i = 0; i < 4; i++)
     {
         sf::Vector2i opos = info.getPos() + utils::getRelativeBlock(i);
-        const Ground* other_ground = info.getWorld()->getGround(opos, false);
+        const Ground* other_ground = info.getWorld()->getGround(opos);
         if (acceptsTextureBleedings(info, other_ground))
         {
             Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos), frame), i);

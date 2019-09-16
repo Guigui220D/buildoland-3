@@ -3,6 +3,8 @@
 #include <iostream>
 #include <assert.h>
 
+#include "Version.h"
+
 Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
     client_port(client_port)
@@ -33,7 +35,7 @@ bool Server::init(uint16_t port)
     #ifdef SOLO
 
         sf::Packet handshake;
-        handshake << 32;    //Test
+        handshake << 0 << Version::VERSION_SHORT;
         server_socket.send(handshake, sf::IpAddress::LocalHost, client_port);
 
     #endif // SOLO

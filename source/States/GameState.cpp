@@ -35,40 +35,68 @@ GameState::~GameState()
 
 void GameState::init()
 {
+    //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
     {
         std::cerr << "Could not bind client to any port!" << std::endl;
         must_be_destroyed = true;
         return;
     }
-    std::cout << "Bound client to " << client_socket.getLocalPort() << std::endl;
+    std::cout << "\nBound client to " << client_socket.getLocalPort() << std::endl;
+
 
     //TODO : Adapt this to other platforms
-    std::stringstream strs;
-    strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
-    std::cout << strs.str() << std::endl;
-    int code = system(strs.str().c_str());
-    if (code)
+    //Start the server
     {
-        std::cerr << "Could not start server!" << std::endl;
-        must_be_destroyed = true;
-        return;
+        std::stringstream strs;
+        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
+        std::cout << "Starting server with command " << strs.str() << std::endl;
+        int code = system(strs.str().c_str());
+        if (code)
+        {
+            std::cerr << "Could not start server!" << std::endl;
+            must_be_destroyed = true;
+            return;
+        }
     }
 
     std::cout << "Server started : waiting for handshake..." << std::endl;
 
-    client_socket.setBlocking(true);
+    //Handshake with server
+    client_socket.setBlocking(false);
 
     sf::Packet packet; sf::IpAddress address; uint16_t port;
+    sf::Clock timeout_clock;
 
-    client_socket.receive(packet, address, port);
+    while (client_socket.receive(packet, address, port) != sf::Socket::Done)
+    {
+        if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
+        {
+            std::cerr << "Time out while waiting for server handshake" << std::endl;
+            must_be_destroyed = true;
+            return;
+        }
+    }
+
     if (address != sf::IpAddress::LocalHost)
     {
-        std::cerr << "Received wrong packet!" << std::endl;
+        std::cerr << "Received packet from wrong address!" << std::endl;
         must_be_destroyed = true;
         return;
     }
-    std::cout << "Received handshake from local server!" << std::endl;
+    if (packet.getDataSize() != 13)
+    {
+        std::cerr << "Received wrong packet! Expected 13 bytes, got " << packet.getDataSize() << '.' << std::endl;
+        must_be_destroyed = true;
+        return;
+    }
+    int pc;
+    packet >> pc;
+    char vers[6];
+    packet >> vers;
+    vers[5] = 0;
+    std::cout << "Received handshake from local server! Its version is " << vers << std::endl;
+    std::cout << std::endl;
 
     //EWWWWWWWWWWWWWWW
     //Temporary
@@ -139,9 +167,13 @@ void GameState::draw(sf::RenderTarget& target) const
     {
         target.draw(i->second->getGroundVertexArray(), ground_textures);
         target.draw(i->second->getGroundDetailsVertexArray(anim_frame), ground_details_textures);
-        target.draw(i->second->getBlockSidesVertexArray(), block_textures);
-        target.draw(i->second->getBlockTopsVertexArray(), block_textures);
     }
+
+    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        target.draw(i->second->getBlockSidesVertexArray(), block_textures);
+
+    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        target.draw(i->second->getBlockTopsVertexArray(), block_textures);
 }
 
 void GameState::updateView()

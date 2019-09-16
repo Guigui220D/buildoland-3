@@ -7,6 +7,7 @@ TitleScreenState::TitleScreenState(Game* game, unsigned int id) :
 {
     //ctor
 }
+
 TitleScreenState::~TitleScreenState()
 {
     //dtor

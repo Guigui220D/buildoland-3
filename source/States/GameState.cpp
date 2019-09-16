@@ -5,6 +5,9 @@
 #include <string>
 #include <sstream>
 
+//TEMPORARY
+#include <windows.h>
+
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
     test_world(game),
@@ -67,6 +70,9 @@ void GameState::init()
     }
     std::cout << "Received handshake from local server!" << std::endl;
 
+    //EWWWWWWWWWWWWWWW
+    //Temporary
+    SetForegroundWindow(getGame()->getWindow().getSystemHandle());
 }
 
 bool GameState::handleEvent(sf::Event& event)

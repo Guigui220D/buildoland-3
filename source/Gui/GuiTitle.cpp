@@ -14,6 +14,7 @@ GuiTitle::~GuiTitle()
 void GuiTitle::init()
 {
     title_texture.loadFromFile("Res/Logos/text_version_2.png");
+    title_texture.setSmooth(true);
     title_sprite.setTexture(&title_texture);
     title_sprite.setSize(sf::Vector2f((1000.f / 137.f), 1.f));
 }

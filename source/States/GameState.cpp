@@ -13,6 +13,9 @@
 
 GameState::GameState(Game* game, unsigned int id) :
     State(game, id),
+    solo_mode(true),
+    connected(false),
+    receiver_thread(&GameState::receiverLoop, this),
     test_world(game),
     my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
     block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
@@ -22,13 +25,18 @@ GameState::GameState(Game* game, unsigned int id) :
     update_transparent = false;
     draw_transparent = false;
     updateView();
-
-    //test_world.getChunk(sf::Vector2i());
 }
 
 GameState::~GameState()
 {
-    //dtor
+    receiver_thread.terminate();
+    if (connected)
+    {
+        //TEMP
+        sf::Packet quit;
+        quit << 0;
+        client_socket.send(quit, remote_ip, remote_port);
+    }
 }
 
 void GameState::init()
@@ -42,71 +50,19 @@ void GameState::init()
     }
     std::cout << "\nBound client to " << client_socket.getLocalPort() << std::endl;
 
-
-    //TODO : Adapt this to other platforms
-    //Start the server
+    if (solo_mode)
     {
-        std::stringstream strs;
-        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
-        std::cout << "Starting server with command " << strs.str() << std::endl;
-        int code = system(strs.str().c_str());
-        if (code)
-        {
-            std::cerr << "Could not start server!" << std::endl;
-            must_be_destroyed = true;
+        if (!startAndConnectLocalServer())
             return;
-        }
     }
-
-    std::cout << "Server started : waiting for handshake..." << std::endl;
-
-    //Handshake with server
-    client_socket.setBlocking(false);
-
-    sf::Packet packet; sf::IpAddress address; uint16_t port;
-    sf::Clock timeout_clock;
-
-    while (client_socket.receive(packet, address, port) != sf::Socket::Done)
+    else
     {
-        if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
-        {
-            std::cerr << "Time out while waiting for server handshake" << std::endl;
-            must_be_destroyed = true;
-            return;
-        }
+
     }
 
-    if (address != sf::IpAddress::LocalHost)
-    {
-        std::cerr << "Received packet from wrong address!" << std::endl;
-        must_be_destroyed = true;
-        return;
-    }
-    if (packet.getDataSize() != 13)
-    {
-        std::cerr << "Received wrong packet! Expected 13 bytes, got " << packet.getDataSize() << '.' << std::endl;
-        must_be_destroyed = true;
-        return;
-    }
-    int pc;
-    packet >> pc;
-    char vers[6];
-    packet >> vers;
-    vers[5] = 0;
-
-    if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
-    {
-        std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
-        must_be_destroyed = true;
-        return;
-    }
-
-    std::cout << "Received handshake from local server! Its version is " << vers << std::endl;
-    std::cout << std::endl;
-
-    //EWWWWWWWWWWWWWWW
-    //Temporary
-    SetForegroundWindow(getGame()->getWindow().getSystemHandle());
+    connected = true;
+    client_socket.setBlocking(true);
+    receiver_thread.launch();
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -192,4 +148,109 @@ void GameState::updateView()
 		float x_size = ratio * zoom;
 		my_view.setSize(sf::Vector2f(x_size, zoom));
 	}
+}
+
+bool GameState::startAndConnectLocalServer()
+{
+    assert(solo_mode);
+
+    //TODO : Adapt this to other platforms
+    //Start the server
+    {
+        std::stringstream strs;
+        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
+        std::cout << "Starting server with command " << strs.str() << std::endl;
+        int code = system(strs.str().c_str());
+        if (code)
+        {
+            std::cerr << "Could not start server!" << std::endl;
+            must_be_destroyed = true;
+            return false;
+        }
+    }
+
+    std::cout << "Server started : waiting for handshake..." << std::endl;
+
+    //Handshake with server
+    client_socket.setBlocking(false);
+
+    sf::Packet packet; sf::IpAddress address; uint16_t port;
+    sf::Clock timeout_clock;
+
+    while (client_socket.receive(packet, address, port) != sf::Socket::Done)
+    {
+        if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
+        {
+            std::cerr << "Time out while waiting for server handshake" << std::endl;
+            must_be_destroyed = true;
+            return false;
+        }
+    }
+
+    if (address != sf::IpAddress::LocalHost)
+    {
+        std::cerr << "Received packet from wrong address!" << std::endl;
+        must_be_destroyed = true;
+        return false;
+    }
+    if (packet.getDataSize() != 13)
+    {
+        std::cerr << "Received wrong packet! Expected 13 bytes, got " << packet.getDataSize() << '.' << std::endl;
+        must_be_destroyed = true;
+        return false;
+    }
+    int pc;
+    packet >> pc;
+    char vers[6];
+    packet >> vers;
+    vers[5] = 0;
+
+    if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
+    {
+        std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
+        must_be_destroyed = true;
+        return false;
+    }
+
+    std::cout << "Received handshake from local server! Its version is " << vers << std::endl;
+    std::cout << std::endl;
+
+    remote_ip = address;
+    remote_port = port;
+
+    //EWWWWWWWWWWWWWWW
+    //Temporary
+    SetForegroundWindow(getGame()->getWindow().getSystemHandle());
+
+    return true;
+}
+
+void GameState::receiverLoop()
+{
+    while (true)
+    {
+        sf::Packet packet;
+        sf::IpAddress address;
+        uint16_t port;
+        sf::Socket::Status status = client_socket.receive(packet, address, port);
+
+        switch (status)
+        {
+        case sf::Socket::Done:
+            std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+            break;
+        case sf::Socket::NotReady:
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
+            break;
+        case sf::Socket::Partial:
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
+            break;
+        case sf::Socket::Disconnected:
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED." << std::endl;
+            break;
+        case sf::Socket::Error:
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;
+            break;
+        }
+    }
 }

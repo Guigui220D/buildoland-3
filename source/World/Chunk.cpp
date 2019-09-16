@@ -31,8 +31,8 @@ Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success) :
     }
 
     //Copying data
-    memcpy(blocks.getData(), packet.getData() + header_size, CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
-    memcpy(grounds.getData(), packet.getData() + header_size + CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t), CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
+    memcpy(blocks.getData(), ((char*)packet.getData()) + header_size, CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
+    memcpy(grounds.getData(), ((char*)packet.getData()) + header_size + CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t), CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
 
     //Prepare vertices
     for (int i = 0; i < 4; i++)
@@ -40,7 +40,6 @@ Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success) :
         ground_detail_vertices.at(i).setPrimitiveType(sf::Quads);
         ground_detail_vertices.at(i).clear();
     }
-    regenerate();
 
     success = true;
     ready = true;
@@ -49,32 +48,6 @@ Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success) :
 Chunk::~Chunk()
 {
     //dtor
-}
-
-//For testing
-void Chunk::regenerate()
-{
-
-    vertices_ready = false;
-
-    uint16_t tree_x, tree_y;
-    tree_x = std::rand() % 8;
-    tree_y = std::rand() % 8;
-    //Tmp
-    for (size_t x = 0; x < CHUNK_SIZE; x++)
-        for (size_t y = 0; y < CHUNK_SIZE; y++)
-        {
-            grounds.set(x, y, std::rand() % 4);
-            blocks.set(x, y, 0);
-            if (getGround(x, y) != GameGrounds::WATER && !(std::rand() % 5))
-                blocks.set(x, y, std::rand() % 5);
-        }
-    blocks.set(tree_x, tree_y, GameBlocks::TREE->getId());
-    grounds.set(tree_x, tree_y, GameGrounds::GRASS->getId());
-
-    for (int i = 0; i < 4; i++)
-        notifyChunk(i);
-
 }
 
 void Chunk::notifyChunk(int direction) const

@@ -19,14 +19,25 @@ class GameState : public State
         void draw(sf::RenderTarget& target) const override;
 
     private:
-        World test_world;
+        //Networking stuff
+        const bool solo_mode;
+        bool connected;
+        bool startAndConnectLocalServer();
 
         sf::UdpSocket client_socket;
+        sf::IpAddress remote_ip;
+        uint16_t remote_port;
 
+        sf::Thread receiver_thread;
+        void receiverLoop();
+
+
+        //World
+        World test_world;
+
+        //Rendering stuff
         sf::View my_view;
-
         void updateView();
-
         float zoom = 10.f;
 
         sf::Clock anim_clock;

@@ -6,6 +6,7 @@
 int main(int argc, char** argv)
 {
     uint16_t client_port = 0;
+    uint16_t server_port = 0;
 
     #ifdef SOLO
         std::cout << "This is a local server for solo mode." << std::endl;
@@ -37,7 +38,13 @@ int main(int argc, char** argv)
 
     Server server(client_port);
 
-    if (!server.init(58888))
+    //In local/solo mode, the port is 0 which means the os gets to choose the port
+    //In multiplayer mode, we prefer chosing a port
+    #ifndef SOLO
+    server_port = 58888;
+    #endif // SOLO
+
+    if (!server.init(server_port))
     {
         std::cerr << "Fatal : Could not start server." << std::endl;
         return 1;
@@ -47,6 +54,8 @@ int main(int argc, char** argv)
     server.run();
 
     std::cout << "Server ended." << std::endl;
+
+    //while (1) {}
 
     return 0;
 }

@@ -92,6 +92,19 @@ void Server::receiver()
         {
         case sf::Socket::Done:
             std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+            if (packet.getDataSize() == 4)
+            {
+                int i;
+                packet >> i;
+                if (i == 0)
+                {
+                    std::cout << "Received disconnect message, server will stop." << std::endl;
+                    stop = true;
+                    run_mutex.lock();
+                    running = false;
+                    run_mutex.unlock();
+                }
+            }
             break;
         case sf::Socket::NotReady:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;

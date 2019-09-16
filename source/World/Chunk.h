@@ -101,12 +101,6 @@ class Chunk
          */
         void notifyChunk(int direction) const;
 
-        //For testing
-        /**
-         * THIS IS A TESTING FUNCTION
-         */
-        void regenerate();
-
         inline sf::Vector2f getCenter() const { return sf::Vector2f(.5f * CHUNK_SIZE - .5f, .5f * CHUNK_SIZE - .5f); }
 
         /**

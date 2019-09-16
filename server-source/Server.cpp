@@ -8,7 +8,7 @@ Server::Server(uint16_t client_port) :
     client_port(client_port)
 {
     #ifndef SOLO
-        assert(!client_port)
+        assert(!client_port);
     #endif // SOLO
 }
 
@@ -31,9 +31,11 @@ bool Server::init(uint16_t port)
     receiver_thread.launch();
 
     #ifdef SOLO
+
         sf::Packet handshake;
         handshake << 32;    //Test
         server_socket.send(handshake, sf::IpAddress::LocalHost, client_port);
+
     #endif // SOLO
 
     return true;
@@ -44,37 +46,41 @@ void Server::run()
     server_clock.restart();
     float delta;
 
-    bool run = true;
+    run_mutex.lock();
+    running = true;
+    run_mutex.unlock();
 
     sf::Clock test;
 
-    while (run)
+    run_mutex.lock();
+    while (running)
     {
+        run_mutex.unlock();
+
         while (server_clock.getElapsedTime().asSeconds() < 0.05f) {}
         delta = server_clock.restart().asSeconds();
 
         //Update everything
         //Update all worlds
-
-        if (test.getElapsedTime().asSeconds() >= 3)
-        {
-            run = false;
-        }
-
+        run_mutex.lock();
     }
+    run_mutex.unlock();
 }
 
 void Server::close()
 {
-    receiver_thread.terminate();
+    receiver_thread.wait();
 
     server_socket.unbind();
 }
 
 void Server::receiver()
 {
+    bool stop = false;
     while (true)
     {
+        if (stop)
+            break;
         sf::Packet packet;
         sf::IpAddress address;
         uint16_t port;
@@ -93,6 +99,13 @@ void Server::receiver()
             break;
         case sf::Socket::Disconnected:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED." << std::endl;
+            #ifdef SOLO
+                std::cout << "Received disconnect status, server will stop." << std::endl;
+                stop = true;
+                run_mutex.lock();
+                running = false;
+                run_mutex.unlock();
+            #endif // SOLO
             break;
         case sf::Socket::Error:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;

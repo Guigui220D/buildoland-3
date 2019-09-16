@@ -22,5 +22,8 @@ class Server
         void receiver();
         sf::Thread receiver_thread;
 
+        bool running;
+        sf::Mutex run_mutex;
+
         uint16_t client_port;   //Only for local servers
 };

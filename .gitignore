@@ -4,6 +4,7 @@ obj/
 
 # Dlls
 *.dll
+*.exe
 
 # Code::Blocks files
 *.cbp

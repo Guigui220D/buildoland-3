@@ -2,6 +2,9 @@
 
 #include <SFML/Network.hpp>
 
+#include "Block/GameBlocks.h"
+#include "Ground/GameGrounds.h"
+
 class Server
 {
     public:
@@ -13,6 +16,9 @@ class Server
         void run();
 
         void close();
+
+        inline GameBlocks& getBlocksManager() { return blocksManager; }
+        inline GameGrounds& getGroundsManager() { return groundsManager; }
 
     private:
         sf::UdpSocket server_socket;
@@ -26,4 +32,7 @@ class Server
         sf::Mutex run_mutex;
 
         uint16_t client_port;   //Only for local servers
+
+        GameBlocks blocksManager;
+        GameGrounds groundsManager;
 };

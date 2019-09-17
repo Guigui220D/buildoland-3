@@ -264,9 +264,11 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::cout << "Received disconnect code from server." << std::endl;
+                    /*
                     tbd_mutex.lock();
                     tbd_thread_safe = true;
                     tbd_mutex.unlock();
+                    */
                     break;
                 case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);

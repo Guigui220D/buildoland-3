@@ -2,10 +2,12 @@
 
 #include "Chunk.h"
 
+#include "../Utils/Utils.h"
+
 #include <map>
 #include <memory>
 
-class Game;
+class Server;
 class Block;
 class Ground;
 
@@ -15,37 +17,20 @@ class GameGrounds;
 class World
 {
     public:
-        static unsigned int RENDER_DISTANCE;
-
-        World(Game* game);
-        World(Game* game, int seed);
+        World(Server* server);
+        World(Server* server, int seed);
         virtual ~World();
 
         /**
          * Gets the game that own this world
          * @return A pointer to the game
          */
-        inline Game* getGame() const { return game; }
+        inline Server* getServer() const { return server; }
         /**
          * Gets the seed of the world
          * @return The seed
          */
         inline int getSeed() const { return seed; }
-
-        /**
-         * Loads close chunks and unload other chunks
-         * @param center : the position of the player / the camera
-         */
-        void updateLoadedChunk(sf::Vector2f center);
-
-        /**
-         * Adds a chunk from a received packet
-         * The chunk won't be added if the data was invalid
-         * This function is thread safe
-         * @param packet : the packet to unpack
-         * @return True if the chunk was added
-         */
-        bool addChunk(sf::Packet& packet);
 
         /**
          * Gets a const reference to a chunk with its position
@@ -151,12 +136,10 @@ class World
     protected:
 
     private:
-        Game* game;
+        Server* server;
         const GameBlocks& gameBlocksManager;
         const GameGrounds& gameGroundsManager;
         int seed;
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
-        std::vector<Chunk*> chunks_to_add;
-        sf::Mutex chunks_to_add_mutex;
 };

@@ -26,6 +26,9 @@ Server::~Server()
 
 bool Server::init(uint16_t port)
 {
+    blocksManager.initBlocks();
+    groundsManager.initGrounds();
+
     if (server_socket.bind(port) != sf::Socket::Done)
     {
         std::cerr << "Could not bind server socket to port " << port << std::endl;
@@ -60,18 +63,18 @@ void Server::run()
     sf::Clock test;
 
     //THIS IS A TEST
-    if (false)
+    //if (false)
     {
         sf::Packet chunk;
-        chunk << Networking::StoC::SendChunk;
+        chunk << (unsigned short)Networking::StoC::SendChunk;
         chunk << 0 << 0;
         for (int i = 0; i < 16 * 16; i++)
         {
-            chunk << (uint16_t)(!(std::rand() % 5) ? (std::rand() % 5 + 2) : 0);
+            chunk << GameBlocks::AIR->getId();
         }
         for (int i = 0; i < 16 * 16; i++)
         {
-            chunk << (uint16_t)(std::rand() % 4 + 1);
+            chunk << GameGrounds::GRASS->getId();
         }
         server_socket.send(chunk, sf::IpAddress::LocalHost, client_port);
     }
@@ -157,7 +160,7 @@ void Server::receiver()
             break;
 
         default:
-            std::cerr << "Packet has status " << Utils::statusToString(status) << std::endl;
+            std::cerr << "Packet has status " << utils::statusToString(status) << std::endl;
             break;
         }
     }

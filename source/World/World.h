@@ -42,6 +42,7 @@ class World
         /**
          * Adds a chunk from a received packet
          * The chunk won't be added if the data was invalid
+         * This function is thread safe
          * @param packet : the packet to unpack
          * @return True if the chunk was added
          */
@@ -157,4 +158,6 @@ class World
         int seed;
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
+        std::vector<Chunk*> chunks_to_add;
+        sf::Mutex chunks_to_add_mutex;
 };

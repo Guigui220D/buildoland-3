@@ -26,13 +26,23 @@ World::World(Game* game, int seed) :
 
 World::~World()
 {
-    //dtor
+    for (Chunk*& chunk : chunks_to_add)
+        delete chunk;
 }
 
 void World::updateLoadedChunk(sf::Vector2f center)
 {
-    //Remove chuncks too far of center
-    //Add chuncks not added, near center
+
+
+    //Add chunks waiting to be added
+    chunks_to_add_mutex.lock();
+    for (Chunk*& chunk : chunks_to_add)
+    {
+        uint64_t key = utils::combine(chunk->getPos().x, chunk->getPos().y);
+        chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
+    }
+    chunks_to_add.clear();
+    chunks_to_add_mutex.unlock();
 
     //Unload all the chunks that need to be removed
     for (auto i = chunks.begin(); i != chunks.end();)
@@ -68,15 +78,8 @@ bool World::addChunk(sf::Packet packet)
     packet >> pos.x;
     packet >> pos.y;
 
-    uint64_t key = utils::combine(pos.x, pos.y);
-
-    //Remove chunk if one already exists with that position
-    auto it = chunks.find(key);
-    if (it != chunks.end())
-        chunks.erase(it);
-
     //Construct new chunk
-    bool success = true;
+    bool success = false;
 
     Chunk* new_chunk = new Chunk(this, pos, packet, success);
 
@@ -88,7 +91,9 @@ bool World::addChunk(sf::Packet packet)
     }
 
     //Add the new chunk!
-    chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
+    chunks_to_add_mutex.lock();
+    chunks_to_add.push_back(new_chunk);
+    chunks_to_add_mutex.unlock();
     return true;
 }
 
@@ -102,27 +107,6 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
 
     return *chunk_ptr->second;
 }
-
-/*
-Chunk& World::getChunk(sf::Vector2i pos)
-{
-    throw std::logic_error("World::getChunk(sf::Vector2i pos) : Not implemented!");
-
-    uint64_t key = utils::combine(pos.x, pos.y);
-
-    auto chunk_ptr = chunks.find(key);
-
-    if (chunk_ptr == chunks.end())
-    {
-        std::cout << "New chunk generated : " << pos.x << "; " << pos.y << std::endl;
-        Chunk* new_chunk = new Chunk(this, pos);
-        chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
-        return *new_chunk;
-    }
-
-    return *chunk_ptr->second;
-}
-*/
 
 uint16_t World::getBlockId(sf::Vector2i pos)
 {

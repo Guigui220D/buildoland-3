@@ -31,6 +31,9 @@ class GameState : public State
         sf::Thread receiver_thread;
         void receiverLoop();
 
+        bool tbd_thread_safe;   //To be destroyed thread safe
+        sf::Mutex tbd_mutex;
+
 
         //World
         World test_world;

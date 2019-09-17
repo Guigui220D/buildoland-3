@@ -5,6 +5,10 @@
 #include <cstdlib>
 
 #include "Version.h"
+#include "Utils/Utils.h"
+
+#include "../common/Networking/ClientToServerCodes.h"
+#include "../common/Networking/ServerToClientCodes.h"
 
 Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
@@ -36,7 +40,7 @@ bool Server::init(uint16_t port)
     #ifdef SOLO
 
         sf::Packet handshake;
-        handshake << 0 << Version::VERSION_SHORT;
+        handshake << (unsigned short)Networking::StoC::SoloHandshake << Version::VERSION_SHORT;
         server_socket.send(handshake, sf::IpAddress::LocalHost, client_port);
 
     #endif // SOLO
@@ -55,19 +59,23 @@ void Server::run()
 
     sf::Clock test;
 
-    //Test
-    sf::Packet chunk;
-    chunk << uint16_t(1);
-    chunk << 0 << 0;
-    for (int i = 0; i < 16 * 16; i++)
+    //THIS IS A TEST
+    if (false)
     {
-        chunk << (uint16_t)(!(std::rand() % 5) ? (std::rand() % 5 + 2) : 0);
+        sf::Packet chunk;
+        chunk << Networking::StoC::SendChunk;
+        chunk << 0 << 0;
+        for (int i = 0; i < 16 * 16; i++)
+        {
+            chunk << (uint16_t)(!(std::rand() % 5) ? (std::rand() % 5 + 2) : 0);
+        }
+        for (int i = 0; i < 16 * 16; i++)
+        {
+            chunk << (uint16_t)(std::rand() % 4 + 1);
+        }
+        server_socket.send(chunk, sf::IpAddress::LocalHost, client_port);
     }
-    for (int i = 0; i < 16 * 16; i++)
-    {
-        chunk << (uint16_t)(std::rand() % 4 + 1);
-    }
-    server_socket.send(chunk, sf::IpAddress::LocalHost, client_port);
+
 
     run_mutex.lock();
     while (running)
@@ -107,26 +115,36 @@ void Server::receiver()
         {
         case sf::Socket::Done:
             std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-            if (packet.getDataSize() == 4)
+            if (packet.getDataSize() >= 2)
             {
-                int i;
-                packet >> i;
-                if (i == 0)
+                unsigned short code; packet >> code;
+
+                switch (code)
                 {
-                    std::cout << "Received disconnect message, server will stop." << std::endl;
-                    stop = true;
-                    run_mutex.lock();
-                    running = false;
-                    run_mutex.unlock();
+                case Networking::CtoS::Disconnect:
+                    #ifdef SOLO
+                        if (address == sf::IpAddress::LocalHost && port == client_port)
+                        {
+                            std::cout << "Received disconnect message from owner, server will stop." << std::endl;
+                            stop = true;
+                            run_mutex.lock();
+                            running = false;
+                            run_mutex.unlock();
+                            break;
+                        }
+                    #endif // SOLO
+                    break;
+                default:
+                    std::cerr << "Packet has unknown code" << std::endl;
+                    break;
                 }
             }
+            else
+                std::cerr << "Packet is too small to be read" << std::endl;
             break;
-        case sf::Socket::NotReady:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
-            break;
-        case sf::Socket::Partial:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
-            break;
+
+
+
         case sf::Socket::Disconnected:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED." << std::endl;
             #ifdef SOLO
@@ -137,8 +155,9 @@ void Server::receiver()
                 run_mutex.unlock();
             #endif // SOLO
             break;
-        case sf::Socket::Error:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;
+
+        default:
+            std::cerr << "Packet has status " << Utils::statusToString(status) << std::endl;
             break;
         }
     }

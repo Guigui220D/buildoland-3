@@ -8,6 +8,9 @@
 
 #include "../Version.h"
 
+#include "../../common/Networking/ClientToServerCodes.h"
+#include "../../common/Networking/ServerToClientCodes.h"
+
 //TEMPORARY
 #include <windows.h>
 
@@ -16,6 +19,7 @@ GameState::GameState(Game* game, unsigned int id) :
     solo_mode(true),
     connected(false),
     receiver_thread(&GameState::receiverLoop, this),
+    tbd_thread_safe(false),
     test_world(game),
     my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
     block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
@@ -96,6 +100,11 @@ bool GameState::handleEvent(sf::Event& event)
 
 void GameState::update(float delta_time)
 {
+    tbd_mutex.lock();
+    if (tbd_thread_safe)
+        must_be_destroyed = true;
+    tbd_mutex.unlock();
+
     //TEMPORARY
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         my_view.setCenter(my_view.getCenter() + sf::Vector2f(-5.f * delta_time, 0));
@@ -193,14 +202,22 @@ bool GameState::startAndConnectLocalServer()
         must_be_destroyed = true;
         return false;
     }
-    if (packet.getDataSize() != 13)
+    if (packet.getDataSize() != 11)
     {
         std::cerr << "Received wrong packet! Expected 13 bytes, got " << packet.getDataSize() << '.' << std::endl;
         must_be_destroyed = true;
         return false;
     }
-    int pc;
-    packet >> pc;
+
+    unsigned short code = 0; packet >> code;
+
+    if (code != Networking::StoC::SoloHandshake)
+    {
+        std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::SoloHandshake << " but got " << code << std::endl;
+        must_be_destroyed = true;
+        return false;
+    }
+
     char vers[6];
     packet >> vers;
     vers[5] = 0;
@@ -241,12 +258,26 @@ void GameState::receiverLoop()
 
             if (packet.getDataSize() >= 2)
             {
-                std::clog << "Trying to add a new chunk." << std::endl;
-                uint16_t i;
-                packet >> i;
-                if (i == 1)
+                unsigned short code; packet >> code;
+
+                switch (code)
+                {
+                case Networking::StoC::Disconnect:
+                    std::cout << "Received disconnect code from server." << std::endl;
+                    tbd_mutex.lock();
+                    tbd_thread_safe = true;
+                    tbd_mutex.unlock();
+                    break;
+                case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);
+                    break;
+                default:
+                    std::cerr << "Unknown packet code" << std::endl;
+                    break;
+                }
             }
+            else
+
             break;
         case sf::Socket::NotReady:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;

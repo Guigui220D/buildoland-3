@@ -3,8 +3,13 @@
 #include "Server.h"
 #include "Version.h"
 
+#include <ctime>
+#include <cstdlib>
+
 int main(int argc, char** argv)
 {
+    std::srand(std::time(0));
+
     uint16_t client_port = 0;
     uint16_t server_port = 0;
 

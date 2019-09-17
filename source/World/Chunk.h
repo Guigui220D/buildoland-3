@@ -19,7 +19,7 @@ class Chunk
 
         static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
 
-        Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success);
+        Chunk(World* world, sf::Vector2i pos, sf::Packet& packet, bool& success);
         ~Chunk();
 
         inline Game* getGame() const { return game; }
@@ -37,7 +37,6 @@ class Chunk
         inline uint16_t getGroundId(int x, int y) const
         {
             assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);
-
             return grounds.get(x, y);
         }
 

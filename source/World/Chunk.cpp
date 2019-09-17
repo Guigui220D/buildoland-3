@@ -12,7 +12,7 @@
 
 const int Chunk::CHUNK_SIZE = 16;
 
-Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success) :
+Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet& packet, bool& success) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
@@ -30,10 +30,31 @@ Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet packet, bool& success) :
         return;
     }
 
-    //Copying data
-    memcpy(blocks.getData(), ((char*)packet.getData()) + header_size, CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
-    memcpy(grounds.getData(), ((char*)packet.getData()) + header_size + CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t), CHUNK_SIZE * CHUNK_SIZE * sizeof(uint16_t));
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        uint16_t block_id;
+        packet >> block_id;
+        blocks.set(x, y, block_id);
+    }
 
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        uint16_t ground_id;
+        packet >> ground_id;
+        grounds.set(x, y, ground_id);
+    }
+
+    /*
+    //Copying data
+    std::copy((uint16_t*)packet.getData(), ((uint16_t*)packet.getData()) + blocks.getElementCount(), blocks.getDataSize());
+    std::copy((uint16_t*)packet.getData() + blocks.getElementCount(), ((uint16_t*)packet.getData()) + blocks.getElementCount(), blocks.getDataSize());
+
+    //memcpy(blocks.getData(),  packet.getData() + header_size, blocks.getDataSize());
+    //memcpy(grounds.getData(), packet.getData() + header_size + blocks.getDataSize(), blocks.getDataSize());
+
+    */
     //Prepare vertices
     for (int i = 0; i < 4; i++)
     {

@@ -2,6 +2,7 @@
 
 #include <iostream>
 #include <assert.h>
+#include <cstdlib>
 
 #include "Version.h"
 
@@ -53,6 +54,20 @@ void Server::run()
     run_mutex.unlock();
 
     sf::Clock test;
+
+    //Test
+    sf::Packet chunk;
+    chunk << uint16_t(1);
+    chunk << 0 << 0;
+    for (int i = 0; i < 16 * 16; i++)
+    {
+        chunk << (uint16_t)(std::rand() % 2 ? std::rand() % 5 : 0);
+    }
+    for (int i = 0; i < 16 * 16; i++)
+    {
+        chunk << (uint16_t)(std::rand() % 5);
+    }
+    server_socket.send(chunk, sf::IpAddress::LocalHost, client_port);
 
     run_mutex.lock();
     while (running)

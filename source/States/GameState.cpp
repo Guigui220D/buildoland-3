@@ -238,6 +238,15 @@ void GameState::receiverLoop()
         {
         case sf::Socket::Done:
             std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+
+            if (packet.getDataSize() >= 2)
+            {
+                std::clog << "Trying to add a new chunk." << std::endl;
+                uint16_t i;
+                packet >> i;
+                if (i == 1)
+                    test_world.addChunk(packet);
+            }
             break;
         case sf::Socket::NotReady:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;

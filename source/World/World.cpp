@@ -57,7 +57,7 @@ void World::updateLoadedChunk(sf::Vector2f center)
     }
 }
 
-bool World::addChunk(sf::Packet packet)
+bool World::addChunk(sf::Packet& packet)
 {
     //We expect the packet to be of that size
     //4 bytes per tile (2 for block and 2 for ground)
@@ -77,6 +77,8 @@ bool World::addChunk(sf::Packet packet)
     sf::Vector2i pos;
     packet >> pos.x;
     packet >> pos.y;
+
+    std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
 
     //Construct new chunk
     bool success = false;

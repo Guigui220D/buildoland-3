@@ -148,6 +148,7 @@ void Server::receiver()
                         requested_chunks.push_back(pos);
                         requested_chunks_mutex.unlock();
                     }
+                    break;
                 default:
                     std::cerr << "Packet has unknown code" << std::endl;
                     break;

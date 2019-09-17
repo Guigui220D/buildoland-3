@@ -336,7 +336,7 @@ void GameState::receiverLoop()
 
             break;
         case sf::Socket::NotReady:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
+            //std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
             break;
         case sf::Socket::Partial:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;

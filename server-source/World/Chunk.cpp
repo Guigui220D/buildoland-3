@@ -10,21 +10,42 @@
 //TMP
 #include <cstdlib>
 
+#include "../../common/Networking/ServerToClientCodes.h"
+
 const int Chunk::CHUNK_SIZE = 16;
 
 Chunk::Chunk(World* world, sf::Vector2i pos) :
     ready(false),
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
-    grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
+    grounds(CHUNK_SIZE, CHUNK_SIZE, 1),
     pos(pos),
     server(world->getServer()),
     world(world)
 {
+    //setBlock(0, 15, GameBlocks::GOLD);
 }
 
 Chunk::~Chunk()
 {
     //dtor
+}
+
+void Chunk::getPacket(sf::Packet& packet) const
+{
+    packet.clear();
+    packet << (unsigned short)Networking::StoC::SendChunk;
+    packet << 0 << 0;
+
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        packet << getBlockId(x, y);
+    }
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        packet << getGroundId(x, y);
+    }
 }
 
 const Block* Chunk::getBlock(int x, int y) const

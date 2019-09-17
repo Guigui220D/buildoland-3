@@ -12,7 +12,8 @@
 
 Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
-    client_port(client_port)
+    client_port(client_port),
+    world(this)
 {
     #ifndef SOLO
         assert(!client_port);
@@ -64,20 +65,10 @@ void Server::run()
 
     //THIS IS A TEST
     //if (false)
-    {
-        sf::Packet chunk;
-        chunk << (unsigned short)Networking::StoC::SendChunk;
-        chunk << 0 << 0;
-        for (int i = 0; i < 16 * 16; i++)
-        {
-            chunk << GameBlocks::AIR->getId();
-        }
-        for (int i = 0; i < 16 * 16; i++)
-        {
-            chunk << GameGrounds::GRASS->getId();
-        }
-        server_socket.send(chunk, sf::IpAddress::LocalHost, client_port);
-    }
+
+    sf::Packet p;
+    world.getChunk(sf::Vector2i(0, 0)).getPacket(p);
+    server_socket.send(p, sf::IpAddress::LocalHost, client_port);
 
 
     run_mutex.lock();

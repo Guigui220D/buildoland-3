@@ -27,6 +27,11 @@ class Chunk
 
         inline bool isReady() const { return ready; }
 
+        /**
+         * Generates a packet containing the chunk's information
+         */
+        void getPacket(sf::Packet& packet) const;
+
         inline uint16_t getBlockId(int x, int y) const
         {
             assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);

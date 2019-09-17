@@ -38,6 +38,22 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
     return *chunk_ptr->second;
 }
 
+Chunk& World::getChunk(sf::Vector2i pos)
+{
+    uint64_t key = utils::combine(pos.x, pos.y);
+    auto chunk_ptr = chunks.find(key);
+
+    if (chunk_ptr == chunks.end())
+    {
+        std::cout << "New chunk generated : " << pos.x << "; " << pos.y << std::endl;
+        Chunk* new_chunk = new Chunk(this, pos);
+        chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
+        return *new_chunk;
+    }
+
+    return *chunk_ptr->second;
+}
+
 uint16_t World::getBlockId(sf::Vector2i pos)
 {
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);

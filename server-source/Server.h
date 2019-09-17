@@ -5,6 +5,8 @@
 #include "Block/GameBlocks.h"
 #include "Ground/GameGrounds.h"
 
+#include "World/World.h"
+
 class Server
 {
     public:
@@ -35,4 +37,7 @@ class Server
 
         GameBlocks blocksManager;
         GameGrounds groundsManager;
+
+        //Theres only one world for the moment
+        World world;
 };

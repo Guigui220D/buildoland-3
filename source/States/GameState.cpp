@@ -38,7 +38,7 @@ GameState::~GameState()
     {
         //TEMP
         sf::Packet quit;
-        quit << 0;
+        quit << (unsigned short)Networking::CtoS::Disconnect;
         client_socket.send(quit, remote_ip, remote_port);
     }
 }
@@ -264,11 +264,9 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::cout << "Received disconnect code from server." << std::endl;
-                    /*
                     tbd_mutex.lock();
                     tbd_thread_safe = true;
                     tbd_mutex.unlock();
-                    */
                     break;
                 case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);

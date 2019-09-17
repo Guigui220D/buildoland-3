@@ -65,11 +65,11 @@ void Server::run()
 
     //THIS IS A TEST
     //if (false)
-
-    sf::Packet p;
-    world.getChunk(sf::Vector2i(0, 0)).getPacket(p);
-    server_socket.send(p, sf::IpAddress::LocalHost, client_port);
-
+    {
+        sf::Packet p;
+        world.getChunk(sf::Vector2i(0, 0)).getPacket(p);
+        server_socket.send(p, sf::IpAddress::LocalHost, client_port);
+    }
 
     run_mutex.lock();
     while (running)
@@ -79,6 +79,16 @@ void Server::run()
         while (server_clock.getElapsedTime().asSeconds() < 0.05f) {}
         delta = server_clock.restart().asSeconds();
 
+
+        requested_chunks_mutex.lock();
+        for (sf::Vector2i& pos : requested_chunks)
+        {
+            sf::Packet p;
+            world.getChunk(pos).getPacket(p);
+            server_socket.send(p, sf::IpAddress::LocalHost, client_port);
+        }
+        requested_chunks.clear();
+        requested_chunks_mutex.unlock();
         //Update everything
         //Update all worlds
         run_mutex.lock();
@@ -128,6 +138,16 @@ void Server::receiver()
                         }
                     #endif // SOLO
                     break;
+                case Networking::CtoS::RequestChunk:
+                    {
+                        sf::Vector2i pos;
+                        packet >> pos.x;
+                        packet >> pos.y;
+
+                        requested_chunks_mutex.lock();
+                        requested_chunks.push_back(pos);
+                        requested_chunks_mutex.unlock();
+                    }
                 default:
                     std::cerr << "Packet has unknown code" << std::endl;
                     break;

@@ -49,4 +49,10 @@ class GameState : public State
         sf::Texture const * const block_textures;
         sf::Texture const * const ground_textures;
         sf::Texture const * const ground_details_textures;
+
+
+        sf::Vector2i test_chunk_pos;
+        sf::Vector2i test_next_chunk_pos_turn;
+        int test_chunk_next_distance = 1;
+        int test_chunk_next_direction = 0;
 };

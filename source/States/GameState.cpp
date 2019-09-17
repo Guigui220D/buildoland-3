@@ -45,6 +45,7 @@ GameState::~GameState()
 
 void GameState::init()
 {
+    test_next_chunk_pos_turn = sf::Vector2i(0, -1);
     //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
     {
@@ -84,7 +85,62 @@ bool GameState::handleEvent(sf::Event& event)
         updateView();
         break;
 
+
     case sf::Event::KeyPressed:
+        //TEST
+        if (event.key.code == sf::Keyboard::A)
+        {
+            switch (test_chunk_next_direction)
+            {
+            case 0:
+                test_chunk_pos += sf::Vector2i(0, -1);
+                if (test_chunk_pos == test_next_chunk_pos_turn)
+                {
+                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(test_chunk_next_distance, 0);
+                    test_chunk_next_direction++;
+                    test_chunk_next_direction %= 4;
+                }
+                break;
+            case 1:
+                test_chunk_pos += sf::Vector2i(1, 0);
+                if (test_chunk_pos == test_next_chunk_pos_turn)
+                {
+                    test_chunk_next_distance++;
+                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(0, test_chunk_next_distance);
+                    test_chunk_next_direction++;
+                    test_chunk_next_direction %= 4;
+                }
+                break;
+            case 2:
+                test_chunk_pos += sf::Vector2i(0, 1);
+                if (test_chunk_pos == test_next_chunk_pos_turn)
+                {
+                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(-test_chunk_next_distance, 0);
+                    test_chunk_next_direction++;
+                    test_chunk_next_direction %= 4;
+                }
+                break;
+            case 3:
+                test_chunk_pos += sf::Vector2i(-1, 0);
+                if (test_chunk_pos == test_next_chunk_pos_turn)
+                {
+                    test_chunk_next_distance++;
+                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(0, -test_chunk_next_distance);
+                    test_chunk_next_direction++;
+                    test_chunk_next_direction %= 4;
+                }
+                break;
+            }
+
+
+
+            std::cout << "Requesting chunk " << test_chunk_pos.x << ", " << test_chunk_pos.y << std::endl;
+
+            sf::Packet request;
+            request << (unsigned short)Networking::CtoS::RequestChunk;
+            request << test_chunk_pos.x << test_chunk_pos.y;
+            client_socket.send(request, remote_ip, remote_port);
+        }
         break;
 
     case sf::Event::MouseWheelScrolled:

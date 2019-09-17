@@ -7,7 +7,8 @@ namespace Networking
         enum : unsigned short
         {
             Disconnect = 0,
-            AskForConnexion
+            AskForConnexion,
+			RequestChunk
         };
     }
 }

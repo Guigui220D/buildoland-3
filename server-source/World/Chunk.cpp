@@ -34,7 +34,7 @@ void Chunk::getPacket(sf::Packet& packet) const
 {
     packet.clear();
     packet << (unsigned short)Networking::StoC::SendChunk;
-    packet << 0 << 0;
+    packet << getPos().x << getPos().y;
 
     for (int x = 0; x < CHUNK_SIZE; x++)
     for (int y = 0; y < CHUNK_SIZE; y++)

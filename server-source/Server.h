@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
+#include <vector>
 
 #include "Block/GameBlocks.h"
 #include "Ground/GameGrounds.h"
@@ -40,4 +41,8 @@ class Server
 
         //Theres only one world for the moment
         World world;
+
+        //TEST
+        std::vector<sf::Vector2i> requested_chunks;
+        sf::Mutex requested_chunks_mutex;
 };

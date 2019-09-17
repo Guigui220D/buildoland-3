@@ -4,6 +4,7 @@
 #include <iostream>
 
 Block const * const GameBlocks::AIR             = new BlockAir();
+Block const * const GameBlocks::ERROR           = new BlockError();
 Block const * const GameBlocks::STONE           = new BlockStone();
 Block const * const GameBlocks::STONE_BRICKS    = new BlockStoneBricks;
 Block const * const GameBlocks::IRON            = new BlockIron();
@@ -26,6 +27,8 @@ void GameBlocks::initBlocks()
     blocks.clear();
     //Add all blocks here
     addBlock(AIR);
+    addBlock(ERROR);
+
     addBlock(STONE);
     addBlock(STONE_BRICKS);
     addBlock(IRON);
@@ -52,7 +55,7 @@ void GameBlocks::addBlock(Block const * block)
 Block const * GameBlocks::getBlockByID(unsigned short id) const
 {
     if (id >= blocks.size())
-        return AIR;
+        return ERROR;
 
     return blocks.at(id);
 }
@@ -62,7 +65,7 @@ Block const * GameBlocks::getBlockByName(const std::string name) const
     auto ptr = names.find(name);
 
     if (ptr != names.end())
-        return AIR;
+        return ERROR;
 
     uint16_t id = ptr->second;
     assert(id < blocks.size());

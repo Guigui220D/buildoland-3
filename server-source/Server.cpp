@@ -61,11 +61,11 @@ void Server::run()
     chunk << 0 << 0;
     for (int i = 0; i < 16 * 16; i++)
     {
-        chunk << (uint16_t)(std::rand() % 2 ? std::rand() % 5 : 0);
+        chunk << (uint16_t)(!(std::rand() % 5) ? (std::rand() % 5 + 2) : 0);
     }
     for (int i = 0; i < 16 * 16; i++)
     {
-        chunk << (uint16_t)(std::rand() % 5);
+        chunk << (uint16_t)(std::rand() % 4 + 1);
     }
     server_socket.send(chunk, sf::IpAddress::LocalHost, client_port);
 

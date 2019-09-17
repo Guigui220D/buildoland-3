@@ -3,6 +3,7 @@
 #include <limits>
 #include <iostream>
 
+Ground const * const GameGrounds::ERROR = new GroundError();
 Ground const * const GameGrounds::WATER = new GroundWater();
 Ground const * const GameGrounds::STONE = new GroundStone();
 Ground const * const GameGrounds::SAND  = new GroundSand();
@@ -24,6 +25,8 @@ void GameGrounds::initGrounds()
     names.clear();
     grounds.clear();
     //Add all grounds here
+    addGround(ERROR);
+
     addGround(WATER);
     addGround(STONE);
     addGround(SAND);
@@ -49,7 +52,7 @@ void GameGrounds::addGround(Ground const * ground)
 Ground const * GameGrounds::getGroundByID(uint16_t id) const
 {
     if (id >= grounds.size())
-        return STONE;
+        return ERROR;
 
     return grounds.at(id);
 }
@@ -59,7 +62,7 @@ Ground const * GameGrounds::getGroundByName(const std::string name) const
     auto ptr = names.find(name);
 
     if (ptr != names.end())
-        return STONE;
+        return ERROR;
 
     uint16_t id = ptr->second;
     assert(id < grounds.size());

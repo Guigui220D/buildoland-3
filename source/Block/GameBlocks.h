@@ -3,6 +3,7 @@
 #include "Block.h"
 
 #include "GameBlocks/BlockAir.h"
+#include "GameBlocks/BlockError.h"
 #include "GameBlocks/BlockStone.h"
 #include "GameBlocks/BlockStoneBricks.h"
 #include "GameBlocks/BlockIron.h"
@@ -40,6 +41,7 @@ class GameBlocks
 
         //Put blocks here
         static Block const * const AIR;
+        static Block const * const ERROR;
         static Block const * const STONE;
         static Block const * const STONE_BRICKS;
         static Block const * const IRON;

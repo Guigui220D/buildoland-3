@@ -2,6 +2,7 @@
 
 #include "Ground.h"
 
+#include "GameGrounds/GroundError.h"
 #include "GameGrounds/GroundStone.h"
 #include "GameGrounds/GroundSand.h"
 #include "GameGrounds/GroundGrass.h"
@@ -37,6 +38,7 @@ class GameGrounds
         Ground const * getGroundByName(const std::string name) const;
 
         //Put grounds here
+        static Ground const * const ERROR;
         static Ground const * const WATER;
         static Ground const * const STONE;
         static Ground const * const SAND;

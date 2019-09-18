@@ -12,7 +12,7 @@
 
 Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
-    client_port(client_port),
+    owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
     world(this)
 {
@@ -40,7 +40,9 @@ bool Server::init(uint16_t port)
 
     server_socket.setBlocking(true);
 
-    #ifndef SOLO
+    #ifdef SOLO
+        clients_manager.addClient(owner);
+    #else
         connection_open = true;
     #endif // SOLO
 
@@ -49,7 +51,7 @@ bool Server::init(uint16_t port)
     #ifdef SOLO
         sf::Packet handshake;
         handshake << (unsigned short)Networking::StoC::SoloHandshake << Version::VERSION_SHORT;
-        server_socket.send(handshake, sf::IpAddress::LocalHost, client_port);
+        server_socket.send(handshake, owner.address, owner.port);
     #endif // SOLO
 
     return true;
@@ -66,13 +68,15 @@ void Server::run()
 
     sf::Clock test;
 
-    //THIS IS A TEST
-    //if (false)
-    {
-        sf::Packet p;
-        world.getChunk(sf::Vector2i(0, 0)).getPacket(p);
-        server_socket.send(p, sf::IpAddress::LocalHost, client_port);
-    }
+    #ifdef SOLO
+        //THIS IS A TEST
+        //if (false)
+        {
+            sf::Packet p;
+            world.getChunk(sf::Vector2i(0, 0)).getPacket(p);
+            server_socket.send(p, owner.address, owner.port);
+        }
+    #endif // SOLO
 
     run_mutex.lock();
     while (running)
@@ -83,12 +87,13 @@ void Server::run()
         delta = server_clock.restart().asSeconds();
 
 
+        //TEST
         requested_chunks_mutex.lock();
         for (sf::Vector2i& pos : requested_chunks)
         {
             sf::Packet p;
             world.getChunk(pos).getPacket(p);
-            server_socket.send(p, sf::IpAddress::LocalHost, client_port);
+            server_socket.send(p, owner.address, owner.port);
         }
         requested_chunks.clear();
         requested_chunks_mutex.unlock();
@@ -130,7 +135,7 @@ void Server::receiver()
                 {
                 case Networking::CtoS::Disconnect:
                     #ifdef SOLO
-                        if (address == sf::IpAddress::LocalHost && port == client_port)
+                        if (address == owner.address && port == owner.port)
                         {
                             std::cout << "Received disconnect message from owner, server will stop." << std::endl;
                             stop = true;
@@ -159,19 +164,6 @@ void Server::receiver()
             }
             else
                 std::cerr << "Packet is too small to be read" << std::endl;
-            break;
-
-
-
-        case sf::Socket::Disconnected:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED." << std::endl;
-            #ifdef SOLO
-                std::cout << "Received disconnect status, server will stop." << std::endl;
-                stop = true;
-                run_mutex.lock();
-                running = false;
-                run_mutex.unlock();
-            #endif // SOLO
             break;
 
         default:

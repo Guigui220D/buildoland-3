@@ -5,8 +5,9 @@
 
 #include "../Block/GameBlocks.h"
 #include "../Ground/GameGrounds.h"
-
 #include "../World/World.h"
+
+#include "ClientsManager.h"
 
 class Server
 {
@@ -26,6 +27,8 @@ class Server
     private:
         sf::UdpSocket server_socket;
 
+        ClientsManager clients_manager;
+
         sf::Clock server_clock;
 
         void receiver();
@@ -34,7 +37,7 @@ class Server
         bool running;
         sf::Mutex run_mutex;
 
-        uint16_t client_port;   //Only for local servers
+        IpAndPort owner;
 
         bool connection_open;
 

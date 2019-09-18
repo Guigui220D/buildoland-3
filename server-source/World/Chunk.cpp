@@ -1,6 +1,6 @@
 #include "Chunk.h"
 
-#include "../Server.h"
+#include "../Server/Server.h"
 
 #include "../Ground/Ground.h"
 #include "../Block/Block.h"

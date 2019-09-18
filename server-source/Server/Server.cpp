@@ -4,15 +4,16 @@
 #include <assert.h>
 #include <cstdlib>
 
-#include "Version.h"
-#include "Utils/Utils.h"
+#include "../Version.h"
+#include "../Utils/Utils.h"
 
-#include "../common/Networking/ClientToServerCodes.h"
-#include "../common/Networking/ServerToClientCodes.h"
+#include "../../common/Networking/ClientToServerCodes.h"
+#include "../../common/Networking/ServerToClientCodes.h"
 
 Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
     client_port(client_port),
+    connection_open(false),
     world(this)
 {
     #ifndef SOLO
@@ -39,14 +40,16 @@ bool Server::init(uint16_t port)
 
     server_socket.setBlocking(true);
 
+    #ifndef SOLO
+        connection_open = true;
+    #endif // SOLO
+
     receiver_thread.launch();
 
     #ifdef SOLO
-
         sf::Packet handshake;
         handshake << (unsigned short)Networking::StoC::SoloHandshake << Version::VERSION_SHORT;
         server_socket.send(handshake, sf::IpAddress::LocalHost, client_port);
-
     #endif // SOLO
 
     return true;

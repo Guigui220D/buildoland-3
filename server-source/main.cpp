@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "Server.h"
+#include "Server/Server.h"
 #include "Version.h"
 
 #include <ctime>

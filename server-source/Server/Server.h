@@ -3,10 +3,10 @@
 #include <SFML/Network.hpp>
 #include <vector>
 
-#include "Block/GameBlocks.h"
-#include "Ground/GameGrounds.h"
+#include "../Block/GameBlocks.h"
+#include "../Ground/GameGrounds.h"
 
-#include "World/World.h"
+#include "../World/World.h"
 
 class Server
 {
@@ -36,12 +36,13 @@ class Server
 
         uint16_t client_port;   //Only for local servers
 
+        bool connection_open;
+
         GameBlocks blocksManager;
         GameGrounds groundsManager;
 
         //Theres only one world for the moment
         World world;
-
         //TEST
         std::vector<sf::Vector2i> requested_chunks;
         sf::Mutex requested_chunks_mutex;

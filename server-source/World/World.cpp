@@ -1,7 +1,7 @@
 #include "World.h"
 
 #include "../Utils/Utils.h"
-#include "../Server.h"
+#include "../Server/Server.h"
 
 #include <iostream>
 

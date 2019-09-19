@@ -153,6 +153,19 @@ void Server::receiver()
                         }
                     #endif // SOLO
                     break;
+                case Networking::CtoS::AskForConnection:
+                    std::clog << "Connection requested" << std::endl;
+
+                    if (connection_open)
+                        break;
+                    if (clients_manager.isConnected(iandp))
+                        break;
+
+                    std::clog << "Connection accepted" << std::endl;
+
+                    clients_manager.addClient(iandp);
+
+                    break;
                 case Networking::CtoS::RequestChunk:
                     {
                         if (!clients_manager.isConnected(iandp))

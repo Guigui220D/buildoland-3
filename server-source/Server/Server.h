@@ -2,6 +2,7 @@
 
 #include <SFML/Network.hpp>
 #include <vector>
+#include <atomic>
 
 #include "../Block/GameBlocks.h"
 #include "../Ground/GameGrounds.h"
@@ -39,7 +40,7 @@ class Server
 
         IpAndPort owner;
 
-        bool connection_open;
+        std::atomic<bool> connection_open;
 
         GameBlocks blocksManager;
         GameGrounds groundsManager;

@@ -8,8 +8,8 @@ namespace Networking
         {
             Disconnect = 0,
             SoloHandshake,
-            ConnexionAccepted,
-            ConnexionRefused,
+            ConnectionAccepted,
+            ConnectionRefused,
             SendChunk
         };
     }

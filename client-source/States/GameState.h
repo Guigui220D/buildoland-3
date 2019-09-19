@@ -5,6 +5,7 @@
 #include <SFML/Network.hpp>
 
 #include "../World/World.h"
+#include "../Entities/EntitiesManager.h"
 
 class GameState : public State
 {
@@ -38,6 +39,9 @@ class GameState : public State
         //World
         World test_world;
 
+        //Entities
+        EntitiesManager entities;
+
         //Rendering stuff
         sf::View my_view;
         void updateView();
@@ -49,7 +53,6 @@ class GameState : public State
         sf::Texture const * const block_textures;
         sf::Texture const * const ground_textures;
         sf::Texture const * const ground_details_textures;
-
 
         sf::Vector2i test_chunk_pos;
         sf::Vector2i test_next_chunk_pos_turn;

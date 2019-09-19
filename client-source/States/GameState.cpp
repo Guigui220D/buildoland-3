@@ -11,6 +11,8 @@
 #include "../../common/Networking/ClientToServerCodes.h"
 #include "../../common/Networking/ServerToClientCodes.h"
 
+#include "../Entities/GameEntities/TestEntity.h"
+
 //TEMPORARY
 #include <windows.h>
 
@@ -68,6 +70,9 @@ void GameState::init()
     connected = true;
     client_socket.setBlocking(true);
     receiver_thread.launch();
+
+    entities.addEntity(new TestEntity(0, sf::Color::Red, false));
+    entities.addEntity(new TestEntity(1, sf::Color::Yellow, true));
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -178,6 +183,8 @@ void GameState::update(float delta_time)
     }
 
     test_world.updateLoadedChunk(my_view.getCenter());
+
+    entities.updateAll(delta_time);
 }
 
 void GameState::draw(sf::RenderTarget& target) const
@@ -195,6 +202,8 @@ void GameState::draw(sf::RenderTarget& target) const
 
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+
+    entities.drawAll(target);
 }
 
 void GameState::updateView()

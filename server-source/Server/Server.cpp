@@ -86,17 +86,21 @@ void Server::run()
         while (server_clock.getElapsedTime().asSeconds() < 0.05f) {}
         delta = server_clock.restart().asSeconds();
 
-
-        //TEST
-        requested_chunks_mutex.lock();
-        for (sf::Vector2i& pos : requested_chunks)
+        //Answer chunk requests
+        clients_manager.clients_mutex.lock();
+        for (auto i = clients_manager.getClientsBegin(); i != clients_manager.getClientsEnd(); i++)
         {
-            sf::Packet p;
-            world.getChunk(pos).getPacket(p);
-            server_socket.send(p, owner.address, owner.port);
+            if (i->second->hasRequestedChunks())
+            {
+                sf::Vector2i pos = i->second->getNextRequestedChunk();
+
+                sf::Packet p;
+                world.getChunk(pos).getPacket(p);
+                server_socket.send(p, i->first.address, i->first.port);
+            }
         }
-        requested_chunks.clear();
-        requested_chunks_mutex.unlock();
+        clients_manager.clients_mutex.unlock();
+
         //Update everything
         //Update all worlds
         run_mutex.lock();
@@ -127,8 +131,11 @@ void Server::receiver()
         {
         case sf::Socket::Done:
             std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+
             if (packet.getDataSize() >= 2)
             {
+                IpAndPort iandp(address, port);
+
                 unsigned short code; packet >> code;
 
                 switch (code)
@@ -148,19 +155,25 @@ void Server::receiver()
                     break;
                 case Networking::CtoS::RequestChunk:
                     {
+                        if (!clients_manager.isConnected(iandp))
+                            break;
+
                         sf::Vector2i pos;
                         packet >> pos.x;
                         packet >> pos.y;
 
-                        requested_chunks_mutex.lock();
-                        requested_chunks.push_back(pos);
-                        requested_chunks_mutex.unlock();
+                        std::clog << "Adding chunk request" << std::endl;
+
+                        clients_manager.getClient(iandp).addRequestedChunk(pos);
                     }
                     break;
                 default:
                     std::cerr << "Packet has unknown code" << std::endl;
                     break;
                 }
+
+
+
             }
             else
                 std::cerr << "Packet is too small to be read" << std::endl;

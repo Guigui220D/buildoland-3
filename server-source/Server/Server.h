@@ -46,7 +46,4 @@ class Server
 
         //Theres only one world for the moment
         World world;
-        //TEST
-        std::vector<sf::Vector2i> requested_chunks;
-        sf::Mutex requested_chunks_mutex;
 };

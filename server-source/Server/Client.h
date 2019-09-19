@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
+#include <queue>
 
 struct IpAndPort
 {
@@ -19,7 +20,7 @@ struct IpAndPort
 
     inline bool operator==(const IpAndPort& other) const
     {
-        return port == other.port && address == other.address;
+        return ((port == other.port) && (address == other.address));
     }
 
     inline bool operator<(const IpAndPort& other) const
@@ -41,8 +42,19 @@ class Client
 
         inline const IpAndPort& getIpAndPort() const { return ip_and_port; }
 
+        inline bool hasRequestedChunks() const
+        {
+            sf::Lock lock(chunk_requests_mutex);
+            return !chunk_requests.empty();
+        }
+        sf::Vector2i getNextRequestedChunk();
+        void addRequestedChunk(sf::Vector2i chunk);
+
     protected:
         IpAndPort ip_and_port;
+
+        std::queue<sf::Vector2i> chunk_requests;
+        mutable sf::Mutex chunk_requests_mutex;
 
         //Player* player;
 

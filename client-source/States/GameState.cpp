@@ -28,7 +28,6 @@ GameState::GameState(Game* game, unsigned int id) :
 {
     update_transparent = false;
     draw_transparent = false;
-    updateView();
 }
 
 GameState::~GameState()
@@ -156,6 +155,7 @@ bool GameState::handleEvent(sf::Event& event)
 
 void GameState::update(float delta_time)
 {
+
     tbd_mutex.lock();
     if (tbd_thread_safe)
         must_be_destroyed = true;

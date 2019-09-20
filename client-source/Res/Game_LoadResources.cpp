@@ -11,11 +11,16 @@ void Game::loadResources()
 
     std::cout << "Loading all resources..." << std::endl;
 
+    //Textures
     fail_count +=
-        !resourceManager.loadTextureFromFile("Terrain/grounds.png", "GROUND_TEXTURES") +
-        !resourceManager.loadTextureFromFile("Terrain/ground_details.png", "GROUND_DETAILS") +
-        //!resourceManager.loadTextureFromFile("Testing/rotation_test.png", "ROTATION_TESTS") +
-        !resourceManager.loadTextureFromFile("Terrain/blocks.png", "BLOCK_TEXTURES");
+        !resource_manager.loadTextureFromFile("Terrain/grounds.png", "GROUND_TEXTURES") +
+        !resource_manager.loadTextureFromFile("Terrain/ground_details.png", "GROUND_DETAILS") +
+        //!resource_manager.loadTextureFromFile("Testing/rotation_test.png", "ROTATION_TESTS") +
+        !resource_manager.loadTextureFromFile("Terrain/blocks.png", "BLOCK_TEXTURES");
+
+    //Fonts
+    fail_count +=
+        !resource_manager.loadFontFromFile("Temp/Code New Roman.otf", "GUI_FONT");
 
     std::cout << "Resources loaded in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
     if (fail_count)

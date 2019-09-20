@@ -6,7 +6,7 @@
 #include "States/TitleScreenState.h"
 
 Game::Game() :
-    audioManager(resourceManager)
+    audio_manager(resource_manager)
 {
     settings_manager.load();
     auto& ws = settings_manager.window_settings;
@@ -135,5 +135,5 @@ void Game::update(float delta_time)
             break;
     }
 
-    audioManager.update();
+    audio_manager.update();
 }

@@ -20,7 +20,9 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     grounds(CHUNK_SIZE, CHUNK_SIZE, 1),
     pos(pos),
     server(world->getServer()),
-    world(world)
+    world(world),
+    packet(new sf::Packet()),
+    packet_ready(false)
 {
     //setBlock(0, 15, GameBlocks::GOLD);
 
@@ -37,22 +39,32 @@ Chunk::~Chunk()
     //dtor
 }
 
-void Chunk::getPacket(sf::Packet& packet) const
+void Chunk::generatePacket()
 {
-    packet.clear();
-    packet << (unsigned short)Networking::StoC::SendChunk;
-    packet << getPos().x << getPos().y;
+    packet->clear();
+    (*packet) << (unsigned short)Networking::StoC::SendChunk;
+    (*packet) << getPos().x << getPos().y;
 
     for (int x = 0; x < CHUNK_SIZE; x++)
     for (int y = 0; y < CHUNK_SIZE; y++)
     {
-        packet << getBlockId(x, y);
+        (*packet) << getBlockId(x, y);
     }
     for (int x = 0; x < CHUNK_SIZE; x++)
     for (int y = 0; y < CHUNK_SIZE; y++)
     {
-        packet << getGroundId(x, y);
+        (*packet) << getGroundId(x, y);
     }
+
+    packet_ready = true;
+}
+
+sf::Packet& Chunk::getPacket()
+{
+    if (!packet_ready)
+        generatePacket();
+
+    return (*packet);
 }
 
 const Block* Chunk::getBlock(int x, int y) const
@@ -80,6 +92,7 @@ void Chunk::setBlock(int x, int y, uint16_t id)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
     blocks.set(x, y, id);
+    packet_ready = false;
 }
 
 void Chunk::setGround(int x, int y, uint16_t id)
@@ -89,6 +102,7 @@ void Chunk::setGround(int x, int y, uint16_t id)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
     grounds.set(x, y, id);
+    packet_ready = false;
 }
 
 void Chunk::setBlock(int x, int y, const Block* block)

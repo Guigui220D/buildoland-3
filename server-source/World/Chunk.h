@@ -30,7 +30,7 @@ class Chunk
         /**
          * Generates a packet containing the chunk's information
          */
-        void getPacket(sf::Packet& packet) const;
+        sf::Packet& getPacket();
 
         inline uint16_t getBlockId(int x, int y) const
         {
@@ -91,4 +91,9 @@ class Chunk
 
         Server* server;
         World* world;
+
+        std::unique_ptr<sf::Packet> packet;
+        bool packet_ready;
+
+        void generatePacket();
 };

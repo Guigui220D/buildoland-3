@@ -5,7 +5,6 @@
 #include <SFML/Network.hpp>
 
 #include "../World/World.h"
-#include "../Entities/EntitiesManager.h"
 
 class GameState : public State
 {
@@ -38,9 +37,7 @@ class GameState : public State
 
         //World
         World test_world;
-
-        //Entities
-        EntitiesManager entities;
+        EntitiesManager& entities;
 
         //Rendering stuff
         sf::View my_view;

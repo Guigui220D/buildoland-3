@@ -23,6 +23,7 @@ GameState::GameState(Game* game, unsigned int id) :
     receiver_thread(&GameState::receiverLoop, this),
     tbd_thread_safe(false),
     test_world(game),
+    entities(test_world.getEntityManager()),
     my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
     block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
     ground_textures(&getGame()->getResourceManager().getTexture("GROUND_TEXTURES")),
@@ -70,8 +71,8 @@ void GameState::init()
     client_socket.setBlocking(true);
     receiver_thread.launch();
 
-    entities.addEntity(new TestEntity(0, sf::Color::Red, false));
-    entities.addEntity(new TestEntity(1, sf::Color::Yellow, true));
+    entities.addEntity(new TestEntity(&test_world, 0, sf::Color::Red, false));
+    entities.addEntity(new TestEntity(&test_world, 1, sf::Color::Yellow, true));
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -200,10 +201,10 @@ void GameState::draw(sf::RenderTarget& target) const
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
+    entities.drawAll(target);
+
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockTopsVertexArray(), block_textures);
-
-    entities.drawAll(target);
 }
 
 void GameState::updateView()

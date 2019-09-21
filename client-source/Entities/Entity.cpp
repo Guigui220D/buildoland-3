@@ -1,7 +1,8 @@
 #include "Entity.h"
 
-Entity::Entity(unsigned int id) :
-    id(id)
+Entity::Entity(World* world, unsigned int id) :
+    id(id),
+    world(world)
 {
     //ctor
 }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Chunk.h"
+#include "../Entities/EntitiesManager.h"
 
 #include <map>
 #include <memory>
@@ -20,6 +21,8 @@ class World
         World(Game* game);
         World(Game* game, int seed);
         virtual ~World();
+
+        EntitiesManager& getEntityManager() { return entities; }
 
         /**
          * Gets the game that own this world
@@ -149,6 +152,8 @@ class World
             getChunksEnd() const { return chunks.cend(); }
 
     protected:
+        //Entities
+        EntitiesManager entities;
 
     private:
         Game* game;

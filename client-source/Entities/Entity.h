@@ -2,10 +2,12 @@
 
 #include <SFML/Graphics.hpp>
 
+class World;
+
 class Entity
 {
     public:
-        Entity(unsigned int id);
+        Entity(World* world, unsigned int id);
         virtual ~Entity();
 
         /**
@@ -22,10 +24,12 @@ class Entity
         inline unsigned int getId() const { return id; }
 
         inline sf::Vector2f getPosition() const { return position; }
+        inline World* getWorld() const { return world; }
 
     protected:
         sf::Vector2f position;
 
     private:
         const unsigned int id;
+        World* const world;
 };

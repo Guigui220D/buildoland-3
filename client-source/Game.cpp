@@ -8,13 +8,17 @@
 Game::Game() :
     audio_manager(resource_manager)
 {
-    settings_manager.load();
-    auto& ws = settings_manager.window_settings;
+    //TODO WHEN SETTINGS MANAGER WORKS
+    //settings_manager.load();
+    //auto& ws = settings_manager.window_settings;
     //auto& as = settings_manager.window_settings;
 
-    window.create(sf::VideoMode(ws.size_x, ws.size_y), "BuildOLand 3", ws.type);
-    window.setFramerateLimit(ws.fps_limit);
-    window.setVerticalSyncEnabled(ws.vsync_enabled);
+    //window.create(sf::VideoMode(ws.size_x, ws.size_y), "BuildOLand 3", ws.type);
+    //window.setFramerateLimit(ws.fps_limit);
+    //window.setVerticalSyncEnabled(ws.vsync_enabled);
+
+    window.create(sf::VideoMode(800, 600), "BuildOLand 3");
+    window.setFramerateLimit(60);
 }
 
 Game::~Game()

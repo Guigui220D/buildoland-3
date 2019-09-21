@@ -2,8 +2,9 @@
 
 #include "../Game.h"
 
-GuiButton::GuiButton(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align) :
-    GuiElement(game, zone, aspect_ratio, horizontal_align, vertical_align)
+GuiButton::GuiButton(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string) :
+    GuiElement(game, zone, aspect_ratio, horizontal_align, vertical_align),
+    string(text_string)
 {
     button.setSize(sf::Vector2f(aspect_ratio, 1));
     button.setFillColor(sf::Color::White);
@@ -12,6 +13,20 @@ GuiButton::GuiButton(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlig
 GuiButton::~GuiButton()
 {
     //dtor
+}
+
+void GuiButton::init()
+{
+    text.setString(string);
+    text.setCharacterSize(100);
+    text.scale(sf::Vector2f(1.f / 120.f, 1.f / 120.f));
+    text.setFont(getGame()->getResourceManager().getFont("GUI_FONT"));
+    text.setFillColor(sf::Color::Black);
+
+    sf::Vector2f text_size = sf::Vector2f(text.getGlobalBounds().width, text.getGlobalBounds().height);
+    sf::Vector2f correction(0.f, -.2f);
+
+    text.setPosition(button.getPosition() + button.getSize() * .5f - text_size * .5f + correction);
 }
 
 bool GuiButton::handleEvent(sf::Event& event)
@@ -43,12 +58,13 @@ void GuiButton::draw(sf::RenderTarget& target) const
 {
     useView(target);
     target.draw(button);
+    target.draw(text);
 }
 
-/*
 void GuiButton::update(float delta_time)
-{}
-*/
+{
+    button.setFillColor(isMouseInside() ? sf::Color::Yellow : sf::Color::White);
+}
 
 bool GuiButton::isMouseInside() const
 {

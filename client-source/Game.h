@@ -59,22 +59,22 @@ class Game
          * Gets a reference to the blocks manager
          * @return A reference to the blocks manager
          */
-        inline const GameBlocks& getBlocksManager() const { return gameBlocksManager; }
+        inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
         /**
          * Gets a reference to the grounds manager
          * @return A reference to the grounds manager
          */
-        inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
+        inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
         /**
          * Gets a reference to the resource manager
          * @return A reference to the resource manager
          */
-        inline const ResourceManager& getResourceManager() const { return resourceManager; }
+        inline const ResourceManager& getResourceManager() const { return resource_manager; }
         /**
          * Gets a reference to the audio manager
          * @return A reference to the audio manager
          */
-        inline AudioManager& getAudioManager() { return audioManager; }
+        inline AudioManager& getAudioManager() { return audio_manager; }
 
     private:
         friend class TitleScreenState;
@@ -83,11 +83,11 @@ class Game
 
         SettingsManager settings_manager;
 
-        GameBlocks gameBlocksManager;
-        GameGrounds gameGroundsManager;
+        GameBlocks game_blocks_manager;
+        GameGrounds game_grounds_manager;
 
-        ResourceManager resourceManager;
-        AudioManager audioManager;
+        ResourceManager resource_manager;
+        AudioManager audio_manager;
 
         void loadResources();
 

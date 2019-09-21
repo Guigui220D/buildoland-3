@@ -6,7 +6,8 @@
 
 MainMenuState::MainMenuState(Game* game, unsigned int id) :
     State(game, id),
-    test_button_1(game, sf::FloatRect(0.1, 0.5, 0.8, 0.1), 8, GuiAlign::Center, GuiAlign::Center)
+    first_update(true),
+    test_button_1(game, sf::FloatRect(0.1, 0.5, 0.8, 0.1), 8, GuiAlign::Center, GuiAlign::Center, "Single player")
 {
     update_transparent = false;
 }
@@ -14,6 +15,11 @@ MainMenuState::MainMenuState(Game* game, unsigned int id) :
 MainMenuState::~MainMenuState()
 {
     //dtor
+}
+
+void MainMenuState::init()
+{
+    test_button_1.init();
 }
 
 bool MainMenuState::handleEvent(sf::Event& event)
@@ -36,6 +42,14 @@ bool MainMenuState::handleEvent(sf::Event& event)
 
 void MainMenuState::update(float delta_time)
 {
+    if (first_update)
+    {
+        test_button_1.calculateView(getGame()->getWindow().getSize());
+        first_update = false;
+    }
+
+    test_button_1.update(delta_time);
+
     if (test_button_1.hasBeenClicked())
     {
         getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));

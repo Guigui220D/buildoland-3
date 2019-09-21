@@ -25,6 +25,7 @@ bool TitleScreenState::handleEvent(sf::Event& event)
     {
         title.calculateView(getGame()->getWindow().getSize());
         sfml.calculateView(getGame()->getWindow().getSize());
+        loading_icon.calculateView(getGame()->getWindow().getSize());
     }
     return true;
 }
@@ -33,8 +34,8 @@ void TitleScreenState::beforeInitTask()
 {
     //We can access that because Game has TitleScreenState as a friend
     this->getGame()->loadResources();
-    this->getGame()->gameBlocksManager.initBlocks();
-    this->getGame()->gameGroundsManager.initGrounds();
+    this->getGame()->game_blocks_manager.initBlocks();
+    this->getGame()->game_grounds_manager.initGrounds();
 }
 
 void TitleScreenState::afterInitTask()

@@ -72,8 +72,7 @@ void Server::run()
         //THIS IS A TEST
         //if (false)
         {
-            sf::Packet p;
-            world.getChunk(sf::Vector2i(0, 0)).getPacket(p);
+            sf::Packet& p = world.getChunk(sf::Vector2i(0, 0)).getPacket();
             server_socket.send(p, owner.address, owner.port);
         }
     #endif // SOLO
@@ -94,8 +93,7 @@ void Server::run()
             {
                 sf::Vector2i pos = i->second->getNextRequestedChunk();
 
-                sf::Packet p;
-                world.getChunk(pos).getPacket(p);
+                sf::Packet p = world.getChunk(pos).getPacket();
                 server_socket.send(p, i->first.address, i->first.port);
             }
         }

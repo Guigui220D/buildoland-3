@@ -49,7 +49,6 @@ class LoadingScreenState : public State
         sf::RectangleShape background;
         GuiLoadingIcon loading_icon;
 
-    protected:
         inline uint8_t getFade() { return fade; };
 
     private:

@@ -1,8 +1,8 @@
 #include "ResourceManager.h"
 
-const std::string ResourceManager::AUDIO_REPERTORY_NAME = "Res/";
-const std::string ResourceManager::TEXTURE_REPERTORY_NAME = "Res/";
-const std::string ResourceManager::FONT_REPERTORY_NAME = "Res/";
+const std::string ResourceManager::AUDIO_REPERTORY_NAME = "Resources/";
+const std::string ResourceManager::TEXTURE_REPERTORY_NAME = "Resources/";
+const std::string ResourceManager::FONT_REPERTORY_NAME = "Resources/";
 
 ResourceManager::ResourceManager()
 {

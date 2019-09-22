@@ -15,4 +15,5 @@ class TestEntity : public LivingEntity
 
     private:
         sf::RectangleShape rs;
+        sf::CircleShape shadow;
 };

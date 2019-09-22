@@ -9,6 +9,10 @@ TestEntity::TestEntity(World* world, unsigned int id) :
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, 1.f));
     rs.setTexture(&world->getGame()->getResourceManager().getTexture("ANIM_TEST"));
+
+    shadow.setRadius(.5f);
+    shadow.setOrigin(sf::Vector2(.5f, .5f));
+    shadow.setFillColor(sf::Color(0, 0, 0, 127));
 }
 
 TestEntity::~TestEntity()
@@ -33,9 +37,12 @@ void TestEntity::update(float delta)
 
     rs.setPosition(position);
     rs.setTextureRect(getCurrentTextureRect());
+
+    shadow.setPosition(position);
 }
 
 void TestEntity::draw(sf::RenderTarget& target) const
 {
+    target.draw(shadow);
     target.draw(rs);
 }

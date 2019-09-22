@@ -39,6 +39,25 @@ void LivingEntity::walk(float delta)
     //We normalize, then multiply by speed and delta the vector
     sf::Vector2f movement = (walking_direction / distance) * walking_speed * delta;
 
-    if (canBeHere(position + movement) || !canBeHere(position))
+    if (canBeHere(position + movement))
+    {
         position += movement;
+    }
+    else
+    {
+        float tmp = movement.x;
+        movement.x = 0.f;
+        if (canBeHere(position + movement))
+        {
+            position += movement;
+        }
+        else
+        {
+            movement.x = tmp;
+            movement.y = 0.f;
+
+            if (canBeHere(position + movement))
+                position += movement;
+        }
+    }
 }

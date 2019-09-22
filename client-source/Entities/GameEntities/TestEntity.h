@@ -7,7 +7,7 @@
 class TestEntity : public LivingEntity
 {
     public:
-        TestEntity(World* world, unsigned int id, bool a);
+        TestEntity(World* world, unsigned int id);
         ~TestEntity();
 
         void update(float delta);
@@ -15,10 +15,4 @@ class TestEntity : public LivingEntity
 
     private:
         sf::RectangleShape rs;
-
-        bool n_pressed = false;
-        int mode = 0;
-
-
-        bool aa;
 };

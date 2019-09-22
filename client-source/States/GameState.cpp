@@ -71,8 +71,8 @@ void GameState::init()
     client_socket.setBlocking(true);
     receiver_thread.launch();
 
-    entities.addEntity(new TestEntity(&test_world, 0, sf::Color::Red, false));
-    entities.addEntity(new TestEntity(&test_world, 1, sf::Color::Yellow, true));
+    entities.addEntity(new TestEntity(&test_world, 0, false));
+    entities.addEntity(new TestEntity(&test_world, 1, true));
 }
 
 bool GameState::handleEvent(sf::Event& event)

@@ -14,6 +14,12 @@ class Block
         virtual ~Block();
 
         /**
+         * To know whether an entity's hitbox can touch that box
+         * @param info : Info about the block
+         * @return True if the block can be touched
+         */
+        virtual inline bool isSolid(BlockInfo info) const { return true; }
+        /**
          * Get the name of this ground
          * @return The name of this ground
          */

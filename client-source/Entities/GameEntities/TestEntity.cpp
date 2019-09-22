@@ -4,8 +4,7 @@
 #include "../../Game.h"
 
 TestEntity::TestEntity(World* world, unsigned int id, bool a) :
-    PhysicsEntity(world, id, sf::Vector2(1.f, 1.f)),
-    anim(.2f),
+    LivingEntity(world, id, sf::Vector2(.5f, .5f), .6f),
     aa(a)
 {
     if (aa)
@@ -13,11 +12,6 @@ TestEntity::TestEntity(World* world, unsigned int id, bool a) :
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, 1.f));
     rs.setTexture(&world->getGame()->getResourceManager().getTexture("ANIM_TEST"));
-
-    anim.addAnimation({ 1, 0, 1, 2 });
-    anim.addAnimation({ 4, 3, 4, 5 });
-    anim.addAnimation({ 7, 6, 7, 8 });
-    anim.addAnimation({ 10, 9, 10, 11 });
 }
 
 TestEntity::~TestEntity()
@@ -37,20 +31,25 @@ void TestEntity::update(float delta)
         if (!sf::Keyboard::isKeyPressed(sf::Keyboard::N))
         {
             n_pressed = false;
-            animation += 1;
-            animation %= 4;
-            anim.selectAnimation(animation);
+            mode += 1;
+            mode %= 5;
+
+            walking_direction = sf::Vector2f();
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                walking_direction = sf::Vector2f(0, 1.f);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                walking_direction = sf::Vector2f(1.f, 0);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+                walking_direction = sf::Vector2f(0, -1.f);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+                walking_direction = sf::Vector2f(-1.f, 0);
         }
     }
 
-    if (aa)
-    {
-        if (canBeHere(position + sf::Vector2f(0.f, .6f) * delta))
-            position += sf::Vector2f(0.f, .6f) * delta;
-    }
-    rs.setPosition(position);
+    walk(delta);
 
-    rs.setTextureRect(anim.getCurrentTextureRect());
+    rs.setPosition(position);
+    rs.setTextureRect(getCurrentTextureRect());
 }
 
 void TestEntity::draw(sf::RenderTarget& target) const

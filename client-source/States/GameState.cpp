@@ -72,7 +72,7 @@ void GameState::init()
     receiver_thread.launch();
 
     entities.addEntity(new TestEntity(&test_world, 0, false));
-    entities.addEntity(new TestEntity(&test_world, 1, true));
+    //entities.addEntity(new TestEntity(&test_world, 1, true));
 }
 
 bool GameState::handleEvent(sf::Event& event)

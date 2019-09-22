@@ -9,7 +9,7 @@ class Animation
         Animation(float delta);
         virtual ~Animation();
 
-        sf::IntRect getCurrentTextureRect();
+        sf::IntRect getCurrentTextureRect() const;
 
         inline void setDelta(float new_delta) { delta = new_delta; };
         inline float getDelta() const { return delta; };
@@ -48,7 +48,7 @@ Animation<TextureSize, TilesetWidth, MarginSize>::~Animation()
 }
 
 template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>
-sf::IntRect Animation<TextureSize, TilesetWidth, MarginSize>::getCurrentTextureRect()
+sf::IntRect Animation<TextureSize, TilesetWidth, MarginSize>::getCurrentTextureRect() const
 {
     int frame = (int)(anim_clock.getElapsedTime().asSeconds() / delta);
     frame %= sequences.at(selected_anim).size();
@@ -61,6 +61,9 @@ sf::IntRect Animation<TextureSize, TilesetWidth, MarginSize>::getCurrentTextureR
 template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>
 void Animation<TextureSize, TilesetWidth, MarginSize>::selectAnimation(unsigned int animation)
 {
+    if (animation == selected_anim)
+        return;
+
     resetClock();
     if (animation < sequences.size())
         selected_anim = animation;

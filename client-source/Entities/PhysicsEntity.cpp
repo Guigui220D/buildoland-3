@@ -27,7 +27,7 @@ bool PhysicsEntity::canBeHere(sf::Vector2f new_position) const
 
     for (int i = 0; i < 4; i++)
     {
-        sf::Vector2i block_pos(points[i].x, points[i].y);
+        sf::Vector2i block_pos((points[i].x + .5f), (points[i].y + .5f));
         if (getWorld()->getBlock(block_pos)->isSolid(BlockInfo(getWorld(), block_pos)))
             return false;
     }

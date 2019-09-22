@@ -1,10 +1,10 @@
 #pragma once
 
-#include "../PhysicsEntity.h"
+#include "../LivingEntity.h"
 
 #include "../../Utils/Animation.h"
 
-class TestEntity : public PhysicsEntity
+class TestEntity : public LivingEntity
 {
     public:
         TestEntity(World* world, unsigned int id, bool a);
@@ -14,11 +14,11 @@ class TestEntity : public PhysicsEntity
         void draw(sf::RenderTarget& target) const;
 
     private:
-        Animation<8, 3, 1> anim;
-        int animation = 0;
-
         sf::RectangleShape rs;
 
         bool n_pressed = false;
+        int mode = 0;
+
+
         bool aa;
 };

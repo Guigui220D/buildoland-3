@@ -7,8 +7,6 @@
 #include "World.h"
 
 #include <assert.h>
-//TMP
-#include <cstdlib>
 
 const int Chunk::CHUNK_SIZE = 16;
 
@@ -30,27 +28,11 @@ Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet& packet, bool& success) 
         return;
     }
 
-
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    for (int y = 0; y < CHUNK_SIZE; y++)
-    {
-        uint16_t block_id;
-        packet >> block_id;
-        blocks.set(x, y, block_id);
-    }
-
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    for (int y = 0; y < CHUNK_SIZE; y++)
-    {
-        uint16_t ground_id;
-        packet >> ground_id;
-        grounds.set(x, y, ground_id);
-    }
-
+    const char* data = (const char*)packet.getData();
 
     //Copying data
-    //memcpy(blocks.getData(),  ((char*)packet.getData()) + header_size, blocks.getDataSize());
-    //memcpy(grounds.getData(), ((char*)packet.getData()) + header_size + grounds.getDataSize(), grounds.getDataSize());
+    memcpy(blocks.getData(), data + header_size, blocks.getDataSize());
+    memcpy(grounds.getData(), data + header_size + blocks.getDataSize(), grounds.getDataSize());
 
 
     //Prepare vertices

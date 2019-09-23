@@ -24,8 +24,6 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     packet(new sf::Packet()),
     packet_ready(false)
 {
-    //setBlock(0, 15, GameBlocks::GOLD);
-
     for (int x = 0; x < CHUNK_SIZE; x++)
     for (int y = 0; y < CHUNK_SIZE; y++)
     {
@@ -45,16 +43,8 @@ void Chunk::generatePacket()
     (*packet) << (unsigned short)Networking::StoC::SendChunk;
     (*packet) << getPos().x << getPos().y;
 
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    for (int y = 0; y < CHUNK_SIZE; y++)
-    {
-        (*packet) << getBlockId(x, y);
-    }
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    for (int y = 0; y < CHUNK_SIZE; y++)
-    {
-        (*packet) << getGroundId(x, y);
-    }
+    packet->append(blocks.getData(), blocks.getDataSize());
+    packet->append(grounds.getData(), grounds.getDataSize());
 
     packet_ready = true;
 }

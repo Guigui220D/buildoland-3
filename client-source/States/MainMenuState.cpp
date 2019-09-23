@@ -6,7 +6,6 @@
 
 MainMenuState::MainMenuState(Game* game, unsigned int id) :
     State(game, id),
-    first_update(true),
     test_button_1(game, sf::FloatRect(0.1, 0.5, 0.8, 0.1), 8, GuiAlign::Center, GuiAlign::Center, "Single player")
 {
     update_transparent = false;
@@ -42,12 +41,6 @@ bool MainMenuState::handleEvent(sf::Event& event)
 
 void MainMenuState::update(float delta_time)
 {
-    if (first_update)
-    {
-        test_button_1.calculateView(getGame()->getWindow().getSize());
-        first_update = false;
-    }
-
     test_button_1.update(delta_time);
 
     if (test_button_1.hasBeenClicked())
@@ -60,4 +53,9 @@ void MainMenuState::update(float delta_time)
 void MainMenuState::draw(sf::RenderTarget& target) const
 {
     test_button_1.draw(target);
+}
+
+void MainMenuState::updateView()
+{
+    test_button_1.calculateView(getGame()->getWindow().getSize());
 }

@@ -33,6 +33,7 @@ void LoadingScreenState<T>::load()
     sf::Clock clk;
     beforeInitTask();
     state_being_loaded->init();
+    state_being_loaded->updateView();
     afterInitTask();
     //while (clk.getElapsedTime().asSeconds() < 2.f); //Lol, making fake loading time
     done_mutex.lock();

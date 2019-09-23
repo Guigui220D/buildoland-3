@@ -17,6 +17,7 @@ class GameState : public State
         bool handleEvent(sf::Event& event) override;
         void update(float delta_time) override;
         void draw(sf::RenderTarget& target) const override;
+        void updateView() override;
 
     private:
         //Networking stuff
@@ -40,7 +41,6 @@ class GameState : public State
 
         //Rendering stuff
         sf::View my_view;
-        void updateView();
         float zoom = 10.f;
 
         sf::Clock anim_clock;

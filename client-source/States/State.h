@@ -28,6 +28,10 @@ class State
          * @param target : where the screen needs to be drawn
          */
         virtual void draw(sf::RenderTarget& target) const;
+        /**
+         * Updates view
+         */
+        virtual void updateView();
 
         /**
          * @return True if the states underneath should be updated

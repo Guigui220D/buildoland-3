@@ -19,9 +19,9 @@ void AudioManager::update()
 {
     for (auto i = playing_sounds.begin(); i != playing_sounds.end(); )
     {
-        if ((*i).second.getStatus() == sf::Sound::Stopped)
+        if (i->second.getStatus() == sf::Sound::Stopped)
         {
-            playing_sounds.erase(i);
+            i = playing_sounds.erase(i);
         }
         else i++;
     }

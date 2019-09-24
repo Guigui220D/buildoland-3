@@ -19,6 +19,7 @@ class MainMenuState : public State
 
     private:
         GuiButton test_button_1;
+        GuiButton test_button_2;
         //GuiElement test_ge_2;
         //GuiElement test_ge_3;
 

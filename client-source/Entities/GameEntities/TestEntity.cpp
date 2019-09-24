@@ -7,11 +7,11 @@ TestEntity::TestEntity(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2(.5f, .5f), 2.f)
 {
     rs.setSize(sf::Vector2f(1.f, 1.f));
-    rs.setOrigin(sf::Vector2f(.5f, 1.f));
-    rs.setTexture(&world->getGame()->getResourceManager().getTexture("ANIM_TEST"));
+    rs.setOrigin(sf::Vector2f(.5f, .9f));
+    rs.setTexture(&world->getGame()->getResourceManager().getTexture("CHARA_TEST"));
 
-    shadow.setRadius(.5f);
-    shadow.setOrigin(sf::Vector2(.5f, .5f));
+    shadow.setRadius(.25f);
+    shadow.setOrigin(sf::Vector2(.25f, .25f));
     shadow.setFillColor(sf::Color(0, 0, 0, 127));
 }
 

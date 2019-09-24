@@ -50,7 +50,7 @@ bool Server::init(uint16_t port)
 
     #ifdef SOLO
         sf::Packet handshake;
-        handshake << (unsigned short)Networking::StoC::SoloHandshake << Version::VERSION_SHORT;
+        handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
         server_socket.send(handshake, owner.address, owner.port);
     #endif // SOLO
 
@@ -67,15 +67,6 @@ void Server::run()
     run_mutex.unlock();
 
     sf::Clock test;
-
-    #ifdef SOLO
-        //THIS IS A TEST
-        //if (false)
-        {
-            sf::Packet& p = world.getChunk(sf::Vector2i(0, 0)).getPacket();
-            server_socket.send(p, owner.address, owner.port);
-        }
-    #endif // SOLO
 
     run_mutex.lock();
     while (running)
@@ -151,7 +142,7 @@ void Server::receiver()
                         }
                     #endif // SOLO
                     break;
-                case Networking::CtoS::AskForConnection:
+                case Networking::CtoS::RequestConnection:
                     std::clog << "Connection requested" << std::endl;
 
                     if (connection_open)
@@ -160,6 +151,12 @@ void Server::receiver()
                         break;
 
                     std::clog << "Connection accepted" << std::endl;
+
+                    {
+                        sf::Packet handshake;
+                        handshake << (unsigned short)Networking::StoC::FinalHandshake;
+                        server_socket.send(handshake, address, port);
+                    }
 
                     clients_manager.addClient(iandp);
 

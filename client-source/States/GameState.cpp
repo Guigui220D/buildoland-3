@@ -81,12 +81,20 @@ void GameState::init()
     }
     else
     {
-
+        if (!handshakeRemoteServer())
+            return;
     }
 
     connected = true;
     client_socket.setBlocking(true);
     receiver_thread.launch();
+
+
+    //TEMP
+    sf::Packet request;
+    request << (unsigned short)Networking::CtoS::RequestChunk;
+    request << 0 << 0;
+    client_socket.send(request, remote_ip, remote_port);
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -266,7 +274,16 @@ bool GameState::startAndConnectLocalServer()
 bool GameState::handshakeRemoteServer()
 {
     assert(!solo_mode);
-    return true;
+
+    //TEMP
+    //At the moment we send RequestConnection now but this will be done in the connecting to server state
+    sf::Packet request;
+    request << (unsigned short)Networking::CtoS::RequestConnection;
+    client_socket.send(request, remote_ip, remote_port);
+
+    bool handshake = receiveServerHandshake(true);
+
+    return handshake;
 }
 
 bool GameState::receiveServerHandshake(bool known_port)
@@ -310,9 +327,9 @@ bool GameState::receiveServerHandshake(bool known_port)
 
     unsigned short code = 0; packet >> code;
 
-    if (code != Networking::StoC::SoloHandshake)
+    if (code != Networking::StoC::FinalHandshake)
     {
-        std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::SoloHandshake << " but got " << code << std::endl;
+        std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << " but got " << code << std::endl;
         must_be_destroyed = true;
         return false;
     }

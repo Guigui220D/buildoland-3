@@ -10,6 +10,7 @@ class GameState : public State
 {
     public:
         GameState(Game* game, unsigned int id = 0);
+        GameState(Game* game, unsigned int id, sf::IpAddress server_address, uint16_t server_port);
         ~GameState();
 
         void init() override;
@@ -23,7 +24,9 @@ class GameState : public State
         //Networking stuff
         const bool solo_mode;
         bool connected;
-        bool startAndConnectLocalServer();
+        bool startAndConnectLocalServer();  //For solo mode
+        bool handshakeRemoteServer();   //For multiplayer mode
+        bool receiveServerHandshake(bool known_port);
 
         sf::UdpSocket client_socket;
         sf::IpAddress remote_ip;

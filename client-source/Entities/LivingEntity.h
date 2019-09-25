@@ -18,5 +18,5 @@ class LivingEntity : public PhysicsEntity
         inline sf::IntRect getCurrentTextureRect() const { return animation.getCurrentTextureRect(); }
 
     private:
-        Animation<64, 3, 1> animation;
+        Animation<64, 5, 1> animation;
 };

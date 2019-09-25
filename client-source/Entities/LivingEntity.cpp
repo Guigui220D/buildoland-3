@@ -5,16 +5,15 @@
 LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed),
-    animation(.2f)
+    animation(.05f)
 {
     animation.addAnimation({ 0 });
-    animation.addAnimation({ 3 });
-    animation.addAnimation({ 6 });
-    animation.addAnimation({ 9 });
-    animation.addAnimation({ 0, 1, 0, 2 });
-    animation.addAnimation({ 3, 4, 3, 5 });
-    animation.addAnimation({ 6, 7, 6, 8 });
-    animation.addAnimation({ 9, 10, 9, 11 });
+    for (unsigned int i = 0; i < 8; i++)
+    {
+        unsigned int j = i * 5;
+        animation.addAnimation({ j + 1, j + 2, j + 1, j + 0, j + 3, j + 4, j + 3, j + 0 });
+    }
+
 }
 
 LivingEntity::~LivingEntity()
@@ -34,23 +33,23 @@ void LivingEntity::walk(float delta)
     if (walking_direction.x > 0.f)
     {
         if (walking_direction.y == 0.f)
-            animation.selectAnimation(6);
+            animation.selectAnimation(3);
         if (walking_direction.y > 0.f)
-            animation.selectAnimation(5);
+            animation.selectAnimation(2);
         if (walking_direction.y < 0.f)
-            animation.selectAnimation(7);
+            animation.selectAnimation(4);
     }
     else if (walking_direction.x < 0.f)
     {
         if (walking_direction.y == 0.f)
-            animation.selectAnimation(6);
-        if (walking_direction.y > 0.f)
             animation.selectAnimation(7);
+        if (walking_direction.y > 0.f)
+            animation.selectAnimation(8);
         if (walking_direction.y < 0.f)
-            animation.selectAnimation(5);
+            animation.selectAnimation(6);
     }
     else
-        animation.selectAnimation(walking_direction.y == 0.f ? 0 : 4);
+        animation.selectAnimation(walking_direction.y > 0.f ? 1 : 5);
 
     //Move
     float distance = walking_direction.x * walking_direction.x + walking_direction.y * walking_direction.y;

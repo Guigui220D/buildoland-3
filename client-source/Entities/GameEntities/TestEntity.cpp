@@ -10,9 +10,9 @@ TestEntity::TestEntity(World* world, unsigned int id) :
     rs.setOrigin(sf::Vector2f(.5f, .9f));
     rs.setTexture(&world->getGame()->getResourceManager().getTexture("CHARA_TEST"));
 
-    shadow.setRadius(.25f);
-    shadow.setOrigin(sf::Vector2(.25f, .25f));
-    shadow.setFillColor(sf::Color(0, 0, 0, 127));
+    shadow.setRadius(.17f);
+    shadow.setOrigin(sf::Vector2(.17f, .17f));
+    shadow.setFillColor(sf::Color(0, 0, 0, 64));
 }
 
 TestEntity::~TestEntity()

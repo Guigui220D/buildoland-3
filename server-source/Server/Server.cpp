@@ -145,7 +145,7 @@ void Server::receiver()
                 case Networking::CtoS::RequestConnection:
                     std::clog << "Connection requested" << std::endl;
 
-                    if (connection_open)
+                    if (!connection_open)
                         break;
                     if (clients_manager.isConnected(iandp))
                         break;
@@ -154,7 +154,7 @@ void Server::receiver()
 
                     {
                         sf::Packet handshake;
-                        handshake << (unsigned short)Networking::StoC::FinalHandshake;
+                        handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
                         server_socket.send(handshake, address, port);
                     }
 

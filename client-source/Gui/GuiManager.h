@@ -15,7 +15,7 @@ class GuiManager : public std::vector<GuiElement*>
         void initEverything();
         bool handleEvent(sf::Event& event);
         void updateEverything(float delta_time);
-        void drawEverything(sf::RenderTarget& target);
+        void drawEverything(sf::RenderTarget& target) const;
 
     protected:
 

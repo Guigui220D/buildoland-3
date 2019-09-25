@@ -6,10 +6,15 @@
 
 MainMenuState::MainMenuState(Game* game, unsigned int id) :
     State(game, id),
-    test_button_1(game, sf::FloatRect(0.1, 0.5, 0.8, 0.1), 8, GuiAlign::Center, GuiAlign::BottomOrRight, "Singleplayer"),
-    test_button_2(game, sf::FloatRect(0.1, 0.7, 0.8, 0.1), 8, GuiAlign::Center, GuiAlign::TopOrLeft, "Multiplayer")
+    test_button_1(new GuiButton(game, sf::FloatRect(.1f, .5f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::BottomOrRight, "Singleplayer")),
+    test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::TopOrLeft, "Multiplayer")),
+    serv_debug_checkbox(new GuiCheckBox(game, sf::FloatRect(.85f, .5f, .1f, .1f), GuiAlign::Center, GuiAlign::BottomOrRight))
 {
     update_transparent = false;
+
+    gui_manager.push_back(test_button_1);
+    gui_manager.push_back(test_button_2);
+    gui_manager.push_back(serv_debug_checkbox);
 }
 
 MainMenuState::~MainMenuState()
@@ -19,15 +24,12 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::init()
 {
-    test_button_1.init();
-    test_button_2.init();
+    gui_manager.initEverything();
 }
 
 bool MainMenuState::handleEvent(sf::Event& event)
 {
-    if (test_button_1.handleEvent(event))
-        return true;
-    if (test_button_2.handleEvent(event))
+    if (gui_manager.handleEvent(event))
         return true;
 
     switch (event.type)
@@ -36,8 +38,7 @@ bool MainMenuState::handleEvent(sf::Event& event)
     case sf::Event::MouseButtonReleased:
         return true;
     case sf::Event::Resized:
-        test_button_1.calculateView(sf::Vector2u(event.size.width, event.size.height));
-        test_button_2.calculateView(sf::Vector2u(event.size.width, event.size.height));
+        gui_manager.updateWindowSize(sf::Vector2u(event.size.width, event.size.height));
         return false;
     default:
         return false;
@@ -46,24 +47,21 @@ bool MainMenuState::handleEvent(sf::Event& event)
 
 void MainMenuState::update(float delta_time)
 {
-    test_button_1.update(delta_time);
-    test_button_2.update(delta_time);
+    gui_manager.updateEverything(delta_time);
 
-    if (test_button_1.hasBeenClicked())
+    if (test_button_1->hasBeenClicked())
         getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));
 
-    if (test_button_2.hasBeenClicked())
+    if (test_button_2->hasBeenClicked())
         getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress::LocalHost, 58888));
 }
 
 void MainMenuState::draw(sf::RenderTarget& target) const
 {
-    test_button_1.draw(target);
-    test_button_2.draw(target);
+    gui_manager.drawEverything(target);
 }
 
 void MainMenuState::updateView()
 {
-    test_button_1.calculateView(getGame()->getWindow().getSize());
-    test_button_2.calculateView(getGame()->getWindow().getSize());
+    gui_manager.updateWindowSize(getGame()->getWindow().getSize());
 }

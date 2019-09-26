@@ -2,7 +2,7 @@
 
 #include <map>
 
-#include "../../common/Entities/Entity.h"
+#include "../../common-source/Entities/Entity.h"
 
 class EntitiesManager
 {

@@ -8,10 +8,10 @@
 
 #include "../Version.h"
 
-#include "../../common/Networking/ClientToServerCodes.h"
-#include "../../common/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/ClientToServerCodes.h"
+#include "../../common-source/Networking/ServerToClientCodes.h"
 
-#include "../../common/Entities/GameEntities/TestEntity.h"
+#include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 //TEMPORARY
 #include <windows.h>

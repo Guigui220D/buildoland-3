@@ -10,7 +10,7 @@
 //TMP
 #include <cstdlib>
 
-#include "../../common/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/ServerToClientCodes.h"
 
 const int Chunk::CHUNK_SIZE = 16;
 

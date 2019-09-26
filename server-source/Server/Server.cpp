@@ -7,8 +7,8 @@
 #include "../Version.h"
 #include "../Utils/Utils.h"
 
-#include "../../common/Networking/ClientToServerCodes.h"
-#include "../../common/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/ClientToServerCodes.h"
+#include "../../common-source/Networking/ServerToClientCodes.h"
 
 Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),

@@ -50,7 +50,7 @@ void MainMenuState::update(float delta_time)
     gui_manager.updateEverything(delta_time);
 
     if (test_button_1->hasBeenClicked())
-        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));
+        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, serv_debug_checkbox->isChecked()));
 
     if (test_button_2->hasBeenClicked())
         getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress::LocalHost, 58888));

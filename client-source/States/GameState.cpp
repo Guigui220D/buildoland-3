@@ -14,10 +14,11 @@
 //TEMPORARY
 #include <windows.h>
 
-GameState::GameState(Game* game, unsigned int id) :
+GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     State(game, id),
     solo_mode(true),
     connected(false),
+    show_console(show_server_console),
     remote_ip(sf::IpAddress::LocalHost),
     remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
@@ -251,7 +252,10 @@ bool GameState::startAndConnectLocalServer()
     //Start the server
     {
         std::stringstream strs;
-        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
+        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort();
+        if (!show_console)
+            strs << " hide";
+        strs.flush();
         std::cout << "Starting server with command " << strs.str() << std::endl;
         int code = system(strs.str().c_str());
         if (code)

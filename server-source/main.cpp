@@ -6,8 +6,13 @@
 #include <ctime>
 #include <cstdlib>
 
+//To hide console
+#include <windows.h>
+
 int main(int argc, char** argv)
 {
+    bool hide = false;
+
     std::srand(std::time(0));
 
     uint16_t client_port = 0;
@@ -34,6 +39,12 @@ int main(int argc, char** argv)
         }
         std::cout << "Client has port " << client_port << std::endl;
 
+        if (argc >= 3/* && strcmp(argv[2], "hide")*/)
+        {
+            hide = true;
+            std::cout << "Going to hide console." << std::endl;
+        }
+
     #else
         std::cout << "This is a multiplayer server." << std::endl;
         std::cout << "This version is made for Buildoland " << Version::VERSION << " (" << Version::VERSION_SHORT << ")\n" << std::endl;
@@ -54,6 +65,15 @@ int main(int argc, char** argv)
         std::cerr << "Fatal : Could not start server." << std::endl;
         return 1;
     }
+
+    if (hide)
+    {
+        //TODO : Other platforms
+        HWND hWnd = GetConsoleWindow();
+        ShowWindow(hWnd, SW_MINIMIZE);
+        ShowWindow(hWnd, SW_HIDE);
+    }
+
     std::cout << "\nServer started!\n" << std::endl;
 
     server.run();

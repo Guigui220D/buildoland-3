@@ -15,6 +15,8 @@ class Animation
         inline float getDelta() const { return delta; };
 
         void selectAnimation(unsigned int animation);
+        inline unsigned int getCurrentAnimation() const { return selected_anim; }
+
         void addAnimation(std::vector<unsigned int> sequence);
 
         inline void resetClock() { anim_clock.restart(); }

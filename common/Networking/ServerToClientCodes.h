@@ -7,9 +7,9 @@ namespace Networking
         enum : unsigned short
         {
             Disconnect = 0,
-            SoloHandshake,
             ConnectionAccepted,
             ConnectionRefused,
+            FinalHandshake,
             SendChunk
         };
     }

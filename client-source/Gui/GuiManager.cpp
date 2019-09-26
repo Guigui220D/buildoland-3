@@ -39,7 +39,7 @@ void GuiManager::updateEverything(float delta_time)
         (*i)->update(delta_time);
 }
 
-void GuiManager::drawEverything(sf::RenderTarget& target)
+void GuiManager::drawEverything(sf::RenderTarget& target) const
 {
     for (auto i = begin(); i < end(); i++)
         (*i)->draw(target);

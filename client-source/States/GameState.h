@@ -9,7 +9,8 @@
 class GameState : public State
 {
     public:
-        GameState(Game* game, unsigned int id = 0);
+        GameState(Game* game, unsigned int id, bool show_server_console);
+        GameState(Game* game, unsigned int id, sf::IpAddress server_address, uint16_t server_port);
         ~GameState();
 
         void init() override;
@@ -23,7 +24,10 @@ class GameState : public State
         //Networking stuff
         const bool solo_mode;
         bool connected;
-        bool startAndConnectLocalServer();
+        bool show_console;
+        bool startAndConnectLocalServer();  //For solo mode
+        bool handshakeRemoteServer();   //For multiplayer mode
+        bool receiveServerHandshake(bool known_port);
 
         sf::UdpSocket client_socket;
         sf::IpAddress remote_ip;
@@ -46,9 +50,9 @@ class GameState : public State
         sf::Clock anim_clock;
         int anim_frame = 0;
 
-        sf::Texture const * const block_textures;
-        sf::Texture const * const ground_textures;
-        sf::Texture const * const ground_details_textures;
+        sf::Texture const * block_textures;
+        sf::Texture const * ground_textures;
+        sf::Texture const * ground_details_textures;
 
         sf::Vector2i test_chunk_pos;
         sf::Vector2i test_next_chunk_pos_turn;

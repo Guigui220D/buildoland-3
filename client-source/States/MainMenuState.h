@@ -2,7 +2,10 @@
 
 #include "GameState.h"
 #include "LoadingScreenState.h"
+
+#include "../Gui/GuiManager.h"
 #include "../Gui/GuiButton.h"
+#include "../Gui/GuiCheckBox.h"
 
 class MainMenuState : public State
 {
@@ -18,7 +21,11 @@ class MainMenuState : public State
         void updateView() override;
 
     private:
-        GuiButton test_button_1;
+        GuiManager gui_manager;
+
+        GuiButton* const test_button_1;
+        GuiButton* const test_button_2;
+        GuiCheckBox* const serv_debug_checkbox;
         //GuiElement test_ge_2;
         //GuiElement test_ge_3;
 

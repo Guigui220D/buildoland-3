@@ -14,17 +14,30 @@
 //TEMPORARY
 #include <windows.h>
 
-GameState::GameState(Game* game, unsigned int id) :
+GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     State(game, id),
     solo_mode(true),
     connected(false),
+    show_console(show_server_console),
+    remote_ip(sf::IpAddress::LocalHost),
+    remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
     tbd_thread_safe(false),
-    test_world(game),
-    my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
-    block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
-    ground_textures(&getGame()->getResourceManager().getTexture("GROUND_TEXTURES")),
-    ground_details_textures(&getGame()->getResourceManager().getTexture("GROUND_DETAILS"))
+    test_world(game)
+{
+    update_transparent = false;
+    draw_transparent = false;
+}
+
+GameState::GameState(Game* game, unsigned int id, sf::IpAddress server_address, uint16_t server_port) :
+    State(game, id),
+    solo_mode(false),
+    connected(false),
+    remote_ip(server_address),
+    remote_port(server_port),
+    receiver_thread(&GameState::receiverLoop, this),
+    tbd_thread_safe(false),
+    test_world(game)
 {
     update_transparent = false;
     draw_transparent = false;
@@ -44,6 +57,12 @@ GameState::~GameState()
 
 void GameState::init()
 {
+    block_textures = &getGame()->getResourceManager().getTexture("BLOCK_TEXTURES");
+    ground_textures = &getGame()->getResourceManager().getTexture("GROUND_TEXTURES");
+    ground_details_textures = &getGame()->getResourceManager().getTexture("GROUND_DETAILS");
+
+    my_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
+
     test_next_chunk_pos_turn = sf::Vector2i(0, -1);
     //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
@@ -61,12 +80,20 @@ void GameState::init()
     }
     else
     {
-
+        if (!handshakeRemoteServer())
+            return;
     }
 
     connected = true;
     client_socket.setBlocking(true);
     receiver_thread.launch();
+
+
+    //TEMP
+    sf::Packet request;
+    request << (unsigned short)Networking::CtoS::RequestChunk;
+    request << 0 << 0;
+    client_socket.send(request, remote_ip, remote_port);
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -223,7 +250,10 @@ bool GameState::startAndConnectLocalServer()
     //Start the server
     {
         std::stringstream strs;
-        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort(); strs.flush();
+        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort();
+        if (!show_console)
+            strs << " hide";
+        strs.flush();
         std::cout << "Starting server with command " << strs.str() << std::endl;
         int code = system(strs.str().c_str());
         if (code)
@@ -234,42 +264,74 @@ bool GameState::startAndConnectLocalServer()
         }
     }
 
-    std::cout << "Server started : waiting for handshake..." << std::endl;
+    bool handshake = receiveServerHandshake(false);
 
-    //Handshake with server
+    //EWWWWWWWWWWWWWWW
+    //Temporary
+    SetForegroundWindow(getGame()->getWindow().getSystemHandle());
+
+    return handshake;
+}
+
+bool GameState::handshakeRemoteServer()
+{
+    assert(!solo_mode);
+
+    //TEMP
+    //At the moment we send RequestConnection now but this will be done in the connecting to server state
+    sf::Packet request;
+    request << (unsigned short)Networking::CtoS::RequestConnection;
+    client_socket.send(request, remote_ip, remote_port);
+
+    bool handshake = receiveServerHandshake(true);
+
+    return handshake;
+}
+
+bool GameState::receiveServerHandshake(bool known_port)
+{
+    std::clog << "Waiting for handshake from server..." << std::endl;
+
     client_socket.setBlocking(false);
 
     sf::Packet packet; sf::IpAddress address; uint16_t port;
     sf::Clock timeout_clock;
 
-    while (client_socket.receive(packet, address, port) != sf::Socket::Done)
+    while (1)
     {
-        if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
+        while (client_socket.receive(packet, address, port) != sf::Socket::Done)
         {
-            std::cerr << "Time out while waiting for server handshake" << std::endl;
-            must_be_destroyed = true;
-            return false;
+            if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
+            {
+                std::cerr << "Time out while waiting for server handshake" << std::endl;
+                must_be_destroyed = true;
+                return false;
+            }
         }
+
+        if (address != remote_ip || (port != remote_port && known_port))
+        {
+            std::cerr << "Received packet from wrong address." << std::endl;
+        }
+        else
+            break;
     }
 
-    if (address != sf::IpAddress::LocalHost)
-    {
-        std::cerr << "Received packet from wrong address!" << std::endl;
-        must_be_destroyed = true;
-        return false;
-    }
+    if (!known_port)
+        remote_port = port;
+
     if (packet.getDataSize() != 11)
     {
-        std::cerr << "Received wrong packet! Expected 13 bytes, got " << packet.getDataSize() << '.' << std::endl;
+        std::cerr << "Received wrong handshake packet! Expected 11 bytes, got " << packet.getDataSize() << '.' << std::endl;
         must_be_destroyed = true;
         return false;
     }
 
     unsigned short code = 0; packet >> code;
 
-    if (code != Networking::StoC::SoloHandshake)
+    if (code != Networking::StoC::FinalHandshake)
     {
-        std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::SoloHandshake << " but got " << code << std::endl;
+        std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << " but got " << code << std::endl;
         must_be_destroyed = true;
         return false;
     }
@@ -285,15 +347,7 @@ bool GameState::startAndConnectLocalServer()
         return false;
     }
 
-    std::cout << "Received handshake from local server! Its version is " << vers << std::endl;
-    std::cout << std::endl;
-
-    remote_ip = address;
-    remote_port = port;
-
-    //EWWWWWWWWWWWWWWW
-    //Temporary
-    SetForegroundWindow(getGame()->getWindow().getSystemHandle());
+    std::cout << "Received handshake from local server! Its version is " << vers << '.' << std::endl;
 
     return true;
 }

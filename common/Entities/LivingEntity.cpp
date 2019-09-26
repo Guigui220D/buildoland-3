@@ -2,6 +2,7 @@
 
 #include <cmath>
 
+#ifdef CLIENT_SIDE
 LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed),
@@ -15,6 +16,15 @@ LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_si
     }
 
 }
+#else
+LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
+    PhysicsEntity(world, id, hitbox_size),
+    walking_speed(speed)
+{
+
+}
+#endif // CLIENT_SIDE
+
 
 LivingEntity::~LivingEntity()
 {
@@ -23,6 +33,7 @@ LivingEntity::~LivingEntity()
 
 void LivingEntity::walk(float delta)
 {
+    #ifdef CLIENT_SIDE
     if (walking_direction == sf::Vector2f(0.f, 0.f))
     {
         animation.selectAnimation(0);
@@ -50,6 +61,7 @@ void LivingEntity::walk(float delta)
     }
     else
         animation.selectAnimation(walking_direction.y > 0.f ? 1 : 5);
+    #endif // CLIENT_SIDE
 
     //Move
     float distance = walking_direction.x * walking_direction.x + walking_direction.y * walking_direction.y;

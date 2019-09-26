@@ -2,8 +2,9 @@
 
 #include <map>
 #include <vector>
+#include <SFML/Graphics.hpp>
 
-#include "Entity.h"
+#include "../../common/Entities/Entity.h"
 
 class EntitiesManager
 {

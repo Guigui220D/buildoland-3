@@ -11,7 +11,7 @@
 #include "../../common/Networking/ClientToServerCodes.h"
 #include "../../common/Networking/ServerToClientCodes.h"
 
-#include "../Entities/GameEntities/TestEntity.h"
+#include "../../common/Entities/GameEntities/TestEntity.h"
 
 //TEMPORARY
 #include <windows.h>

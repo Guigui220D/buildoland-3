@@ -14,4 +14,6 @@ Entity::~Entity()
 
 void Entity::update(float delta) {}
 
+#ifdef CLIENT_SIDE
 void Entity::draw(sf::RenderTarget& target) const {}
+#endif // CLIENT_SIDE

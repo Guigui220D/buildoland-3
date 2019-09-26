@@ -2,7 +2,9 @@
 
 #include "../LivingEntity.h"
 
-#include "../../Utils/Animation.h"
+#ifdef CLIENT_SIDE
+    #include "../../client-source/Utils/Animation.h"
+#endif // CLIENT_SIDE
 
 class TestEntity : public LivingEntity
 {
@@ -11,9 +13,11 @@ class TestEntity : public LivingEntity
         ~TestEntity();
 
         void update(float delta);
+        #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
 
     private:
         sf::RectangleShape rs;
         sf::CircleShape shadow;
+        #endif
 };

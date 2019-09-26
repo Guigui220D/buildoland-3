@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Chunk.h"
-#include "../Entities/EntitiesManager.h"
+#include "EntitiesManager.h"
 
 #include <map>
 #include <memory>

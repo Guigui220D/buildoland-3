@@ -1,7 +1,10 @@
 #pragma once
 
 #include "PhysicsEntity.h"
-#include "../Utils/Animation.h"
+
+#ifdef CLIENT_SIDE
+    #include "../Utils/Animation.h"
+#endif // CLIENT_SIDE
 
 class LivingEntity : public PhysicsEntity
 {
@@ -15,8 +18,10 @@ class LivingEntity : public PhysicsEntity
 
         void walk(float delta);
 
+        #ifdef CLIENT_SIDE
         inline sf::IntRect getCurrentTextureRect() const { return animation.getCurrentTextureRect(); }
 
     private:
         Animation<64, 5, 1> animation;
+        #endif
 };

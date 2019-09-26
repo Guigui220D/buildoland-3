@@ -1,6 +1,10 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#ifdef CLIENT_SIDE
+    #include <SFML/Graphics.hpp>
+#else
+    #include <SFML/System.hpp>
+#endif // CLIENT_SIDE
 
 class World;
 
@@ -15,11 +19,14 @@ class Entity
          * @param delta : time since last update
          */
         virtual void update(float delta);
+
+        #ifdef CLIENT_SIDE
         /**
          * Draw this entity
          * @param target : the render target on which to draw
          */
         virtual void draw(sf::RenderTarget& target) const;
+        #endif // CLIENT_SIDE
 
         inline unsigned int getId() const { return id; }
 

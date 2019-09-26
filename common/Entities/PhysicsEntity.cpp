@@ -1,7 +1,12 @@
 #include "PhysicsEntity.h"
 
-#include "../World/World.h"
-#include "../Block/Block.h"
+#ifdef CLIENT_SIDE
+    #include "../../client-source/World/World.h"
+    #include "../../client-source/Block/Block.h"
+#else
+    #include "../../server-source/World/World.h"
+    #include "../../server-source/Block/Block.h"
+#endif // CLIENT_SIDE
 
 #include <cmath>
 

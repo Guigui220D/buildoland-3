@@ -25,7 +25,7 @@ void Game::loadResources()
 
     //Fonts
     fail_count +=
-        !resource_manager.loadFontFromFile("Temp/Code New Roman.otf", "GUI_FONT");
+        !resource_manager.loadFontFromFile("Fonts/MONOFONT.TTF", "GUI_FONT");
 
     std::cout << "Resources loaded in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
     if (fail_count)

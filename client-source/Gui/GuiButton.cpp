@@ -24,7 +24,7 @@ void GuiButton::init()
     text.setFillColor(sf::Color::Black);
 
     sf::Vector2f text_size = sf::Vector2f(text.getGlobalBounds().width, text.getGlobalBounds().height);
-    sf::Vector2f correction(0.f, -.2f);
+    sf::Vector2f correction(0.f, -.3f);
 
     text.setPosition(button.getPosition() + button.getSize() * .5f - text_size * .5f + correction);
 }

@@ -23,11 +23,7 @@ GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
     tbd_thread_safe(false),
-    test_world(game),
-    my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
-    block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
-    ground_textures(&getGame()->getResourceManager().getTexture("GROUND_TEXTURES")),
-    ground_details_textures(&getGame()->getResourceManager().getTexture("GROUND_DETAILS"))
+    test_world(game)
 {
     update_transparent = false;
     draw_transparent = false;
@@ -41,11 +37,7 @@ GameState::GameState(Game* game, unsigned int id, sf::IpAddress server_address, 
     remote_port(server_port),
     receiver_thread(&GameState::receiverLoop, this),
     tbd_thread_safe(false),
-    test_world(game),
-    my_view(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f)),
-    block_textures(&getGame()->getResourceManager().getTexture("BLOCK_TEXTURES")),
-    ground_textures(&getGame()->getResourceManager().getTexture("GROUND_TEXTURES")),
-    ground_details_textures(&getGame()->getResourceManager().getTexture("GROUND_DETAILS"))
+    test_world(game)
 {
     update_transparent = false;
     draw_transparent = false;
@@ -65,6 +57,12 @@ GameState::~GameState()
 
 void GameState::init()
 {
+    block_textures = &getGame()->getResourceManager().getTexture("BLOCK_TEXTURES");
+    ground_textures = &getGame()->getResourceManager().getTexture("GROUND_TEXTURES");
+    ground_details_textures = &getGame()->getResourceManager().getTexture("GROUND_DETAILS");
+
+    my_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
+
     test_next_chunk_pos_turn = sf::Vector2i(0, -1);
     //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)

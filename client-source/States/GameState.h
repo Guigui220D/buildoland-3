@@ -50,9 +50,9 @@ class GameState : public State
         sf::Clock anim_clock;
         int anim_frame = 0;
 
-        sf::Texture const * const block_textures;
-        sf::Texture const * const ground_textures;
-        sf::Texture const * const ground_details_textures;
+        sf::Texture const * block_textures;
+        sf::Texture const * ground_textures;
+        sf::Texture const * ground_details_textures;
 
         sf::Vector2i test_chunk_pos;
         sf::Vector2i test_next_chunk_pos_turn;

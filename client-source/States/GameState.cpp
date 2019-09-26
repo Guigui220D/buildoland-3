@@ -11,6 +11,8 @@
 #include "../../common/Networking/ClientToServerCodes.h"
 #include "../../common/Networking/ServerToClientCodes.h"
 
+#include "../Entities/GameEntities/TestEntity.h"
+
 //TEMPORARY
 #include <windows.h>
 
@@ -23,7 +25,8 @@ GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
     tbd_thread_safe(false),
-    test_world(game)
+    test_world(game),
+    entities(test_world.getEntityManager())
 {
     update_transparent = false;
     draw_transparent = false;
@@ -37,7 +40,8 @@ GameState::GameState(Game* game, unsigned int id, sf::IpAddress server_address, 
     remote_port(server_port),
     receiver_thread(&GameState::receiverLoop, this),
     tbd_thread_safe(false),
-    test_world(game)
+    test_world(game),
+    entities(test_world.getEntityManager())
 {
     update_transparent = false;
     draw_transparent = false;
@@ -88,12 +92,14 @@ void GameState::init()
     client_socket.setBlocking(true);
     receiver_thread.launch();
 
-
     //TEMP
     sf::Packet request;
     request << (unsigned short)Networking::CtoS::RequestChunk;
     request << 0 << 0;
     client_socket.send(request, remote_ip, remote_port);
+
+    entities.addEntity(new TestEntity(&test_world, 0));
+
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -205,6 +211,8 @@ void GameState::update(float delta_time)
     }
 
     test_world.updateLoadedChunk(my_view.getCenter());
+
+    entities.updateAll(delta_time);
 }
 
 void GameState::draw(sf::RenderTarget& target) const
@@ -219,6 +227,8 @@ void GameState::draw(sf::RenderTarget& target) const
 
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockSidesVertexArray(), block_textures);
+
+    entities.drawAll(target);
 
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockTopsVertexArray(), block_textures);

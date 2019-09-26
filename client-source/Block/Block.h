@@ -29,6 +29,12 @@ class Block
         inline uint16_t getId() const { return id; }
 
         /**
+         * To know whether an entity's hitbox can touch that box
+         * @param info : Info about the block
+         * @return True if the block can be touched
+         */
+        virtual inline bool isSolid(BlockInfo info) const { return true; }
+        /**
          * To know whether a block is just a flat plane on the ground or a full cube
          * @param info : Info about the block
          * @return True if the block is a cube

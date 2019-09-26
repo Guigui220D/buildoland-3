@@ -42,6 +42,7 @@ class GameState : public State
 
         //World
         World test_world;
+        EntitiesManager& entities;
 
         //Rendering stuff
         sf::View my_view;

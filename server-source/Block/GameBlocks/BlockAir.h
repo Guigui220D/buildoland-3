@@ -8,6 +8,8 @@ class BlockAir : public Block
         BlockAir();
         virtual ~BlockAir();
 
+        inline bool isSolid(BlockInfo info) const override { return false; }
+
     protected:
 
     private:

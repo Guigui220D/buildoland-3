@@ -36,6 +36,9 @@ int Game::run()
 {
     sf::Clock clock;
 
+    sf::Clock fps_clk;
+	int count = 0;
+
     while (window.isOpen())
     {
 
@@ -88,6 +91,16 @@ int Game::run()
             states_stack.insert(states_stack.end() - 1, std::unique_ptr<State>(state_to_add_under_the_top));
             state_to_add_under_the_top = nullptr;
         }
+
+        count++;
+		if (count >= 1000)
+		{
+			float time = fps_clk.restart().asSeconds();
+			time /= count;
+			float fps = 1 / time;
+			std::cout << "FPS : " << fps << std::endl;
+			count = 0;
+		}
     }
     return 0;
 }

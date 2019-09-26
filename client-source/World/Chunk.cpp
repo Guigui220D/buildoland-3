@@ -42,6 +42,9 @@ Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet& packet, bool& success) 
         ground_detail_vertices.at(i).clear();
     }
 
+    for (int i = 0; i < 4; i++)
+        notifyChunk(i);
+
     success = true;
     ready = true;
 }

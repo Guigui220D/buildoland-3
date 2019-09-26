@@ -32,8 +32,6 @@ World::~World()
 
 void World::updateLoadedChunk(sf::Vector2f center)
 {
-
-
     //Add chunks waiting to be added
     chunks_to_add_mutex.lock();
     for (Chunk*& chunk : chunks_to_add)

@@ -5,7 +5,7 @@
 LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed),
-    animation(.05f)
+    animation(.07f)
 {
     animation.addAnimation({ 0 });
     for (unsigned int i = 0; i < 8; i++)

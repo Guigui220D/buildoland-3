@@ -4,14 +4,14 @@
 #include "../../Game.h"
 
 TestEntity::TestEntity(World* world, unsigned int id) :
-    LivingEntity(world, id, sf::Vector2(.5f, .5f), 2.f)
+    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
     rs.setSize(sf::Vector2f(1.f, 1.f));
-    rs.setOrigin(sf::Vector2f(.5f, .9f));
+    rs.setOrigin(sf::Vector2f(.5f, .8f));
     rs.setTexture(&world->getGame()->getResourceManager().getTexture("CHARA_TEST"));
 
     shadow.setRadius(.17f);
-    shadow.setOrigin(sf::Vector2(.17f, .17f));
+    shadow.setOrigin(sf::Vector2f(.17f, .17f));
     shadow.setFillColor(sf::Color(0, 0, 0, 64));
 }
 

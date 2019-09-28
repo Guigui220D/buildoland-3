@@ -10,7 +10,8 @@ namespace Networking
             ConnectionAccepted,
             ConnectionRefused,
             FinalHandshake,
-            SendChunk
+            SendChunk,
+            EntityAction
         };
     }
 }

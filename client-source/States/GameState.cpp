@@ -11,8 +11,6 @@
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Networking/ServerToClientCodes.h"
 
-#include "../../common-source/Entities/GameEntities/TestEntity.h"
-
 //TEMPORARY
 #include <windows.h>
 
@@ -97,9 +95,6 @@ void GameState::init()
     request << (unsigned short)Networking::CtoS::RequestChunk;
     request << 0 << 0;
     client_socket.send(request, remote_ip, remote_port);
-
-    entities.addEntity(new TestEntity(&test_world, 0));
-
 }
 
 bool GameState::handleEvent(sf::Event& event)

@@ -90,7 +90,8 @@ void Server::run()
         }
         clients_manager.clients_mutex.unlock();
 
-        //Update everything
+        //Update entities
+        world.getEntityManager().updateAll(delta);
         //Update all worlds
         run_mutex.lock();
     }

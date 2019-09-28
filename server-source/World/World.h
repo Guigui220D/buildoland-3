@@ -3,6 +3,7 @@
 #include "Chunk.h"
 
 #include "../Utils/Utils.h"
+#include "EntitiesManager.h"
 
 #include <map>
 #include <memory>
@@ -20,6 +21,8 @@ class World
         World(Server* server);
         World(Server* server, int seed);
         virtual ~World();
+
+        EntitiesManager& getEntityManager() { return entities; }
 
         /**
          * Gets the game that own this world
@@ -134,6 +137,8 @@ class World
             getChunksEnd() const { return chunks.cend(); }
 
     protected:
+        //Entities
+        EntitiesManager entities;
 
     private:
         Server* server;

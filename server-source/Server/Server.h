@@ -12,6 +12,8 @@
 
 class Server
 {
+    friend class ClientsManager;
+
     public:
         Server(uint16_t client_port);   //Leave client port to 0 if this is a multiplayer server, i just don't want to have ifdef's everywhere
         ~Server();
@@ -22,8 +24,10 @@ class Server
 
         void close();
 
-        inline GameBlocks& getBlocksManager() { return blocksManager; }
-        inline GameGrounds& getGroundsManager() { return groundsManager; }
+        inline GameBlocks& getBlocksManager() { return blocks_manager; }
+        inline GameGrounds& getGroundsManager() { return grounds_manager; }
+
+        inline ClientsManager& getClientsManager() { return clients_manager; }
 
     private:
         sf::UdpSocket server_socket;
@@ -42,8 +46,8 @@ class Server
 
         std::atomic<bool> connection_open;
 
-        GameBlocks blocksManager;
-        GameGrounds groundsManager;
+        GameBlocks blocks_manager;
+        GameGrounds grounds_manager;
 
         //Theres only one world for the moment
         World world;

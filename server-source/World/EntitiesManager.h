@@ -4,10 +4,12 @@
 
 #include "../../common-source/Entities/Entity.h"
 
+class Server;
+
 class EntitiesManager
 {
     public:
-        EntitiesManager();
+        EntitiesManager(Server* server);
         ~EntitiesManager();
 
         /**
@@ -17,13 +19,15 @@ class EntitiesManager
         void updateAll(float delta);
 
         /**
-         * Adds an entity
+         * Adds a new entity
          * If the entity couldnt be added, it will be deleted
          * @param entity : the pointer to the entity to add
          * @return True if the entity was added, False if it wasn't and deleted
          */
-        bool addEntity(Entity* entity);
+        bool newEntity(Entity* entity);
 
     private:
         std::map<unsigned int, Entity*> entities;
+
+        Server* const server;
 };

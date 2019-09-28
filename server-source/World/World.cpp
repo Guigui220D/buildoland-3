@@ -7,8 +7,9 @@
 
 World::World(Server* server) :
     server(server),
-    gameBlocksManager(server->getBlocksManager()),
-    gameGroundsManager(server->getGroundsManager())
+    entities(server),
+    game_blocks_manager(server->getBlocksManager()),
+    game_grounds_manager(server->getGroundsManager())
 {
     std::srand(time(0));
     seed = std::rand() << 16 | std::rand();
@@ -16,8 +17,9 @@ World::World(Server* server) :
 
 World::World(Server* server, int seed) :
     server(server),
-    gameBlocksManager(server->getBlocksManager()),
-    gameGroundsManager(server->getGroundsManager()),
+    entities(server),
+    game_blocks_manager(server->getBlocksManager()),
+    game_grounds_manager(server->getGroundsManager()),
     seed(seed)
 {
 }
@@ -74,10 +76,10 @@ uint16_t World::getGroundId(sf::Vector2i pos)
 
 const Block* World::getBlock(sf::Vector2i pos)
 {
-    return gameBlocksManager.getBlockByID(getBlockId(pos));
+    return game_blocks_manager.getBlockByID(getBlockId(pos));
 }
 
 const Ground* World::getGround(sf::Vector2i pos)
 {
-    return gameGroundsManager.getGroundByID(getGroundId(pos));
+    return game_grounds_manager.getGroundByID(getGroundId(pos));
 }

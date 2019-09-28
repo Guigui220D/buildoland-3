@@ -14,6 +14,7 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 
 Server::Server(uint16_t client_port) :
+    clients_manager(this),
     receiver_thread(Server::receiver, this),
     owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
@@ -31,8 +32,8 @@ Server::~Server()
 
 bool Server::init(uint16_t port)
 {
-    blocksManager.initBlocks();
-    groundsManager.initGrounds();
+    blocks_manager.initBlocks();
+    grounds_manager.initGrounds();
 
     if (server_socket.bind(port) != sf::Socket::Done)
     {

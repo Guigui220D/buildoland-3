@@ -1,6 +1,9 @@
 #include "ClientsManager.h"
 
-ClientsManager::ClientsManager()
+#include "Server.h"
+
+ClientsManager::ClientsManager(Server* server) :
+    server(server)
 {
     //ctor
 }
@@ -31,4 +34,10 @@ Client& ClientsManager::getClient(IpAndPort& client) const
         throw new std::logic_error("getClient: client doesn't exist.");
 
     return *i->second;
+}
+
+void ClientsManager::sendToAll(sf::Packet& packet)
+{
+    for (auto i = clients.begin(); i != clients.end(); i++)
+        server->server_socket.send(packet, i->first.address, i->first.port);
 }

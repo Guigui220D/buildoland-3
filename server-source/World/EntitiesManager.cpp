@@ -1,8 +1,14 @@
 #include "EntitiesManager.h"
 
-#include <algorithm>
+#include "../Server/Server.h"
 
-EntitiesManager::EntitiesManager()
+#include <SFML/Network.hpp>
+#include "../../common-source/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/StoC_EntityActionCodes.h"
+#include "../../common-source/Entities/EntityCodes.h"
+
+EntitiesManager::EntitiesManager(Server* server) :
+    server(server)
 {
     //ctor
 }
@@ -19,7 +25,7 @@ void EntitiesManager::updateAll(float delta)
         i->second->update(delta);
 }
 
-bool EntitiesManager::addEntity(Entity* entity)
+bool EntitiesManager::newEntity(Entity* entity)
 {
     if (entities.find(entity->getId()) != entities.cend())
     {
@@ -28,6 +34,13 @@ bool EntitiesManager::addEntity(Entity* entity)
     }
 
     entities.emplace(std::pair<unsigned int, Entity*>(entity->getId(), entity));
+
+    sf::Packet packet;
+    packet << (unsigned short)Networking::StoC::EntityAction;
+    packet << (unsigned short)EntityActions::StoC::AddEntity;
+    packet << (unsigned short)entity->getEntityCode();
+
+    server->getClientsManager().sendToAll(packet);
 
     return true;
 }

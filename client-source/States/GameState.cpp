@@ -6,6 +6,9 @@
 #include <string>
 #include <sstream>
 
+#include <thread>
+#include <chrono>
+
 #include "../Version.h"
 
 #include "../../common/Networking/ClientToServerCodes.h"
@@ -311,6 +314,7 @@ bool GameState::receiveServerHandshake(bool known_port)
     {
         while (client_socket.receive(packet, address, port) != sf::Socket::Done)
         {
+            std::this_thread::sleep_for(std::chrono::milliseconds(50));
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
                 std::cerr << "Time out while waiting for server handshake" << std::endl;

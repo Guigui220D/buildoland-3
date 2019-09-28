@@ -100,10 +100,16 @@ void Server::run()
         clients_manager.clients_mutex.unlock();
 
         //FOR TESTING
-        if (!test_done && test.getElapsedTime().asSeconds() >= 5.f)
+        if (!test_done && test.getElapsedTime().asSeconds() >= 5.f && test.getElapsedTime().asSeconds() < 6.f)
         {
             world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
             test_done = true;
+        }
+
+        if (test_done && test.getElapsedTime().asSeconds() >= 10.f)
+        {
+            world.getEntityManager().removeEntity(0);
+            test_done = false;
         }
 
         //Update entities

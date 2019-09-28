@@ -21,10 +21,18 @@ class EntitiesManager
         /**
          * Adds a new entity
          * If the entity couldnt be added, it will be deleted
+         * A packet will be sent to all the clients to inform them
          * @param entity : the pointer to the entity to add
          * @return True if the entity was added, False if it wasn't and deleted
          */
         bool newEntity(Entity* entity);
+
+        /**
+         * Removes an entity using its id
+         * A packet will be sent to all the clients to inform them
+         * @param id : the id of the entity to remove
+         */
+        void removeEntity(unsigned int id);
 
         inline unsigned int getNextEntityId() { return next_entity_id++; }
 

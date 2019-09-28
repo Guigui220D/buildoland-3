@@ -47,3 +47,17 @@ bool EntitiesManager::newEntity(Entity* entity)
 
     return true;
 }
+
+void EntitiesManager::removeEntity(unsigned int id)
+{
+    if (entities.find(id) != entities.cend())
+        entities.erase(entities.find(id));
+
+    sf::Packet packet;
+    packet << (unsigned short)Networking::StoC::EntityAction;
+    packet << (unsigned short)EntityActions::StoC::RemoveEntity;
+
+    packet << id;
+
+    server->getClientsManager().sendToAll(packet);
+}

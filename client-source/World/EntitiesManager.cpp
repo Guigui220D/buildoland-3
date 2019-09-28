@@ -60,8 +60,9 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
         return addEntity(packet);
 
     case EntityActions::StoC::RemoveEntity:
-        std::cerr << "RemoveEntity code unimplemented." << std::endl;
-        return false;
+        removeEntity(packet);
+        return true;
+
     case EntityActions::StoC::EntityAction:
         std::cerr << "EntityAction code unimplemented." << std::endl;
         return false;
@@ -117,6 +118,34 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
     entities_vector.push_back(new_entity);
 
     return true;
+}
+
+void EntitiesManager::removeEntity(sf::Packet& packet)
+{
+    unsigned int entity_id;
+    if (!(packet >> entity_id))
+    {
+        std::cerr << "Entity packet was too short (reading entity id)." << std::endl;
+        return;
+    }
+
+    auto map_i = entities_map.find(entity_id);
+    if (map_i == entities_map.end())
+        return;
+
+    Entity* entity_ptr = map_i->second;
+    entities_map.erase(map_i);
+
+    for (auto vector_i = entities_vector.begin(); vector_i != entities_vector.end(); vector_i++)
+    {
+        if (*vector_i == entity_ptr)
+        {
+            entities_vector.erase(vector_i);
+            break;
+        }
+    }
+
+    delete entity_ptr;
 }
 
 /*

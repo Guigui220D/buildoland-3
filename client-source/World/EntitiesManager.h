@@ -64,4 +64,10 @@ class EntitiesManager
          * @return True if the entity was added
          */
         bool addEntity(sf::Packet& packet);
+        /**
+         * Removes an entity
+         * This function is thread safe
+         * @param packet : the packet to read
+         */
+        void removeEntity(sf::Packet& packet);
 };

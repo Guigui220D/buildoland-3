@@ -1,5 +1,7 @@
 #pragma once
 
+#include "EntityCodes.h"
+
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
 #else
@@ -11,6 +13,8 @@ class World;
 class Entity
 {
     public:
+        virtual inline unsigned short getEntityCode() const = 0;
+
         Entity(World* world, unsigned int id);
         virtual ~Entity();
 

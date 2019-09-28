@@ -4,6 +4,9 @@
 #include <assert.h>
 #include <cstdlib>
 
+#include <thread>
+#include <chrono>
+
 #include "../Version.h"
 #include "../Utils/Utils.h"
 
@@ -73,7 +76,8 @@ void Server::run()
     {
         run_mutex.unlock();
 
-        while (server_clock.getElapsedTime().asSeconds() < 0.05f) {}
+        std::this_thread::sleep_for(std::chrono::milliseconds(50 - server_clock.getElapsedTime().asMilliseconds()));
+
         delta = server_clock.restart().asSeconds();
 
         //Answer chunk requests

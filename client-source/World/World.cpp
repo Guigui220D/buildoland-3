@@ -8,6 +8,7 @@
 int unsigned World::RENDER_DISTANCE = 3;
 
 World::World(Game* game) :
+    entities(this),
     game(game),
     game_blocks_manager(game->getBlocksManager()),
     game_grounds_manager(game->getGroundsManager())
@@ -17,6 +18,7 @@ World::World(Game* game) :
 }
 
 World::World(Game* game, int seed) :
+    entities(this),
     game(game),
     game_blocks_manager(game->getBlocksManager()),
     game_grounds_manager(game->getGroundsManager()),

@@ -8,7 +8,8 @@
 #include "../../common-source/Entities/EntityCodes.h"
 
 EntitiesManager::EntitiesManager(Server* server) :
-    server(server)
+    server(server),
+    next_entity_id(0)
 {
     //ctor
 }
@@ -39,6 +40,8 @@ bool EntitiesManager::newEntity(Entity* entity)
     packet << (unsigned short)Networking::StoC::EntityAction;
     packet << (unsigned short)EntityActions::StoC::AddEntity;
     packet << (unsigned short)entity->getEntityCode();
+
+    packet << entity->getId();
 
     server->getClientsManager().sendToAll(packet);
 

@@ -26,8 +26,12 @@ class EntitiesManager
          */
         bool newEntity(Entity* entity);
 
+        inline unsigned int getNextEntityId() { return next_entity_id++; }
+
     private:
         std::map<unsigned int, Entity*> entities;
 
         Server* const server;
+
+        unsigned int next_entity_id;
 };

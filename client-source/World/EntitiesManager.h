@@ -2,14 +2,16 @@
 
 #include <map>
 #include <vector>
+
 #include <SFML/Graphics.hpp>
+#include <SFML/Network.hpp>
 
 #include "../../common-source/Entities/Entity.h"
 
 class EntitiesManager
 {
     public:
-        EntitiesManager();
+        EntitiesManager(World* world);
         ~EntitiesManager();
 
         /**
@@ -29,9 +31,22 @@ class EntitiesManager
          * @param entity : the pointer to the entity to add
          * @return True if the entity was added, False if it wasn't and deleted
          */
-        bool addEntity(Entity* entity);
+        //bool addEntity(Entity* entity);
+
+        /**
+         * Reads an entity-related packet
+         * This function is thread safe
+         * @param packet : the packet to read
+         * @return True if the packet was successfully read and something was done
+         */
+        bool readEntityPacket(sf::Packet& packet);
+
+        //Just for when we add entities from an other thread
+        mutable sf::Mutex entities_mutex;
 
     private:
+        World* const world;
+
         //We have two containers
         std::map<unsigned int, Entity*> entities_map;   //One to get an entity by its id
         mutable std::vector<Entity*> entities_vector;   //One to easily iterate through entities, that we keep sorted for rendering
@@ -41,4 +56,12 @@ class EntitiesManager
         {
             return a->getPosition().y < b->getPosition().y;
         }
+
+        /**
+         * Adds an entity (in case of AddEntity code in readEntityPacket)
+         * This function is thread safe
+         * @param packet : the packet to read
+         * @return True if the entity was added
+         */
+        bool addEntity(sf::Packet& packet);
 };

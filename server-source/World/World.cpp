@@ -6,8 +6,8 @@
 #include <iostream>
 
 World::World(Server* server) :
-    server(server),
     entities(server),
+    server(server),
     game_blocks_manager(server->getBlocksManager()),
     game_grounds_manager(server->getGroundsManager())
 {
@@ -16,8 +16,8 @@ World::World(Server* server) :
 }
 
 World::World(Server* server, int seed) :
-    server(server),
     entities(server),
+    server(server),
     game_blocks_manager(server->getBlocksManager()),
     game_grounds_manager(server->getGroundsManager()),
     seed(seed)

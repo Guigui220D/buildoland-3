@@ -13,6 +13,9 @@
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Networking/ServerToClientCodes.h"
 
+//TEMP
+#include "../../common-source/Entities/GameEntities/TestEntity.h"
+
 Server::Server(uint16_t client_port) :
     clients_manager(this),
     receiver_thread(Server::receiver, this),
@@ -71,6 +74,7 @@ void Server::run()
     run_mutex.unlock();
 
     sf::Clock test;
+    bool test_done = false;
 
     run_mutex.lock();
     while (running)
@@ -94,6 +98,13 @@ void Server::run()
             }
         }
         clients_manager.clients_mutex.unlock();
+
+        //FOR TESTING
+        if (!test_done && test.getElapsedTime().asSeconds() >= 5.f)
+        {
+            world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+            test_done = true;
+        }
 
         //Update entities
         world.getEntityManager().updateAll(delta);

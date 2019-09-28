@@ -386,6 +386,10 @@ void GameState::receiverLoop()
                 case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);
                     break;
+                case Networking::StoC::EntityAction:
+                    if (!entities.readEntityPacket(packet))
+                        std::cerr << "Entity packet could not be read." << std::endl;
+                    break;
                 default:
                     std::cerr << "Unknown packet code" << std::endl;
                     break;

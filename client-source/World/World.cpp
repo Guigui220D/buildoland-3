@@ -9,8 +9,8 @@ int unsigned World::RENDER_DISTANCE = 3;
 
 World::World(Game* game) :
     game(game),
-    gameBlocksManager(game->getBlocksManager()),
-    gameGroundsManager(game->getGroundsManager())
+    game_blocks_manager(game->getBlocksManager()),
+    game_grounds_manager(game->getGroundsManager())
 {
     std::srand(time(0));
     seed = std::rand() << 16 | std::rand();
@@ -18,8 +18,8 @@ World::World(Game* game) :
 
 World::World(Game* game, int seed) :
     game(game),
-    gameBlocksManager(game->getBlocksManager()),
-    gameGroundsManager(game->getGroundsManager()),
+    game_blocks_manager(game->getBlocksManager()),
+    game_grounds_manager(game->getGroundsManager()),
     seed(seed)
 {
 }
@@ -128,10 +128,10 @@ uint16_t World::getGroundId(sf::Vector2i pos)
 
 const Block* World::getBlock(sf::Vector2i pos)
 {
-    return gameBlocksManager.getBlockByID(getBlockId(pos));
+    return game_blocks_manager.getBlockByID(getBlockId(pos));
 }
 
 const Ground* World::getGround(sf::Vector2i pos)
 {
-    return gameGroundsManager.getGroundByID(getGroundId(pos));
+    return game_grounds_manager.getGroundByID(getGroundId(pos));
 }

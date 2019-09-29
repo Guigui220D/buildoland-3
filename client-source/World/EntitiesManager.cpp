@@ -45,6 +45,13 @@ void EntitiesManager::drawAll(sf::RenderTarget& target) const
     entities_mutex.unlock();
 }
 
+Entity* EntitiesManager::getEntity(unsigned int id)
+{
+    sf::Lock lock(entities_mutex);
+    auto i = entities_map.find(id);
+    return (i != entities_map.end() ? i->second : nullptr);
+}
+
 bool EntitiesManager::readEntityPacket(sf::Packet& packet)
 {
     unsigned short entity_action_code;
@@ -64,8 +71,8 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
         return true;
 
     case EntityActions::StoC::EntityAction:
-        std::cerr << "EntityAction code unimplemented." << std::endl;
-        return false;
+        return doEntityAction(packet);
+
     default:
         std::cerr << "Entity action code unknown." << std::endl;
         return false;
@@ -129,6 +136,8 @@ void EntitiesManager::removeEntity(sf::Packet& packet)
         return;
     }
 
+    sf::Lock lock(entities_mutex);
+
     auto map_i = entities_map.find(entity_id);
     if (map_i == entities_map.end())
         return;
@@ -148,20 +157,24 @@ void EntitiesManager::removeEntity(sf::Packet& packet)
     delete entity_ptr;
 }
 
-/*
-bool EntitiesManager::addEntity(Entity* entity)
+bool EntitiesManager::doEntityAction(sf::Packet& packet)
 {
-    sf::Lock lock(entities_mutex);
-
-    if (entities_map.find(entity->getId()) != entities_map.cend())
+    unsigned int id;
+    if (!(packet >> id))
     {
-        delete entity;
+        std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
         return false;
     }
 
-    entities_map.emplace(std::pair<unsigned int, Entity*>(entity->getId(), entity));
-    entities_vector.push_back(entity);
+    Entity* en = getEntity(id);
 
-    return true;
+    if (!en)
+    {
+        std::cerr << "The entity with that code couldn't be found (doEntityAction)." << std::endl;
+        return false;
+    }
+
+    sf::Lock lock(entities_mutex);
+
+    return en->takePacket(packet);
 }
-*/

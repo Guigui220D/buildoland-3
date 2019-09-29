@@ -26,12 +26,11 @@ class EntitiesManager
         void drawAll(sf::RenderTarget& target) const;
 
         /**
-         * Adds an entity
-         * If the entity couldnt be added, it will be deleted
-         * @param entity : the pointer to the entity to add
-         * @return True if the entity was added, False if it wasn't and deleted
+         * Get a pointer to an entity using its id
+         * @param id : the id of the entity you're looking for
+         * @return the pointer to the entity, or nullptr if it doesn't exist
          */
-        //bool addEntity(Entity* entity);
+        Entity* getEntity(unsigned int id);
 
         /**
          * Reads an entity-related packet
@@ -70,4 +69,11 @@ class EntitiesManager
          * @param packet : the packet to read
          */
         void removeEntity(sf::Packet& packet);
+        /**
+         * Sends an action packet to the right entity
+         * This function is thread safe
+         * @param packet : the packet to read
+         * @return true if the entity was found and something was done
+         */
+        bool doEntityAction(sf::Packet& packet);
 };

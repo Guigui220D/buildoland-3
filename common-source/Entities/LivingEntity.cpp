@@ -1,6 +1,17 @@
 #include "LivingEntity.h"
 
 #include <cmath>
+#include <iostream>
+
+#ifdef CLIENT_SIDE
+
+#else
+    #include <SFML/Network.hpp>
+    #include "../Networking/ServerToClientCodes.h"
+    #include "../Networking/StoC_EntityActionCodes.h"
+    #include "../../server-source/World/World.h"
+    #include "../../server-source/Server/Server.h"
+#endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
 LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
@@ -31,15 +42,73 @@ LivingEntity::~LivingEntity()
     //dtor
 }
 
+#ifdef CLIENT_SIDE
+bool LivingEntity::takePacket(sf::Packet& packet)
+{
+    unsigned short action_code;
+
+    if (!(packet >> action_code))
+    {
+        std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
+        return false;
+    }
+
+    switch (action_code)
+    {
+    case Walk:
+        {
+            sf::Vector2f new_pos, new_direction;
+
+            packet >> new_direction.x;
+            packet >> new_direction.y;
+            packet >> new_pos.x;
+            packet >> new_pos.y;
+
+            position = new_pos;
+            setWalkingDirection(new_direction);
+        }
+        return true;
+    default:
+        std::cerr << "Living entity action code unknown." << std::endl;
+        return false;
+    }
+}
+#endif
+
+void LivingEntity::setWalkingDirection(sf::Vector2f new_direction)
+{
+    walking_direction = new_direction;
+
+    #ifndef CLIENT_SIDE
+        sf::Packet packet;
+        //Codes
+        packet << (unsigned short)Networking::StoC::EntityAction;
+        packet << (unsigned short)EntityActions::StoC::EntityAction;
+        packet << getId();
+        packet << (unsigned short)Walk;
+        //Direction
+        packet << new_direction.x;
+        packet << new_direction.y;
+        //Position
+        packet << position.x;
+        packet << position.y;
+
+        getWorld()->getServer()->getClientsManager().sendToAll(packet);
+    #endif // SERVER_SIDE
+}
+
 void LivingEntity::walk(float delta)
 {
-    #ifdef CLIENT_SIDE
+
     if (walking_direction == sf::Vector2f(0.f, 0.f))
     {
+        #ifdef CLIENT_SIDE
         animation.selectAnimation(0);
+        #endif
         return;
     }
 
+    #ifdef CLIENT_SIDE
     //Selecting a proper animation
     if (walking_direction.x > 0.f)
     {

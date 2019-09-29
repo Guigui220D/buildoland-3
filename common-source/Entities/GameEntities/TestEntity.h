@@ -17,9 +17,12 @@ class TestEntity : public LivingEntity
         void update(float delta);
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
-
+        #endif
     private:
+        #ifdef CLIENT_SIDE
         sf::RectangleShape rs;
         sf::CircleShape shadow;
+        #else
+        sf::Clock test_clock;
         #endif
 };

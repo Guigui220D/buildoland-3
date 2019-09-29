@@ -1,10 +1,13 @@
 #include "TestEntity.h"
 
+#include <iostream>
+
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
 #else
     #include "../../../server-source/World/World.h"
+    #include <cstdio>
 #endif
 
 TestEntity::TestEntity(World* world, unsigned int id) :
@@ -28,7 +31,7 @@ TestEntity::~TestEntity()
 
 void TestEntity::update(float delta)
 {
-    walking_direction = sf::Vector2f();
+    std::cout << "Position : " << position.x << ", " << position.y << std::endl;
 
     walk(delta);
 
@@ -37,6 +40,12 @@ void TestEntity::update(float delta)
     rs.setTextureRect(getCurrentTextureRect());
 
     shadow.setPosition(position);
+    #else
+    if (test_clock.getElapsedTime().asSeconds() > 2.f)
+    {
+        setWalkingDirection(sf::Vector2f(std::rand() % 3 - 1, std::rand() % 3 - 1));
+        test_clock.restart();
+    }
     #endif // CLIENT_SIDE
 }
 

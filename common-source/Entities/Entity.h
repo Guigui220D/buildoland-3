@@ -4,6 +4,7 @@
 
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
+    #include <SFML/Network.hpp>
 #else
     #include <SFML/System.hpp>
 #endif // CLIENT_SIDE
@@ -30,6 +31,13 @@ class Entity
          * @param target : the render target on which to draw
          */
         virtual void draw(sf::RenderTarget& target) const;
+
+        /**
+         * Receives an entity action packet
+         * @param packet : the packet to read
+         * @return true if the packet was succesfully read and something was done
+         */
+        virtual bool takePacket(sf::Packet& packet) = 0;
         #endif // CLIENT_SIDE
 
         inline unsigned int getId() const { return id; }

@@ -13,15 +13,28 @@ class LivingEntity : public PhysicsEntity
         virtual ~LivingEntity();
 
     protected:
-        float walking_speed;
-        sf::Vector2f walking_direction;
+        enum : unsigned short
+        {
+            Walk,
+        };  //Actions
+
+        inline float getWalkingSpeed() const { return walking_speed; }
+        inline void setWalkingSpeed(float speed) { walking_speed = speed; }
+
+        void setWalkingDirection(sf::Vector2f new_direction);
 
         void walk(float delta);
 
         #ifdef CLIENT_SIDE
         inline sf::IntRect getCurrentTextureRect() const { return animation.getCurrentTextureRect(); }
 
+        bool takePacket(sf::Packet& packet);
+        #endif
     private:
+        float walking_speed;
+        sf::Vector2f walking_direction;
+
+        #ifdef CLIENT_SIDE
         Animation<64, 5, 1> animation;
         #endif
 };

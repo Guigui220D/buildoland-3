@@ -1,6 +1,7 @@
 #include "Entity.h"
 
 Entity::Entity(World* world, unsigned int id) :
+    position(0.f, 0.f),
     id(id),
     world(world)
 {

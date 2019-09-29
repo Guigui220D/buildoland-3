@@ -106,42 +106,6 @@ void Server::run()
             test_step++;
         }
 
-        if (test_step == 1 && test.getElapsedTime().asSeconds() >= 10.f)
-        {
-            world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
-            test_step++;
-        }
-
-        if (test_step == 2 && test.getElapsedTime().asSeconds() >= 15.f)
-        {
-            world.getEntityManager().removeEntity(0);
-            test_step++;
-        }
-
-        if (test_step == 3 && test.getElapsedTime().asSeconds() >= 20.f)
-        {
-            world.getEntityManager().removeEntity(0);
-            test_step++;
-        }
-
-        if (test_step == 4 && test.getElapsedTime().asSeconds() >= 25.f)
-        {
-            world.getEntityManager().removeEntity(1);
-            test_step++;
-        }
-
-        if (test_step == 5 && test.getElapsedTime().asSeconds() >= 30.f)
-        {
-            world.getEntityManager().newEntity(new TestEntity(&world, 0));
-            test_step++;
-        }
-
-        if (test_step == 6 && test.getElapsedTime().asSeconds() >= 35.f)
-        {
-            world.getEntityManager().newEntity(new TestEntity(&world, 0));
-            test_step++;
-        }
-
         //Update entities
         world.getEntityManager().updateAll(delta);
         //Update all worlds

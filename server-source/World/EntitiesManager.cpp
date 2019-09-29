@@ -23,7 +23,7 @@ EntitiesManager::~EntitiesManager()
 void EntitiesManager::updateAll(float delta)
 {
     for (auto i = entities.begin(); i != entities.end(); i++)
-        i->second->update(delta);
+        i->second->updateBase(delta);
 }
 
 bool EntitiesManager::newEntity(Entity* entity)

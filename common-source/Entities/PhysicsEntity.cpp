@@ -8,8 +8,6 @@
     #include "../../server-source/Block/Block.h"
 #endif // CLIENT_SIDE
 
-#include <cmath>
-
 PhysicsEntity::PhysicsEntity(World* world, unsigned int id, sf::Vector2f hitbox_size) :
     Entity(world, id),
     hitbox_size(hitbox_size)

@@ -31,8 +31,6 @@ TestEntity::~TestEntity()
 
 void TestEntity::update(float delta)
 {
-    std::cout << "Position : " << position.x << ", " << position.y << std::endl;
-
     walk(delta);
 
     #ifdef CLIENT_SIDE

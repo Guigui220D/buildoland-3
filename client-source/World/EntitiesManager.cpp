@@ -30,7 +30,7 @@ void EntitiesManager::updateAll(float delta)
 {
     entities_mutex.lock();
     for (Entity*& entity : entities_vector)
-        entity->update(delta);
+        entity->updateBase(delta);
     entities_mutex.unlock();
 }
 

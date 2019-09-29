@@ -2,6 +2,8 @@
 
 #include "EntityCodes.h"
 
+#include <cmath>
+
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
     #include <SFML/Network.hpp>
@@ -21,9 +23,10 @@ class Entity
 
         /**
          * Updates this entity
-         * @param delta : time since last update
+         * Calls update()
+         * @param delta : the elapsed time
          */
-        virtual void update(float delta);
+        void updateBase(float delta);
 
         #ifdef CLIENT_SIDE
         /**
@@ -45,10 +48,24 @@ class Entity
         inline sf::Vector2f getPosition() const { return position; }
         inline World* getWorld() const { return world; }
 
+        inline sf::Vector2i getBlockOn() const { return sf::Vector2i(std::floor(position.x + .5f), std::floor(position.y + .5f)); }
+        sf::Vector2i getChunkOn() const;
+
     protected:
+        /**
+         * Updates this entity
+         * This function is meant to be overriden
+         * @param delta : time since last update
+         */
+        virtual void update(float delta);
+
         sf::Vector2f position;
 
     private:
+        void onChunkChange();
+
         const unsigned int id;
         World* const world;
+
+        sf::Vector2i chunk_on;
 };

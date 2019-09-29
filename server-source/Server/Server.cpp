@@ -74,7 +74,7 @@ void Server::run()
     run_mutex.unlock();
 
     sf::Clock test;
-    bool test_done = false;
+    int test_step = 0;
 
     run_mutex.lock();
     while (running)
@@ -100,16 +100,46 @@ void Server::run()
         clients_manager.clients_mutex.unlock();
 
         //FOR TESTING
-        if (!test_done && test.getElapsedTime().asSeconds() >= 5.f && test.getElapsedTime().asSeconds() < 6.f)
+        if (test_step == 0 && test.getElapsedTime().asSeconds() >= 5.f)
         {
             world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
-            test_done = true;
+            test_step++;
         }
 
-        if (test_done && test.getElapsedTime().asSeconds() >= 10.f)
+        if (test_step == 1 && test.getElapsedTime().asSeconds() >= 10.f)
+        {
+            world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+            test_step++;
+        }
+
+        if (test_step == 2 && test.getElapsedTime().asSeconds() >= 15.f)
         {
             world.getEntityManager().removeEntity(0);
-            test_done = false;
+            test_step++;
+        }
+
+        if (test_step == 3 && test.getElapsedTime().asSeconds() >= 20.f)
+        {
+            world.getEntityManager().removeEntity(0);
+            test_step++;
+        }
+
+        if (test_step == 4 && test.getElapsedTime().asSeconds() >= 25.f)
+        {
+            world.getEntityManager().removeEntity(1);
+            test_step++;
+        }
+
+        if (test_step == 5 && test.getElapsedTime().asSeconds() >= 30.f)
+        {
+            world.getEntityManager().newEntity(new TestEntity(&world, 0));
+            test_step++;
+        }
+
+        if (test_step == 6 && test.getElapsedTime().asSeconds() >= 35.f)
+        {
+            world.getEntityManager().newEntity(new TestEntity(&world, 0));
+            test_step++;
         }
 
         //Update entities

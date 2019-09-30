@@ -3,6 +3,10 @@
 #include <SFML/Network.hpp>
 #include <queue>
 
+#include "../../common-source/Entities/GameEntities/Player.h"
+
+class Server;
+
 struct IpAndPort
 {
     inline IpAndPort(sf::IpAddress ip, uint16_t port) :
@@ -37,7 +41,7 @@ struct IpAndPort
 class Client
 {
     public:
-        Client(IpAndPort ip_and_port);
+        Client(Server* server, IpAndPort ip_and_port, Player* player);
         virtual ~Client();
 
         inline const IpAndPort& getIpAndPort() const { return ip_and_port; }
@@ -50,13 +54,19 @@ class Client
         sf::Vector2i getNextRequestedChunk();
         void addRequestedChunk(sf::Vector2i chunk);
 
+        inline bool hasPlayer() const { return player; }
+        inline Player* getPlayer() const { return player; }
+
+        void send(sf::Packet& packet) const;
+
     protected:
         IpAndPort ip_and_port;
 
         std::queue<sf::Vector2i> chunk_requests;
         mutable sf::Mutex chunk_requests_mutex;
 
-        //Player* player;
+        Player* const player;
 
     private:
+        Server* const server;
 };

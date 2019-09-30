@@ -15,7 +15,7 @@ class ClientsManager
 
         inline bool isConnected(IpAndPort client) const { sf::Lock l(clients_mutex); return clients.find(client) != clients.cend(); }
 
-        bool addClient(IpAndPort& client);
+        bool addClient(IpAndPort& client, Player* player);
         Client& getClient(IpAndPort& client) const;
 
         void sendToAll(sf::Packet& packet);

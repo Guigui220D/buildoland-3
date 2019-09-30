@@ -13,14 +13,14 @@ ClientsManager::~ClientsManager()
     //dtor
 }
 
-bool ClientsManager::addClient(IpAndPort& client)
+bool ClientsManager::addClient(IpAndPort& client, Player* player)
 {
     sf::Lock l(clients_mutex);
 
     if (clients.find(client) != clients.cend())
         return false;
 
-    clients.emplace(std::pair<IpAndPort, std::unique_ptr<Client>>(client, std::make_unique<Client>(client)));
+    clients.emplace(std::pair<IpAndPort, std::unique_ptr<Client>>(client, std::make_unique<Client>(server, client, player)));
     return true;
 }
 
@@ -39,5 +39,5 @@ Client& ClientsManager::getClient(IpAndPort& client) const
 void ClientsManager::sendToAll(sf::Packet& packet)
 {
     for (auto i = clients.begin(); i != clients.end(); i++)
-        server->server_socket.send(packet, i->first.address, i->first.port);
+        i->second->send(packet);
 }

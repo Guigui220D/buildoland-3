@@ -54,3 +54,12 @@ void Player::draw(sf::RenderTarget& target) const
     target.draw(rs);
 }
 #endif
+
+bool Player::isSubscribedTo(const Chunk* chunk) const
+{
+    sf::Vector2f diff = chunk->getCenter() - position;
+    float distance_squared = diff.x * diff.x + diff.y * diff.y;
+
+    //TODO : Make render distance constant
+    return distance_squared < (4.f * 16.f * 4.f * 16.f);
+}

@@ -7,7 +7,7 @@ namespace EntityActions
         enum : unsigned short
         {
             AddEntity,
-            RemoveEntity,
+            ForgetEntity,
             EntityAction
         };
     }

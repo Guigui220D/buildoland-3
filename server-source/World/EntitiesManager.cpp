@@ -3,8 +3,7 @@
 #include "../Server/Server.h"
 
 #include <SFML/Network.hpp>
-#include "../../common-source/Networking/ServerToClientCodes.h"
-#include "../../common-source/Networking/StoC_EntityActionCodes.h"
+#include "../../common-source/Networking/NetworkingCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
 
 EntitiesManager::EntitiesManager(Server* server) :
@@ -55,7 +54,7 @@ void EntitiesManager::removeEntity(unsigned int id)
 
     sf::Packet packet;
     packet << (unsigned short)Networking::StoC::EntityAction;
-    packet << (unsigned short)EntityActions::StoC::RemoveEntity;
+    packet << (unsigned short)EntityActions::StoC::ForgetEntity;
 
     packet << id;
 

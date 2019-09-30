@@ -10,8 +10,7 @@
 #include "../Version.h"
 #include "../Utils/Utils.h"
 
-#include "../../common-source/Networking/ClientToServerCodes.h"
-#include "../../common-source/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/NetworkingCodes.h"
 
 //TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
@@ -48,7 +47,7 @@ bool Server::init(uint16_t port)
     server_socket.setBlocking(true);
 
     #ifdef SOLO
-        clients_manager.addClient(owner);
+        clients_manager.addClient(owner, new Player(&world, world.getEntityManager().getNextEntityId()));
     #else
         connection_open = true;
     #endif // SOLO
@@ -98,13 +97,6 @@ void Server::run()
             }
         }
         clients_manager.clients_mutex.unlock();
-
-        //FOR TESTING
-        if (test_step == 0 && test.getElapsedTime().asSeconds() >= 5.f)
-        {
-            world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId()));
-            test_step++;
-        }
 
         //Update entities
         world.getEntityManager().updateAll(delta);
@@ -175,7 +167,7 @@ void Server::receiver()
                         server_socket.send(handshake, address, port);
                     }
 
-                    clients_manager.addClient(iandp);
+                    clients_manager.addClient(iandp, new Player(&world, world.getEntityManager().getNextEntityId()));
 
                     break;
                 case Networking::CtoS::RequestChunk:

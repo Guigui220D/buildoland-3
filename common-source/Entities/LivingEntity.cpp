@@ -7,8 +7,7 @@
 
 #else
     #include <SFML/Network.hpp>
-    #include "../Networking/ServerToClientCodes.h"
-    #include "../Networking/StoC_EntityActionCodes.h"
+    #include "../Networking/NetworkingCodes.h"
     #include "../../server-source/World/World.h"
     #include "../../server-source/Server/Server.h"
 #endif // CLIENT_SIDE

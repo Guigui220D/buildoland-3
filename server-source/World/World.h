@@ -22,6 +22,21 @@ class World
         World(Server* server, int seed);
         virtual ~World();
 
+        /**
+        * Sends a packet to all users that are "subscribed" to the chunk
+        * Subscribed means their player is close enough to the chunk to have it loaded
+        * @param packet : the packet to send
+        * @param chunk : the chunk we want to send to the subscribers of
+        */
+        void sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const;
+
+        /**
+        * Sends a packet to all users that are "subscribed" to chunk_a, BUT NOT to chunk_b
+        * @param packet : the packet to send
+        * @param chunk_a, chunk_b : the chunks
+        */
+        void sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const;
+
         EntitiesManager& getEntityManager() { return entities; }
 
         /**

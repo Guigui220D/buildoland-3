@@ -29,6 +29,43 @@ World::~World()
 
 }
 
+void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const
+{
+    ClientsManager& cm = server->getClientsManager();
+
+    for (auto i = cm.getClientsBegin(); i != cm.getClientsEnd(); i++)
+    {
+        if (i->second->hasPlayer())
+        {
+            Player* player = i->second->getPlayer();
+
+            bool subscribed = isChunkLoaded(chunk) && player->isSubscribedTo(&getChunkConst(chunk));
+
+            if (subscribed)
+                i->second->send(packet);
+        }
+    }
+}
+
+void World::sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const
+{
+    ClientsManager& cm = server->getClientsManager();
+
+    for (auto i = cm.getClientsBegin(); i != cm.getClientsEnd(); i++)
+    {
+        if (i->second->hasPlayer())
+        {
+            Player* player = i->second->getPlayer();
+
+            bool subscribed_a = isChunkLoaded(chunk_a) && player->isSubscribedTo(&getChunkConst(chunk_a));
+            bool subscribed_b = isChunkLoaded(chunk_b) && player->isSubscribedTo(&getChunkConst(chunk_b));
+
+            if (subscribed_a && !subscribed_b)
+                i->second->send(packet);
+        }
+    }
+}
+
 const Chunk& World::getChunkConst(sf::Vector2i pos) const
 {
     uint64_t key = utils::combine(pos.x, pos.y);

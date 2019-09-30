@@ -62,7 +62,7 @@ class Entity
         sf::Vector2f position;
 
     private:
-        void onChunkChange();
+        void onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk);
 
         const unsigned int id;
         World* const world;

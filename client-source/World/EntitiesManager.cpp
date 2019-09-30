@@ -66,7 +66,7 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
     case EntityActions::StoC::AddEntity:
         return addEntity(packet);
 
-    case EntityActions::StoC::RemoveEntity:
+    case EntityActions::StoC::ForgetEntity:
         removeEntity(packet);
         return true;
 

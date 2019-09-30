@@ -12,7 +12,7 @@
 
 class Server
 {
-    friend class ClientsManager;
+    friend class Client;
 
     public:
         Server(uint16_t client_port);   //Leave client port to 0 if this is a multiplayer server, i just don't want to have ifdef's everywhere

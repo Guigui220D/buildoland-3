@@ -6,6 +6,8 @@
     #include "../../../client-source/Utils/Animation.h"
 #endif // CLIENT_SIDE
 
+class Chunk;
+
 class Player : public LivingEntity
 {
     public:
@@ -18,6 +20,8 @@ class Player : public LivingEntity
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
         #endif
+
+        bool isSubscribedTo(const Chunk* chunk) const;
     private:
         #ifdef CLIENT_SIDE
         sf::RectangleShape rs;

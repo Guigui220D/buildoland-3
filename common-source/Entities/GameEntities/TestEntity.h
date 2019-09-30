@@ -3,7 +3,7 @@
 #include "../LivingEntity.h"
 
 #ifdef CLIENT_SIDE
-    #include "../../client-source/Utils/Animation.h"
+    #include "../../../client-source/Utils/Animation.h"
 #endif // CLIENT_SIDE
 
 class TestEntity : public LivingEntity

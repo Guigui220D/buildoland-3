@@ -3,7 +3,7 @@
 #include "PhysicsEntity.h"
 
 #ifdef CLIENT_SIDE
-    #include "../Utils/Animation.h"
+    #include "../../client-source/Utils/Animation.h"
 #endif // CLIENT_SIDE
 
 class LivingEntity : public PhysicsEntity

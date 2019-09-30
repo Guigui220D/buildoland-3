@@ -4,7 +4,7 @@
 #include "../../Game.h"
 
 TestEntity::TestEntity(World* world, unsigned int id) :
-    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
+    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f, 64)
 {
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, .8f));

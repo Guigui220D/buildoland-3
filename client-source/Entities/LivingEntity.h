@@ -6,7 +6,7 @@
 class LivingEntity : public PhysicsEntity
 {
     public:
-        LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed);
+        LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed, size_t texture_size);
         virtual ~LivingEntity();
 
     protected:
@@ -18,5 +18,5 @@ class LivingEntity : public PhysicsEntity
         inline sf::IntRect getCurrentTextureRect() const { return animation.getCurrentTextureRect(); }
 
     private:
-        Animation<64, 5, 1> animation;
+        Animation animation;
 };

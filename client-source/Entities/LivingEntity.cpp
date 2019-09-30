@@ -2,10 +2,10 @@
 
 #include <cmath>
 
-LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
+LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed, size_t texture_size) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed),
-    animation(.07f)
+    animation(texture_size, 5, .07f)
 {
     for (unsigned int i = 0; i < 8; i++)
     {

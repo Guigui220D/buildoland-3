@@ -6,6 +6,12 @@
 #include <string>
 #include <sstream>
 
+#include <thread>
+#include <chrono>
+
+//TEST
+#include <cmath>
+
 #include "../Version.h"
 
 #include "../../common-source/Networking/ClientToServerCodes.h"
@@ -167,6 +173,24 @@ bool GameState::handleEvent(sf::Event& event)
             request << (unsigned short)Networking::CtoS::RequestChunk;
             request << test_chunk_pos.x << test_chunk_pos.y;
             client_socket.send(request, remote_ip, remote_port);
+        }
+        //TEST
+        if (event.key.code == sf::Keyboard::P)
+        {
+            sf::Vector2i mpos = sf::Mouse::getPosition(getGame()->getWindow());
+            sf::Vector2f wpos = getGame()->getWindow().mapPixelToCoords(mpos);
+            sf::Vector2i bpos(std::floor(wpos.x + .5f), std::floor(wpos.y + .5f));
+
+            std::cout << "======================================" << std::endl;
+            std::cout << "Block pos : " << bpos.x << ", " << bpos.y << std::endl;
+
+            sf::Vector2i cpos = World::getChunkPosFromBlockPos(bpos);
+            bpos = World::getBlockPosInChunk(bpos);
+
+            std::cout << "Chunk pos : " << cpos.x << ", " << cpos.y << std::endl;
+            std::cout << "Block pos in chunk : " << bpos.x << ", " << bpos.y << std::endl;
+            std::cout << "======================================" << std::endl;
+
         }
         break;
 

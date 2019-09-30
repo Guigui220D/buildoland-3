@@ -14,7 +14,7 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 
 //TEMP
-#include "../../common-source/Entities/GameEntities/TestEntity.h"
+#include "../../common-source/Entities/GameEntities/Player.h"
 
 Server::Server(uint16_t client_port) :
     clients_manager(this),
@@ -102,7 +102,7 @@ void Server::run()
         //FOR TESTING
         if (test_step == 0 && test.getElapsedTime().asSeconds() >= 5.f)
         {
-            world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+            world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId()));
             test_step++;
         }
 

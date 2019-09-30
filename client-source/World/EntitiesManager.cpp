@@ -10,7 +10,7 @@
 #include "../../common-source/Networking/StoC_EntityActionCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
 
-#include "../../common-source/Entities/GameEntities/TestEntity.h"
+#include "../../common-source/Entities/GameEntities/Player.h"
 
 EntitiesManager::EntitiesManager(World* world) :
     world(world)
@@ -100,10 +100,7 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
     switch (entity_code)
     {
     case Entities::Player:
-        std::cerr << "Player unimplemented." << std::endl;
-        return false;
-    case Entities::TestEntity:
-        new_entity = new TestEntity(world, entity_id);
+        new_entity = new Player(world, entity_id);
         break;
     default:
         std::cerr << "Entity type code unknown." << std::endl;

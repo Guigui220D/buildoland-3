@@ -1,4 +1,4 @@
-#include "TestEntity.h"
+#include "Player.h"
 
 #include <iostream>
 
@@ -10,7 +10,7 @@
     #include <cstdio>
 #endif
 
-TestEntity::TestEntity(World* world, unsigned int id) :
+Player::Player(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
     #ifdef CLIENT_SIDE
@@ -24,12 +24,12 @@ TestEntity::TestEntity(World* world, unsigned int id) :
     #endif
 }
 
-TestEntity::~TestEntity()
+Player::~Player()
 {
     //dtor
 }
 
-void TestEntity::update(float delta)
+void Player::update(float delta)
 {
     walk(delta);
 
@@ -48,7 +48,7 @@ void TestEntity::update(float delta)
 }
 
 #ifdef CLIENT_SIDE
-void TestEntity::draw(sf::RenderTarget& target) const
+void Player::draw(sf::RenderTarget& target) const
 {
     target.draw(shadow);
     target.draw(rs);

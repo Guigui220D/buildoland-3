@@ -4,7 +4,6 @@ namespace Entities
 {
     enum : unsigned short
     {
-        Player,
-        TestEntity
+        Player
     };
 }

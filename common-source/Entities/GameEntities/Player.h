@@ -6,13 +6,13 @@
     #include "../../../client-source/Utils/Animation.h"
 #endif // CLIENT_SIDE
 
-class TestEntity : public LivingEntity
+class Player : public LivingEntity
 {
     public:
-        inline unsigned short getEntityCode() const { return Entities::TestEntity; };
+        inline unsigned short getEntityCode() const { return Entities::Player; };
 
-        TestEntity(World* world, unsigned int id);
-        ~TestEntity();
+        Player(World* world, unsigned int id);
+        ~Player();
 
         void update(float delta);
         #ifdef CLIENT_SIDE

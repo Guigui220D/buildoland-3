@@ -98,7 +98,7 @@ uint16_t World::getBlockId(sf::Vector2i pos)
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
-        return 0;
+        return GameBlocks::ERROR->getId();
     return getChunkConst(chunk_pos).getBlockId(bp.x, bp.y);
 }
 

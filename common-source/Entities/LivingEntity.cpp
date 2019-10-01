@@ -92,7 +92,7 @@ void LivingEntity::setWalkingDirection(sf::Vector2f new_direction)
         packet << position.x;
         packet << position.y;
 
-        getWorld()->getServer()->getClientsManager().sendToAll(packet);
+        send(packet);
     #endif // SERVER_SIDE
 }
 

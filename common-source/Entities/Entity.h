@@ -3,10 +3,10 @@
 #include "EntityCodes.h"
 
 #include <cmath>
+#include <SFML/Network.hpp>
 
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
-    #include <SFML/Network.hpp>
 #else
     #include <SFML/System.hpp>
 #endif // CLIENT_SIDE
@@ -60,6 +60,10 @@ class Entity
         virtual void update(float delta);
 
         sf::Vector2f position;
+
+        #ifndef CLIENT_SIDE
+        void send(sf::Packet& packet);
+        #endif // CLIENT_SIDE
 
     private:
         void onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk);

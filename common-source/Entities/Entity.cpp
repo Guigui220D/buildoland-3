@@ -35,6 +35,13 @@ void Entity::updateBase(float delta)
 
 void Entity::update(float delta) {}
 
+#ifndef CLIENT_SIDE
+void Entity::send(sf::Packet& packet)
+{
+    getWorld()->sendToSubscribers(packet, chunk_on);
+}
+#endif // CLIENT_SIDE
+
 #ifdef CLIENT_SIDE
 void Entity::draw(sf::RenderTarget& target) const {}
 #endif // CLIENT_SIDE

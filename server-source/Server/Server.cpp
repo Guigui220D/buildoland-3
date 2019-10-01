@@ -72,18 +72,13 @@ void Server::run()
     server_clock.restart();
     float delta;
 
-    run_mutex.lock();
     running = true;
-    run_mutex.unlock();
 
     sf::Clock test;
     int test_step = 0;
 
-    run_mutex.lock();
     while (running)
     {
-        run_mutex.unlock();
-
         std::this_thread::sleep_for(std::chrono::milliseconds(50 - server_clock.getElapsedTime().asMilliseconds()));
 
         delta = server_clock.restart().asSeconds();
@@ -107,9 +102,7 @@ void Server::run()
         //Update entities
         world.getEntityManager().updateAll(delta);
         //Update all worlds
-        run_mutex.lock();
     }
-    run_mutex.unlock();
 }
 
 void Server::close()
@@ -150,9 +143,7 @@ void Server::receiver()
                         {
                             std::cout << "Received disconnect message from owner, server will stop." << std::endl;
                             stop = true;
-                            run_mutex.lock();
                             running = false;
-                            run_mutex.unlock();
                             break;
                         }
                     #endif // SOLO

@@ -1,6 +1,7 @@
 #pragma once
 
 #include <SFML/Graphics.hpp>
+#include <atomic>
 
 class Game;
 
@@ -53,7 +54,7 @@ class State
          */
         inline Game* getGame() const { return game; }
 
-        bool must_be_destroyed = false;
+        std::atomic<bool> must_be_destroyed = false;
 
     protected:
         // If true, the next state should be updated/drawn

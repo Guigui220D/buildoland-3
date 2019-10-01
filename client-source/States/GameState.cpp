@@ -28,7 +28,6 @@ GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     remote_ip(sf::IpAddress::LocalHost),
     remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
-    tbd_thread_safe(false),
     test_world(game),
     entities(test_world.getEntityManager())
 {
@@ -43,7 +42,6 @@ GameState::GameState(Game* game, unsigned int id, sf::IpAddress server_address, 
     remote_ip(server_address),
     remote_port(server_port),
     receiver_thread(&GameState::receiverLoop, this),
-    tbd_thread_safe(false),
     test_world(game),
     entities(test_world.getEntityManager())
 {
@@ -207,12 +205,6 @@ bool GameState::handleEvent(sf::Event& event)
 
 void GameState::update(float delta_time)
 {
-
-    tbd_mutex.lock();
-    if (tbd_thread_safe)
-        must_be_destroyed = true;
-    tbd_mutex.unlock();
-
     //TEMPORARY
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         my_view.setCenter(my_view.getCenter() + sf::Vector2f(-5.f * delta_time, 0));
@@ -403,9 +395,7 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::cout << "Received disconnect code from server." << std::endl;
-                    tbd_mutex.lock();
-                    tbd_thread_safe = true;
-                    tbd_mutex.unlock();
+                    must_be_destroyed = true;
                     break;
                 case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);

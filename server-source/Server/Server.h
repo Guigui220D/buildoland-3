@@ -39,8 +39,7 @@ class Server
         void receiver();
         sf::Thread receiver_thread;
 
-        bool running;
-        sf::Mutex run_mutex;
+        std::atomic<bool> running;
 
         IpAndPort owner;
 

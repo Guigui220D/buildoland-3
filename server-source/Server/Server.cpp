@@ -47,7 +47,7 @@ bool Server::init(uint16_t port)
     server_socket.setBlocking(true);
 
     #ifdef SOLO
-        clients_manager.addClient(owner, new Player(&world, world.getEntityManager().getNextEntityId()));
+        clients_manager.addClient(owner, nullptr);
     #else
         connection_open = true;
     #endif // SOLO
@@ -58,6 +58,10 @@ bool Server::init(uint16_t port)
         sf::Packet handshake;
         handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
         server_socket.send(handshake, owner.address, owner.port);
+
+        Player* owner_player = new Player(&world, world.getEntityManager().getNextEntityId());
+        world.getEntityManager().newEntity(owner_player);
+        clients_manager.getClient(owner).setPlayer(owner_player);
     #endif // SOLO
 
     return true;
@@ -167,7 +171,8 @@ void Server::receiver()
                         server_socket.send(handshake, address, port);
                     }
 
-                    clients_manager.addClient(iandp, new Player(&world, world.getEntityManager().getNextEntityId()));
+                    //TODO
+                    //Add client and player
 
                     break;
                 case Networking::CtoS::RequestChunk:

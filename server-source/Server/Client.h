@@ -56,8 +56,14 @@ class Client
 
         inline bool hasPlayer() const { return player; }
         inline Player* getPlayer() const { return player; }
+        inline void setPlayer(Player* new_player) { player =  new_player; }
 
         void send(sf::Packet& packet) const;
+
+        inline bool operator==(const Client& other) const
+        {
+            return ip_and_port == other.ip_and_port;
+        }
 
     protected:
         IpAndPort ip_and_port;
@@ -65,7 +71,7 @@ class Client
         std::queue<sf::Vector2i> chunk_requests;
         mutable sf::Mutex chunk_requests_mutex;
 
-        Player* const player;
+        Player* player;
 
     private:
         Server* const server;

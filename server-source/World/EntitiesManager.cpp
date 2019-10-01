@@ -56,3 +56,17 @@ void EntitiesManager::removeEntity(unsigned int id)
 
     server->getClientsManager().sendToAll(packet);
 }
+
+void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos, const Client& client)
+{
+    sf::Packet packet;
+    for (auto i = entities.begin(); i != entities.end(); i++)
+    {
+        Entity* entity = i->second;
+        if (entity->getChunkOn() == chunk_pos)
+        {
+            entity->makeNewEntityPacket(packet);
+            client.send(packet);
+        }
+    }
+}

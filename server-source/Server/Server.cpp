@@ -98,6 +98,8 @@ void Server::run()
 
                 sf::Packet p = world.getChunk(pos).getPacket();
                 server_socket.send(p, i->first.address, i->first.port);
+
+                world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(pos, *(i->second));
             }
         }
         clients_manager.clients_mutex.unlock();
@@ -156,6 +158,7 @@ void Server::receiver()
                     #endif // SOLO
                     break;
                 case Networking::CtoS::RequestConnection:
+                    /*
                     std::clog << "Connection requested" << std::endl;
 
                     if (!connection_open)
@@ -173,6 +176,7 @@ void Server::receiver()
 
                     //TODO
                     //Add client and player
+                    */
 
                     break;
                 case Networking::CtoS::RequestChunk:

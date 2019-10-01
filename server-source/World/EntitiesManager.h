@@ -3,6 +3,7 @@
 #include <map>
 
 #include "../../common-source/Entities/Entity.h"
+#include "../Server/Client.h"
 
 class Server;
 
@@ -33,6 +34,13 @@ class EntitiesManager
          * @param id : the id of the entity to remove
          */
         void removeEntity(unsigned int id);
+
+        /**
+         * Sends a addEntity from all entities in chunk to the client
+         * @param chunk_pos : the chunk
+         * @param client : the client to send to
+         */
+        void sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos, const Client& client);
 
         inline unsigned int getNextEntityId() { return next_entity_id++; }
 

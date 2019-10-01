@@ -68,12 +68,27 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
     {
         sf::Packet enter;
 
-        enter << (unsigned short)Networking::StoC::EntityAction;
-        enter << (unsigned short)EntityActions::StoC::AddEntity;
-        enter << (unsigned short)getEntityCode();
-        enter << getId();
+        makeNewEntityPacket(enter);
 
         getWorld()->sendToSubscribersWithException(enter, new_chunk, old_chunk);
     }
     #endif // CLIENT_SIDE
 }
+
+#ifdef CLIENT_SIDE
+bool Entity::takeNewEntityPacket(sf::Packet& packet) { return true; }
+#else
+void Entity::makeNewEntityPacket(sf::Packet& packet) const
+{
+    packet.clear();
+
+    packet << (unsigned short)Networking::StoC::EntityAction;
+    packet << (unsigned short)EntityActions::StoC::AddEntity;
+    packet << (unsigned short)getEntityCode();
+    packet << getId();
+
+    addInfoToNewEntityPacket(packet);
+}
+
+void Entity::addInfoToNewEntityPacket(sf::Packet& packet) const {}
+#endif // CLIENT_SIDE

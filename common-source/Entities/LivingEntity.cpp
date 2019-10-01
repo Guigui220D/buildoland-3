@@ -72,6 +72,30 @@ bool LivingEntity::takePacket(sf::Packet& packet)
         return false;
     }
 }
+
+bool LivingEntity::takeNewEntityPacket(sf::Packet& packet)
+{
+    sf::Vector2f new_pos, new_direction;
+
+    packet >> new_pos.x;
+    packet >> new_pos.y;
+    packet >> new_direction.x;
+    packet >> new_direction.y;
+
+    position = new_pos;
+    setWalkingDirection(new_direction);
+
+    return true;
+}
+#else
+void LivingEntity::addInfoToNewEntityPacket(sf::Packet& packet) const
+{
+    packet << position.x;
+    packet << position.y;
+
+    packet << walking_direction.x;
+    packet << walking_direction.y;
+}
 #endif
 
 void LivingEntity::setWalkingDirection(sf::Vector2f new_direction)

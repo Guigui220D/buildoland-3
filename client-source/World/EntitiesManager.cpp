@@ -109,6 +109,8 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
     assert(new_entity);
 
+    new_entity->takeNewEntityPacket(packet);
+
     sf::Lock lock(entities_mutex);
 
     if (entities_map.find(entity_id) != entities_map.cend())

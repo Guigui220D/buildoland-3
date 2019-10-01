@@ -36,11 +36,7 @@ bool EntitiesManager::newEntity(Entity* entity)
     entities.emplace(std::pair<unsigned int, Entity*>(entity->getId(), entity));
 
     sf::Packet packet;
-    packet << (unsigned short)Networking::StoC::EntityAction;
-    packet << (unsigned short)EntityActions::StoC::AddEntity;
-    packet << (unsigned short)entity->getEntityCode();
-
-    packet << entity->getId();
+    entity->makeNewEntityPacket(packet);
 
     server->getClientsManager().sendToAll(packet);
 

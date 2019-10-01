@@ -36,11 +36,24 @@ class Entity
         virtual void draw(sf::RenderTarget& target) const;
 
         /**
-         * Receives an entity action packet
+         * Reads an entity action packet
          * @param packet : the packet to read
          * @return true if the packet was succesfully read and something was done
          */
         virtual bool takePacket(sf::Packet& packet) = 0;
+        /**
+         * Reads a new entity packet
+         * @param packet : the packet to read
+         * @return true if the packet was succesfully read and something was done
+         */
+        virtual bool takeNewEntityPacket(sf::Packet& packet);
+        #else
+        /**
+         * Makes a new entity packet
+         * The packet is composed, then addInfoToNewEntityPacket is called on it to add custom info depending on the packet
+         * @param packet : the packet to make in
+         */
+        virtual void makeNewEntityPacket(sf::Packet& packet) const;
         #endif // CLIENT_SIDE
 
         inline unsigned int getId() const { return id; }
@@ -62,7 +75,16 @@ class Entity
         sf::Vector2f position;
 
         #ifndef CLIENT_SIDE
+        /**
+         * Sends a packet to all clients who know of this entity
+         * @param packet : the packet to send
+         */
         void send(sf::Packet& packet);
+        /**
+         * Adds custom info to the packet that will be sent to new entity
+         * @param packet : the packet append to
+         */
+        virtual void addInfoToNewEntityPacket(sf::Packet& packet) const;
         #endif // CLIENT_SIDE
 
     private:

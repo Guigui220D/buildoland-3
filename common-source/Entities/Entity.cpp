@@ -1,9 +1,12 @@
 #include "Entity.h"
 
-#include "../../server-source/World/World.h"
 
-#ifndef CLIENT_SIDE
+
+#ifdef CLIENT_SIDE
+    #include "../../client-source/World/World.h"
+#else
     #include "../Networking/NetworkingCodes.h"
+    #include "../../server-source/World/World.h"
 #endif // CLIENT_SIDE
 
 #include <iostream>

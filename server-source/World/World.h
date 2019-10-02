@@ -104,11 +104,18 @@ class World
          */
         static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos)
         {
+            if (block_pos.x < -1)
+                block_pos.x++;
+            if (block_pos.y < -1)
+                block_pos.y++;
+
             sf::Vector2i result(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE);
+
             if (block_pos.x < 0)
                 result.x--;
             if (block_pos.y < 0)
                 result.y--;
+
             return result;
         }
         /**

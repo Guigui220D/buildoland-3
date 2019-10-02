@@ -176,7 +176,7 @@ bool GameState::handleEvent(sf::Event& event)
         if (event.key.code == sf::Keyboard::P)
         {
             sf::Vector2i mpos = sf::Mouse::getPosition(getGame()->getWindow());
-            sf::Vector2f wpos = getGame()->getWindow().mapPixelToCoords(mpos);
+            sf::Vector2f wpos = getGame()->getWindow().mapPixelToCoords(mpos, my_view);
             sf::Vector2i bpos(std::floor(wpos.x + .5f), std::floor(wpos.y + .5f));
 
             std::cout << "======================================" << std::endl;

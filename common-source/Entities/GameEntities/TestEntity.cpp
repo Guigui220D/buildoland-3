@@ -1,8 +1,6 @@
-#include "Player.h"
+#include "TestEntity.h"
 
 #include <iostream>
-//TEST
-#include <cmath>
 
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
@@ -12,7 +10,7 @@
     #include <cstdio>
 #endif
 
-Player::Player(World* world, unsigned int id) :
+TestEntity::TestEntity(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
     #ifdef CLIENT_SIDE
@@ -26,12 +24,12 @@ Player::Player(World* world, unsigned int id) :
     #endif
 }
 
-Player::~Player()
+TestEntity::~TestEntity()
 {
     //dtor
 }
 
-void Player::update(float delta)
+void TestEntity::update(float delta)
 {
     walk(delta);
 
@@ -40,23 +38,20 @@ void Player::update(float delta)
     rs.setTextureRect(getCurrentTextureRect());
 
     shadow.setPosition(position);
+    #else
+    if (test_clock.getElapsedTime().asSeconds() > 2.f)
+    {
+        //setWalkingDirection(sf::Vector2f(std::rand() % 3 - 1, std::rand() % 3 - 1));
+        setWalkingDirection(sf::Vector2f(0.f, 1.f));
+        test_clock.restart();
+    }
     #endif // CLIENT_SIDE
 }
 
 #ifdef CLIENT_SIDE
-void Player::draw(sf::RenderTarget& target) const
+void TestEntity::draw(sf::RenderTarget& target) const
 {
     target.draw(shadow);
     target.draw(rs);
 }
 #endif
-
-bool Player::isSubscribedTo(const Chunk* chunk) const
-{
-    sf::Vector2f diff = chunk->getCenter() - position;
-    float distance_squared = diff.x * diff.x + diff.y * diff.y;
-
-    std::cout << "==========\n" << std::sqrt(distance_squared) << std::endl;
-    //TODO : Make render distance constant
-    return distance_squared < (4.f * 16.f * 4.f * 16.f);
-}

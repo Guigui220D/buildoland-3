@@ -11,6 +11,7 @@
 #include "../../common-source/Entities/EntityCodes.h"
 
 #include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 EntitiesManager::EntitiesManager(World* world) :
     world(world)
@@ -101,6 +102,9 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
     {
     case Entities::Player:
         new_entity = new Player(world, entity_id);
+        break;
+    case Entities::TestEntity:
+        new_entity = new TestEntity(world, entity_id);
         break;
     default:
         std::cerr << "Entity type code unknown." << std::endl;

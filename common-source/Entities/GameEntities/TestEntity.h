@@ -8,23 +8,23 @@
 
 class Chunk;
 
-class Player : public LivingEntity
+class TestEntity : public LivingEntity
 {
     public:
-        inline unsigned short getEntityCode() const { return Entities::Player; };
+        inline unsigned short getEntityCode() const { return Entities::TestEntity; };
 
-        Player(World* world, unsigned int id);
-        ~Player();
+        TestEntity(World* world, unsigned int id);
+        ~TestEntity();
 
         void update(float delta);
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
         #endif
-
-        bool isSubscribedTo(const Chunk* chunk) const;
     private:
         #ifdef CLIENT_SIDE
         sf::RectangleShape rs;
         sf::CircleShape shadow;
+        #else
+        sf::Clock test_clock;
         #endif
 };

@@ -14,6 +14,7 @@
 
 //TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 Server::Server(uint16_t client_port) :
     clients_manager(this),
@@ -63,6 +64,8 @@ bool Server::init(uint16_t port)
         world.getEntityManager().newEntity(owner_player);
         clients_manager.getClient(owner).setPlayer(owner_player);
     #endif // SOLO
+
+    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
     return true;
 }

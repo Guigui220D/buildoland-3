@@ -80,6 +80,7 @@ class Game
         friend class TitleScreenState;
 
         sf::RenderWindow window;
+        sf::View default_view;
 
         SettingsManager settings_manager;
 

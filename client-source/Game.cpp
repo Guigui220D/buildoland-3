@@ -18,7 +18,8 @@ Game::Game() :
     //window.setVerticalSyncEnabled(ws.vsync_enabled);
 
     window.create(sf::VideoMode(800, 600), "BuildOLand 3");
-    window.setFramerateLimit(60);
+    window.setVerticalSyncEnabled(true);
+    //window.setFramerateLimit(60);
 }
 
 Game::~Game()
@@ -38,6 +39,12 @@ int Game::run()
 
     sf::Clock fps_clk;
 	int count = 0;
+
+	sf::Clock dt_clk;
+	sf::RectangleShape dt_limit(sf::Vector2f(85.f, (1.f / 60.f) * 1000.f));
+	sf::RectangleShape dt_viewer(sf::Vector2f(1.f, 1.f));
+	dt_viewer.setFillColor(sf::Color::Red);
+	dt_limit.setFillColor(sf::Color::Green);
 
     while (window.isOpen())
     {
@@ -66,8 +73,17 @@ int Game::run()
 
         update(clock.restart().asSeconds());
 
+        //FPS VIEWER
+        dt_viewer.setSize(sf::Vector2f(80.f, dt_clk.restart().asMilliseconds()));
+
         window.clear();
+        //FPS VIEWER //TEMP
         draw();
+
+        window.setView(window.getDefaultView());
+        window.draw(dt_limit);
+        window.draw(dt_viewer);
+
         window.display();
 
         //Remove states

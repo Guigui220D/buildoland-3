@@ -4,13 +4,20 @@
 #include <assert.h>
 #include <cstdlib>
 
+#include <thread>
+#include <chrono>
+
 #include "../Version.h"
 #include "../Utils/Utils.h"
 
-#include "../../common/Networking/ClientToServerCodes.h"
-#include "../../common/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/NetworkingCodes.h"
+
+//TEMP
+#include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 Server::Server(uint16_t client_port) :
+    clients_manager(this),
     receiver_thread(Server::receiver, this),
     owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
@@ -28,8 +35,8 @@ Server::~Server()
 
 bool Server::init(uint16_t port)
 {
-    blocksManager.initBlocks();
-    groundsManager.initGrounds();
+    blocks_manager.initBlocks();
+    grounds_manager.initGrounds();
 
     if (server_socket.bind(port) != sf::Socket::Done)
     {
@@ -41,7 +48,7 @@ bool Server::init(uint16_t port)
     server_socket.setBlocking(true);
 
     #ifdef SOLO
-        clients_manager.addClient(owner);
+        clients_manager.addClient(owner, nullptr);
     #else
         connection_open = true;
     #endif // SOLO
@@ -52,7 +59,13 @@ bool Server::init(uint16_t port)
         sf::Packet handshake;
         handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
         server_socket.send(handshake, owner.address, owner.port);
+
+        Player* owner_player = new Player(&world, world.getEntityManager().getNextEntityId());
+        world.getEntityManager().newEntity(owner_player);
+        clients_manager.getClient(owner).setPlayer(owner_player);
     #endif // SOLO
+
+    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
     return true;
 }
@@ -62,18 +75,15 @@ void Server::run()
     server_clock.restart();
     float delta;
 
-    run_mutex.lock();
     running = true;
-    run_mutex.unlock();
 
     sf::Clock test;
+    int test_step = 0;
 
-    run_mutex.lock();
     while (running)
     {
-        run_mutex.unlock();
+        std::this_thread::sleep_for(std::chrono::milliseconds(50 - server_clock.getElapsedTime().asMilliseconds()));
 
-        while (server_clock.getElapsedTime().asSeconds() < 0.05f) {}
         delta = server_clock.restart().asSeconds();
 
         //Answer chunk requests
@@ -86,15 +96,16 @@ void Server::run()
 
                 sf::Packet p = world.getChunk(pos).getPacket();
                 server_socket.send(p, i->first.address, i->first.port);
+
+                world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(pos, *(i->second));
             }
         }
         clients_manager.clients_mutex.unlock();
 
-        //Update everything
+        //Update entities
+        world.getEntityManager().updateAll(delta);
         //Update all worlds
-        run_mutex.lock();
     }
-    run_mutex.unlock();
 }
 
 void Server::close()
@@ -135,14 +146,13 @@ void Server::receiver()
                         {
                             std::cout << "Received disconnect message from owner, server will stop." << std::endl;
                             stop = true;
-                            run_mutex.lock();
                             running = false;
-                            run_mutex.unlock();
                             break;
                         }
                     #endif // SOLO
                     break;
                 case Networking::CtoS::RequestConnection:
+                    /*
                     std::clog << "Connection requested" << std::endl;
 
                     if (!connection_open)
@@ -158,7 +168,9 @@ void Server::receiver()
                         server_socket.send(handshake, address, port);
                     }
 
-                    clients_manager.addClient(iandp);
+                    //TODO
+                    //Add client and player
+                    */
 
                     break;
                 case Networking::CtoS::RequestChunk:

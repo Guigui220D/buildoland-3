@@ -14,10 +14,8 @@
 
 #include "../Version.h"
 
-#include "../../common/Networking/ClientToServerCodes.h"
-#include "../../common/Networking/ServerToClientCodes.h"
-
-#include "../Entities/GameEntities/TestEntity.h"
+#include "../../common-source/Networking/ClientToServerCodes.h"
+#include "../../common-source/Networking/ServerToClientCodes.h"
 
 //TEMPORARY
 #include <windows.h>
@@ -30,7 +28,6 @@ GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     remote_ip(sf::IpAddress::LocalHost),
     remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
-    tbd_thread_safe(false),
     test_world(game),
     entities(test_world.getEntityManager())
 {
@@ -45,7 +42,6 @@ GameState::GameState(Game* game, unsigned int id, sf::IpAddress server_address, 
     remote_ip(server_address),
     remote_port(server_port),
     receiver_thread(&GameState::receiverLoop, this),
-    tbd_thread_safe(false),
     test_world(game),
     entities(test_world.getEntityManager())
 {
@@ -103,9 +99,6 @@ void GameState::init()
     request << (unsigned short)Networking::CtoS::RequestChunk;
     request << 0 << 0;
     client_socket.send(request, remote_ip, remote_port);
-
-    entities.addEntity(new TestEntity(&test_world, 0));
-
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -183,7 +176,7 @@ bool GameState::handleEvent(sf::Event& event)
         if (event.key.code == sf::Keyboard::P)
         {
             sf::Vector2i mpos = sf::Mouse::getPosition(getGame()->getWindow());
-            sf::Vector2f wpos = getGame()->getWindow().mapPixelToCoords(mpos);
+            sf::Vector2f wpos = getGame()->getWindow().mapPixelToCoords(mpos, my_view);
             sf::Vector2i bpos(std::floor(wpos.x + .5f), std::floor(wpos.y + .5f));
 
             std::cout << "======================================" << std::endl;
@@ -212,12 +205,6 @@ bool GameState::handleEvent(sf::Event& event)
 
 void GameState::update(float delta_time)
 {
-
-    tbd_mutex.lock();
-    if (tbd_thread_safe)
-        must_be_destroyed = true;
-    tbd_mutex.unlock();
-
     //TEMPORARY
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         my_view.setCenter(my_view.getCenter() + sf::Vector2f(-5.f * delta_time, 0));
@@ -409,12 +396,14 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::cout << "Received disconnect code from server." << std::endl;
-                    tbd_mutex.lock();
-                    tbd_thread_safe = true;
-                    tbd_mutex.unlock();
+                    must_be_destroyed = true;
                     break;
                 case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);
+                    break;
+                case Networking::StoC::EntityAction:
+                    if (!entities.readEntityPacket(packet))
+                        std::cerr << "Entity packet could not be read." << std::endl;
                     break;
                 default:
                     std::cerr << "Unknown packet code" << std::endl;

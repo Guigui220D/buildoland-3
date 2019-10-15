@@ -8,7 +8,8 @@ namespace Networking
         {
             Disconnect = 0,
             RequestConnection,
-			RequestChunk
+			RequestChunk,
+			PlayerAction
         };
     }
 }

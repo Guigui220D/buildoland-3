@@ -1,9 +1,12 @@
 #include "PhysicsEntity.h"
 
-#include "../World/World.h"
-#include "../Block/Block.h"
-
-#include <cmath>
+#ifdef CLIENT_SIDE
+    #include "../../client-source/World/World.h"
+    #include "../../client-source/Block/Block.h"
+#else
+    #include "../../server-source/World/World.h"
+    #include "../../server-source/Block/Block.h"
+#endif // CLIENT_SIDE
 
 PhysicsEntity::PhysicsEntity(World* world, unsigned int id, sf::Vector2f hitbox_size) :
     Entity(world, id),

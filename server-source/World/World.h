@@ -3,6 +3,7 @@
 #include "Chunk.h"
 
 #include "../Utils/Utils.h"
+#include "EntitiesManager.h"
 
 #include <map>
 #include <memory>
@@ -20,6 +21,23 @@ class World
         World(Server* server);
         World(Server* server, int seed);
         virtual ~World();
+
+        /**
+        * Sends a packet to all users that are "subscribed" to the chunk
+        * Subscribed means their player is close enough to the chunk to have it loaded
+        * @param packet : the packet to send
+        * @param chunk : the chunk we want to send to the subscribers of
+        */
+        void sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const;
+
+        /**
+        * Sends a packet to all users that are "subscribed" to chunk_a, BUT NOT to chunk_b
+        * @param packet : the packet to send
+        * @param chunk_a, chunk_b : the chunks
+        */
+        void sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const;
+
+        EntitiesManager& getEntityManager() { return entities; }
 
         /**
          * Gets the game that own this world
@@ -86,11 +104,18 @@ class World
          */
         static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos)
         {
+            if (block_pos.x < -1)
+                block_pos.x++;
+            if (block_pos.y < -1)
+                block_pos.y++;
+
             sf::Vector2i result(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE);
+
             if (block_pos.x < 0)
                 result.x--;
             if (block_pos.y < 0)
                 result.y--;
+
             return result;
         }
         /**
@@ -120,12 +145,12 @@ class World
          * Get a reference to the blockManager of the game
          * @return A reference to the blockManager
          */
-        inline const GameBlocks& getBlocksManager() const { return gameBlocksManager; }
+        inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
         /**
          * Get a reference to the groundManager of the game
          * @return A reference to the groundsManager
          */
-        inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
+        inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
         inline size_t getChunksCount() const { return chunks.size(); };
         inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
@@ -134,11 +159,13 @@ class World
             getChunksEnd() const { return chunks.cend(); }
 
     protected:
+        //Entities
+        EntitiesManager entities;
 
     private:
         Server* server;
-        const GameBlocks& gameBlocksManager;
-        const GameGrounds& gameGroundsManager;
+        const GameBlocks& game_blocks_manager;
+        const GameGrounds& game_grounds_manager;
         int seed;
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;

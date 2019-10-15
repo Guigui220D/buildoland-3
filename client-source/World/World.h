@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Chunk.h"
-#include "../Entities/EntitiesManager.h"
+#include "EntitiesManager.h"
 
 #include <map>
 #include <memory>
@@ -145,12 +145,12 @@ class World
          * Get a reference to the blockManager of the game
          * @return A reference to the blockManager
          */
-        inline const GameBlocks& getBlocksManager() const { return gameBlocksManager; }
+        inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
         /**
          * Get a reference to the groundManager of the game
          * @return A reference to the groundsManager
          */
-        inline const GameGrounds& getGroundsManager() const { return gameGroundsManager; }
+        inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
         inline size_t getChunksCount() const { return chunks.size(); };
         inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
@@ -164,8 +164,8 @@ class World
 
     private:
         Game* game;
-        const GameBlocks& gameBlocksManager;
-        const GameGrounds& gameGroundsManager;
+        const GameBlocks& game_blocks_manager;
+        const GameGrounds& game_grounds_manager;
         int seed;
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;

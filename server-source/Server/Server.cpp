@@ -60,7 +60,7 @@ bool Server::init(uint16_t port)
         handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
         server_socket.send(handshake, owner.address, owner.port);
 
-        Player* owner_player = new Player(&world, world.getEntityManager().getNextEntityId());
+        Player* owner_player = new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner));  //First entity id should be 0
         world.getEntityManager().newEntity(owner_player);
         clients_manager.getClient(owner).setPlayer(owner_player);
     #endif // SOLO

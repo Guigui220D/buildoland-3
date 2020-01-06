@@ -39,7 +39,7 @@ void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const
         {
             Player* player = i->second->getPlayer();
 
-            bool subscribed = isChunkLoaded(chunk) && player->isSubscribedTo(&getChunkConst(chunk));
+            bool subscribed = isChunkLoaded(chunk) && player->isSubscribedTo(chunk);
 
             if (subscribed)
                 i->second->send(packet);
@@ -57,8 +57,8 @@ void World::sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chun
         {
             Player* player = i->second->getPlayer();
 
-            bool subscribed_a = isChunkLoaded(chunk_a) && player->isSubscribedTo(&getChunkConst(chunk_a));
-            bool subscribed_b = isChunkLoaded(chunk_b) && player->isSubscribedTo(&getChunkConst(chunk_b));
+            bool subscribed_a = isChunkLoaded(chunk_a) && player->isSubscribedTo(chunk_a);
+            bool subscribed_b = isChunkLoaded(chunk_b) && player->isSubscribedTo(chunk_b);
 
             if (subscribed_a && !subscribed_b)
                 i->second->send(packet);

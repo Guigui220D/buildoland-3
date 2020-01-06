@@ -386,8 +386,8 @@ void GameState::receiverLoop()
         switch (status)
         {
         case sf::Socket::Done:
-            std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-
+            //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+            //TODO : check origin of packet
             if (packet.getDataSize() >= 2)
             {
                 unsigned short code; packet >> code;
@@ -395,7 +395,7 @@ void GameState::receiverLoop()
                 switch (code)
                 {
                 case Networking::StoC::Disconnect:
-                    std::cout << "Received disconnect code from server." << std::endl;
+                    std::clog << "Received disconnect code from server." << std::endl;
                     must_be_destroyed = true;
                     break;
                 case Networking::StoC::SendChunk:

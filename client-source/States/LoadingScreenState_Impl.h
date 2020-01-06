@@ -62,7 +62,7 @@ void LoadingScreenState<T>::update(float delta_time)
     {
         if (working)
         {
-            std::cout << "Loading took " << working_time.getElapsedTime().asSeconds() << " seconds." << std::endl;
+            //std::cout << "Loading took " << working_time.getElapsedTime().asSeconds() << " seconds." << std::endl;
             working = false;
             fade_clock.restart();
             getGame()->addStateUnderTop(state_being_loaded, false);

@@ -53,10 +53,16 @@ void Player::draw(sf::RenderTarget& target) const
 
 bool Player::isSubscribedTo(const Chunk* chunk) const
 {
-    sf::Vector2f diff = chunk->getCenter() - position;
-    float distance_squared = diff.x * diff.x + diff.y * diff.y;
+    sf::Vector2i diff = chunk->getPos() - getChunkOn();
+    int distance_squared = diff.x * diff.x + diff.y * diff.y;
 
+    /*
     std::cout << "==========\n" << std::sqrt(distance_squared) << std::endl;
+    std::cout << chunk->getPos().x << ", " << chunk->getPos().y << std::endl;
+    std::cout << position.x << ", " << position.y << std::endl;
+    std::cout << chunk->getCenter().x << ", " << chunk->getCenter().y << std::endl;
+    std::cout << "==========\n" << std::endl;
+    */
     //TODO : Make render distance constant
-    return distance_squared < (4.f * 16.f * 4.f * 16.f);
+    return distance_squared < (1);
 }

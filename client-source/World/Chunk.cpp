@@ -145,7 +145,7 @@ void Chunk::generateVertices() const
     generateBlockSideVertices();
     generateBlockTopVertices();
     vertices_ready = true;
-    std::cout << "Chunk vertex array render took " << clk.getElapsedTime().asSeconds() << "s" << std::endl;
+    //std::cout << "Chunk vertex array render took " << clk.getElapsedTime().asSeconds() << "s" << std::endl;
 }
 
 void Chunk::generateGroundVertices() const

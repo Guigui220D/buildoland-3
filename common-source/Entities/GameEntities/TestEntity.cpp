@@ -41,8 +41,8 @@ void TestEntity::update(float delta)
     #else
     if (test_clock.getElapsedTime().asSeconds() > 2.f)
     {
-        //setWalkingDirection(sf::Vector2f(std::rand() % 3 - 1, std::rand() % 3 - 1));
-        setWalkingDirection(sf::Vector2f(0.f, 1.f));
+        setWalkingDirection(sf::Vector2f(std::rand() % 3 - 1, std::rand() % 3 - 1));
+        //setWalkingDirection(sf::Vector2f(0.f, 1.f));
         test_clock.restart();
     }
     #endif // CLIENT_SIDE

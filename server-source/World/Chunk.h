@@ -66,7 +66,7 @@ class Chunk
         inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
 
 
-        inline sf::Vector2f getCenter() const { return sf::Vector2f(.5f * CHUNK_SIZE - .5f, .5f * CHUNK_SIZE - .5f); }
+        inline sf::Vector2f getCenter() const { return sf::Vector2f(pos.x * CHUNK_SIZE + .5f * CHUNK_SIZE - .5f, pos.y * CHUNK_SIZE + .5f * CHUNK_SIZE - .5f); }
 
         /**
          * Gets the position of a block of this chunk in the world

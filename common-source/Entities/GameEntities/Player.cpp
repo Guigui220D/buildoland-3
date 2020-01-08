@@ -16,6 +16,8 @@
 #include "../../../common-source/Constants.h"
 
 #ifdef CLIENT_SIDE
+unsigned int Player::this_player_id = 0;
+
 Player::Player(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
@@ -29,12 +31,10 @@ Player::Player(World* world, unsigned int id) :
     shadow.setFillColor(sf::Color(0, 0, 0, 64));
 }
 #else
-Player::Player(World* world, unsigned int id, Client& client) :
+Player::Player(World* world, unsigned int id, const Client& client) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
     client(client)
-{
-
-}
+{}
 #endif
 
 Player::~Player()
@@ -75,6 +75,13 @@ void Player::draw(sf::RenderTarget& target) const
     target.draw(shadow);
     target.draw(rs);
 }
+
+void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
+{
+    if (getId() == Player::this_player_id)
+        std::cout << "I changed chunks" << std::endl;
+        //TODO : auto chunk loading (requests) and unloading
+}
 #endif
 
 bool Player::isSubscribedTo(sf::Vector2i chunk) const
@@ -82,13 +89,11 @@ bool Player::isSubscribedTo(sf::Vector2i chunk) const
     sf::Vector2i diff = chunk - getChunkOn();
     int distance_squared = diff.x * diff.x + diff.y * diff.y;
 
-    /*
+
     std::cout << "==========\n" << std::sqrt(distance_squared) << std::endl;
-    std::cout << chunk->getPos().x << ", " << chunk->getPos().y << std::endl;
     std::cout << position.x << ", " << position.y << std::endl;
-    std::cout << chunk->getCenter().x << ", " << chunk->getCenter().y << std::endl;
     std::cout << "==========\n" << std::endl;
-    */
+
     //TODO : Make render distance constant
     return distance_squared < Constants::CHUNK_LOADING_DISTANCE;
 }

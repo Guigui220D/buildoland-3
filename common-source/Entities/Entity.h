@@ -89,6 +89,9 @@ class Entity
 
     private:
         void onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk);
+        #ifdef CLIENT_SIDE
+        virtual void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk);
+        #endif // CLIENT_SIDE
 
         const unsigned int id;
         World* const world;

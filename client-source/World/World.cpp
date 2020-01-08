@@ -1,27 +1,31 @@
 #include "World.h"
 
 #include "../Utils/Utils.h"
+#include "../States/GameState.h"
 #include "../Game.h"
+#include "../../common-source/Networking/ClientToServerCodes.h"
 
 #include <iostream>
 
 int unsigned World::RENDER_DISTANCE = 3;
 
-World::World(Game* game) :
+World::World(GameState* state_game) :
     entities(this),
-    game(game),
-    game_blocks_manager(game->getBlocksManager()),
-    game_grounds_manager(game->getGroundsManager())
+    state_game(state_game),
+    game(state_game->getGame()),
+    game_blocks_manager(state_game->getGame()->getBlocksManager()),
+    game_grounds_manager(state_game->getGame()->getGroundsManager())
 {
     std::srand(time(0));
     seed = std::rand() << 16 | std::rand();
 }
 
-World::World(Game* game, int seed) :
+World::World(GameState* state_game, int seed) :
     entities(this),
-    game(game),
-    game_blocks_manager(game->getBlocksManager()),
-    game_grounds_manager(game->getGroundsManager()),
+    state_game(state_game),
+    game(state_game->getGame()),
+    game_blocks_manager(state_game->getGame()->getBlocksManager()),
+    game_grounds_manager(state_game->getGame()->getGroundsManager()),
     seed(seed)
 {
 }
@@ -108,6 +112,16 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
         throw new std::out_of_range("World::getChunkConst : tried to access chunk that doesn't exist.");
 
     return *chunk_ptr->second;
+}
+
+void World::requestChunk(sf::Vector2i pos)
+{
+    sf::Packet request;
+
+    request << (unsigned short)Networking::CtoS::RequestChunk;
+    request << pos.x << pos.y;
+
+    state_game->client_socket.send(request, state_game->remote_ip, state_game->remote_port);
 }
 
 uint16_t World::getBlockId(sf::Vector2i pos)

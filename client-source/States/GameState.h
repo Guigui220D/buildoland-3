@@ -8,6 +8,8 @@
 
 class GameState : public State
 {
+    friend class World;
+
     public:
         GameState(Game* game, unsigned int id, bool show_server_console);
         GameState(Game* game, unsigned int id, sf::IpAddress server_address, uint16_t server_port);

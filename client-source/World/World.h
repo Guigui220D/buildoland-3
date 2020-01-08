@@ -6,7 +6,7 @@
 #include <map>
 #include <memory>
 
-class Game;
+class GameState;
 class Block;
 class Ground;
 
@@ -18,12 +18,17 @@ class World
     public:
         static unsigned int RENDER_DISTANCE;
 
-        World(Game* game);
-        World(Game* game, int seed);
+        World(GameState* state_game);
+        World(GameState* state_game, int seed);
         virtual ~World();
 
         EntitiesManager& getEntityManager() { return entities; }
 
+        /**
+         * Gets the state that own this world
+         * @return A pointer to the state game
+         */
+        inline GameState* getState() const { return state_game; }
         /**
          * Gets the game that own this world
          * @return A pointer to the game
@@ -58,12 +63,10 @@ class World
          */
         const Chunk& getChunkConst(sf::Vector2i pos) const;
         /**
-         * Gets a reference to a chunk with its position
-         * The chunk will be generated if needed
+         * Requests a chunk to the server
          * @param pos : the position of the chunk
-         * @return The reference to the chunk
          */
-        Chunk& getChunk(sf::Vector2i pos);
+        void requestChunk(sf::Vector2i pos);
         /**
          * To check whether a chunk is loaded or not
          * @param pos : the position of the chunk
@@ -163,6 +166,7 @@ class World
         EntitiesManager entities;
 
     private:
+        GameState* state_game;
         Game* game;
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;

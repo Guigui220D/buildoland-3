@@ -2,5 +2,5 @@
 
 struct Constants
 {
-    static const unsigned int CHUNK_LOADING_DISTANCE;
+    static const int CHUNK_LOADING_DISTANCE;
 };

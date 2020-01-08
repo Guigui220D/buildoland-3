@@ -75,10 +75,14 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 
         getWorld()->sendToSubscribersWithException(enter, new_chunk, old_chunk);
     }
+    #else
+    moreOnChunkChange(old_chunk, new_chunk);
     #endif // CLIENT_SIDE
 }
 
 #ifdef CLIENT_SIDE
+void Entity::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) {}
+
 bool Entity::takeNewEntityPacket(sf::Packet& packet) { return true; }
 #else
 void Entity::makeNewEntityPacket(sf::Packet& packet) const

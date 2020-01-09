@@ -131,7 +131,7 @@ void Server::receiver()
         switch (status)
         {
         case sf::Socket::Done:
-            std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+            //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
 
             if (packet.getDataSize() >= 2)
             {

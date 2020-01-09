@@ -2,7 +2,7 @@
 
 #include <iostream>
 //TEST
-#include <cmath>
+//#include <cmath>
 
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
@@ -88,15 +88,14 @@ void Player::update(float delta)
         }
     }
 
-    #endif // CLIENT_SIDE
-
     walk(delta);
 
-    #ifdef CLIENT_SIDE
     rs.setPosition(position);
     rs.setTextureRect(getCurrentTextureRect());
 
     shadow.setPosition(position);
+    #else
+    walk(delta);
     #endif // CLIENT_SIDE
 }
 
@@ -123,8 +122,6 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
         std::cerr << "Could not read playerAction, packet too short" << std::endl;
         return;
     }
-
-    std::cout << action << std::endl;
 
     switch (action)
     {
@@ -158,10 +155,11 @@ bool Player::isSubscribedTo(sf::Vector2i chunk) const
     sf::Vector2i diff = chunk - getChunkOn();
     int distance_squared = diff.x * diff.x + diff.y * diff.y;
 
-
-    std::cout << "==========\n" << std::sqrt(distance_squared) << std::endl;
+    /*
+    std::cout << "==========\n" << distance_squared << std::endl;
     std::cout << position.x << ", " << position.y << std::endl;
     std::cout << "==========\n" << std::endl;
+    */
 
     //TODO : Make render distance constant
     return distance_squared < Constants::CHUNK_LOADING_DISTANCE;

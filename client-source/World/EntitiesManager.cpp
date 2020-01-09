@@ -170,7 +170,7 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
     }
     if (id == Player::this_player_id)
     {
-        //std::cout << "YEAH BOIII IT'SA ME!" << std::endl;
+        //std::cout << "YEAH BOIII IT'S ME!" << std::endl;
         return true;
     }
 

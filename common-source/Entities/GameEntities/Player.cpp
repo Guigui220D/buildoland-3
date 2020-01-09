@@ -8,7 +8,6 @@
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
     #include "../../Networking/ClientToServerCodes.h"
-    #include "../../Networking/CtoS_PlayerActionCodes.h"
     #include "../../../client-source/States/GameState.h"
 #else
     #include "../../../server-source/World/World.h"
@@ -17,6 +16,7 @@
 #endif
 
 #include "../../../common-source/Constants.h"
+#include "../../Networking/CtoS_PlayerActionCodes.h"
 
 #ifdef CLIENT_SIDE
 unsigned int Player::this_player_id = 0;
@@ -116,7 +116,40 @@ void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)
 {
-    std::cout << "Player action packet" << std::endl;
+    unsigned short action; packet >> action;
+
+    if (!packet)
+    {
+        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+        return;
+    }
+
+    std::cout << action << std::endl;
+
+    switch (action)
+    {
+    case EntityActions::CtoS::Walk:
+        {
+            sf::Vector2f mov, pos;
+
+            packet >> mov.x >> mov.y;
+            packet >> pos.x >> pos.y;
+
+            if (!packet)
+            {
+                std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                break;
+            }
+
+            setWalkingDirection(mov);
+            position = pos;
+        }
+        break;
+
+    default:
+        std::cerr << "Could not read playerAction, action code unknown" << std::endl;
+        break;
+    }
 }
 #endif
 

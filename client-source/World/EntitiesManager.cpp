@@ -168,6 +168,11 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
         std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
         return false;
     }
+    if (id == Player::this_player_id)
+    {
+        //std::cout << "YEAH BOIII IT'SA ME!" << std::endl;
+        return true;
+    }
 
     Entity* en = getEntity(id);
 

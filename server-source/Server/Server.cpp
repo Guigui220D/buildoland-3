@@ -122,6 +122,7 @@ void Server::receiver()
     {
         if (stop)
             break;
+
         sf::Packet packet;
         sf::IpAddress address;
         uint16_t port;
@@ -187,13 +188,23 @@ void Server::receiver()
                         clients_manager.getClient(iandp).addRequestedChunk(pos);
                     }
                     break;
+                case Networking::CtoS::PlayerAction:
+                    {
+                        if (!clients_manager.isConnected(iandp))
+                            break;
+
+                        Client& client = clients_manager.getClient(iandp);
+
+                        if (!client.hasPlayer())
+                            break;
+
+                        client.getPlayer()->takePlayerActionPacket(packet);
+                    }
+                    break;
                 default:
                     std::cerr << "Packet has unknown code" << std::endl;
                     break;
                 }
-
-
-
             }
             else
                 std::cerr << "Packet is too small to be read" << std::endl;

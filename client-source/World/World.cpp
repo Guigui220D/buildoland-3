@@ -121,7 +121,7 @@ void World::requestChunk(sf::Vector2i pos)
     request << (unsigned short)Networking::CtoS::RequestChunk;
     request << pos.x << pos.y;
 
-    state_game->client_socket.send(request, state_game->remote_ip, state_game->remote_port);
+    state_game->sendToServer(request);
 }
 
 uint16_t World::getBlockId(sf::Vector2i pos)

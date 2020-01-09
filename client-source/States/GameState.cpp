@@ -57,7 +57,7 @@ GameState::~GameState()
         //TEMP
         sf::Packet quit;
         quit << (unsigned short)Networking::CtoS::Disconnect;
-        client_socket.send(quit, remote_ip, remote_port);
+        sendToServer(quit);
     }
 }
 
@@ -98,7 +98,7 @@ void GameState::init()
     sf::Packet request;
     request << (unsigned short)Networking::CtoS::RequestChunk;
     request << 0 << 0;
-    client_socket.send(request, remote_ip, remote_port);
+    sendToServer(request);
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -170,7 +170,7 @@ bool GameState::handleEvent(sf::Event& event)
             sf::Packet request;
             request << (unsigned short)Networking::CtoS::RequestChunk;
             request << test_chunk_pos.x << test_chunk_pos.y;
-            client_socket.send(request, remote_ip, remote_port);
+            sendToServer(request);
         }
         break;
 
@@ -284,7 +284,7 @@ bool GameState::handshakeRemoteServer()
     //At the moment we send RequestConnection now but this will be done in the connecting to server state
     sf::Packet request;
     request << (unsigned short)Networking::CtoS::RequestConnection;
-    client_socket.send(request, remote_ip, remote_port);
+    sendToServer(request);
 
     bool handshake = receiveServerHandshake(true);
 

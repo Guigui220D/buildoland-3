@@ -22,6 +22,8 @@ class GameState : public State
         void draw(sf::RenderTarget& target) const override;
         void updateView() override;
 
+        inline void sendToServer(sf::Packet& packet) { client_socket.send(packet, remote_ip, remote_port); }
+
     private:
         //Networking stuff
         const bool solo_mode;

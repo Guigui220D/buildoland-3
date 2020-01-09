@@ -29,6 +29,8 @@ class Player : public LivingEntity
         void update(float delta);
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
+        #else
+        void takePlayerActionPacket(sf::Packet& packet);
         #endif
 
         bool isSubscribedTo(sf::Vector2i chunk) const;
@@ -38,6 +40,9 @@ class Player : public LivingEntity
 
         sf::RectangleShape rs;
         sf::CircleShape shadow;
+
+        sf::Vector2f last_walking_direction;
+        sf::Clock frequent_walk_update;
         #else
         const Client& client;
         #endif

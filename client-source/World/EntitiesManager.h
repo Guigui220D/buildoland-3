@@ -10,6 +10,8 @@
 
 class EntitiesManager
 {
+    friend class World;
+
     public:
         EntitiesManager(World* world);
         ~EntitiesManager();

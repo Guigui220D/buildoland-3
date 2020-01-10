@@ -94,11 +94,7 @@ void GameState::init()
     client_socket.setBlocking(true);
     receiver_thread.launch();
 
-    //TEMP
-    sf::Packet request;
-    request << (unsigned short)Networking::CtoS::RequestChunk;
-    request << 0 << 0;
-    sendToServer(request);
+    test_world.updateChunks(sf::Vector2i());
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -114,64 +110,6 @@ bool GameState::handleEvent(sf::Event& event)
                 window.setSize(sf::Vector2u(window.getSize().x, 200));
         }
         updateView();
-        break;
-
-
-    case sf::Event::KeyPressed:
-        //TEST
-        if (event.key.code == sf::Keyboard::A)
-        {
-            switch (test_chunk_next_direction)
-            {
-            case 0:
-                test_chunk_pos += sf::Vector2i(0, -1);
-                if (test_chunk_pos == test_next_chunk_pos_turn)
-                {
-                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(test_chunk_next_distance, 0);
-                    test_chunk_next_direction++;
-                    test_chunk_next_direction %= 4;
-                }
-                break;
-            case 1:
-                test_chunk_pos += sf::Vector2i(1, 0);
-                if (test_chunk_pos == test_next_chunk_pos_turn)
-                {
-                    test_chunk_next_distance++;
-                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(0, test_chunk_next_distance);
-                    test_chunk_next_direction++;
-                    test_chunk_next_direction %= 4;
-                }
-                break;
-            case 2:
-                test_chunk_pos += sf::Vector2i(0, 1);
-                if (test_chunk_pos == test_next_chunk_pos_turn)
-                {
-                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(-test_chunk_next_distance, 0);
-                    test_chunk_next_direction++;
-                    test_chunk_next_direction %= 4;
-                }
-                break;
-            case 3:
-                test_chunk_pos += sf::Vector2i(-1, 0);
-                if (test_chunk_pos == test_next_chunk_pos_turn)
-                {
-                    test_chunk_next_distance++;
-                    test_next_chunk_pos_turn = test_chunk_pos + sf::Vector2i(0, -test_chunk_next_distance);
-                    test_chunk_next_direction++;
-                    test_chunk_next_direction %= 4;
-                }
-                break;
-            }
-
-
-
-            std::cout << "Requesting chunk " << test_chunk_pos.x << ", " << test_chunk_pos.y << std::endl;
-
-            sf::Packet request;
-            request << (unsigned short)Networking::CtoS::RequestChunk;
-            request << test_chunk_pos.x << test_chunk_pos.y;
-            sendToServer(request);
-        }
         break;
 
     case sf::Event::MouseWheelScrolled:

@@ -4,6 +4,8 @@
 #include "../States/GameState.h"
 #include "../Game.h"
 #include "../../common-source/Networking/ClientToServerCodes.h"
+#include "../../common-source/Constants.h"
+#include "../../common-source/Entities/GameEntities/Player.h"
 
 #include <iostream>
 
@@ -53,6 +55,18 @@ void World::updateLoadedChunk(sf::Vector2f center)
     {
         if (i->second->to_be_removed)
         {
+            //Kills entities in that chunk
+            entities.entities_mutex.lock();
+            for (auto& entity : entities.entities_map)
+            {
+                if (entity.second->getId() == Player::this_player_id)
+                    continue;
+
+                if (entity.second->getChunkOn() == i->second->getPos())
+                    entity.second->to_be_removed = true;
+            }
+            entities.entities_mutex.unlock();
+
             //Removes the chunk from the map
             i = chunks.erase(i);
         }
@@ -122,6 +136,34 @@ void World::requestChunk(sf::Vector2i pos)
     request << pos.x << pos.y;
 
     state_game->sendToServer(request);
+}
+
+void World::updateChunks(sf::Vector2i center)
+{
+    for (auto& chunk : chunks)
+    {
+        sf::Vector2i diff = chunk.second->getPos() - center;
+        int distance_squared = diff.x * diff.x + diff.y * diff.y;
+
+        //TODO : Make render distance constant
+        if (distance_squared >= Constants::CHUNK_LOADING_DISTANCE)
+            chunk.second->to_be_removed = true;
+    }
+
+    for (int x = -Constants::CHUNK_LOADING_DISTANCE; x <= Constants::CHUNK_LOADING_DISTANCE; x++)
+    for (int y = -Constants::CHUNK_LOADING_DISTANCE; y <= Constants::CHUNK_LOADING_DISTANCE; y++)
+    {
+        int distance_squared = x * x + y * y;
+
+        if (distance_squared < Constants::CHUNK_LOADING_DISTANCE)
+        {
+            sf::Vector2i pos = sf::Vector2i(x, y) + center;
+
+            if (!isChunkLoaded(pos))
+                requestChunk(pos);
+        }
+
+    }
 }
 
 uint16_t World::getBlockId(sf::Vector2i pos)

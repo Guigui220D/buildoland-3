@@ -30,6 +30,18 @@ EntitiesManager::~EntitiesManager()
 void EntitiesManager::updateAll(float delta)
 {
     entities_mutex.lock();
+    for (auto i = entities_map.begin(); i != entities_map.end();)
+    {
+        if (i->second->to_be_removed)
+        {
+            //Removes the entity from the map
+            i = entities_map.erase(i);
+            std::cout << "REMOVING" << std::endl;
+        }
+        else
+            i++;
+    }
+
     for (Entity*& entity : entities_vector)
         entity->updateBase(delta);
     entities_mutex.unlock();

@@ -109,8 +109,7 @@ void Player::draw(sf::RenderTarget& target) const
 void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
     if (getId() == Player::this_player_id)
-        std::cout << "I changed chunks" << std::endl;
-        //TODO : auto chunk loading (requests) and unloading
+        getWorld()->updateChunks(new_chunk);
 }
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)

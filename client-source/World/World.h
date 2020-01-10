@@ -73,6 +73,11 @@ class World
          * @return True if the chunk exists
          */
         inline bool isChunkLoaded(sf::Vector2i pos) const { return chunks.find(utils::combine(pos.x, pos.y)) != chunks.end(); }
+        /**
+         * Loads nearby chunks and unload further chunks
+         * @param center : the chunk the player is in
+         */
+        void updateChunks(sf::Vector2i center);
 
         /**
          * Gets a block id from its position

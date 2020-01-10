@@ -76,7 +76,7 @@ int Game::run()
         //FPS VIEWER
         dt_viewer.setSize(sf::Vector2f(80.f, dt_clk.restart().asMilliseconds()));
 
-        window.clear(sf::Color::Cyan);
+        window.clear();
         //FPS VIEWER //TEMP
         draw();
 

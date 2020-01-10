@@ -35,8 +35,11 @@ void EntitiesManager::updateAll(float delta)
         if ((*i)->to_be_removed)
         {
             //Removes the entity from the containers
-            i = entities_vector.erase(i);
+            assert(entities_map.find((*i)->getId()) != entities_map.end());
+
             entities_map.erase(entities_map.find((*i)->getId()));
+            delete (*i);
+            i = entities_vector.erase(i);
         }
         else
             i++;

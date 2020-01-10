@@ -6,9 +6,10 @@ namespace Networking
     {
         enum : unsigned short
         {
-            Disconnect = 0,
+            Disconnect = 1,
             RequestConnection,
 			RequestChunk,
+			RequestEntityInfo,
 			PlayerAction
         };
     }

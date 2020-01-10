@@ -70,3 +70,14 @@ void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos
         }
     }
 }
+
+void EntitiesManager::sendAddEntityToClient(unsigned int id, const Client& client)
+{
+    auto i = entities.find(id);
+    if (i == entities.end())
+        return;
+
+    sf::Packet packet;
+    i->second->makeNewEntityPacket(packet);
+    client.send(packet);
+}

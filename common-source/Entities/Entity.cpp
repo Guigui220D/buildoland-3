@@ -56,8 +56,6 @@ sf::Vector2i Entity::getChunkOn() const
 
 void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
-    std::cout << "Entity " << getId() << " changed chunk. " << std::endl;
-
     #ifndef CLIENT_SIDE
     {
         sf::Packet leave;

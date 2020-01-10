@@ -65,11 +65,8 @@ bool Server::init(uint16_t port)
         clients_manager.getClient(owner).setPlayer(owner_player);
     #endif // SOLO
 
-    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
-    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
-    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
-    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
-    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+    for (int i = 0; i < 10; i++)
+        world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
     return true;
 }
@@ -187,9 +184,19 @@ void Server::receiver()
                         packet >> pos.x;
                         packet >> pos.y;
 
-                        std::clog << "Adding chunk request" << std::endl;
+                        //std::clog << "Adding chunk request" << std::endl;
 
                         clients_manager.getClient(iandp).addRequestedChunk(pos);
+                    }
+                    break;
+                case Networking::CtoS::RequestEntityInfo:
+                    {
+                        if (!clients_manager.isConnected(iandp))
+                            break;
+
+                        unsigned int id; packet >> id;
+
+                        world.getEntityManager().sendAddEntityToClient(id, clients_manager.getClient(iandp));
                     }
                     break;
                 case Networking::CtoS::PlayerAction:

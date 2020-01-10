@@ -71,7 +71,7 @@ void GameState::init()
 
     test_next_chunk_pos_turn = sf::Vector2i(0, -1);
     //Bind to any port
-    if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
+    if (client_socket.bind(/*sf::Socket::AnyPort*/50000) != sf::Socket::Done)
     {
         std::cerr << "Could not bind client to any port!" << std::endl;
         must_be_destroyed = true;
@@ -196,7 +196,7 @@ bool GameState::startAndConnectLocalServer()
             strs << " hide";
         strs.flush();
         std::cout << "Starting server with command " << strs.str() << std::endl;
-        int code = system(strs.str().c_str());
+        int code = /*system(strs.str().c_str())*/0;
         if (code)
         {
             std::cerr << "Could not start server!" << std::endl;
@@ -340,7 +340,7 @@ void GameState::receiverLoop()
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
             break;
         case sf::Socket::Disconnected:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping (but not actually lol)." << std::endl;
             must_be_destroyed = true;
             break;
         case sf::Socket::Error:

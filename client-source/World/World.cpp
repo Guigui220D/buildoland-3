@@ -96,7 +96,12 @@ bool World::addChunk(sf::Packet& packet)
     packet >> pos.x;
     packet >> pos.y;
 
-    std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
+    sf::Vector2i diff = pos - player_chunk_pos;
+    int distance_squared = diff.x * diff.x + diff.y * diff.y;
+    if (distance_squared >= Constants::CHUNK_LOADING_DISTANCE)
+        return true;    //Ignore chunk because it's too far
+
+    //std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
 
     //Construct new chunk
     bool success = false;
@@ -140,6 +145,8 @@ void World::requestChunk(sf::Vector2i pos)
 
 void World::updateChunks(sf::Vector2i center)
 {
+    player_chunk_pos = center;
+
     chunks_to_add_mutex.lock();
     for (auto& chunk : chunks)
     {

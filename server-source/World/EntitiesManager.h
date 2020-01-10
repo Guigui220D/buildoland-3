@@ -41,6 +41,12 @@ class EntitiesManager
          * @param client : the client to send to
          */
         void sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos, const Client& client);
+        /**
+         * Sends a addEntity of one entity to a client
+         * @param id : the id of the entity to send info of to the client
+         * @param client : the client to send to
+         */
+        void sendAddEntityToClient(unsigned int id, const Client& client);
 
         inline unsigned int getNextEntityId() { return next_entity_id++; }
 

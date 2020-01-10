@@ -178,5 +178,6 @@ class World
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
         std::vector<Chunk*> chunks_to_add;
+        sf::Vector2i player_chunk_pos;
         sf::Mutex chunks_to_add_mutex;
 };

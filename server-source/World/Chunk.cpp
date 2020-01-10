@@ -30,6 +30,10 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
         //setBlock(x, y, !(std::rand() % 5) ? (std::rand() % 5 + 2) : 0);
         setGround(x, y, std::rand() % 4 + 1);
     }
+
+    setBlock(0, CHUNK_SIZE - 1, GameBlocks::IRON);
+    setBlock(CHUNK_SIZE - 1, 0, GameBlocks::IRON);
+    setBlock(CHUNK_SIZE - 1, CHUNK_SIZE - 1, GameBlocks::GOLD);
 }
 
 Chunk::~Chunk()

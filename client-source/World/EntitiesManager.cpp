@@ -7,11 +7,14 @@
 #include <SFML/Network.hpp>
 
 #include "../../common-source/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Networking/StoC_EntityActionCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
 
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
+
+#include "../States/GameState.h"
 
 EntitiesManager::EntitiesManager(World* world) :
     world(world)
@@ -209,7 +212,13 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
 
     if (!en)
     {
-        std::cerr << "The entity with that code couldn't be found (doEntityAction)." << std::endl;
+        std::cerr << "The entity with that code couldn't be found (doEntityAction). Sending a request." << std::endl;
+
+        //We ask the server to tell us about that entity because we don't have it
+        sf::Packet request;
+        request << Networking::CtoS::RequestEntityInfo;
+        request << id;
+        world->getState()->sendToServer(request);
         return false;
     }
 

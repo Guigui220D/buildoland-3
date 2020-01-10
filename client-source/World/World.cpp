@@ -38,7 +38,7 @@ World::~World()
         delete chunk;
 }
 
-void World::updateLoadedChunk(sf::Vector2f center)
+void World::updateLoadedChunk()
 {
     //Add chunks waiting to be added
     chunks_to_add_mutex.lock();
@@ -140,6 +140,7 @@ void World::requestChunk(sf::Vector2i pos)
 
 void World::updateChunks(sf::Vector2i center)
 {
+    chunks_to_add_mutex.lock();
     for (auto& chunk : chunks)
     {
         sf::Vector2i diff = chunk.second->getPos() - center;
@@ -162,8 +163,8 @@ void World::updateChunks(sf::Vector2i center)
             if (!isChunkLoaded(pos))
                 requestChunk(pos);
         }
-
     }
+    chunks_to_add_mutex.unlock();
 }
 
 uint16_t World::getBlockId(sf::Vector2i pos)
@@ -171,7 +172,7 @@ uint16_t World::getBlockId(sf::Vector2i pos)
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
-        return GameBlocks::ERROR->getId();
+        return GameBlocks::AIR->getId();
     return getChunkConst(chunk_pos).getBlockId(bp.x, bp.y);
 }
 
@@ -180,7 +181,7 @@ uint16_t World::getGroundId(sf::Vector2i pos)
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
     if (!isChunkLoaded(chunk_pos))
-        return 0;
+        return GameGrounds::ERROR->getId();
     return getChunkConst(chunk_pos).getGroundId(bp.x, bp.y);
 }
 

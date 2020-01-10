@@ -141,7 +141,7 @@ void GameState::update(float delta_time)
         anim_frame = (anim_frame + 1) % 4;
     }
 
-    test_world.updateLoadedChunk(my_view.getCenter());
+    test_world.updateLoadedChunk();
 
     entities.updateAll(delta_time);
 }

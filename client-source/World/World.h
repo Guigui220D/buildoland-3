@@ -42,9 +42,8 @@ class World
 
         /**
          * Loads close chunks and unload other chunks
-         * @param center : the position of the player / the camera
          */
-        void updateLoadedChunk(sf::Vector2f center);
+        void updateLoadedChunk();
 
         /**
          * Adds a chunk from a received packet

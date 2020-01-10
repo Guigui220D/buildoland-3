@@ -66,6 +66,10 @@ bool Server::init(uint16_t port)
     #endif // SOLO
 
     world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+    world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
     return true;
 }

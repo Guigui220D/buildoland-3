@@ -30,13 +30,13 @@ EntitiesManager::~EntitiesManager()
 void EntitiesManager::updateAll(float delta)
 {
     entities_mutex.lock();
-    for (auto i = entities_map.begin(); i != entities_map.end();)
+    for (auto i = entities_vector.begin(); i != entities_vector.end();)
     {
-        if (i->second->to_be_removed)
+        if ((*i)->to_be_removed)
         {
-            //Removes the entity from the map
-            i = entities_map.erase(i);
-            std::cout << "REMOVING" << std::endl;
+            //Removes the entity from the containers
+            i = entities_vector.erase(i);
+            entities_map.erase(entities_map.find((*i)->getId()));
         }
         else
             i++;
@@ -108,6 +108,15 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
         return false;
     }
 
+    if (entity_id == Player::this_player_id)
+    {
+        if (gotPlayer)
+            return true;
+
+        gotPlayer = true;
+    }
+
+
     Entity* new_entity = nullptr;
 
     switch (entity_code)
@@ -129,11 +138,15 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
     sf::Lock lock(entities_mutex);
 
-    if (entities_map.find(entity_id) != entities_map.cend())
+    auto ent_i = entities_map.find(entity_id);
+
+    if (ent_i != entities_map.cend())
     {
-        std::cerr << "Could not add entity, another one with the same ID exists, deleting it." << std::endl;
-        delete new_entity;
-        return false;
+        std::cerr << "Another entity with the same ID exists, deleting it." << std::endl;
+
+        entities_vector.erase(std::remove(entities_vector.begin(), entities_vector.end(), ent_i->second), entities_vector.end());
+        delete ent_i->second;
+        entities_map.erase(ent_i);
     }
 
     entities_map.emplace(std::pair<unsigned int, Entity*>(entity_id, new_entity));
@@ -150,6 +163,9 @@ void EntitiesManager::removeEntity(sf::Packet& packet)
         std::cerr << "Entity packet was too short (reading entity id)." << std::endl;
         return;
     }
+
+    if (entity_id == Player::this_player_id)
+        return;
 
     sf::Lock lock(entities_mutex);
 

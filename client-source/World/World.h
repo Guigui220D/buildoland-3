@@ -55,6 +55,15 @@ class World
         bool addChunk(sf::Packet& packet);
 
         /**
+         * Gets a reference to a chunk with its position
+         * An exception will be thrown if the chunk doesn't exist
+         * @param pos : the position of the chunk
+         * @return The const reference to the chunk
+         */
+        Chunk& getChunk(sf::Vector2i pos);
+
+        /**
+         * TEMPORARY
          * Gets a const reference to a chunk with its position
          * An exception will be thrown if the chunk doesn't exist
          * @param pos : the position of the chunk

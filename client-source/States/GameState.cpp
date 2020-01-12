@@ -8,11 +8,9 @@
 
 #include <thread>
 #include <chrono>
+#include <cmath>
 
 #include "../../common-source/Entities/GameEntities/Player.h"
-
-//TEST
-#include <cmath>
 
 #include "../Version.h"
 
@@ -135,21 +133,32 @@ bool GameState::handleEvent(sf::Event& event)
         if (event.mouseButton.button == sf::Mouse::Left)
         {
             sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
-            world_pos += sf::Vector2f(.5f, .5f);
-            sf::Vector2i i_world_pos(world_pos.x, world_pos.y);
-            if (world_pos.x < 0.f)
-                i_world_pos.x--;
-            if (world_pos.y < 0.f)
-                i_world_pos.y--;
-            std::cout << "Left click at " << i_world_pos.x << ", " << i_world_pos.y << std::endl;
+            world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
+
+            sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+
+            //TEMPORARY
+            sf::Vector2i chunk = World::getChunkPosFromBlockPos(world_pos_i);
+            if (test_world.isChunkLoaded(chunk))
+            {
+                test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(world_pos_i), GameBlocks::AIR);
+            }
         }
-        /*
+
         if (event.mouseButton.button == sf::Mouse::Right)
         {
-            std::cout << "Right click" << std::endl;
+            sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+            world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
+            sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+
+            //TEMPORARY
+            sf::Vector2i chunk = World::getChunkPosFromBlockPos(world_pos_i);
+            if (test_world.isChunkLoaded(chunk))
+            {
+                test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(world_pos_i), GameBlocks::STONE);
+            }
         }
-        */
         break;
 
     default:
@@ -160,18 +169,7 @@ bool GameState::handleEvent(sf::Event& event)
 
 void GameState::update(float delta_time)
 {
-    //TEMPORARY
     my_view.setCenter(Player::this_player->getPosition());
-    /*
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
-        my_view.setCenter(my_view.getCenter() + sf::Vector2f(-5.f * delta_time, 0));
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
-        my_view.setCenter(my_view.getCenter() + sf::Vector2f(5.f * delta_time, 0));
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
-        my_view.setCenter(my_view.getCenter() + sf::Vector2f(0, 5.f * delta_time));
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-        my_view.setCenter(my_view.getCenter() + sf::Vector2f(0, -5.f * delta_time));
-        */
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
@@ -314,7 +312,7 @@ bool GameState::handshakeRemoteServer()
     return handshake;
 }
 
-bool GameState::receiveServerHandshake(bool known_port)
+ bool GameState::receiveServerHandshake(bool known_port)
 {
     std::clog << "Waiting for handshake from server..." << std::endl;
 

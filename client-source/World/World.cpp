@@ -122,6 +122,17 @@ bool World::addChunk(sf::Packet& packet)
     return true;
 }
 
+Chunk& World::getChunk(sf::Vector2i pos)
+{
+    uint64_t key = utils::combine(pos.x, pos.y);
+    auto chunk_ptr = chunks.find(key);
+
+    if (chunk_ptr == chunks.end())
+        throw new std::out_of_range("World::getChunk : tried to access chunk that doesn't exist.");
+
+    return *chunk_ptr->second;
+}
+
 const Chunk& World::getChunkConst(sf::Vector2i pos) const
 {
     uint64_t key = utils::combine(pos.x, pos.y);

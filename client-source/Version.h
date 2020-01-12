@@ -2,8 +2,8 @@
 
 namespace Version
 {
-    const char VERSION[] =          "Indev 3.0.B";
+    const char VERSION[] =          "Indev 3.0.C";
 
-    const char VERSION_SHORT[] =    "3indB"; //Should be 5 char long
+    const char VERSION_SHORT[] =    "3indC"; //Should be 5 char long
     static_assert(sizeof(VERSION_SHORT) == 6);
 }

@@ -24,10 +24,13 @@ unsigned int Player::this_player_id = 0;
 Player::Player(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
+    std::cout << "PLAYER : " << id << std::endl;
 
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, .8f));
     rs.setTexture(&world->getGame()->getResourceManager().getTexture("CHARA_TEST"));
+
+    rs.setFillColor(id == Player::this_player_id ? sf::Color::Green : sf::Color::Red);
 
     shadow.setRadius(.17f);
     shadow.setOrigin(sf::Vector2f(.17f, .17f));
@@ -48,43 +51,46 @@ Player::~Player()
 void Player::update(float delta)
 {
     #ifdef CLIENT_SIDE
-    sf::Vector2f dir;
-
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
-        dir += sf::Vector2f(0, -1.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-        dir += sf::Vector2f(-1.f, 0);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-        dir += sf::Vector2f(0, 1.f);
-    if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-        dir += sf::Vector2f(1.f, 0);
-
-    if (dir != last_walking_direction)
+    if (getId() == Player::this_player_id)
     {
-        //Send packet to server
-        sf::Packet move_packet;
-        move_packet << (unsigned short)Networking::CtoS::PlayerAction;
-        move_packet << (unsigned short)EntityActions::CtoS::Walk;
-        move_packet << dir.x << dir.y;
-        move_packet << position.x << position.y;
-        getWorld()->getState()->sendToServer(move_packet);
+        sf::Vector2f dir;
 
-        last_walking_direction = dir;
-        setWalkingDirection(dir);
-    }
-    else
-    {
-        if (frequent_walk_update.getElapsedTime().asSeconds() >= 1.f)
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+            dir += sf::Vector2f(0, -1.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+            dir += sf::Vector2f(-1.f, 0);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+            dir += sf::Vector2f(0, 1.f);
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+            dir += sf::Vector2f(1.f, 0);
+
+        if (dir != last_walking_direction)
         {
-            frequent_walk_update.restart();
-
-            //We update the server on our movement every second to avoid desynchronisations
+            //Send packet to server
             sf::Packet move_packet;
             move_packet << (unsigned short)Networking::CtoS::PlayerAction;
             move_packet << (unsigned short)EntityActions::CtoS::Walk;
             move_packet << dir.x << dir.y;
             move_packet << position.x << position.y;
             getWorld()->getState()->sendToServer(move_packet);
+
+            last_walking_direction = dir;
+            setWalkingDirection(dir);
+        }
+        else
+        {
+            if (frequent_walk_update.getElapsedTime().asSeconds() >= 1.f)
+            {
+                frequent_walk_update.restart();
+
+                //We update the server on our movement every second to avoid desynchronisations
+                sf::Packet move_packet;
+                move_packet << (unsigned short)Networking::CtoS::PlayerAction;
+                move_packet << (unsigned short)EntityActions::CtoS::Walk;
+                move_packet << dir.x << dir.y;
+                move_packet << position.x << position.y;
+                getWorld()->getState()->sendToServer(move_packet);
+            }
         }
     }
 

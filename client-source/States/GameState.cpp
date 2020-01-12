@@ -9,6 +9,8 @@
 #include <thread>
 #include <chrono>
 
+#include "../../common-source/Entities/GameEntities/Player.h"
+
 //TEST
 #include <cmath>
 
@@ -262,7 +264,7 @@ bool GameState::receiveServerHandshake(bool known_port)
     if (!known_port)
         remote_port = port;
 
-    if (packet.getDataSize() != 11)
+    if (packet.getDataSize() != 15)
     {
         std::cerr << "Received wrong handshake packet! Expected 11 bytes, got " << packet.getDataSize() << '.' << std::endl;
         must_be_destroyed = true;
@@ -278,8 +280,7 @@ bool GameState::receiveServerHandshake(bool known_port)
         return false;
     }
 
-    char vers[6];
-    packet >> vers;
+    char vers[6]; packet >> vers;
     vers[5] = 0;
 
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
@@ -289,7 +290,10 @@ bool GameState::receiveServerHandshake(bool known_port)
         return false;
     }
 
-    std::cout << "Received handshake from local server! Its version is " << vers << '.' << std::endl;
+    unsigned int player_id; packet >> player_id;
+
+    Player::this_player_id = player_id;
+    std::clog << "Received handshake from local server! Its version is " << vers << ". Our player has id " << player_id << '.' << std::endl;
 
     return true;
 }

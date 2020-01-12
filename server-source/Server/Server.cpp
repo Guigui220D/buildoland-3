@@ -56,18 +56,23 @@ bool Server::init(uint16_t port)
     receiver_thread.launch();
 
     #ifdef SOLO
+        unsigned int player_id = world.getEntityManager().getNextEntityId();
+
+        Player* owner_player = new Player(&world, player_id, clients_manager.getClient(owner));
+        clients_manager.getClient(owner).setPlayer(owner_player);
+
         sf::Packet handshake;
         handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+        handshake << player_id;
         server_socket.send(handshake, owner.address, owner.port);
 
-        Player* owner_player = new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner));  //First entity id should be 0
         world.getEntityManager().newEntity(owner_player);
-        clients_manager.getClient(owner).setPlayer(owner_player);
     #endif // SOLO
 
     for (int i = 0; i < 10; i++)
         world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
+    world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }
 

@@ -156,7 +156,24 @@ void Server::receiver()
                             running = false;
                             break;
                         }
+                        else
                     #endif // SOLO
+                    {
+                        std::cout << "Disconnecting player." << std::endl;
+
+                        if (!clients_manager.isConnected(iandp))
+                            break;
+
+                        Client& client = clients_manager.getClient(iandp);
+                        if (client.hasPlayer())
+                        {
+                            world.getEntityManager().removeEntity(client.getPlayer()->getId());
+                            client.setPlayer(nullptr);
+                        }
+
+                        clients_manager.removeClient(iandp);
+                        std::cout << "Player disconnected." << std::endl;
+                    }
                     break;
                 case Networking::CtoS::RequestConnection:
 

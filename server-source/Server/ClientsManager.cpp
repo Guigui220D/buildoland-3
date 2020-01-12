@@ -24,6 +24,20 @@ bool ClientsManager::addClient(IpAndPort& client, Player* player)
     return true;
 }
 
+void ClientsManager::removeClient(IpAndPort& client)
+{
+    sf::Lock l(clients_mutex);
+
+    auto i = clients.find(client);
+
+    if (i == clients.cend())
+        return;
+
+    assert(!i->second->hasPlayer());
+
+    clients.erase(i);
+}
+
 Client& ClientsManager::getClient(IpAndPort& client) const
 {
     sf::Lock l(clients_mutex);

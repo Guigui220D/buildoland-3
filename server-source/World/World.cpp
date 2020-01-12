@@ -120,3 +120,23 @@ const Ground* World::getGround(sf::Vector2i pos)
 {
     return game_grounds_manager.getGroundByID(getGroundId(pos));
 }
+
+void World::setBlock(sf::Vector2i pos, uint16_t id)
+{
+    sf::Vector2i chunk = getChunkPosFromBlockPos(pos);
+
+    if (!isChunkLoaded(pos))
+        return;
+
+    getChunk(chunk).setBlock(getBlockPosInChunk(pos), id);
+}
+
+void World::setGround(sf::Vector2i pos, uint16_t id)
+{
+    sf::Vector2i chunk = getChunkPosFromBlockPos(pos);
+
+    if (!isChunkLoaded(pos))
+        return;
+
+    getChunk(chunk).setBlock(getBlockPosInChunk(pos), id);
+}

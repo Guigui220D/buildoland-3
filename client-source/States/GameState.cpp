@@ -16,6 +16,7 @@
 
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Networking/ServerToClientCodes.h"
+#include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
 //TEMPORARY
 #include <windows.h>
@@ -130,6 +131,8 @@ bool GameState::handleEvent(sf::Event& event)
         break;
 
     case sf::Event::MouseButtonReleased:
+        if (!connected)
+            break;
         if (event.mouseButton.button == sf::Mouse::Left)
         {
             sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
@@ -137,12 +140,12 @@ bool GameState::handleEvent(sf::Event& event)
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-            //TEMPORARY
-            sf::Vector2i chunk = World::getChunkPosFromBlockPos(world_pos_i);
-            if (test_world.isChunkLoaded(chunk))
-            {
-                test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(world_pos_i), GameBlocks::AIR);
-            }
+            sf::Packet break_packet;
+            break_packet << (unsigned short)Networking::CtoS::PlayerAction;
+            break_packet << (unsigned short)EntityActions::CtoS::BreakBlock;
+            break_packet << world_pos_i.x << world_pos_i.y;
+
+            sendToServer(break_packet);
         }
 
         if (event.mouseButton.button == sf::Mouse::Right)
@@ -152,12 +155,13 @@ bool GameState::handleEvent(sf::Event& event)
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-            //TEMPORARY
-            sf::Vector2i chunk = World::getChunkPosFromBlockPos(world_pos_i);
-            if (test_world.isChunkLoaded(chunk))
-            {
-                test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(world_pos_i), GameBlocks::STONE);
-            }
+            sf::Packet place_packet;
+            place_packet << (unsigned short)Networking::CtoS::PlayerAction;
+            place_packet << (unsigned short)EntityActions::CtoS::PlaceBlock;
+            place_packet << world_pos_i.x << world_pos_i.y;
+            place_packet << (uint16_t)2; //Block id
+
+            sendToServer(place_packet);
         }
         break;
 
@@ -403,13 +407,60 @@ void GameState::receiverLoop()
                     std::clog << "Received disconnect code from server." << std::endl;
                     must_be_destroyed = true;
                     break;
+
                 case Networking::StoC::SendChunk:
                     test_world.addChunk(packet);
                     break;
+
                 case Networking::StoC::EntityAction:
                     if (!entities.readEntityPacket(packet))
                         std::cerr << "Entity packet could not be read." << std::endl;
                     break;
+
+                case Networking::StoC::BlockUpdate:
+                    {   //TODO : movee that somewhere else
+                        sf::Vector2i pos;
+                        uint16_t id;
+
+                        packet >> pos.x >> pos.y;
+                        packet >> id;
+
+                        if (!packet)
+                        {
+                            std::cerr << "Could not read blockUpdate, packet too short" << std::endl;
+                            break;
+                        }
+
+                        sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
+                        if (test_world.isChunkLoaded(chunk))
+                        {
+                            test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), id);
+                        }
+                    }
+                    break;
+
+                case Networking::StoC::GroundUpdate:
+                    {
+                        sf::Vector2i pos;
+                        uint16_t id;
+
+                        packet >> pos.x >> pos.y;
+                        packet >> id;
+
+                        if (!packet)
+                        {
+                            std::cerr << "Could not read groundUpdate, packet too short" << std::endl;
+                            break;
+                        }
+
+                        sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
+                        if (test_world.isChunkLoaded(chunk))
+                        {
+                            test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(pos), id);
+                        }
+                    }
+                    break;
+
                 default:
                     std::cerr << "Unknown packet code" << std::endl;
                     break;

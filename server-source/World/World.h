@@ -96,6 +96,18 @@ class World
          * @return The pointer to the ground
          */
         const Ground* getGround(sf::Vector2i pos);
+        /**
+         * Sets a block at a position with its id
+         * @param pos : the position of the block to set
+         * @param id : the id of the block
+         */
+        void setBlock(sf::Vector2i pos, uint16_t id);
+        /**
+         * Sets a block at a position with its id
+         * @param pos : the position of the block to set
+         * @param id : the id of the block
+         */
+        void setGround(sf::Vector2i pos, uint16_t id);
 
         /**
          * Calculate the position of the chunk that the block is in

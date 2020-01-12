@@ -153,6 +153,58 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
         }
         break;
 
+    case EntityActions::CtoS::PlaceBlock:
+        {
+            sf::Vector2i pos;
+            uint16_t id;
+
+            packet >> pos.x >> pos.y;
+            packet >> id;
+
+            if (!packet)
+            {
+                std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                break;
+            }
+
+            getWorld()->setBlock(pos, id);
+        }
+        break;
+
+    case EntityActions::CtoS::BreakBlock:
+        {
+            sf::Vector2i pos;
+
+            packet >> pos.x >> pos.y;
+
+            if (!packet)
+            {
+                std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                break;
+            }
+
+            getWorld()->setBlock(pos, 0);
+        }
+        break;
+
+    case EntityActions::CtoS::SetGround:
+        {
+            sf::Vector2i pos;
+            uint16_t id;
+
+            packet >> pos.x >> pos.y;
+            packet >> id;
+
+            if (!packet)
+            {
+                std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                break;
+            }
+
+            getWorld()->setGround(pos, id);
+        }
+        break;
+
     default:
         std::cerr << "Could not read playerAction, action code unknown" << std::endl;
         break;

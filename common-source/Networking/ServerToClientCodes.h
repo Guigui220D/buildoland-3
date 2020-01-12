@@ -11,7 +11,9 @@ namespace Networking
             ConnectionRefused,
             FinalHandshake,
             SendChunk,
-            EntityAction
+            EntityAction,
+            BlockUpdate,
+            GroundUpdate
         };
     }
 }

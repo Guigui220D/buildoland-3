@@ -88,6 +88,13 @@ void Chunk::setBlock(int x, int y, uint16_t id)
     assert(y < CHUNK_SIZE);
     blocks.set(x, y, id);
     packet_ready = false;
+
+    sf::Packet block_set;
+    block_set << (unsigned short)Networking::StoC::BlockUpdate;
+    block_set << x << y;
+    block_set << id;
+
+    world->sendToSubscribers(block_set, pos);
 }
 
 void Chunk::setGround(int x, int y, uint16_t id)
@@ -98,22 +105,21 @@ void Chunk::setGround(int x, int y, uint16_t id)
     assert(y < CHUNK_SIZE);
     grounds.set(x, y, id);
     packet_ready = false;
+
+    sf::Packet ground_set;
+    ground_set << (unsigned short)Networking::StoC::GroundUpdate;
+    ground_set << x << y;
+    ground_set << id;
+
+    world->sendToSubscribers(ground_set, pos);
 }
 
 void Chunk::setBlock(int x, int y, const Block* block)
 {
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < CHUNK_SIZE);
-    assert(y < CHUNK_SIZE);
     setBlock(x, y, block->getId());
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
 {
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < CHUNK_SIZE);
-    assert(y < CHUNK_SIZE);
     setGround(x, y, ground->getId());
 }

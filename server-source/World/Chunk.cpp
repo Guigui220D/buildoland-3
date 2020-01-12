@@ -28,7 +28,7 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     for (int y = 0; y < CHUNK_SIZE; y++)
     {
         if (x % 2 && y % 2)
-            setBlock(x, y, std::rand() % 5 + 2);
+            setBlock(x, y, std::rand() % 4 + 2);
         setGround(x, y, GameGrounds::GRASS);
     }
 

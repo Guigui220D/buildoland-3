@@ -69,6 +69,18 @@ void GameState::init()
     ground_textures = &getGame()->getResourceManager().getTexture("GROUND_TEXTURES");
     ground_details_textures = &getGame()->getResourceManager().getTexture("GROUND_DETAILS");
 
+    block_pointer.setSize(sf::Vector2f(1.f, 1.f));
+    block_pointer.setOrigin(sf::Vector2f(.5f, .5f));
+    block_pointer.setTexture(&getGame()->getResourceManager().getTexture("BLOCK_POINTER"));
+
+    block_pointer_icon.setSize(sf::Vector2f(1.f, 1.f));
+    block_pointer_icon.setOrigin(sf::Vector2f(.5f, .5f));
+    block_pointer_icon.setTexture(&getGame()->getResourceManager().getTexture("BLOCK_POINTER_B"));
+
+    block_pointer_side.setSize(sf::Vector2f(1.f, .5f));
+    block_pointer_side.setOrigin(sf::Vector2f(.5f, 0));
+    block_pointer_side.setTexture(&getGame()->getResourceManager().getTexture("BLOCK_POINTER"));
+
     my_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
 
     test_next_chunk_pos_turn = sf::Vector2i(0, -1);
@@ -119,6 +131,27 @@ bool GameState::handleEvent(sf::Event& event)
         updateView();
         break;
 
+    case sf::Event::MouseButtonReleased:
+        if (event.mouseButton.button == sf::Mouse::Left)
+        {
+            sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+            world_pos += sf::Vector2f(.5f, .5f);
+            sf::Vector2i i_world_pos(world_pos.x, world_pos.y);
+            if (world_pos.x < 0.f)
+                i_world_pos.x--;
+            if (world_pos.y < 0.f)
+                i_world_pos.y--;
+            std::cout << "Left click at " << i_world_pos.x << ", " << i_world_pos.y << std::endl;
+        }
+        /*
+        if (event.mouseButton.button == sf::Mouse::Right)
+        {
+            std::cout << "Right click" << std::endl;
+
+        }
+        */
+        break;
+
     default:
         break;
     }
@@ -128,6 +161,8 @@ bool GameState::handleEvent(sf::Event& event)
 void GameState::update(float delta_time)
 {
     //TEMPORARY
+    my_view.setCenter(Player::this_player->getPosition());
+    /*
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
         my_view.setCenter(my_view.getCenter() + sf::Vector2f(-5.f * delta_time, 0));
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
@@ -136,6 +171,7 @@ void GameState::update(float delta_time)
         my_view.setCenter(my_view.getCenter() + sf::Vector2f(0, 5.f * delta_time));
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
         my_view.setCenter(my_view.getCenter() + sf::Vector2f(0, -5.f * delta_time));
+        */
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
@@ -146,6 +182,40 @@ void GameState::update(float delta_time)
     test_world.updateLoadedChunk();
 
     entities.updateAll(delta_time);
+
+    {
+        sf::Window& window = getGame()->getWindow();
+
+        sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Mouse::getPosition(window), my_view);
+        world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
+
+        sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+
+        bp_volume = test_world.getBlock(world_pos_i)->hasVolume(BlockInfo(&test_world, world_pos_i));
+
+        block_pointer.setPosition(world_pos);
+        block_pointer_icon.setPosition(world_pos);
+
+        if (bp_volume)
+        {
+            block_pointer.move(sf::Vector2f(0, -.5f));
+            block_pointer_icon.move(sf::Vector2f(0, -.5f));
+            block_pointer_side.setPosition(world_pos);
+        }
+    }
+
+    block_pointer_icon.rotate(delta_time * 100.f);
+
+
+    /*
+    world_pos += sf::Vector2f(.5f, .5f);
+    sf::Vector2i i_world_pos(world_pos.x, world_pos.y);
+    if (world_pos.x < 0.f)
+        i_world_pos.x--;
+    if (world_pos.y < 0.f)
+        i_world_pos.y--;
+    std::cout << "Left click at " << i_world_pos.x << ", " << i_world_pos.y << std::endl;
+    */
 }
 
 void GameState::draw(sf::RenderTarget& target) const
@@ -161,10 +231,23 @@ void GameState::draw(sf::RenderTarget& target) const
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
+    if (!bp_volume)
+    {
+        target.draw(block_pointer);
+        target.draw(block_pointer_icon);
+    }
+
     entities.drawAll(target);
 
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+
+    if (bp_volume)
+    {
+        target.draw(block_pointer);
+        target.draw(block_pointer_icon);
+        target.draw(block_pointer_side);
+    }
 }
 
 void GameState::updateView()

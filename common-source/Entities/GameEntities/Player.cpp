@@ -20,11 +20,13 @@
 
 #ifdef CLIENT_SIDE
 unsigned int Player::this_player_id = 0;
+Player* Player::this_player = nullptr;
 
 Player::Player(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
-    std::cout << "PLAYER : " << id << std::endl;
+    if (Player::this_player_id == id)
+        Player::this_player = this;
 
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, .8f));

@@ -15,6 +15,7 @@ class Player : public LivingEntity
     public:
         #ifdef CLIENT_SIDE
         static unsigned int this_player_id;
+        static Player* this_player;
         #endif // CLIENT_SIDE
 
         inline unsigned short getEntityCode() const { return Entities::Player; };

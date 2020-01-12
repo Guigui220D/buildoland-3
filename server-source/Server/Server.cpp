@@ -72,7 +72,7 @@ bool Server::init(uint16_t port)
     for (int i = 0; i < 10; i++)
         world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
-    world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
+    //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }
 
@@ -159,7 +159,7 @@ void Server::receiver()
                     #endif // SOLO
                     break;
                 case Networking::CtoS::RequestConnection:
-                    /*
+
                     std::clog << "Connection requested" << std::endl;
 
                     if (!connection_open)
@@ -168,17 +168,22 @@ void Server::receiver()
                         break;
 
                     std::clog << "Connection accepted" << std::endl;
-
                     {
+                        unsigned int player_id = world.getEntityManager().getNextEntityId();
+
+
+                        clients_manager.addClient(iandp, nullptr);
+                        Player* new_player = new Player(&world, player_id, clients_manager.getClient(iandp));
+                        clients_manager.getClient(iandp).setPlayer(new_player);
+
                         sf::Packet handshake;
                         handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+                        handshake << player_id;
+
                         server_socket.send(handshake, address, port);
+
+                        world.getEntityManager().newEntity(new_player);
                     }
-
-                    //TODO
-                    //Add client and player
-                    */
-
                     break;
                 case Networking::CtoS::RequestChunk:
                     {

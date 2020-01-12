@@ -55,14 +55,17 @@ void Player::update(float delta)
     {
         sf::Vector2f dir;
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+        if (getWorld()->getGame()->getWindow().hasFocus())
+        {
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
             dir += sf::Vector2f(0, -1.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
-            dir += sf::Vector2f(-1.f, 0);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
-            dir += sf::Vector2f(0, 1.f);
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
-            dir += sf::Vector2f(1.f, 0);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+                dir += sf::Vector2f(-1.f, 0);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+                dir += sf::Vector2f(0, 1.f);
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+                dir += sf::Vector2f(1.f, 0);
+        }
 
         if (dir != last_walking_direction)
         {

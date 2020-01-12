@@ -73,7 +73,7 @@ void GameState::init()
 
     test_next_chunk_pos_turn = sf::Vector2i(0, -1);
     //Bind to any port
-    if (client_socket.bind(/*sf::Socket::AnyPort*/50000) != sf::Socket::Done)
+    if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
     {
         std::cerr << "Could not bind client to any port!" << std::endl;
         must_be_destroyed = true;

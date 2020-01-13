@@ -18,6 +18,8 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
+#define YEET break;
+
 //TEMPORARY
 #include <windows.h>
 
@@ -396,7 +398,10 @@ void GameState::receiverLoop()
         {
         case sf::Socket::Done:
             //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-            //TODO : check origin of packet
+
+            if (address != remote_ip || port != remote_port)
+                YEET
+
             if (packet.getDataSize() >= 2)
             {
                 unsigned short code; packet >> code;
@@ -487,3 +492,5 @@ void GameState::receiverLoop()
         }
     }
 }
+
+#undef YEET

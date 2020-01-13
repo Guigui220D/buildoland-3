@@ -175,7 +175,8 @@ bool GameState::handleEvent(sf::Event& event)
 
 void GameState::update(float delta_time)
 {
-    my_view.setCenter(Player::this_player->getPosition());
+    if (Player::this_player)
+        my_view.setCenter(Player::this_player->getPosition());
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {

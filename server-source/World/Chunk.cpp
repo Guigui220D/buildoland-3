@@ -89,12 +89,7 @@ void Chunk::setBlock(int x, int y, uint16_t id)
     blocks.set(x, y, id);
     packet_ready = false;
 
-    sf::Packet block_set;
-    block_set << (unsigned short)Networking::StoC::BlockUpdate;
-    block_set << x << y;
-    block_set << id;
 
-    world->sendToSubscribers(block_set, pos);
 }
 
 void Chunk::setGround(int x, int y, uint16_t id)

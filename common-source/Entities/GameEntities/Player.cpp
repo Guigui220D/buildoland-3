@@ -167,6 +167,8 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
+            //std::cout << "Place block at " << pos.x << "; " << pos.y << std::endl;
+
             getWorld()->setBlock(pos, id);
         }
         break;

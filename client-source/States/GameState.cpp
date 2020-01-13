@@ -436,6 +436,8 @@ void GameState::receiverLoop()
                         {
                             test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), id);
                         }
+
+                        //std::cout << "Block update at " << pos.y << "; " << pos.y << " | New ID is " << id << std::endl;
                     }
                     break;
 

@@ -141,9 +141,9 @@ class World
             sf::Vector2i result(block_pos.x % Chunk::CHUNK_SIZE, block_pos.y % Chunk::CHUNK_SIZE);
 
             if (result.x < 0)
-                result.x = Chunk::CHUNK_SIZE + result.x;
+                result.x += Chunk::CHUNK_SIZE;
             if (result.y < 0)
-                result.y = Chunk::CHUNK_SIZE + result.y;
+                result.y += Chunk::CHUNK_SIZE;
 
             assert(result.x >= 0);
             assert(result.y >= 0);

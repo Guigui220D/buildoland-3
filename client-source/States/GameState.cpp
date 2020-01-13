@@ -341,26 +341,24 @@ bool GameState::handshakeRemoteServer()
             std::cerr << "Received packet from wrong address." << std::endl;
         }
         else
-            break;
-    }
+        {
+            if (!known_port)
+                remote_port = port;
 
-    if (!known_port)
-        remote_port = port;
+            if (packet.getDataSize() == 15)
+            {
+                unsigned short code = 0; packet >> code;
 
-    if (packet.getDataSize() != 15)
-    {
-        std::cerr << "Received wrong handshake packet! Expected 11 bytes, got " << packet.getDataSize() << '.' << std::endl;
-        must_be_destroyed = true;
-        return false;
-    }
-
-    unsigned short code = 0; packet >> code;
-
-    if (code != Networking::StoC::FinalHandshake)
-    {
-        std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << " but got " << code << std::endl;
-        must_be_destroyed = true;
-        return false;
+                if (code != Networking::StoC::FinalHandshake)
+                {
+                    std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << " but got " << code << std::endl;
+                }
+                else
+                    break;
+            }
+            else
+                std::cerr << "Received wrong handshake packet! Expected 11 bytes, got " << packet.getDataSize() << '.' << std::endl;
+        }
     }
 
     char vers[6]; packet >> vers;

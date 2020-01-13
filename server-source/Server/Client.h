@@ -32,7 +32,7 @@ struct IpAndPort
         return (address.toInteger() < other.address.toInteger()) ?
             true :
             address.toInteger() == other.address.toInteger() ?
-                return port < other.port :
+                port < other.port :
                 false;
     }
 };

@@ -53,6 +53,7 @@ bool Server::init(uint16_t port)
         connection_open = true;
     #endif // SOLO
 
+    running = true;
     receiver_thread.launch();
 
     #ifdef SOLO
@@ -69,7 +70,7 @@ bool Server::init(uint16_t port)
         world.getEntityManager().newEntity(owner_player);
     #endif // SOLO
 
-    for (int i = 0; i < 1; i++)
+    for (int i = 0; i < 10; i++)
         world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
@@ -80,8 +81,6 @@ void Server::run()
 {
     server_clock.restart();
     float delta;
-
-    running = true;
 
     while (running)
     {
@@ -126,8 +125,11 @@ void Server::close()
 
 void Server::receiver()
 {
+    //std::cout << "A" << std::endl;
     while (running)
     {
+        //std::cout << "A" << std::endl;
+
         sf::Packet packet;
         sf::IpAddress address;
         uint16_t port;
@@ -137,7 +139,6 @@ void Server::receiver()
         {
         case sf::Socket::Done:
             //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-
             if (packet.getDataSize() >= 2)
             {
                 IpAndPort iandp(address, port);
@@ -190,7 +191,6 @@ void Server::receiver()
                     {
                         unsigned int player_id = world.getEntityManager().getNextEntityId();
 
-
                         clients_manager.addClient(iandp, nullptr);
                         Player* new_player = new Player(&world, player_id, clients_manager.getClient(iandp));
                         clients_manager.getClient(iandp).setPlayer(new_player);
@@ -203,6 +203,7 @@ void Server::receiver()
 
                         world.getEntityManager().newEntity(new_player);
                     }
+                    std::clog << "New player added!" << std::endl;
                     break;
                 case Networking::CtoS::RequestChunk:
                     {

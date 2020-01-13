@@ -17,10 +17,11 @@ bool ClientsManager::addClient(IpAndPort& client, Player* player)
 {
     sf::Lock l(clients_mutex);
 
-    if (clients.find(client) != clients.cend())
+    if (clients.find(client) != clients.end())
         return false;
 
     clients.emplace(std::pair<IpAndPort, std::unique_ptr<Client>>(client, std::make_unique<Client>(server, client, player)));
+
     return true;
 }
 
@@ -44,7 +45,7 @@ Client& ClientsManager::getClient(IpAndPort& client) const
 
     auto i = clients.find(client);
 
-    if (i == clients.cend())
+    if (i == clients.end())
         throw new std::logic_error("getClient: client doesn't exist.");
 
     return *i->second;
@@ -54,7 +55,7 @@ void ClientsManager::updateClientTimer(IpAndPort& client)
 {
     sf::Lock l(clients_mutex);
 
-    if (clients.find(client) == clients.cend())
+    if (clients.find(client) == clients.end())
         return;
 
     getClient(client).last_packet_received.restart();

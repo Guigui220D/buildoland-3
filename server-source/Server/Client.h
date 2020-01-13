@@ -24,17 +24,16 @@ struct IpAndPort
 
     inline bool operator==(const IpAndPort& other) const
     {
-        return ((port == other.port) && (address == other.address));
+        return ((port == other.port) && (address.toInteger() == other.address.toInteger()));
     }
 
     inline bool operator<(const IpAndPort& other) const
     {
-        if (port < other.port)
-        {
-            return true;
-        }
-        else
-            return address.toInteger() < other.address.toInteger();
+        return (address.toInteger() < other.address.toInteger()) ?
+            true :
+            address.toInteger() == other.address.toInteger() ?
+                return port < other.port :
+                false;
     }
 };
 

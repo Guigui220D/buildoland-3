@@ -11,6 +11,9 @@
 //NOT FINISHED YET
 class SettingsManager
 {
+    public:
+        //So sooooooo temporary, eww
+        std::string server_address;
     private:
         friend class Game;
 
@@ -23,6 +26,7 @@ class SettingsManager
         void loadDefaultValues();
         void save();
 
+        //TEMPORARY
         struct
         {
             int type;   //Sf::style
@@ -39,6 +43,8 @@ class SettingsManager
             unsigned int sound_volume;
             unsigned int music_volume;
         } audio_settings;
+
+
 
         nlohmann::json json;
 };

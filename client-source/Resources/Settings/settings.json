@@ -11,5 +11,8 @@
 		"music_enabled": true,
 		"sound_volume": 100,
 		"music_volume": 100
+	},
+	"online": {
+		"address": "localhost"
 	}
 }

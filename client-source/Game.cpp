@@ -9,7 +9,7 @@ Game::Game() :
     audio_manager(resource_manager)
 {
     //TODO WHEN SETTINGS MANAGER WORKS
-    //settings_manager.load();
+    settings_manager.load();
     //auto& ws = settings_manager.window_settings;
     //auto& as = settings_manager.window_settings;
 

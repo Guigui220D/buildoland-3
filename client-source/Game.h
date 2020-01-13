@@ -75,6 +75,12 @@ class Game
          * @return A reference to the audio manager
          */
         inline AudioManager& getAudioManager() { return audio_manager; }
+        /**
+         * Gets a reference to the settings manager
+         * @return A reference to the settings manager
+         */
+        inline SettingsManager& getSettingsManager() { return settings_manager; }
+
 
     private:
         friend class TitleScreenState;

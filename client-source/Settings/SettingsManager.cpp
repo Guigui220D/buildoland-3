@@ -1,8 +1,9 @@
 #include "SettingsManager.h"
 
 #include <fstream>
+#include <iostream>
 
-const std::string SettingsManager::SETTINGS_FILE_PATH = "Settings/settings.json";
+const std::string SettingsManager::SETTINGS_FILE_PATH = "Resources/Settings/settings.json";
 
 SettingsManager::SettingsManager()
 {
@@ -68,6 +69,24 @@ void SettingsManager::load()
         if (music_volume != end)
             audio_settings.music_volume = music_volume->get<int>();
     }
+
+    {   //Online settings
+        auto online = json["online"];
+        auto end = online.end();
+
+        auto address = online.find("address");
+
+        if (address != end)
+        {
+            server_address = address->get<std::string>();
+            std::clog << "Settings : Got server address \"" << server_address << "\"." << std::endl;
+        }
+        else
+        {
+            server_address = "localhost";
+            std::cerr << "Settings : Could not read server address, using \"localhost\"." << std::endl;
+        }
+    }
 }
 
 void SettingsManager::loadDefaultValues()
@@ -87,6 +106,9 @@ void SettingsManager::loadDefaultValues()
     "\t\t\"music_enabled\": true,\n"
     "\t\t\"sound_volume\": 100,\n"
     "\t\t\"music_volume\": 100\n"
+    "\t},\n"
+    "\t\"online\": {\n"
+    "\t\t\"address\": \"localhost\"\n"
     "\t}\n"
     "}\n"_json;
 }

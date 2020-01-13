@@ -92,6 +92,12 @@ void Server::run()
 
         delta = server_clock.restart().asSeconds();
 
+        if (timeout_checks.getElapsedTime().asSeconds() >= 5.f)
+        {
+            timeout_checks.restart();
+            clients_manager.doTimeOuts(10.f);
+        }
+
         //Answer chunk requests
         clients_manager.clients_mutex.lock();
         for (auto i = clients_manager.getClientsBegin(); i != clients_manager.getClientsEnd(); i++)
@@ -142,6 +148,8 @@ void Server::receiver()
             if (packet.getDataSize() >= 2)
             {
                 IpAndPort iandp(address, port);
+
+                clients_manager.updateClientTimer(iandp);
 
                 unsigned short code; packet >> code;
 
@@ -248,8 +256,11 @@ void Server::receiver()
                 std::cerr << "Packet is too small to be read" << std::endl;
             break;
 
+        case sf::Socket::Disconnected: break;
+
         default:
             std::cerr << "Packet has status " << utils::statusToString(status) << std::endl;
+            //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
             break;
         }
     }

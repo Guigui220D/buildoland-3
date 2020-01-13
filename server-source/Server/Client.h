@@ -65,6 +65,8 @@ class Client
             return ip_and_port == other.ip_and_port;
         }
 
+        sf::Clock last_packet_received;
+
     protected:
         IpAndPort ip_and_port;
 

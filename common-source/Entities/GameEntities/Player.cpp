@@ -12,6 +12,7 @@
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
+    #include "../../../server-source/Block/GameBlocks.h"
     #include <cstdio>
 #endif
 
@@ -169,7 +170,8 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
 
             //std::cout << "Place block at " << pos.x << "; " << pos.y << std::endl;
 
-            getWorld()->setBlock(pos, id);
+            if (getWorld()->getBlock(pos) == GameBlocks::AIR)
+                getWorld()->setBlock(pos, id);
         }
         break;
 

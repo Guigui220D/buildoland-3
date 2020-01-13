@@ -19,6 +19,10 @@ class ClientsManager
         void removeClient(IpAndPort& client);
         Client& getClient(IpAndPort& client) const;
 
+        void updateClientTimer(IpAndPort& client);
+
+        int doTimeOuts(float timeout_s);
+
         void sendToAll(sf::Packet& packet);
 
         mutable sf::Mutex clients_mutex;

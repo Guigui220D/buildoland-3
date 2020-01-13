@@ -29,12 +29,15 @@ class Server
 
         inline ClientsManager& getClientsManager() { return clients_manager; }
 
+        inline World& getWorld() { return world; }
+
     private:
         sf::UdpSocket server_socket;
 
         ClientsManager clients_manager;
 
         sf::Clock server_clock;
+        sf::Clock timeout_checks;
 
         void receiver();
         sf::Thread receiver_thread;

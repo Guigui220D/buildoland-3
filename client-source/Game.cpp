@@ -9,7 +9,7 @@ Game::Game() :
     audio_manager(resource_manager)
 {
     //TODO WHEN SETTINGS MANAGER WORKS
-    settings_manager.load();
+
     //auto& ws = settings_manager.window_settings;
     //auto& as = settings_manager.window_settings;
 
@@ -30,6 +30,7 @@ Game::~Game()
 int Game::init()
 {
     addStateOnTop(new TitleScreenState(this, 0));
+    settings_manager.load();
     return 0;
 }
 

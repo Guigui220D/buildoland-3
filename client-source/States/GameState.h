@@ -36,6 +36,7 @@ class GameState : public State
         sf::UdpSocket client_socket;
         sf::IpAddress remote_ip;
         uint16_t remote_port;
+        sf::Clock heartbeat_clock;
 
         sf::Thread receiver_thread;
         void receiverLoop();

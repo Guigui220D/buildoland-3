@@ -13,6 +13,7 @@
 class Server
 {
     friend class Client;
+    friend class ClientsManager;
 
     public:
         Server(uint16_t client_port);   //Leave client port to 0 if this is a multiplayer server, i just don't want to have ifdef's everywhere
@@ -43,6 +44,7 @@ class Server
         sf::Thread receiver_thread;
 
         std::atomic<bool> running;
+        void passReceiveOnce(); //Comment inside definition
 
         IpAndPort owner;
 

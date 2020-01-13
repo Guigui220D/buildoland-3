@@ -6,7 +6,8 @@ namespace Networking
     {
         enum : unsigned short
         {
-            Disconnect = 1,
+            KeepAlive = 0,
+            Disconnect,
             RequestConnection,
 			RequestChunk,
 			RequestEntityInfo,

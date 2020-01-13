@@ -210,16 +210,12 @@ void GameState::update(float delta_time)
 
     block_pointer_icon.rotate(delta_time * 100.f);
 
-
-    /*
-    world_pos += sf::Vector2f(.5f, .5f);
-    sf::Vector2i i_world_pos(world_pos.x, world_pos.y);
-    if (world_pos.x < 0.f)
-        i_world_pos.x--;
-    if (world_pos.y < 0.f)
-        i_world_pos.y--;
-    std::cout << "Left click at " << i_world_pos.x << ", " << i_world_pos.y << std::endl;
-    */
+    if (connected && heartbeat_clock.getElapsedTime().asSeconds() >= 5.f)
+    {
+        heartbeat_clock.restart();
+        sf::Packet heartbeat; heartbeat << Networking::CtoS::KeepAlive;
+        sendToServer(heartbeat);
+    }
 }
 
 void GameState::draw(sf::RenderTarget& target) const
@@ -285,7 +281,7 @@ bool GameState::startAndConnectLocalServer()
             strs << " hide";
         strs.flush();
         std::cout << "Starting server with command " << strs.str() << std::endl;
-        int code = /*system(strs.str().c_str())*/0;
+        int code = system(strs.str().c_str());
         if (code)
         {
             std::cerr << "Could not start server!" << std::endl;

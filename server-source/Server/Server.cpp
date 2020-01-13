@@ -69,7 +69,7 @@ bool Server::init(uint16_t port)
         world.getEntityManager().newEntity(owner_player);
     #endif // SOLO
 
-    for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 1; i++)
         world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
 
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
@@ -82,9 +82,6 @@ void Server::run()
     float delta;
 
     running = true;
-
-    sf::Clock test;
-    int test_step = 0;
 
     while (running)
     {
@@ -129,12 +126,8 @@ void Server::close()
 
 void Server::receiver()
 {
-    bool stop = false;
-    while (true)
+    while (running)
     {
-        if (stop)
-            break;
-
         sf::Packet packet;
         sf::IpAddress address;
         uint16_t port;
@@ -155,12 +148,13 @@ void Server::receiver()
 
                 switch (code)
                 {
+                case Networking::CtoS::KeepAlive: break;
+
                 case Networking::CtoS::Disconnect:
                     #ifdef SOLO
                         if (address == owner.address && port == owner.port)
                         {
                             std::cout << "Received disconnect message from owner, server will stop." << std::endl;
-                            stop = true;
                             running = false;
                             break;
                         }
@@ -247,6 +241,7 @@ void Server::receiver()
                         client.getPlayer()->takePlayerActionPacket(packet);
                     }
                     break;
+
                 default:
                     std::cerr << "Packet has unknown code" << std::endl;
                     break;
@@ -264,4 +259,13 @@ void Server::receiver()
             break;
         }
     }
+}
+
+void Server::passReceiveOnce()
+{
+    //When we stop the server from outside the receiver, the receive function is blocking so it will wait for something to happen and block
+    //To avoid that we send a packet to ourselves to pass the receive once, enough for the while loop of the thread to stop
+    sf::Packet p; p << (unsigned short)Networking::CtoS::KeepAlive;
+
+    server_socket.send(p, sf::IpAddress::LocalHost, server_socket.getLocalPort());
 }

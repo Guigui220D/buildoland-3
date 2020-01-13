@@ -62,12 +62,22 @@ void ClientsManager::updateClientTimer(IpAndPort& client)
 
 int ClientsManager::doTimeOuts(float timeout_s)
 {
+    int yeet_count = 0;
+
     sf::Lock l(clients_mutex);
 
     for (auto i = clients.begin(); i != clients.end(); )
     {
         if (i->second->last_packet_received.getElapsedTime().asSeconds() > timeout_s)
         {
+            #ifdef SOLO
+            if (i->first == server->owner)
+            {
+                server->running = false;
+                server->passReceiveOnce();
+                break;
+            }
+            #endif // SOLO
             std::cout << "Disconnecting client " << i->first.address << ':' << i->first.port << " (timeout)." << std::endl;
 
             Client& client = *(i->second);
@@ -79,12 +89,15 @@ int ClientsManager::doTimeOuts(float timeout_s)
             }
 
             i = clients.erase(i);
+            yeet_count++;
 
             std::cout << "Client disconnected." << std::endl;
         }
         else
             i++;
     }
+
+    return yeet_count;
 }
 
 void ClientsManager::sendToAll(sf::Packet& packet)

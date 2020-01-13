@@ -16,7 +16,7 @@ class World;
 class Entity
 {
     public:
-        virtual inline unsigned short getEntityCode() const = 0;
+        virtual inline unsigned short getEntityCode() const { return Entities::None; };
 
         Entity(World* world, unsigned int id);
         virtual ~Entity();

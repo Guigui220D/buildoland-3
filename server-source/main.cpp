@@ -52,31 +52,35 @@ int main(int argc, char** argv)
 
     #endif // SOLO
 
-    Server server(client_port);
+    {   //Scope to for
+        Server server(client_port);
 
-    //In local/solo mode, the port is 0 which means the os gets to choose the port
-    //In multiplayer mode, we prefer chosing a port
-    #ifndef SOLO
-    server_port = 58888;
-    #endif // SOLO
+        //In local/solo mode, the port is 0 which means the os gets to choose the port
+        //In multiplayer mode, we prefer chosing a port
+        #ifndef SOLO
+        server_port = 58888;
+        #endif // SOLO
 
-    if (!server.init(server_port))
-    {
-        std::cerr << "Fatal : Could not start server." << std::endl;
-        return 1;
+        if (!server.init(server_port))
+        {
+            std::cerr << "Fatal : Could not start server." << std::endl;
+            return 1;
+        }
+
+        if (hide)
+        {
+            //TODO : Other platforms
+            HWND hWnd = GetConsoleWindow();
+            ShowWindow(hWnd, SW_MINIMIZE);
+            ShowWindow(hWnd, SW_HIDE);
+        }
+
+        std::cout << "\nServer started!\n" << std::endl;
+
+        server.run();
+
+        std::cout << "\nEnding server" << std::endl;
     }
-
-    if (hide)
-    {
-        //TODO : Other platforms
-        HWND hWnd = GetConsoleWindow();
-        ShowWindow(hWnd, SW_MINIMIZE);
-        ShowWindow(hWnd, SW_HIDE);
-    }
-
-    std::cout << "\nServer started!\n" << std::endl;
-
-    server.run();
 
     std::cout << "Server ended." << std::endl;
 

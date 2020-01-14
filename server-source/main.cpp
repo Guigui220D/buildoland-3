@@ -80,6 +80,8 @@ int main(int argc, char** argv)
         server.run();
 
         std::cout << "\nEnding server" << std::endl;
+
+        server.close();
     }
 
     std::cout << "Server ended." << std::endl;

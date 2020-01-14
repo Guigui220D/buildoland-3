@@ -493,7 +493,7 @@ void GameState::receiverLoop()
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
             break;
         case sf::Socket::Disconnected:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping (but not actually lol)." << std::endl;
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
             must_be_destroyed = true;
             break;
         case sf::Socket::Error:

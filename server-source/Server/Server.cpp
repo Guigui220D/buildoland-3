@@ -120,6 +120,9 @@ void Server::close()
 {
     receiver_thread.wait();
 
+    sf::Packet server_stopping; server_stopping << (unsigned short)Networking::StoC::Disconnect;
+    clients_manager.sendToAll(server_stopping);
+
     server_socket.unbind();
 }
 

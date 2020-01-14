@@ -13,7 +13,8 @@ namespace Networking
             SendChunk,
             EntityAction,
             BlockUpdate,
-            GroundUpdate
+            GroundUpdate,
+            PlayerRectification
         };
     }
 }

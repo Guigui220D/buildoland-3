@@ -463,6 +463,21 @@ void GameState::receiverLoop()
                     }
                     break;
 
+                case Networking::StoC::PlayerRectification:
+                    {
+                        sf::Vector2f pos;
+                        packet >> pos.x >> pos.y;
+
+                        if (!packet)
+                            break;
+
+                        if (!Player::this_player)
+                            break;
+
+                        Player::this_player->setPosition(pos);
+                    }
+                    break;
+
                 default:
                     std::cerr << "Unknown packet code" << std::endl;
                     break;

@@ -288,6 +288,7 @@ bool GameState::startAndConnectLocalServer()
         if (code)
         {
             std::cerr << "Could not start server!" << std::endl;
+            getGame()->addStateOnTop(new ErrorState(getGame(), "Could not start local server.", 0));
             must_be_destroyed = true;
             return false;
         }

@@ -81,6 +81,8 @@ class Game
          */
         inline SettingsManager& getSettingsManager() { return settings_manager; }
 
+        inline void useDefaultView() { window.setView(default_view); }
+
 
     private:
         friend class TitleScreenState;

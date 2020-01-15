@@ -18,6 +18,8 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
+#include "ErrorScreen.h"
+
 #define YEET break;
 
 //TEMPORARY
@@ -332,6 +334,7 @@ bool GameState::handshakeRemoteServer()
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
                 std::cerr << "Time out while waiting for server handshake" << std::endl;
+                getGame()->addStateOnTop(new ErrorState(getGame(), "Timeout while waiting for server handshake.", 0));
                 must_be_destroyed = true;
                 return false;
             }
@@ -368,6 +371,7 @@ bool GameState::handshakeRemoteServer()
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
     {
         std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
+        getGame()->addStateOnTop(new ErrorState(getGame(), "Server has wrong version!", 0));
         must_be_destroyed = true;
         return false;
     }
@@ -405,6 +409,7 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::clog << "Received disconnect code from server." << std::endl;
+                    getGame()->addStateOnTop(new ErrorState(getGame(), "Disconnected from server.", 0));
                     must_be_destroyed = true;
                     break;
 
@@ -494,6 +499,7 @@ void GameState::receiverLoop()
             break;
         case sf::Socket::Disconnected:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
+            getGame()->addStateOnTop(new ErrorState(getGame(), "Server socket unreachable.", 0));
             must_be_destroyed = true;
             break;
         case sf::Socket::Error:

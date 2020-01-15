@@ -7,8 +7,11 @@
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 
+#include "Generators/EmptyGenerator.h"
+
 World::World(Server* server) :
     entities(server),
+    generator(new EmptyGenerator()),
     server(server),
     game_blocks_manager(server->getBlocksManager()),
     game_grounds_manager(server->getGroundsManager())
@@ -19,6 +22,7 @@ World::World(Server* server) :
 
 World::World(Server* server, int seed) :
     entities(server),
+    generator(new EmptyGenerator()),
     server(server),
     game_blocks_manager(server->getBlocksManager()),
     game_grounds_manager(server->getGroundsManager()),

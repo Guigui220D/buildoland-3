@@ -24,17 +24,9 @@ Chunk::Chunk(World* world, sf::Vector2i pos) :
     packet(new sf::Packet()),
     packet_ready(false)
 {
-    for (int x = 0; x < CHUNK_SIZE; x++)
-    for (int y = 0; y < CHUNK_SIZE; y++)
-    {
-        if (x % 2 && y % 2)
-            setBlock(x, y, std::rand() % 4 + 2);
-        setGround(x, y, GameGrounds::GRASS);
-    }
+    world->getGenerator()->generateChunk(this);
 
-    setBlock(0, CHUNK_SIZE - 1, GameBlocks::IRON);
-    setBlock(CHUNK_SIZE - 1, 0, GameBlocks::IRON);
-    setBlock(CHUNK_SIZE - 1, CHUNK_SIZE - 1, GameBlocks::GOLD);
+    ready = true;
 }
 
 Chunk::~Chunk()
@@ -88,8 +80,6 @@ void Chunk::setBlock(int x, int y, uint16_t id)
     assert(y < CHUNK_SIZE);
     blocks.set(x, y, id);
     packet_ready = false;
-
-
 }
 
 void Chunk::setGround(int x, int y, uint16_t id)
@@ -100,13 +90,6 @@ void Chunk::setGround(int x, int y, uint16_t id)
     assert(y < CHUNK_SIZE);
     grounds.set(x, y, id);
     packet_ready = false;
-
-    sf::Packet ground_set;
-    ground_set << (unsigned short)Networking::StoC::GroundUpdate;
-    ground_set << x << y;
-    ground_set << id;
-
-    world->sendToSubscribers(ground_set, pos);
 }
 
 void Chunk::setBlock(int x, int y, const Block* block)

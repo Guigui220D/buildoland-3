@@ -5,6 +5,8 @@
 #include "../Utils/Utils.h"
 #include "EntitiesManager.h"
 
+#include "Generator.h"
+
 #include <map>
 #include <memory>
 
@@ -164,6 +166,8 @@ class World
          */
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
+        inline Generator* getGenerator() const { return generator; };
+
         inline size_t getChunksCount() const { return chunks.size(); };
         inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksBegin() const { return chunks.cbegin(); }
@@ -173,6 +177,8 @@ class World
     protected:
         //Entities
         EntitiesManager entities;
+
+        Generator* generator;
 
     private:
         Server* server;

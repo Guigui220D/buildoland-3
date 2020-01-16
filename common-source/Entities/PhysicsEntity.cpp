@@ -6,7 +6,7 @@
     #include "../../server-source/World/World.h"
 #endif // CLIENT_SIDE
 
-#include "../Block/Block.h"
+#include "../Blocks/Block.h"
 
 PhysicsEntity::PhysicsEntity(World* world, unsigned int id, sf::Vector2f hitbox_size) :
     Entity(world, id),

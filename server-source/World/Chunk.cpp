@@ -2,8 +2,8 @@
 
 #include "../Server/Server.h"
 
-#include "../../common-source/Ground/Ground.h"
-#include "../../common-source/Block/Block.h"
+#include "../../common-source/Grounds/Ground.h"
+#include "../../common-source/Blocks/Block.h"
 #include "World.h"
 
 #include <assert.h>

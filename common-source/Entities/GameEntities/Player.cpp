@@ -15,7 +15,7 @@
     #include <cstdio>
 #endif
 
-#include "../../Block/GameBlocks.h"
+#include "../../Blocks/GameBlocks.h"
 
 #include "../../../common-source/Constants.h"
 #include "../../Networking/CtoS_PlayerActionCodes.h"

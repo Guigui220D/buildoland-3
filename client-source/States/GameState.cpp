@@ -130,8 +130,6 @@ bool GameState::handleEvent(sf::Event& event)
         break;
 
     case sf::Event::MouseWheelScrolled:
-        zoom += event.mouseWheelScroll.delta;
-        updateView();
         break;
 
     case sf::Event::MouseButtonReleased:
@@ -167,6 +165,15 @@ bool GameState::handleEvent(sf::Event& event)
 
             sendToServer(place_packet);
         }
+        break;
+
+    case sf::Event::KeyPressed:
+        if (event.key.code == sf::Keyboard::A)
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+            {
+                getGame()->addStateOnTop(new ErrorState(getGame(), "State interrupted (for testing).", 0));
+                    must_be_destroyed = true;
+            }
         break;
 
     default:

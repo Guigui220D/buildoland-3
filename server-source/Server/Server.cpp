@@ -39,6 +39,7 @@ bool Server::init(uint16_t port)
 {
     blocks_manager.initBlocks();
     grounds_manager.initGrounds();
+    items_register.initItems(blocks_manager, grounds_manager);
     world.init();
 
     if (server_socket.bind(port) != sf::Socket::Done)

@@ -15,6 +15,7 @@
 
 class GameGrounds
 {
+    friend class ItemsRegister;
     public:
         GameGrounds();
         ~GameGrounds();

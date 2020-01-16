@@ -1,7 +1,7 @@
 #include "GroundGrass.h"
 
 GroundGrass::GroundGrass() :
-    Ground("grass", 3)
+    Ground("grass", true, 3)
 {
     //ctor
 }

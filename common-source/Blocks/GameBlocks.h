@@ -16,6 +16,7 @@
 
 class GameBlocks
 {
+    friend class ItemsRegister;
     public:
         GameBlocks();
         ~GameBlocks();

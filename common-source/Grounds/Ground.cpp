@@ -14,7 +14,8 @@ Ground::~Ground()
 }
 
 #ifndef CLIENT_SIDE
-Ground::Ground(const std::string name, uint32_t default_texture) :
+Ground::Ground(const std::string name, bool should_have_item, uint32_t default_texture) :
+    has_item(should_have_item),
     name(name)
 {
     //ctor
@@ -23,8 +24,9 @@ Ground::Ground(const std::string name, uint32_t default_texture) :
 const TilesetHelper<16, 16, 1> Ground::tilesetHelper;
 const TilesetHelper<16, 8, 1> Ground::tilesetHelperDetails;
 
-Ground::Ground(const std::string name, uint32_t default_texture) :
+Ground::Ground(const std::string name, bool should_have_item, uint32_t default_texture) :
     name(name),
+    has_item(should_have_item),
     default_texture(default_texture)
 {
     //ctor

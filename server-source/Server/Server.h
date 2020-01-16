@@ -6,6 +6,8 @@
 
 #include "../World/World.h"
 
+#include "../../common-source/Items/ItemsRegister.h"
+
 #include "ClientsManager.h"
 
 class Server
@@ -64,6 +66,7 @@ class Server
 
         GameBlocks blocks_manager;
         GameGrounds grounds_manager;
+        ItemsRegister items_register;
 
         //Theres only one world for the moment
         World world;

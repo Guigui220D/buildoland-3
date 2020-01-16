@@ -7,6 +7,9 @@
 #include <string>
 #include <assert.h>
 
+#include "../Blocks/GameBlocks.h"
+#include "../Grounds/GameGrounds.h"
+
 class ItemsRegister
 {
     public:
@@ -15,8 +18,10 @@ class ItemsRegister
 
         /**
          * Inits the item list (reinits if called again)
+         * @param blocks : The block manager, to import block items from
+         * @param grounds : The ground manager, to import block items from
          */
-        void initItems();
+        void initItems(GameBlocks& blocks, GameGrounds& grounds);
 
         /**
          * Gets a pointer to a item with its ID

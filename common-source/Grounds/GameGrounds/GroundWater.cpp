@@ -1,7 +1,7 @@
 #include "GroundWater.h"
 
 GroundWater::GroundWater() :
-    Ground("water", 2)
+    Ground("water", true, 2)
 {
     //ctor
 }

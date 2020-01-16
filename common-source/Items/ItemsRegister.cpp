@@ -3,6 +3,8 @@
 #include <limits>
 #include <iostream>
 
+#include "GameItems/GroundItem.h"
+
 /*
 Block const * const GameBlocks::AIR             = new BlockAir();
 Block const * const GameBlocks::ERROR           = new BlockError();
@@ -22,11 +24,16 @@ ItemsRegister::~ItemsRegister()
     //dtor
 }
 
-void ItemsRegister::initItems()
+void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
 {
     names.clear();
     items.clear();
     //Add all items here
+    for (Ground const * ground : grounds.grounds)
+    {
+        if (ground->hasItem())
+            addItem(new GroundItem(ground));
+    }
     /*
     addBlock(AIR);
     addBlock(ERROR);

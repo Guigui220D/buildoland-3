@@ -1,11 +1,9 @@
 #include "Generator.h"
 
-Generator::Generator()
-{
-    //ctor
-}
+Generator::Generator(int seed) :
+    seed(seed)
+{}
 
-Generator::~Generator()
-{
-    //dtor
-}
+Generator::~Generator() {}
+
+void Generator::init() {}

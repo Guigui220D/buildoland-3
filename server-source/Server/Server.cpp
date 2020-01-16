@@ -21,6 +21,8 @@ Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
     owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
+    blocks_manager(),
+    grounds_manager(),
     world(this)
 {
     #ifndef SOLO
@@ -37,6 +39,7 @@ bool Server::init(uint16_t port)
 {
     blocks_manager.initBlocks();
     grounds_manager.initGrounds();
+    world.init();
 
     if (server_socket.bind(port) != sf::Socket::Done)
     {

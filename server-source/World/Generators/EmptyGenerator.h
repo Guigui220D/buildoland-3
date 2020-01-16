@@ -5,7 +5,7 @@
 class EmptyGenerator : public Generator
 {
     public:
-        EmptyGenerator();
+        EmptyGenerator(int seed);
         ~EmptyGenerator();
 
         void generateChunk(Chunk* chunk) override;

@@ -1,6 +1,7 @@
 #include "EmptyGenerator.h"
 
-EmptyGenerator::EmptyGenerator()
+EmptyGenerator::EmptyGenerator(int seed) :
+    Generator(seed)
 {
     //ctor
 }

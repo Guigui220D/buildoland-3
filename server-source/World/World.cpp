@@ -7,32 +7,34 @@
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 
-#include "Generators/EmptyGenerator.h"
+#include "Generators/NaturalGenerator.h"
 
 World::World(Server* server) :
     entities(server),
-    generator(new EmptyGenerator()),
+    generator(new NaturalGenerator(std::rand())),
     server(server),
     game_blocks_manager(server->getBlocksManager()),
     game_grounds_manager(server->getGroundsManager())
 {
-    std::srand(time(0));
-    seed = std::rand() << 16 | std::rand();
 }
 
 World::World(Server* server, int seed) :
     entities(server),
-    generator(new EmptyGenerator()),
+    generator(new NaturalGenerator(seed)),
     server(server),
     game_blocks_manager(server->getBlocksManager()),
-    game_grounds_manager(server->getGroundsManager()),
-    seed(seed)
+    game_grounds_manager(server->getGroundsManager())
 {
 }
 
 World::~World()
 {
 
+}
+
+void World::init()
+{
+    generator->init();
 }
 
 void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const

@@ -24,6 +24,8 @@ class World
         World(Server* server, int seed);
         virtual ~World();
 
+        void init();
+
         /**
         * Sends a packet to all users that are "subscribed" to the chunk
         * Subscribed means their player is close enough to the chunk to have it loaded
@@ -46,11 +48,6 @@ class World
          * @return A pointer to the game
          */
         inline Server* getServer() const { return server; }
-        /**
-         * Gets the seed of the world
-         * @return The seed
-         */
-        inline int getSeed() const { return seed; }
 
         /**
          * Gets a const reference to a chunk with its position
@@ -184,7 +181,6 @@ class World
         Server* server;
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;
-        int seed;
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
 };

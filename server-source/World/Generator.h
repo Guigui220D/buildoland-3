@@ -8,8 +8,13 @@
 class Generator
 {
     public:
-        Generator();
+        Generator(int seed);
         virtual ~Generator();
+
+        /**
+        * The constructor is called before blocks and grounds are initialized but init after
+        */
+        virtual void init();
 
         /**
         * Generates a chunk
@@ -19,6 +24,8 @@ class Generator
         virtual void generateChunk(Chunk* chunk) = 0;
 
     protected:
+
+        const int seed;
 
     private:
 };

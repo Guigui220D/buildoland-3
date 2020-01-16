@@ -6,11 +6,10 @@
 
 #include "../Utils/Arr2D.h"
 
-#include "../Ground/GameGrounds.h"
-
 class Game;
 class Block;
 class Ground;
+class World;
 
 class Chunk
 {

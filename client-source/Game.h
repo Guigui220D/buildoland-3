@@ -11,8 +11,8 @@
 #include "Res/ResourceManager.h"
 #include "Res/AudioManager.h"
 
-#include "Block/GameBlocks.h"
-#include "Ground/GameGrounds.h"
+#include "../common-source/Block/GameBlocks.h"
+#include "../common-source/Ground/GameGrounds.h"
 
 class Game
 {

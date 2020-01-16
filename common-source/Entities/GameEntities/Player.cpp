@@ -12,9 +12,10 @@
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
-    #include "../../../server-source/Block/GameBlocks.h"
     #include <cstdio>
 #endif
+
+#include "../../Block/GameBlocks.h"
 
 #include "../../../common-source/Constants.h"
 #include "../../Networking/CtoS_PlayerActionCodes.h"

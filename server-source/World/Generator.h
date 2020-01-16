@@ -2,8 +2,9 @@
 
 #include "Chunk.h"
 
-#include "../Ground/GameGrounds.h"
-#include "../Block/GameBlocks.h"
+#include "../../common-source/Ground/GameGrounds.h"
+#include "../../common-source/Block/GameBlocks.h"
+
 
 class Generator
 {

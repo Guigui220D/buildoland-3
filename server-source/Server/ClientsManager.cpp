@@ -2,6 +2,8 @@
 
 #include "Server.h"
 
+#include <iostream>
+
 ClientsManager::ClientsManager(Server* server) :
     server(server)
 {

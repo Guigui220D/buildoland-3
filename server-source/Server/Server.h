@@ -4,8 +4,6 @@
 #include <vector>
 #include <atomic>
 
-#include "../Block/GameBlocks.h"
-#include "../Ground/GameGrounds.h"
 #include "../World/World.h"
 
 #include "ClientsManager.h"

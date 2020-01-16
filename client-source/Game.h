@@ -11,8 +11,8 @@
 #include "Res/ResourceManager.h"
 #include "Res/AudioManager.h"
 
-#include "Block/GameBlocks.h"
-#include "Ground/GameGrounds.h"
+#include "../common-source/Block/GameBlocks.h"
+#include "../common-source/Ground/GameGrounds.h"
 
 class Game
 {
@@ -80,6 +80,8 @@ class Game
          * @return A reference to the settings manager
          */
         inline SettingsManager& getSettingsManager() { return settings_manager; }
+
+        inline void useDefaultView() { window.setView(default_view); }
 
 
     private:

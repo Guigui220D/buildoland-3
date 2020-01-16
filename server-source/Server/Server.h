@@ -4,8 +4,6 @@
 #include <vector>
 #include <atomic>
 
-#include "../Block/GameBlocks.h"
-#include "../Ground/GameGrounds.h"
 #include "../World/World.h"
 
 #include "ClientsManager.h"
@@ -19,10 +17,21 @@ class Server
         Server(uint16_t client_port);   //Leave client port to 0 if this is a multiplayer server, i just don't want to have ifdef's everywhere
         ~Server();
 
+        /**
+         * Inits the server and the receiver threads
+         * @param port : the port to use for the socket
+         * @return True if initialized successfully
+         */
         bool init(uint16_t port);
 
+        /**
+         * Runs the server. The server runs while "running" is true
+         */
         void run();
 
+        /**
+         * Stops the sockets and threads
+         */
         void close();
 
         inline GameBlocks& getBlocksManager() { return blocks_manager; }
@@ -44,6 +53,9 @@ class Server
         sf::Thread receiver_thread;
 
         std::atomic<bool> running;
+        /**
+         * Sends empty packet to self, needed to stop the receiver thread from outside
+         */
         void passReceiveOnce(); //Comment inside definition
 
         IpAndPort owner;

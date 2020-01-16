@@ -18,6 +18,8 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
+#include "ErrorScreen.h"
+
 #define YEET break;
 
 //TEMPORARY
@@ -286,6 +288,7 @@ bool GameState::startAndConnectLocalServer()
         if (code)
         {
             std::cerr << "Could not start server!" << std::endl;
+            getGame()->addStateOnTop(new ErrorState(getGame(), "Could not start local server.", 0));
             must_be_destroyed = true;
             return false;
         }
@@ -332,6 +335,7 @@ bool GameState::handshakeRemoteServer()
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
                 std::cerr << "Time out while waiting for server handshake" << std::endl;
+                getGame()->addStateOnTop(new ErrorState(getGame(), "Timeout while waiting for server handshake.", 0));
                 must_be_destroyed = true;
                 return false;
             }
@@ -368,6 +372,7 @@ bool GameState::handshakeRemoteServer()
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
     {
         std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
+        getGame()->addStateOnTop(new ErrorState(getGame(), "Server has wrong version!", 0));
         must_be_destroyed = true;
         return false;
     }
@@ -405,6 +410,7 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::clog << "Received disconnect code from server." << std::endl;
+                    getGame()->addStateOnTop(new ErrorState(getGame(), "Disconnected from server.", 0));
                     must_be_destroyed = true;
                     break;
 
@@ -463,6 +469,21 @@ void GameState::receiverLoop()
                     }
                     break;
 
+                case Networking::StoC::PlayerRectification:
+                    {
+                        sf::Vector2f pos;
+                        packet >> pos.x >> pos.y;
+
+                        if (!packet)
+                            break;
+
+                        if (!Player::this_player)
+                            break;
+
+                        Player::this_player->setPosition(pos);
+                    }
+                    break;
+
                 default:
                     std::cerr << "Unknown packet code" << std::endl;
                     break;
@@ -478,7 +499,8 @@ void GameState::receiverLoop()
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
             break;
         case sf::Socket::Disconnected:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping (but not actually lol)." << std::endl;
+            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
+            getGame()->addStateOnTop(new ErrorState(getGame(), "Server socket unreachable.", 0));
             must_be_destroyed = true;
             break;
         case sf::Socket::Error:

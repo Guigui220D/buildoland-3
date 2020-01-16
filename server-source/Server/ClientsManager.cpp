@@ -2,6 +2,8 @@
 
 #include "Server.h"
 
+#include <iostream>
+
 ClientsManager::ClientsManager(Server* server) :
     server(server)
 {
@@ -51,7 +53,7 @@ Client& ClientsManager::getClient(IpAndPort& client) const
     return *i->second;
 }
 
-void ClientsManager::updateClientTimer(IpAndPort& client)
+void ClientsManager::resetClientTimer(IpAndPort& client)
 {
     sf::Lock l(clients_mutex);
 

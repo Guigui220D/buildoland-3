@@ -2,6 +2,7 @@
 
 #include "Chunk.h"
 #include "EntitiesManager.h"
+#include "../Utils/Utils.h"
 
 #include <map>
 #include <memory>

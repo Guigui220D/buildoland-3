@@ -2,8 +2,8 @@
 
 #include "../Game.h"
 
-#include "../Ground/Ground.h"
-#include "../Block/Block.h"
+#include "../../common-source/Ground/Ground.h"
+#include "../../common-source/Block/Block.h"
 #include "World.h"
 
 #include <assert.h>

@@ -34,6 +34,8 @@ class Player : public LivingEntity
         void takePlayerActionPacket(sf::Packet& packet);
         #endif
 
+        inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
+
         bool isSubscribedTo(sf::Vector2i chunk) const;
     private:
         #ifdef CLIENT_SIDE

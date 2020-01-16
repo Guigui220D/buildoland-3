@@ -21,6 +21,8 @@ Server::Server(uint16_t client_port) :
     receiver_thread(Server::receiver, this),
     owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
+    blocks_manager(),
+    grounds_manager(),
     world(this)
 {
     #ifndef SOLO
@@ -37,6 +39,7 @@ bool Server::init(uint16_t port)
 {
     blocks_manager.initBlocks();
     grounds_manager.initGrounds();
+    world.init();
 
     if (server_socket.bind(port) != sf::Socket::Done)
     {
@@ -48,7 +51,7 @@ bool Server::init(uint16_t port)
     server_socket.setBlocking(true);
 
     #ifdef SOLO
-        clients_manager.addClient(owner, nullptr);
+        clients_manager.addClient(owner);
     #else
         connection_open = true;
     #endif // SOLO
@@ -120,6 +123,9 @@ void Server::close()
 {
     receiver_thread.wait();
 
+    sf::Packet server_stopping; server_stopping << (unsigned short)Networking::StoC::Disconnect;
+    clients_manager.sendToAll(server_stopping);
+
     server_socket.unbind();
 }
 
@@ -143,7 +149,7 @@ void Server::receiver()
             {
                 IpAndPort iandp(address, port);
 
-                clients_manager.updateClientTimer(iandp);
+                clients_manager.resetClientTimer(iandp);
 
                 unsigned short code; packet >> code;
 
@@ -191,7 +197,7 @@ void Server::receiver()
                     {
                         unsigned int player_id = world.getEntityManager().getNextEntityId();
 
-                        clients_manager.addClient(iandp, nullptr);
+                        clients_manager.addClient(iandp);
                         Player* new_player = new Player(&world, player_id, clients_manager.getClient(iandp));
                         clients_manager.getClient(iandp).setPlayer(new_player);
 

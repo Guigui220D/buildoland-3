@@ -12,12 +12,14 @@
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
-    #include "../../../server-source/Block/GameBlocks.h"
     #include <cstdio>
 #endif
 
+#include "../../Block/GameBlocks.h"
+
 #include "../../../common-source/Constants.h"
 #include "../../Networking/CtoS_PlayerActionCodes.h"
+#include "../../Networking/ServerToClientCodes.h"
 
 #ifdef CLIENT_SIDE
 unsigned int Player::this_player_id = 0;
@@ -149,8 +151,22 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
+
+
+            sf::Vector2f diff = pos - position;
+
             setWalkingDirection(mov);
-            position = pos;
+
+            if (diff.x * diff.x + diff.y * diff.y >= 1.f)
+            {
+                sf::Packet rectification;
+                rectification << (unsigned short)Networking::StoC::PlayerRectification;
+                rectification << position.x << position.y;
+                client.send(rectification);
+            }
+            else
+                if (canBeHere(pos))
+                    position = pos;
         }
         break;
 

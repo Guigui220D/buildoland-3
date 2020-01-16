@@ -29,6 +29,7 @@ struct IpAndPort
 
     inline bool operator<(const IpAndPort& other) const
     {
+		//For using IpAndPort as a map key
         return (address < other.address) ?
             true :
             (address == other.address ?
@@ -50,7 +51,16 @@ class Client
             sf::Lock lock(chunk_requests_mutex);
             return !chunk_requests.empty();
         }
+        /**
+         * Pops a value from the requested chunks queue of that client
+         * It must not be empty (check with hasRequestedChunks)
+         * @return A chunk request position
+         */
         sf::Vector2i getNextRequestedChunk();
+        /**
+         * Adds a chunk request position to that client's queue
+         * @param chunk : the chunk position
+         */
         void addRequestedChunk(sf::Vector2i chunk);
 
         inline bool hasPlayer() const { return player; }

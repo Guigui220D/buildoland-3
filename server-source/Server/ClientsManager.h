@@ -13,16 +13,52 @@ class ClientsManager
         ClientsManager(Server* server);
         ~ClientsManager();
 
+        /**
+         * Checks if a client is connect
+         * @param client : the ip and port of the client
+         * @return True if the ip and port has a corresponding client object
+         */
         inline bool isConnected(IpAndPort client) const { sf::Lock l(clients_mutex); return clients.find(client) != clients.cend(); }
 
-        bool addClient(IpAndPort& client, Player* player);
+        /**
+         * Creates a client object for the client and adds it to the map
+         * The client isnt added if it exists already
+         * @param client : the ip and port of the client
+         * @param player : a pointer to a player to associate to this client (unlikely to be used)
+         * @return True the client was added
+         */
+        bool addClient(IpAndPort& client, Player* player = nullptr);
+        /**
+         * Removes a client
+         * The client must NOT have a player. If it does, it should be removed before.
+         * @param client : the ip and port of the client
+         */
         void removeClient(IpAndPort& client);
+        /**
+         * Gets a reference to a client
+         * The client must exist, check with isConnected()
+         * @param client : the ip and port of the client
+         * @return A reference to the client
+         */
         Client& getClient(IpAndPort& client) const;
 
-        void updateClientTimer(IpAndPort& client);
-
+        /**
+         * Resets the timeout timer of a client
+         * Should be called when that client receives a valid packet
+         * @param client : the ip and port of the client
+         */
+        void resetClientTimer(IpAndPort& client);
+        /**
+         * Removes all clients that have their timeout timer higher than the timeout value
+         * @param timeout_s : the timeout value, in seconds
+         * @return The number of clients that were disconnected
+         */
         int doTimeOuts(float timeout_s);
 
+        /**
+         * Sends a packet to all clients
+         * @param packet : the packet to send
+         */
         void sendToAll(sf::Packet& packet);
 
         mutable sf::Mutex clients_mutex;

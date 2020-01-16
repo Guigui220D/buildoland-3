@@ -5,6 +5,8 @@
 #include "../Utils/Utils.h"
 #include "EntitiesManager.h"
 
+#include "Generator.h"
+
 #include <map>
 #include <memory>
 
@@ -21,6 +23,8 @@ class World
         World(Server* server);
         World(Server* server, int seed);
         virtual ~World();
+
+        void init();
 
         /**
         * Sends a packet to all users that are "subscribed" to the chunk
@@ -44,11 +48,6 @@ class World
          * @return A pointer to the game
          */
         inline Server* getServer() const { return server; }
-        /**
-         * Gets the seed of the world
-         * @return The seed
-         */
-        inline int getSeed() const { return seed; }
 
         /**
          * Gets a const reference to a chunk with its position
@@ -164,6 +163,8 @@ class World
          */
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
+        inline Generator* getGenerator() const { return generator; };
+
         inline size_t getChunksCount() const { return chunks.size(); };
         inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksBegin() const { return chunks.cbegin(); }
@@ -174,11 +175,12 @@ class World
         //Entities
         EntitiesManager entities;
 
+        Generator* generator;
+
     private:
         Server* server;
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;
-        int seed;
 
         std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
 };

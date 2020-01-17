@@ -37,6 +37,7 @@ class ItemsRegister
         Item const * getItemByName(const std::string name) const;
 
         //Put items here
+        static Item const * const NULL_ITEM;
         static Item const * const BALL;
 
     private:

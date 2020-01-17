@@ -6,9 +6,11 @@
 #include "GameItems/GroundItem.h"
 #include "GameItems/BlockItem.h"
 
+#include "GameItems/NullItem.h"
 #include "GameItems/BallItem.h"
 
-Item const * const ItemsRegister::BALL  = new BallItem();
+Item const * const ItemsRegister::NULL_ITEM = new NullItem();
+Item const * const ItemsRegister::BALL      = new BallItem();
 
 ItemsRegister::ItemsRegister()
 {
@@ -24,6 +26,8 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
 {
     names.clear();
     items.clear();
+
+    addItem(NULL);
     //Add all items here
     for (Ground const * ground : grounds.grounds)
         if (ground->hasItem())

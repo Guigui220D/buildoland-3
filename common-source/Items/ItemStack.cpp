@@ -1,30 +1,20 @@
 #include "ItemStack.h"
 
-ItemStack::ItemStack(Item const * item, uint8_t amount) :
-    item(item),
+ItemStack::ItemStack(uint16_t item_id, uint8_t amount) :
+    item(item_id),
     amount(amount)
 {}
 
-ItemStack::ItemStack(uint16_t item_id, const ItemsRegister& item_register, uint8_t amount) :
-    item(item_register.getItemByID(item_id)),
-    amount(amount)
-{}
-
-ItemStack::ItemStack(const ItemsRegister& item_register) :
-    item(item_register.NULL_ITEM),
+ItemStack::ItemStack() :
+    item(0),
     amount(0)
-{}
-
-ItemStack::ItemStack(const ItemStack& other) :
-    item(other.getItem()),
-    amount(other.getAmount())
 {}
 
 ItemStack::~ItemStack() {}
 
 void ItemStack::swap(ItemStack& other)
 {
-    Item const * tmpi = other.item;
+    uint16_t tmpi = other.item;
     uint8_t tmpa = other.amount;
 
     other.item = item;

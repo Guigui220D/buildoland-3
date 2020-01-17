@@ -9,12 +9,16 @@
     #include "../../client-source/Utils/Quad.h"
     #include "../../client-source/Utils/Utils.h"
 #else
-
+    #include "../Items/ItemStack.h"
+    #include <vector>
 #endif
+
+class Item;
 
 class Block
 {
     friend class GameBlocks;
+    friend class ItemsRegister;
     public:
         #ifdef CLIENT_SIDE
         static const TilesetHelper<16, 16, 1> tilesetHelper;
@@ -78,6 +82,8 @@ class Block
          * @return The 4 vertices describing the texture to use
          */
         virtual TextQuad getSideVertices(BlockInfo info) const;
+        #else
+        virtual std::vector<ItemStack> getDrops() const;
         #endif
 
     protected:
@@ -109,5 +115,7 @@ class Block
 
         #ifdef CLIENT_SIDE
         uint32_t default_texture;
+        #else
+        mutable Item const * drop;
         #endif
 };

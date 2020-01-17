@@ -4,16 +4,16 @@
 const TilesetHelper<16, 16, 1> Block::tilesetHelper;
 
 Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
-    has_item(should_have_item),
     name(name),
+    has_item(should_have_item),
     default_texture(default_texture)
 {
     //ctor
 }
 #else
 Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
-    has_item(should_have_item),
-    name(name)
+    name(name),
+    has_item(should_have_item)
 {
     //ctor
 }
@@ -43,5 +43,10 @@ TextQuad Block::getSideVertices(BlockInfo info) const
         for (int i = 0; i < 4; i++)
             side.verts[i].color = sf::Color(127, 127, 127);
     return side;
+}
+#else
+std::vector<ItemStack> Block::getDrops() const
+{
+    return { ItemStack(drop->getId()) };
 }
 #endif

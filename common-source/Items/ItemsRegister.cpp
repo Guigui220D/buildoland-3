@@ -27,7 +27,7 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
     names.clear();
     items.clear();
 
-    addItem(NULL);
+    addItem(NULL_ITEM);
     //Add all items here
     for (Ground const * ground : grounds.grounds)
         if (ground->hasItem())
@@ -35,7 +35,14 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
 
     for (Block const * block : blocks.blocks)
         if (block->hasItem())
-            addItem(new BlockItem(block));
+        {
+            Item const * item = new BlockItem(block);
+            addItem(item);
+            #ifndef CLIENT_SIDE
+            block->drop = item;
+            #endif
+        }
+
 
     addItem(BALL);
 }
@@ -56,7 +63,7 @@ void ItemsRegister::addItem(Item const * item)
     std::cout << "Added item \"" << name << "\" with id " << id << std::endl;
 }
 
-Item const * ItemsRegister::getItemByID(unsigned short id) const
+Item const * ItemsRegister::getItemByID(uint16_t id) const
 {
     if (id >= items.size())
         return /*ERROR*/nullptr;    //TEMP

@@ -8,6 +8,8 @@
     class Client;
 #endif // CLIENT_SIDE
 
+#include "../../Items/Inventory.h"
+
 class Chunk;
 
 class Player : public LivingEntity
@@ -37,7 +39,10 @@ class Player : public LivingEntity
         inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
 
         bool isSubscribedTo(sf::Vector2i chunk) const;
+
     private:
+        Inventory inventory;
+
         #ifdef CLIENT_SIDE
         void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;
 

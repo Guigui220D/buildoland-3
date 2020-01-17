@@ -2,17 +2,14 @@
 
 #include "Item.h"
 
-#include "ItemsRegister.h"
-
 class ItemStack
 {
     public:
         //Itemstack should be non copyable
         ItemStack& operator=(const ItemStack&) = delete;
 
-        ItemStack(Item const * item, uint8_t amount = 1);
-        ItemStack(uint16_t item_id, const ItemsRegister& item_register, uint8_t amount = 1);
-        ItemStack(const ItemsRegister& item_register);
+        ItemStack(uint16_t item_id, uint8_t amount = 1);
+        ItemStack();
 
         ~ItemStack();
 
@@ -22,11 +19,9 @@ class ItemStack
         ItemStack takeHalf();
 
         inline uint8_t getAmount() const { return amount; }
-        inline Item const * getItem() const { return item; }
+        inline uint16_t getItemID() const { return item; }
 
     private:
-        Item const * item;
+        uint16_t item;
         uint8_t amount;
-
-        ItemStack(const ItemStack& other);
 };

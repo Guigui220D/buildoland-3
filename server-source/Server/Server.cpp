@@ -42,6 +42,8 @@ bool Server::init(uint16_t port)
     items_register.initItems(blocks_manager, grounds_manager);
     world.init();
 
+    std::cout << std::endl;
+
     if (server_socket.bind(port) != sf::Socket::Done)
     {
         std::cerr << "Could not bind server socket to port " << port << std::endl;

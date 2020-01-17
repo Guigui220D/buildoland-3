@@ -15,8 +15,8 @@ Ground::~Ground()
 
 #ifndef CLIENT_SIDE
 Ground::Ground(const std::string name, bool should_have_item, uint32_t default_texture) :
-    has_item(should_have_item),
-    name(name)
+    name(name),
+    has_item(should_have_item)
 {
     //ctor
 }

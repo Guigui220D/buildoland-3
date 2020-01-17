@@ -26,7 +26,8 @@ unsigned int Player::this_player_id = 0;
 Player* Player::this_player = nullptr;
 
 Player::Player(World* world, unsigned int id) :
-    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
+    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
+    inventory(this)
 {
     if (Player::this_player_id == id)
         Player::this_player = this;
@@ -44,6 +45,7 @@ Player::Player(World* world, unsigned int id) :
 #else
 Player::Player(World* world, unsigned int id, const Client& client) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
+    inventory(this),
     client(client)
 {}
 #endif
@@ -204,6 +206,8 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
             }
 
             getWorld()->setBlock(pos, 0);
+
+            inventory.describe();
         }
         break;
 

@@ -39,6 +39,8 @@ class Server
         inline GameBlocks& getBlocksManager() { return blocks_manager; }
         inline GameGrounds& getGroundsManager() { return grounds_manager; }
 
+        inline ItemsRegister& getItemsRegister() { return items_register; }
+
         inline ClientsManager& getClientsManager() { return clients_manager; }
 
         inline World& getWorld() { return world; }

@@ -1,7 +1,7 @@
 #include "BlockError.h"
 
 BlockError::BlockError() :
-    Block("error", 0)
+    Block("error", false, 0)
 {
     //ctor
 }

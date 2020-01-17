@@ -1,6 +1,8 @@
 #include "BlockItem.h"
 
-BlockItem::BlockItem()
+BlockItem::BlockItem(Block const * block) :
+    Item(block->getName() + "_block"),
+    block(block)
 {
     //ctor
 }

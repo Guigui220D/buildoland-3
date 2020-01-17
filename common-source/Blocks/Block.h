@@ -20,7 +20,7 @@ class Block
         static const TilesetHelper<16, 16, 1> tilesetHelper;
         #endif
 
-        Block(const std::string name, uint32_t default_texture);    //Default texture shall be ignored in server
+        Block(const std::string name, bool should_have_item, uint32_t default_texture);    //Default texture shall be ignored in server
 
         virtual ~Block();
 
@@ -35,6 +35,10 @@ class Block
          * @return The id of this ground
          */
         inline uint16_t getId() const { return id; }
+        /**
+         * @return Returns true if that ground has an item
+         */
+        inline bool hasItem() const { return has_item; }
 
         /**
          * To know whether an entity's hitbox can touch that box
@@ -100,6 +104,8 @@ class Block
     private:
         std::string name;
         mutable uint16_t id;
+
+        const bool has_item;
 
         #ifdef CLIENT_SIDE
         uint32_t default_texture;

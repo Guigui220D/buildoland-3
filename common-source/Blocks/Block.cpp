@@ -3,14 +3,16 @@
 #ifdef CLIENT_SIDE
 const TilesetHelper<16, 16, 1> Block::tilesetHelper;
 
-Block::Block(const std::string name, uint32_t default_texture) :
+Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
+    has_item(should_have_item),
     name(name),
     default_texture(default_texture)
 {
     //ctor
 }
 #else
-Block::Block(const std::string name, uint32_t default_texture) :
+Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
+    has_item(should_have_item),
     name(name)
 {
     //ctor

@@ -1,7 +1,7 @@
 #include "BlockAir.h"
 
 BlockAir::BlockAir() :
-    Block("air", 1)
+    Block("air", false, 1)
 {
     //ctor
 }

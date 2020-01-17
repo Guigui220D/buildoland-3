@@ -1,12 +1,19 @@
 #pragma once
 
-class BlockItem
+#include "../Item.h"
+
+#include "../../Blocks/Block.h"
+
+class BlockItem : public Item
 {
     public:
-        BlockItem();
+        BlockItem(Block const * block);
         virtual ~BlockItem();
 
+        inline Block const * getBlock() { return block; }
+
     protected:
+        Block const * const block;
 
     private:
 };

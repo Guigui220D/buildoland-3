@@ -4,6 +4,7 @@
 #include <iostream>
 
 #include "GameItems/GroundItem.h"
+#include "GameItems/BlockItem.h"
 
 /*
 Block const * const GameBlocks::AIR             = new BlockAir();
@@ -30,10 +31,12 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
     items.clear();
     //Add all items here
     for (Ground const * ground : grounds.grounds)
-    {
         if (ground->hasItem())
             addItem(new GroundItem(ground));
-    }
+
+    for (Block const * block : blocks.blocks)
+        if (block->hasItem())
+            addItem(new BlockItem(block));
     /*
     addBlock(AIR);
     addBlock(ERROR);

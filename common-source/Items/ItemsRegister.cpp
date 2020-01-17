@@ -6,14 +6,9 @@
 #include "GameItems/GroundItem.h"
 #include "GameItems/BlockItem.h"
 
-/*
-Block const * const GameBlocks::AIR             = new BlockAir();
-Block const * const GameBlocks::ERROR           = new BlockError();
-Block const * const GameBlocks::STONE           = new BlockStone();
-Block const * const GameBlocks::STONE_BRICKS    = new BlockStoneBricks;
-Block const * const GameBlocks::IRON            = new BlockIron();
-Block const * const GameBlocks::GOLD            = new BlockGold();
-*/
+#include "GameItems/BallItem.h"
+
+Item const * const ItemsRegister::BALL  = new BallItem();
 
 ItemsRegister::ItemsRegister()
 {
@@ -37,15 +32,8 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
     for (Block const * block : blocks.blocks)
         if (block->hasItem())
             addItem(new BlockItem(block));
-    /*
-    addBlock(AIR);
-    addBlock(ERROR);
 
-    addBlock(STONE);
-    addBlock(STONE_BRICKS);
-    addBlock(IRON);
-    addBlock(GOLD);
-    */
+    addItem(BALL);
 }
 
 void ItemsRegister::addItem(Item const * item)

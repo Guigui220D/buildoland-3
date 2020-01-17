@@ -36,15 +36,8 @@ class ItemsRegister
          */
         Item const * getItemByName(const std::string name) const;
 
-        //Put blocks here
-        /*
-        static Block const * const AIR;
-        static Block const * const ERROR;
-        static Block const * const STONE;
-        static Block const * const STONE_BRICKS;
-        static Block const * const IRON;
-        static Block const * const GOLD;
-        */
+        //Put items here
+        static Item const * const BALL;
 
     private:
         std::vector<Item const *> items;

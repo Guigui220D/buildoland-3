@@ -13,6 +13,7 @@
 
 #include "../common-source/Blocks/GameBlocks.h"
 #include "../common-source/Grounds/GameGrounds.h"
+#include "../common-source/Items/ItemsRegister.h"
 
 class Game
 {
@@ -50,35 +51,16 @@ class Game
          */
         void addStateUnderTop(State* state, bool init = true);
 
-        /**
-         * Gets a reference to the window this game owns
-         * @return A reference to the render window
-         */
         inline sf::RenderWindow& getWindow() { return window; }
-        /**
-         * Gets a reference to the blocks manager
-         * @return A reference to the blocks manager
-         */
+
         inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
-        /**
-         * Gets a reference to the grounds manager
-         * @return A reference to the grounds manager
-         */
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
-        /**
-         * Gets a reference to the resource manager
-         * @return A reference to the resource manager
-         */
+
+        inline const ItemsRegister& getItemsRegister() const { return game_items_register; }
+
         inline const ResourceManager& getResourceManager() const { return resource_manager; }
-        /**
-         * Gets a reference to the audio manager
-         * @return A reference to the audio manager
-         */
         inline AudioManager& getAudioManager() { return audio_manager; }
-        /**
-         * Gets a reference to the settings manager
-         * @return A reference to the settings manager
-         */
+
         inline SettingsManager& getSettingsManager() { return settings_manager; }
 
         inline void useDefaultView() { window.setView(default_view); }
@@ -94,6 +76,7 @@ class Game
 
         GameBlocks game_blocks_manager;
         GameGrounds game_grounds_manager;
+        ItemsRegister game_items_register;
 
         ResourceManager resource_manager;
         AudioManager audio_manager;

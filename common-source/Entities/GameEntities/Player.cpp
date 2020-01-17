@@ -27,7 +27,7 @@ Player* Player::this_player = nullptr;
 
 Player::Player(World* world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-    inventory(this)
+    inventory(this, world->getState())
 {
     if (Player::this_player_id == id)
         Player::this_player = this;
@@ -45,7 +45,7 @@ Player::Player(World* world, unsigned int id) :
 #else
 Player::Player(World* world, unsigned int id, const Client& client) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-    inventory(this),
+    inventory(this, world->getServer()),
     client(client)
 {}
 #endif

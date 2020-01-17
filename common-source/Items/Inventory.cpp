@@ -5,15 +5,20 @@
 #include "../Entities/Entity.h"
 
 #ifndef CLIENT_SIDE
-    #include "../../server-source/World/World.h"
     #include "../../server-source/Server/Server.h"
 #endif
 
-Inventory::Inventory(Entity const * owner) :
-    owner(owner)
-{
-
-}
+#ifdef CLIENT_SIDE
+Inventory::Inventory(Entity const * owner, GameState* game) :
+    owner(owner),
+    game(game)
+{}
+#else
+Inventory::Inventory(Entity const * owner, Server* server) :
+    owner(owner),
+    server(server)
+{}
+#endif // CLIENT_SIDE
 
 Inventory::~Inventory()
 {
@@ -28,7 +33,7 @@ void Inventory::describe() const
     for (const ItemStack& stack : contents)
     {
         if (stack.getAmount() != 0 && stack.getItemID() != 0)
-            std::cout << owner->getWorld()->getServer()->getItemsRegister().getItemByID(stack.getItemID())->getName() << " x" << (int)stack.getAmount() << '\n'; //OOPH
+            std::cout << server->getItemsRegister().getItemByID(stack.getItemID())->getName() << " x" << (int)stack.getAmount() << '\n'; //OOPH
     }
     std::cout <<  std::endl;
     #endif

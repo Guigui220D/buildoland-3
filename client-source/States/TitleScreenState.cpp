@@ -36,6 +36,7 @@ void TitleScreenState::beforeInitTask()
     this->getGame()->loadResources();
     this->getGame()->game_blocks_manager.initBlocks();
     this->getGame()->game_grounds_manager.initGrounds();
+    this->getGame()->game_items_register.initItems(this->getGame()->game_blocks_manager, this->getGame()->game_grounds_manager);
 }
 
 void TitleScreenState::afterInitTask()

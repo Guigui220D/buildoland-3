@@ -60,9 +60,4 @@ class GameState : public State
         sf::RectangleShape block_pointer_side;
         sf::RectangleShape block_pointer_icon;
         bool bp_volume;
-
-        sf::Vector2i test_chunk_pos;
-        sf::Vector2i test_next_chunk_pos_turn;
-        int test_chunk_next_distance = 1;
-        int test_chunk_next_direction = 0;
 };

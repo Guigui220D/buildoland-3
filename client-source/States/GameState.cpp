@@ -86,7 +86,6 @@ void GameState::init()
 
     my_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
 
-    test_next_chunk_pos_turn = sf::Vector2i(0, -1);
     //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
     {
@@ -102,10 +101,8 @@ void GameState::init()
             return;
     }
     else
-    {
         if (!handshakeRemoteServer())
             return;
-    }
 
     connected = true;
     client_socket.setBlocking(true);

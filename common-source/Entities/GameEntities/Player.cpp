@@ -205,6 +205,11 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
+            auto drops = getWorld()->getBlock(pos)->getDrops();
+
+            for (ItemStack& stack : drops)
+                inventory.insertItemStack(stack);
+
             getWorld()->setBlock(pos, 0);
 
             inventory.describe();

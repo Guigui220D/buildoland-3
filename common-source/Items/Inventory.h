@@ -27,6 +27,9 @@ class Inventory
 
         void describe() const;
 
+        bool insertItemStack(ItemStack& stack);
+        void insertNewItemStack(ItemStack stack);
+
     protected:
 
     private:

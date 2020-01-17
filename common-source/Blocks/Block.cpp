@@ -47,6 +47,8 @@ TextQuad Block::getSideVertices(BlockInfo info) const
 #else
 std::vector<ItemStack> Block::getDrops() const
 {
+    if (!has_item)
+        return {};
     return { ItemStack(drop->getId()) };
 }
 #endif

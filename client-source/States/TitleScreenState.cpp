@@ -33,14 +33,17 @@ bool TitleScreenState::handleEvent(sf::Event& event)
 void TitleScreenState::beforeInitTask()
 {
     //We can access that because Game has TitleScreenState as a friend
+    this->getGame()->settings_manager.load();
     this->getGame()->loadResources();
     this->getGame()->game_blocks_manager.initBlocks();
     this->getGame()->game_grounds_manager.initGrounds();
     this->getGame()->game_items_register.initItems(this->getGame()->game_blocks_manager, this->getGame()->game_grounds_manager);
+
 }
 
 void TitleScreenState::afterInitTask()
 {
+    std::cout << "Game loading finished in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
     while (clk.getElapsedTime().asSeconds() < 2.f); //Because we want to see the title
 }
 

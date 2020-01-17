@@ -1,5 +1,8 @@
 #include "ItemStack.h"
 
+#include <limits>
+#include <iostream>
+
 ItemStack::ItemStack(uint16_t item_id, uint8_t amount) :
     item(item_id),
     amount(amount)
@@ -40,4 +43,31 @@ ItemStack ItemStack::takeHalf()
     amount -= half;
 
     return ItemStack(item, half);
+}
+
+bool ItemStack::add(ItemStack& other)
+{
+    if (item == 0 || amount == 0)
+    {
+        swap(other);
+        return true;
+    }
+
+    if (item != other.item)
+        return false;
+
+    int space = std::numeric_limits<uint8_t>::max() - amount;
+
+    if (other.amount > space)
+    {
+        other.amount -= space;
+        amount = std::numeric_limits<uint8_t>::max();
+        return false;
+    }
+    else
+    {
+        amount += other.amount;
+        other.amount = 0;
+        return true;
+    }
 }

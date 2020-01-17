@@ -11,16 +11,14 @@
 //NOT FINISHED YET
 class SettingsManager
 {
+    friend class TitleScreenState;
     public:
+        SettingsManager();
+        ~SettingsManager();
         //So sooooooo temporary, eww
         std::string server_address;
     private:
-        friend class Game;
-
         static const std::string SETTINGS_FILE_PATH;
-
-        SettingsManager();
-        ~SettingsManager();
 
         void load();
         void loadDefaultValues();

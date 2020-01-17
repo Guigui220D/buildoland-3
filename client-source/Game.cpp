@@ -30,7 +30,6 @@ Game::~Game()
 int Game::init()
 {
     addStateOnTop(new TitleScreenState(this, 0));
-    settings_manager.load();
     return 0;
 }
 

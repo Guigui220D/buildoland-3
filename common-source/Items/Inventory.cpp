@@ -17,7 +17,9 @@ Inventory::Inventory(Entity const * owner, GameState* game) :
 Inventory::Inventory(Entity const * owner, Server* server) :
     owner(owner),
     server(server)
-{}
+{
+    insertNewItemStack(ItemStack(GameBlocks::GOLD->getId(), 254));
+}
 #endif // CLIENT_SIDE
 
 Inventory::~Inventory()
@@ -37,4 +39,23 @@ void Inventory::describe() const
     }
     std::cout <<  std::endl;
     #endif
+}
+
+bool Inventory::insertItemStack(ItemStack& stack)
+{
+    #ifndef CLIENT_SIDE
+    std::cout << server->getItemsRegister().getItemByID(stack.getItemID())->getName() << " x" << (int)stack.getAmount() << '\n';
+    #endif
+
+    for (ItemStack& istack : contents)
+        if (istack.add(stack))
+            return true;
+    return false;
+}
+
+void Inventory::insertNewItemStack(ItemStack stack)
+{
+    for (ItemStack& istack : contents)
+        if (istack.add(stack))
+            return;
 }

@@ -2,6 +2,11 @@
 
 #include <string>
 
+#include <SFML/System.hpp>
+
+class World;
+class ItemStack;
+
 class Item
 {
     friend class ItemsRegister;
@@ -20,6 +25,17 @@ class Item
          * @return The id of this item
          */
         inline uint16_t getId() const { return id; }
+
+        #ifndef CLIENT_SIDE
+        /**
+         * Use the item
+         * @param stack : a reference to the item stack this has been used from
+         * @param world : a reference to the world, in case it has to be modified
+         * @param click_pos : the position that has been clicked in the world
+         */
+        virtual void use(ItemStack& stack, World& world, sf::Vector2i click_pos) const;
+        #endif // CLIENT_SIDE
+
 
     protected:
 

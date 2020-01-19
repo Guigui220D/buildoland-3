@@ -1,5 +1,9 @@
 #include "Block.h"
 
+#ifndef CLIENT_SIDE
+#include "../Items/ItemsRegister.h"
+#endif // CLIENT_SIDE
+
 #ifdef CLIENT_SIDE
 const TilesetHelper<16, 16, 1> Block::tilesetHelper;
 
@@ -13,7 +17,8 @@ Block::Block(const std::string name, bool should_have_item, uint32_t default_tex
 #else
 Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
     name(name),
-    has_item(should_have_item)
+    has_item(should_have_item),
+    drop(ItemsRegister::NULL_ITEM)
 {
     //ctor
 }
@@ -49,6 +54,6 @@ std::vector<ItemStack> Block::getDrops() const
 {
     if (!has_item)
         return {};
-    return { ItemStack(drop->getId()) };
+    return { ItemStack(drop) };
 }
 #endif

@@ -84,6 +84,8 @@ class Block
         virtual TextQuad getSideVertices(BlockInfo info) const;
         #else
         virtual std::vector<ItemStack> getDrops() const;
+
+        inline Item const * getDefaultItem() const { return drop; };
         #endif
 
     protected:

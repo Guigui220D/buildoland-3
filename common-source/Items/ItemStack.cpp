@@ -3,13 +3,15 @@
 #include <limits>
 #include <iostream>
 
-ItemStack::ItemStack(uint16_t item_id, uint8_t amount) :
-    item(item_id),
+#include "ItemsRegister.h"
+
+ItemStack::ItemStack(Item const * item, uint8_t amount) :
+    item(item),
     amount(amount)
 {}
 
 ItemStack::ItemStack() :
-    item(0),
+    item(ItemsRegister::NULL_ITEM),
     amount(0)
 {}
 
@@ -17,7 +19,7 @@ ItemStack::~ItemStack() {}
 
 void ItemStack::swap(ItemStack& other)
 {
-    uint16_t tmpi = other.item;
+    Item const * tmpi = other.item;
     uint8_t tmpa = other.amount;
 
     other.item = item;

@@ -18,7 +18,8 @@ Inventory::Inventory(Entity const * owner, Server* server) :
     owner(owner),
     server(server)
 {
-    insertNewItemStack(ItemStack(GameBlocks::GOLD->getId(), 254));
+    insertNewItemStack(ItemStack(GameBlocks::GOLD->getDefaultItem(), 254));
+    insertNewItemStack(ItemStack(ItemsRegister::BALL, 3));
 }
 #endif // CLIENT_SIDE
 
@@ -34,8 +35,8 @@ void Inventory::describe() const
     std::cout << "=== INVENTORY ===\n";
     for (const ItemStack& stack : contents)
     {
-        if (stack.getAmount() != 0 && stack.getItemID() != 0)
-            std::cout << server->getItemsRegister().getItemByID(stack.getItemID())->getName() << " x" << (int)stack.getAmount() << '\n'; //OOPH
+        if (stack.getAmount() != 0 && stack.getItem()->getId() != 0)
+            std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n'; //OOPH
     }
     std::cout <<  std::endl;
     #endif
@@ -44,7 +45,7 @@ void Inventory::describe() const
 bool Inventory::insertItemStack(ItemStack& stack)
 {
     #ifndef CLIENT_SIDE
-    std::cout << server->getItemsRegister().getItemByID(stack.getItemID())->getName() << " x" << (int)stack.getAmount() << '\n';
+    std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
     #endif
 
     for (ItemStack& istack : contents)

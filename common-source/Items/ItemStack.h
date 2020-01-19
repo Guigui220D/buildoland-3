@@ -8,7 +8,7 @@ class ItemStack
         //Itemstack should be non copyable
         ItemStack& operator=(const ItemStack&) = delete;
 
-        ItemStack(uint16_t item_id, uint8_t amount = 1);
+        ItemStack(Item const * item, uint8_t amount = 1);
         ItemStack();
 
         ~ItemStack();
@@ -39,9 +39,9 @@ class ItemStack
         bool add(ItemStack& other);
 
         inline uint8_t getAmount() const { return amount; }
-        inline uint16_t getItemID() const { return item; }
+        inline Item const * getItem() const { return item; }
 
     private:
-        uint16_t item;
+        Item const * item;
         uint8_t amount;
 };

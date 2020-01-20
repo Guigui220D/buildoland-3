@@ -10,8 +10,10 @@
 class SettingsManager
 {
     friend class Game;
+
     public:
         int getIntSetting(const std::string setting_name) const;
+        bool getBoolSetting(const std::string setting_name) const;
         const std::string& getStringSetting(const std::string setting_name) const;
 
     private:
@@ -23,9 +25,11 @@ class SettingsManager
         void load();
 
         bool loadIntSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, int default_value);
+        bool loadBoolSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, bool default_value);
         bool loadStringSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, const std::string default_value);
 
         std::unordered_map<std::string, int> int_settings;
+        std::unordered_map<std::string, bool> bool_settings;
         std::unordered_map<std::string, const std::string> string_settings;
 
         nlohmann::json json;

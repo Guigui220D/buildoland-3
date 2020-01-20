@@ -17,8 +17,7 @@ Game::Game() :
     //window.setFramerateLimit(ws.fps_limit);
     //window.setVerticalSyncEnabled(ws.vsync_enabled);
 
-    window.create(sf::VideoMode(800, 600), "BuildOLand 3");
-    window.setVerticalSyncEnabled(true);
+
     //window.setFramerateLimit(60);
 }
 
@@ -29,8 +28,23 @@ Game::~Game()
 
 int Game::init()
 {
-    addStateOnTop(new TitleScreenState(this, 0));
     settings_manager.load();
+
+    window.create(sf::VideoMode(settings_manager.getIntSetting("window_size_x"), settings_manager.getIntSetting("window_size_y")), "BuildOLand 3");
+
+    bool vsync = settings_manager.getBoolSetting("vsync_enabled");
+
+    if (!vsync)
+    {
+        int fps_limit = settings_manager.getIntSetting("fps_limit");
+        if (fps_limit < 0)
+            fps_limit = 0;
+        window.setFramerateLimit(fps_limit);
+    }
+    else
+        window.setVerticalSyncEnabled(true);
+
+    addStateOnTop(new TitleScreenState(this, 0));
     return 0;
 }
 

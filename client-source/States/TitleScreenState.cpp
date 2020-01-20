@@ -40,6 +40,7 @@ void TitleScreenState::beforeInitTask()
 
 void TitleScreenState::afterInitTask()
 {
+    std::cout << "Title screen state finished in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
     while (clk.getElapsedTime().asSeconds() < 2.f); //Because we want to see the title
 }
 

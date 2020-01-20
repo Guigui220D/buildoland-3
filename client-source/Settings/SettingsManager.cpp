@@ -9,139 +9,131 @@ const std::string SettingsManager::SETTINGS_FILE_PATH = "Resources/Settings/sett
 
 SettingsManager::SettingsManager()
 {
-    loadDefaultValues();
 }
 
 SettingsManager::~SettingsManager()
 {
-    //dtor
+}
+
+const std::string& SettingsManager::getStringSetting(const std::string setting_name) const
+{
+    auto i = string_settings.find(setting_name);
+
+    if (i == string_settings.end())
+        throw new std::out_of_range("String setting \"" + setting_name + "\" doesn't exist.");
+
+    return i->second;
+}
+
+int SettingsManager::getIntSetting(const std::string setting_name) const
+{
+    auto i = int_settings.find(setting_name);
+
+    if (i == int_settings.end())
+        throw new std::out_of_range("Int setting \"" + setting_name + "\" doesn't exist.");
+
+    return i->second;
 }
 
 void SettingsManager::load()
 {
-    //As simple as that :o
     std::ifstream is(SETTINGS_FILE_PATH);
     is >> json;
 
-    {   //Window settings
-        auto window = json["window"];
-        auto end = window.end();
+    //loadIntSetting({ "window", "size_x" }, "size_x", 0);
 
-        auto type = window.find("type");
-        auto size_x = window.find("size_x");
-        auto size_y = window.find("size_y");
-        auto fps_limit = window.find("fps_limit");
-        auto vsync_enabled = window.find("vsync_enabled");
+    loadStringSetting({ "online" }, "address", "online_server_address", "localhost");
+    loadStringSetting({ "player" }, "nick_name", "online_player_name", "Anonymous");
 
-        if (type != end)
-        {
-            std::string type_str = type->get<std::string>();
-            if (type_str == "bordered")
-                window_settings.type = sf::Style::Default;
-            if (type_str == "borderless")
-                window_settings.type = sf::Style::None;
-            if (type_str == "fullscreen")
-                window_settings.type = sf::Style::Fullscreen;
-        }
-        if (size_x != end)
-            window_settings.size_x = size_x->get<int>();
-        if (size_y != end)
-            window_settings.size_y = size_y->get<int>();
-        if (fps_limit != end)
-            window_settings.fps_limit = fps_limit->get<int>();
-        if (vsync_enabled != end)
-            window_settings.vsync_enabled = vsync_enabled->get<bool>();
-    }
 
-    {   //Audio settings
-        auto audio = json["audio"];
-        auto end = audio.end();
-
-        auto sound_enabled = audio.find("sound_enabled");
-        auto music_enabled = audio.find("music_enabled");
-        auto sound_volume = audio.find("sound_volume");
-        auto music_volume = audio.find("music_volume");
-
-        if (sound_enabled != end)
-            audio_settings.sound_enabled = sound_enabled->get<int>();
-        if (music_enabled != end)
-            audio_settings.music_enabled = music_enabled->get<int>();
-        if (sound_volume != end)
-            audio_settings.sound_volume = sound_volume->get<int>();
-        if (music_volume != end)
-            audio_settings.music_volume = music_volume->get<int>();
-    }
-
-    {   //Online settings
-        auto online = json["online"];
-        auto end = online.end();
-
-        auto address = online.find("address");
-
-        if (address != end)
-        {
-            server_address = address->get<std::string>();
-            std::clog << "Settings : Got server address \"" << server_address << "\"." << std::endl;
-        }
-        else
-        {
-            server_address = "localhost";
-            std::cerr << "Settings : Could not read server address, using \"localhost\"." << std::endl;
-        }
-    }
-
-    {   //Player settings
-        auto player = json["player"];
-        auto end = player.end();
-
-        auto nick = player.find("nick_name");
-
-        if (nick != end)
-        {
-            nick_name = nick->get<std::string>();
-
-            std::cout << "Nickname lenght : " << nick_name.length() << std::endl;
-
-            if (!UsernameCheck::checkUsername(nick_name))
-            {
-                std::cerr << "Setting : Player nickname not valid" << std::endl;
-                nick_name = "Anonymous";
-            }
-        }
-        else
-        {
-            std::cerr << "Settings : Could not read player nickname." << std::endl;
-            nick_name = "Anonymous";
-        }
-        std::clog << "Settings : Using nickname \"" << nick_name << "\"." << std::endl;
-    }
 }
 
-void SettingsManager::loadDefaultValues()
+bool SettingsManager::loadIntSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, int default_value)
 {
-    // https://tomeko.net/online_tools/cpp_text_escape.php
-    json =
-    "{\n"
-    "\t\"window\": {\n"
-    "\t\t\"type\": \"bordered\",\n"
-    "\t\t\"size_x\": 800,\n"
-    "\t\t\"size_y\": 600,\n"
-    "\t\t\"fps_limit\": 0,\n"
-    "\t\t\"vsync_enabled\": true\n"
-    "\t},\n"
-    "\t\"audio\": {\n"
-    "\t\t\"sound_enabled\": true,\n"
-    "\t\t\"music_enabled\": true,\n"
-    "\t\t\"sound_volume\": 100,\n"
-    "\t\t\"music_volume\": 100\n"
-    "\t},\n"
-    "\t\"online\": {\n"
-    "\t\t\"address\": \"localhost\"\n"
-    "\t}\n"
-    "}\n"_json;
+    auto i = int_settings.find(name);
+    if (i != int_settings.end())
+        int_settings.erase(i);
+
+    int value = default_value;
+
+    nlohmann::json js = json;
+    for (const std::string& p : path)
+    {
+        js = js[p];
+        if (!js.is_structured())
+        {
+            std::cerr << "Could not get json setting \"" << setting_name << "\" of type int at \"";
+            for (const std::string& pp : path)
+                std::cerr << pp << '/';
+            std::cerr << name << "\", could not get structure \"" << p << "\"." << std::endl;
+
+            int_settings.emplace(std::pair<std::string, int>(setting_name, value));
+            return false;
+        }
+    }
+    try
+    {
+        value = js[name].get<int>();
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Could not get json setting \"" << setting_name << "\" of type int at \"";
+        for (const std::string& pp : path)
+            std::cerr << pp << '/';
+        std::cerr << name << "\", could not get int \"" << name << "\"." << std::endl;
+
+        int_settings.emplace(std::pair<std::string, int>(setting_name, value));
+        return false;
+    }
+
+    std::cout << "Successfully loaded int setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
+
+    int_settings.emplace(std::pair<std::string, int>(setting_name, value));
+
+    return true;
 }
 
-void SettingsManager::save()
+bool SettingsManager::loadStringSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, const std::string default_value)
 {
-    //Todo
+    auto i = string_settings.find(name);
+    if (i != string_settings.end())
+        string_settings.erase(i);
+
+    std::string value = default_value;
+
+    nlohmann::json js = json;
+    for (const std::string& p : path)
+    {
+        js = js[p];
+        if (!js.is_structured())
+        {
+            std::cerr << "Could not get json setting \"" << setting_name << "\" of type string at \"";
+            for (const std::string& pp : path)
+                std::cerr << pp << '/';
+            std::cerr << name << "\", could not get structure \"" << p << "\"." << std::endl;
+
+            string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
+            return false;
+        }
+    }
+    try
+    {
+        value = js[name].get<std::string>();
+    }
+    catch (std::exception& e)
+    {
+        std::cerr << "Could not get json setting \"" << setting_name << "\" of type string at \"";
+        for (const std::string& pp : path)
+            std::cerr << pp << '/';
+        std::cerr << name << "\", could not get string \"" << name << "\"." << std::endl;
+
+        string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
+        return false;
+    }
+
+    std::cout << "Successfully loaded string setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
+
+    string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
+
+    return true;
 }

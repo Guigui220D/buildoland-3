@@ -53,7 +53,7 @@ void MainMenuState::update(float delta_time)
         getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, serv_debug_checkbox->isChecked()));
 
     if (test_button_2->hasBeenClicked())
-        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress(getGame()->getSettingsManager().server_address), 58888));
+        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress(getGame()->getSettingsManager().getStringSetting("online_server_address")), 58888));
 }
 
 void MainMenuState::draw(sf::RenderTarget& target) const

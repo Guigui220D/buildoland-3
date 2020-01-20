@@ -16,13 +16,13 @@
 LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed),
-    animation(64, 5, .07f)
+    animation(32, 3, .15f)
 {
-    animation.addAnimation({ 0 });
+    animation.addAnimation({ 1 });
     for (unsigned int i = 0; i < 8; i++)
     {
-        unsigned int j = i * 5;
-        animation.addAnimation({ j + 1, j + 2, j + 1, j + 0, j + 3, j + 4, j + 3, j + 0 });
+        unsigned int j = i * 3;
+        animation.addAnimation({ j + 0, j + 1, j + 2, j + 1 });
     }
 
 }

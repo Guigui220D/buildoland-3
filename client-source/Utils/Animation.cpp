@@ -37,9 +37,9 @@ void Animation::selectAnimation(unsigned int animation)
 sf::IntRect Animation::getIntRect(unsigned int i) const
 {
     return sf::IntRect(
-        (i % tileset_width) * (texture_size + 1 * 2) + 1,
-        (i / tileset_width) * (texture_size + 1 * 2) + 1,
-        (texture_size + 1 * 2) - 1 * 2,
-        (texture_size + 1 * 2) - 1 * 2
+        (i % tileset_width) * texture_size,
+        (i / tileset_width) * texture_size,
+        texture_size,
+        texture_size
     );
 }

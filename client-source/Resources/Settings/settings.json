@@ -14,5 +14,27 @@
 	},
 	"online": {
 		"address": "localhost"
+	},
+	"player": {
+		"uuid": "none",
+		"nick_name": "Guigui@",
+		
+		"shoes_colors": {
+			"r": 127,
+			"g": 64,
+			"b": 0
+		},
+		
+		"pants_colors": {
+			"r": 127,
+			"g": 64,
+			"b": 0
+		},
+		
+		"shirt_colors": {
+			"r": 127,
+			"g": 64,
+			"b": 0
+		}
 	}
 }

@@ -3,6 +3,8 @@
 #include <fstream>
 #include <iostream>
 
+#include "../../common-source/Utils/UsernameCheck.h"
+
 const std::string SettingsManager::SETTINGS_FILE_PATH = "Resources/Settings/settings.json";
 
 SettingsManager::SettingsManager()
@@ -86,6 +88,32 @@ void SettingsManager::load()
             server_address = "localhost";
             std::cerr << "Settings : Could not read server address, using \"localhost\"." << std::endl;
         }
+    }
+
+    {   //Player settings
+        auto player = json["player"];
+        auto end = player.end();
+
+        auto nick = player.find("nick_name");
+
+        if (nick != end)
+        {
+            nick_name = nick->get<std::string>();
+
+            std::cout << "Nickname lenght : " << nick_name.length() << std::endl;
+
+            if (!UsernameCheck::checkUsername(nick_name))
+            {
+                std::cerr << "Setting : Player nickname not valid" << std::endl;
+                nick_name = "Anonymous";
+            }
+        }
+        else
+        {
+            std::cerr << "Settings : Could not read player nickname." << std::endl;
+            nick_name = "Anonymous";
+        }
+        std::clog << "Settings : Using nickname \"" << nick_name << "\"." << std::endl;
     }
 }
 

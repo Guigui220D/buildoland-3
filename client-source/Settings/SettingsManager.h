@@ -14,6 +14,7 @@ class SettingsManager
     public:
         //So sooooooo temporary, eww
         std::string server_address;
+        std::string nick_name;
     private:
         friend class Game;
 

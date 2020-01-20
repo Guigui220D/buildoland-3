@@ -21,7 +21,7 @@ void Game::loadResources()
     //Entities
     fail_count +=
         !resource_manager.loadTextureFromFile("Testing/animation_test.png", "ANIM_TEST") +
-        !resource_manager.loadTextureFromFile("Temp/character.png", "CHARA_TEST");
+        !resource_manager.loadTextureFromFile("Temp/test_total.png", "CHARA_TEST");
     //Gui
     fail_count +=
         !resource_manager.loadTextureFromFile("Gui/blocks_pointer.png", "BLOCK_POINTER") +

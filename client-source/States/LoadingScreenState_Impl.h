@@ -67,7 +67,9 @@ void LoadingScreenState<T>::update(float delta_time)
             fade_clock.restart();
             getGame()->addStateUnderTop(state_being_loaded, false);
         }
-        fade -= fade_out ? fade_clock.restart().asMilliseconds() : 255;
+
+        if (fade_clock.getElapsedTime().asMilliseconds())
+            fade -= fade_out ? fade_clock.restart().asMilliseconds() : 255;
         if (fade <= 0)
         {
             must_be_destroyed = true;
@@ -76,7 +78,8 @@ void LoadingScreenState<T>::update(float delta_time)
     }
     else
     {
-        fade += fade_in ? fade_clock.restart().asMilliseconds() : 255;
+        if (fade_clock.getElapsedTime().asMilliseconds())
+            fade += fade_in ? fade_clock.restart().asMilliseconds() : 255;
         if (fade >= 255)
         {
             fade = 255;

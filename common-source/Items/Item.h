@@ -33,11 +33,17 @@ class Item
          * @param world : a reference to the world, in case it has to be modified
          * @param click_pos : the position that has been clicked in the world
          */
-        virtual void use(ItemStack& stack, World& world, sf::Vector2i click_pos) const;
+        void useItem(ItemStack& stack, World& world, sf::Vector2i click_pos) const;
         #endif // CLIENT_SIDE
 
-
     protected:
+        #ifndef CLIENT_SIDE
+        /**
+         * Use the item
+         * Called by useItem, to be overriden
+         */
+        virtual void use(ItemStack& stack, World& world, sf::Vector2i click_pos) const;
+        #endif // CLIENT_SIDE
 
     private:
         std::string name;

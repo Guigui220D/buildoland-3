@@ -172,13 +172,11 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
         }
         break;
 
-    case EntityActions::CtoS::PlaceBlock:
+    case EntityActions::CtoS::UseItem:
         {
             sf::Vector2i pos;
-            uint16_t id;
 
             packet >> pos.x >> pos.y;
-            packet >> id;
 
             if (!packet)
             {
@@ -186,10 +184,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
-            //std::cout << "Place block at " << pos.x << "; " << pos.y << std::endl;
-
-            if (getWorld()->getBlock(pos) == GameBlocks::AIR)
-                getWorld()->setBlock(pos, id);
+            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), *getWorld(), pos);
         }
         break;
 
@@ -213,24 +208,6 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
             getWorld()->setBlock(pos, 0);
 
             inventory.describe();
-        }
-        break;
-
-    case EntityActions::CtoS::SetGround:
-        {
-            sf::Vector2i pos;
-            uint16_t id;
-
-            packet >> pos.x >> pos.y;
-            packet >> id;
-
-            if (!packet)
-            {
-                std::cerr << "Could not read playerAction, packet too short" << std::endl;
-                break;
-            }
-
-            getWorld()->setGround(pos, id);
         }
         break;
 

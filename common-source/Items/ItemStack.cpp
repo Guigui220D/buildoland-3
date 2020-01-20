@@ -73,3 +73,9 @@ bool ItemStack::add(ItemStack& other)
         return true;
     }
 }
+
+void ItemStack::reset()
+{
+    amount = 0;
+    item = ItemsRegister::NULL_ITEM;
+}

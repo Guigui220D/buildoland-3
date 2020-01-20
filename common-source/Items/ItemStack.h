@@ -38,6 +38,11 @@ class ItemStack
          */
         bool add(ItemStack& other);
 
+        /**
+         * Sets the amount and item to 0
+         */
+        void reset();
+
         inline uint8_t getAmount() const { return amount; }
         inline Item const * getItem() const { return item; }
 

@@ -21,7 +21,7 @@ BlockItem::~BlockItem()
 #ifndef CLIENT_SIDE
 void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos) const
 {
-    if (stack.getAmount())
+    if (world.getBlock(click_pos) == GameBlocks::AIR)
     {
         stack.takeSome(1);
         world.setBlock(click_pos, block->getId());

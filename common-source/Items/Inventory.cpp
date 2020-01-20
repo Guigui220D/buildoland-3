@@ -19,7 +19,7 @@ Inventory::Inventory(Entity const * owner, Server* server) :
     server(server)
 {
     insertNewItemStack(ItemStack(GameBlocks::GOLD->getDefaultItem(), 254));
-    insertNewItemStack(ItemStack(ItemsRegister::BALL, 3));
+    //insertNewItemStack(ItemStack(ItemsRegister::BALL, 3));
 }
 #endif // CLIENT_SIDE
 

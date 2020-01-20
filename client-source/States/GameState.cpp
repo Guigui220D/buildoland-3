@@ -156,9 +156,8 @@ bool GameState::handleEvent(sf::Event& event)
 
             sf::Packet place_packet;
             place_packet << (unsigned short)Networking::CtoS::PlayerAction;
-            place_packet << (unsigned short)EntityActions::CtoS::PlaceBlock;
+            place_packet << (unsigned short)EntityActions::CtoS::UseItem;
             place_packet << world_pos_i.x << world_pos_i.y;
-            place_packet << (uint16_t)3; //Block id
 
             sendToServer(place_packet);
         }

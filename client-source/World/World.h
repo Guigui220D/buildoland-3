@@ -19,8 +19,8 @@ class World
     public:
         static unsigned int RENDER_DISTANCE;
 
-        World(GameState* state_game);
-        World(GameState* state_game, int seed);
+        World(GameState& state_game);
+        World(GameState& state_game, int seed);
         virtual ~World();
 
         EntitiesManager& getEntityManager() { return entities; }
@@ -29,12 +29,12 @@ class World
          * Gets the state that own this world
          * @return A pointer to the state game
          */
-        inline GameState* getState() const { return state_game; }
+        inline GameState& getState() const { return state_game; }
         /**
          * Gets the game that own this world
          * @return A pointer to the game
          */
-        inline Game* getGame() const { return game; }
+        inline Game& getGame() const { return game; }
         /**
          * Gets the seed of the world
          * @return The seed
@@ -180,8 +180,8 @@ class World
         EntitiesManager entities;
 
     private:
-        GameState* state_game;
-        Game* game;
+        GameState& state_game;
+        Game& game;
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;
         int seed;

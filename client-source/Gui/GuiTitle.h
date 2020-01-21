@@ -5,7 +5,7 @@
 class GuiTitle : public GuiElement
 {
     public:
-        GuiTitle(Game* game);
+        GuiTitle(Game& game);
         ~GuiTitle();
 
         void draw(sf::RenderTarget& target) const override;

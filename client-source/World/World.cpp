@@ -11,23 +11,23 @@
 
 int unsigned World::RENDER_DISTANCE = 3;
 
-World::World(GameState* state_game) :
-    entities(this),
+World::World(GameState& state_game) :
+    entities(*this),
     state_game(state_game),
-    game(state_game->getGame()),
-    game_blocks_manager(state_game->getGame()->getBlocksManager()),
-    game_grounds_manager(state_game->getGame()->getGroundsManager())
+    game(state_game.getGame()),
+    game_blocks_manager(state_game.getGame().getBlocksManager()),
+    game_grounds_manager(state_game.getGame().getGroundsManager())
 {
     std::srand(time(0));
     seed = std::rand() << 16 | std::rand();
 }
 
-World::World(GameState* state_game, int seed) :
-    entities(this),
+World::World(GameState& state_game, int seed) :
+    entities(*this),
     state_game(state_game),
-    game(state_game->getGame()),
-    game_blocks_manager(state_game->getGame()->getBlocksManager()),
-    game_grounds_manager(state_game->getGame()->getGroundsManager()),
+    game(state_game.getGame()),
+    game_blocks_manager(state_game.getGame().getBlocksManager()),
+    game_grounds_manager(state_game.getGame().getGroundsManager()),
     seed(seed)
 {
 }
@@ -106,7 +106,7 @@ bool World::addChunk(sf::Packet& packet)
     //Construct new chunk
     bool success = false;
 
-    Chunk* new_chunk = new Chunk(this, pos, packet, success);
+    Chunk* new_chunk = new Chunk(*this, pos, packet, success);
 
     if (!success)
     {
@@ -151,7 +151,7 @@ void World::requestChunk(sf::Vector2i pos)
     request << (unsigned short)Networking::CtoS::RequestChunk;
     request << pos.x << pos.y;
 
-    state_game->sendToServer(request);
+    state_game.sendToServer(request);
 }
 
 void World::updateChunks(sf::Vector2i center)

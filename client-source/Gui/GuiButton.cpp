@@ -2,7 +2,7 @@
 
 #include "../Game.h"
 
-GuiButton::GuiButton(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string) :
+GuiButton::GuiButton(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string) :
     GuiElement(game, zone, aspect_ratio, horizontal_align, vertical_align),
     string(text_string)
 {
@@ -20,7 +20,7 @@ void GuiButton::init()
     text.setString(string);
     text.setCharacterSize(100);
     text.scale(sf::Vector2f(1.f / 120.f, 1.f / 120.f));
-    text.setFont(getGame()->getResourceManager().getFont("GUI_FONT"));
+    text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));
     text.setFillColor(sf::Color::Black);
 
     sf::Vector2f text_size = sf::Vector2f(text.getGlobalBounds().width, text.getGlobalBounds().height);
@@ -68,7 +68,7 @@ void GuiButton::update(float delta_time)
 
 bool GuiButton::isMouseInside() const
 {
-    sf::Vector2i mouse_pos = sf::Mouse::getPosition(getGame()->getWindow());
-    sf::Vector2f coords = getGame()->getWindow().mapPixelToCoords(mouse_pos, getView());
+    sf::Vector2i mouse_pos = sf::Mouse::getPosition(getGame().getWindow());
+    sf::Vector2f coords = getGame().getWindow().mapPixelToCoords(mouse_pos, getView());
     return (coords.x >= 0.f && coords.y >= 0.f && coords.x <= getAspectRatio() && coords.y <= 1.f);
 }

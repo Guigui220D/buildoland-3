@@ -8,7 +8,7 @@
     class Client;
 #endif // CLIENT_SIDE
 
-#include "../../Items/Inventory.h"
+#include "../../Items/playerInventory.h"
 
 class Chunk;
 
@@ -23,9 +23,9 @@ class Player : public LivingEntity
         inline unsigned short getEntityCode() const { return Entities::Player; };
 
         #ifdef CLIENT_SIDE
-            Player(World* world, unsigned int id);
+            Player(World& world, unsigned int id);
         #else
-            Player(World* world, unsigned int id, const Client& client);
+            Player(World& world, unsigned int id, const Client& client);
         #endif // CLIENT_SIDE
         ~Player();
 
@@ -41,7 +41,7 @@ class Player : public LivingEntity
         bool isSubscribedTo(sf::Vector2i chunk) const;
 
     private:
-        Inventory inventory;
+        PlayerInventory inventory;
 
         #ifdef CLIENT_SIDE
         void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;

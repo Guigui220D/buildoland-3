@@ -8,5 +8,5 @@
 
 const GameBlocks& BlockInfo::getBlocksManager() const
 {
-    return world->getBlocksManager();
+    return world.getBlocksManager();
 }

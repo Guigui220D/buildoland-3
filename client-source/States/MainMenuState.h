@@ -10,7 +10,7 @@
 class MainMenuState : public State
 {
     public:
-        MainMenuState(Game* game, unsigned int id = 0);
+        MainMenuState(Game& game, unsigned int id = 0);
         ~MainMenuState();
 
         void init() override;

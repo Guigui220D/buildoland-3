@@ -1,20 +1,20 @@
-#include "Inventory.h"
+#include "PlayerInventory.h"
 
 #include <iostream>
 
-#include "../Entities/Entity.h"
+#include "../Entities/GameEntities/Player.h"
 
 #ifndef CLIENT_SIDE
     #include "../../server-source/Server/Server.h"
 #endif
 
 #ifdef CLIENT_SIDE
-Inventory::Inventory(Entity const * owner, GameState* game) :
+PlayerInventory::PlayerInventory(const Player& owner, GameState& game) :
     owner(owner),
     game(game)
 {}
 #else
-Inventory::Inventory(Entity const * owner, Server* server) :
+PlayerInventory::PlayerInventory(const Player& owner, Server& server) :
     owner(owner),
     server(server)
 {
@@ -23,12 +23,12 @@ Inventory::Inventory(Entity const * owner, Server* server) :
 }
 #endif // CLIENT_SIDE
 
-Inventory::~Inventory()
+PlayerInventory::~PlayerInventory()
 {
     //dtor
 }
 
-void Inventory::describe() const
+void PlayerInventory::describe() const
 {
     #ifndef CLIENT_SIDE
     //TEMP
@@ -42,7 +42,7 @@ void Inventory::describe() const
     #endif
 }
 
-bool Inventory::insertItemStack(ItemStack& stack)
+bool PlayerInventory::insertItemStack(ItemStack& stack)
 {
     #ifndef CLIENT_SIDE
     std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
@@ -54,7 +54,7 @@ bool Inventory::insertItemStack(ItemStack& stack)
     return false;
 }
 
-void Inventory::insertNewItemStack(ItemStack stack)
+void PlayerInventory::insertNewItemStack(ItemStack stack)
 {
     for (ItemStack& istack : contents)
         if (istack.add(stack))

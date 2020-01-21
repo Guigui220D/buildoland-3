@@ -10,7 +10,7 @@ class Server;
 class ClientsManager
 {
     public:
-        ClientsManager(Server* server);
+        ClientsManager(Server& server);
         ~ClientsManager();
 
         /**
@@ -69,7 +69,7 @@ class ClientsManager
             getClientsEnd() const { return clients.cend(); }
 
     private:
-        Server* const server;
+        Server& server;
 
         std::map<IpAndPort, std::unique_ptr<Client>> clients;
 };

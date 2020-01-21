@@ -18,7 +18,7 @@ class Entity
     public:
         virtual inline unsigned short getEntityCode() const { return Entities::None; };
 
-        Entity(World* world, unsigned int id);
+        Entity(World& world, unsigned int id);
         virtual ~Entity();
 
         /**
@@ -61,7 +61,7 @@ class Entity
         inline unsigned int getId() const { return id; }
 
         inline sf::Vector2f getPosition() const { return position; }
-        inline World* getWorld() const { return world; }
+        inline World& getWorld() const { return world; }
 
         inline sf::Vector2i getBlockOn() const { return sf::Vector2i(std::floor(position.x + .5f), std::floor(position.y + .5f)); }
         sf::Vector2i getChunkOn() const;
@@ -96,7 +96,7 @@ class Entity
         #endif // CLIENT_SIDE
 
         const unsigned int id;
-        World* const world;
+        World& world;
 
         sf::Vector2i chunk_on;
 };

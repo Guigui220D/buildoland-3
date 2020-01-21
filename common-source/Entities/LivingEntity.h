@@ -9,7 +9,7 @@
 class LivingEntity : public PhysicsEntity
 {
     public:
-        LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed);
+        LivingEntity(World& world, unsigned int id, sf::Vector2f hitbox_size, float speed);
         virtual ~LivingEntity();
 
     protected:

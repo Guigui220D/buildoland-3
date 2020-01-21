@@ -11,7 +11,7 @@
 
 #include <iostream>
 
-Entity::Entity(World* world, unsigned int id) :
+Entity::Entity(World& world, unsigned int id) :
     position(0.f, 0.f),
     id(id),
     world(world)
@@ -41,7 +41,7 @@ void Entity::update(float delta) {}
 #ifndef CLIENT_SIDE
 void Entity::send(sf::Packet& packet)
 {
-    getWorld()->sendToSubscribers(packet, chunk_on);
+    getWorld().sendToSubscribers(packet, chunk_on);
 }
 #endif // CLIENT_SIDE
 
@@ -64,14 +64,14 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
         leave << (unsigned short)EntityActions::StoC::ForgetEntity;
         leave << getId();
 
-        getWorld()->sendToSubscribersWithException(leave, old_chunk, new_chunk);
+        getWorld().sendToSubscribersWithException(leave, old_chunk, new_chunk);
     }
     {
         sf::Packet enter;
 
         makeNewEntityPacket(enter);
 
-        getWorld()->sendToSubscribersWithException(enter, new_chunk, old_chunk);
+        getWorld().sendToSubscribersWithException(enter, new_chunk, old_chunk);
     }
     #else
     moreOnChunkChange(old_chunk, new_chunk);

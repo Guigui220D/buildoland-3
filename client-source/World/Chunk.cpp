@@ -10,14 +10,14 @@
 
 const int Chunk::CHUNK_SIZE = 16;
 
-Chunk::Chunk(World* world, sf::Vector2i pos, sf::Packet& packet, bool& success) :
+Chunk::Chunk(World& world, sf::Vector2i pos, sf::Packet& packet, bool& success) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
     pos(pos),
     ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
     block_side_vertices(sf::Quads),
     block_top_vertices(sf::Quads),
-    game(world->getGame()),
+    game(world.getGame()),
     world(world)
 {
     size_t header_size = sizeof(int) * 2 + 2;
@@ -58,8 +58,8 @@ void Chunk::notifyChunk(int direction) const
 {
     assert(direction >= 0 && direction < 4);
     sf::Vector2i chunk = pos + utils::getRelativeBlock(direction);
-    if (world->isChunkLoaded(chunk))
-        world->getChunkConst(chunk).mustRedoVertexArrays();
+    if (world.isChunkLoaded(chunk))
+        world.getChunkConst(chunk).mustRedoVertexArrays();
 }
 
 const Block* Chunk::getBlock(int x, int y) const
@@ -68,7 +68,7 @@ const Block* Chunk::getBlock(int x, int y) const
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
-    return game->getBlocksManager().getBlockByID(getBlockId(x, y));
+    return game.getBlocksManager().getBlockByID(getBlockId(x, y));
 }
 
 const Ground* Chunk::getGround(int x, int y) const
@@ -77,7 +77,7 @@ const Ground* Chunk::getGround(int x, int y) const
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
-    return game->getGroundsManager().getGroundByID(getGroundId(x, y));
+    return game.getGroundsManager().getGroundByID(getGroundId(x, y));
 }
 
 
@@ -207,7 +207,7 @@ void Chunk::generateBlockSideVertices() const
         {
             sf::Vector2i block_pos = getBlockPosInWorld(x, y);
             const Block* block = getBlock(x, y);
-            const Block* block_down = world->getBlock(block_pos + sf::Vector2i(0, 1));
+            const Block* block_down = world.getBlock(block_pos + sf::Vector2i(0, 1));
 
             BlockInfo bi(world, block_pos);
             BlockInfo bi_down(world, block_pos + sf::Vector2i(0, 1));

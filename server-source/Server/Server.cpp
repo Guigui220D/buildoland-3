@@ -17,13 +17,13 @@
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 Server::Server(uint16_t client_port) :
-    clients_manager(this),
+    clients_manager(*this),
     receiver_thread(Server::receiver, this),
     owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
     blocks_manager(),
     grounds_manager(),
-    world(this)
+    world(*this)
 {
     #ifndef SOLO
         assert(!client_port);
@@ -77,7 +77,7 @@ bool Server::init(uint16_t port)
     #endif // SOLO
 
     for (int i = 0; i < 10; i++)
-        world.getEntityManager().newEntity(new TestEntity(&world, world.getEntityManager().getNextEntityId()));
+        world.getEntityManager().newEntity(new TestEntity(world, world.getEntityManager().getNextEntityId()));
 
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
@@ -201,7 +201,7 @@ void Server::receiver()
                         unsigned int player_id = world.getEntityManager().getNextEntityId();
 
                         clients_manager.addClient(iandp);
-                        Player* new_player = new Player(&world, player_id, clients_manager.getClient(iandp));
+                        Player* new_player = new Player(world, player_id, clients_manager.getClient(iandp));
                         clients_manager.getClient(iandp).setPlayer(new_player);
 
                         sf::Packet handshake;

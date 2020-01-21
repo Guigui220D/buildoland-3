@@ -29,7 +29,7 @@ Game::~Game()
 
 int Game::init()
 {
-    addStateOnTop(new TitleScreenState(this, 0));
+    addStateOnTop(new TitleScreenState(*this, 0));
     return 0;
 }
 

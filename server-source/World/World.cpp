@@ -9,21 +9,21 @@
 
 #include "Generators/NaturalGenerator.h"
 
-World::World(Server* server) :
+World::World(Server& server) :
     entities(server),
     generator(new NaturalGenerator(std::rand())),
     server(server),
-    game_blocks_manager(server->getBlocksManager()),
-    game_grounds_manager(server->getGroundsManager())
+    game_blocks_manager(server.getBlocksManager()),
+    game_grounds_manager(server.getGroundsManager())
 {
 }
 
-World::World(Server* server, int seed) :
+World::World(Server& server, int seed) :
     entities(server),
     generator(new NaturalGenerator(seed)),
     server(server),
-    game_blocks_manager(server->getBlocksManager()),
-    game_grounds_manager(server->getGroundsManager())
+    game_blocks_manager(server.getBlocksManager()),
+    game_grounds_manager(server.getGroundsManager())
 {
 }
 
@@ -39,7 +39,7 @@ void World::init()
 
 void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const
 {
-    ClientsManager& cm = server->getClientsManager();
+    ClientsManager& cm = server.getClientsManager();
 
     for (auto i = cm.getClientsBegin(); i != cm.getClientsEnd(); i++)
     {
@@ -57,7 +57,7 @@ void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const
 
 void World::sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const
 {
-    ClientsManager& cm = server->getClientsManager();
+    ClientsManager& cm = server.getClientsManager();
 
     for (auto i = cm.getClientsBegin(); i != cm.getClientsEnd(); i++)
     {
@@ -93,7 +93,7 @@ Chunk& World::getChunk(sf::Vector2i pos)
     if (chunk_ptr == chunks.end())
     {
         std::cout << "New chunk generated : " << pos.x << "; " << pos.y << std::endl;
-        Chunk* new_chunk = new Chunk(this, pos);
+        Chunk* new_chunk = new Chunk(*this, pos);
         chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
         return *new_chunk;
     }

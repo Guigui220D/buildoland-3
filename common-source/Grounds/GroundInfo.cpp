@@ -9,5 +9,5 @@
 
 const GameGrounds& GroundInfo::getGroundsManager() const
 {
-    return world->getGroundsManager();
+    return world.getGroundsManager();
 }

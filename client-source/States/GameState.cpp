@@ -25,7 +25,7 @@
 //TEMPORARY
 #include <windows.h>
 
-GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
+GameState::GameState(Game& game, unsigned int id, bool show_server_console) :
     State(game, id),
     solo_mode(true),
     connected(false),
@@ -33,21 +33,21 @@ GameState::GameState(Game* game, unsigned int id, bool show_server_console) :
     remote_ip(sf::IpAddress::LocalHost),
     remote_port(0),
     receiver_thread(&GameState::receiverLoop, this),
-    test_world(this),
+    test_world(*this),
     entities(test_world.getEntityManager())
 {
     update_transparent = false;
     draw_transparent = false;
 }
 
-GameState::GameState(Game* game, unsigned int id, sf::IpAddress server_address, uint16_t server_port) :
+GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, uint16_t server_port) :
     State(game, id),
     solo_mode(false),
     connected(false),
     remote_ip(server_address),
     remote_port(server_port),
     receiver_thread(&GameState::receiverLoop, this),
-    test_world(this),
+    test_world(*this),
     entities(test_world.getEntityManager())
 {
     update_transparent = false;
@@ -68,21 +68,21 @@ GameState::~GameState()
 
 void GameState::init()
 {
-    block_textures = &getGame()->getResourceManager().getTexture("BLOCK_TEXTURES");
-    ground_textures = &getGame()->getResourceManager().getTexture("GROUND_TEXTURES");
-    ground_details_textures = &getGame()->getResourceManager().getTexture("GROUND_DETAILS");
+    block_textures = &getGame().getResourceManager().getTexture("BLOCK_TEXTURES");
+    ground_textures = &getGame().getResourceManager().getTexture("GROUND_TEXTURES");
+    ground_details_textures = &getGame().getResourceManager().getTexture("GROUND_DETAILS");
 
     block_pointer.setSize(sf::Vector2f(1.f, 1.f));
     block_pointer.setOrigin(sf::Vector2f(.5f, .5f));
-    block_pointer.setTexture(&getGame()->getResourceManager().getTexture("BLOCK_POINTER"));
+    block_pointer.setTexture(&getGame().getResourceManager().getTexture("BLOCK_POINTER"));
 
     block_pointer_icon.setSize(sf::Vector2f(1.f, 1.f));
     block_pointer_icon.setOrigin(sf::Vector2f(.5f, .5f));
-    block_pointer_icon.setTexture(&getGame()->getResourceManager().getTexture("BLOCK_POINTER_B"));
+    block_pointer_icon.setTexture(&getGame().getResourceManager().getTexture("BLOCK_POINTER_B"));
 
     block_pointer_side.setSize(sf::Vector2f(1.f, .5f));
     block_pointer_side.setOrigin(sf::Vector2f(.5f, 0));
-    block_pointer_side.setTexture(&getGame()->getResourceManager().getTexture("BLOCK_POINTER"));
+    block_pointer_side.setTexture(&getGame().getResourceManager().getTexture("BLOCK_POINTER"));
 
     my_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
 
@@ -117,7 +117,7 @@ bool GameState::handleEvent(sf::Event& event)
     {
     case sf::Event::Resized:
         {
-            sf::RenderWindow& window = getGame()->getWindow();
+            sf::RenderWindow& window = getGame().getWindow();
             if (window.getSize().x < 200)
                 window.setSize(sf::Vector2u(200, window.getSize().y));
             if (window.getSize().y < 200)
@@ -134,7 +134,7 @@ bool GameState::handleEvent(sf::Event& event)
             break;
         if (event.mouseButton.button == sf::Mouse::Left)
         {
-            sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+            sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
             world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
@@ -149,7 +149,7 @@ bool GameState::handleEvent(sf::Event& event)
 
         if (event.mouseButton.button == sf::Mouse::Right)
         {
-            sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+            sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
             world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
@@ -167,7 +167,7 @@ bool GameState::handleEvent(sf::Event& event)
         if (event.key.code == sf::Keyboard::A)
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             {
-                getGame()->addStateOnTop(new ErrorState(getGame(), "State interrupted (for testing).", 0));
+                getGame().addStateOnTop(new ErrorState(getGame(), "State interrupted (for testing).", 0));
                     must_be_destroyed = true;
             }
         break;
@@ -194,14 +194,14 @@ void GameState::update(float delta_time)
     entities.updateAll(delta_time);
 
     {
-        sf::Window& window = getGame()->getWindow();
+        sf::Window& window = getGame().getWindow();
 
-        sf::Vector2f world_pos = getGame()->getWindow().mapPixelToCoords(sf::Mouse::getPosition(window), my_view);
+        sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(window), my_view);
         world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
         sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-        bp_volume = test_world.getBlock(world_pos_i)->hasVolume(BlockInfo(&test_world, world_pos_i));
+        bp_volume = test_world.getBlock(world_pos_i)->hasVolume(BlockInfo(test_world, world_pos_i));
 
         block_pointer.setPosition(world_pos);
         block_pointer_icon.setPosition(world_pos);
@@ -258,7 +258,7 @@ void GameState::draw(sf::RenderTarget& target) const
 
 void GameState::updateView()
 {
-    sf::RenderWindow& window = getGame()->getWindow();
+    sf::RenderWindow& window = getGame().getWindow();
     //Resize without deformation
 	if (window.getSize().y > window.getSize().x)
 	{
@@ -291,7 +291,7 @@ bool GameState::startAndConnectLocalServer()
         if (code)
         {
             std::cerr << "Could not start server!" << std::endl;
-            getGame()->addStateOnTop(new ErrorState(getGame(), "Could not start local server.", 0));
+            getGame().addStateOnTop(new ErrorState(getGame(), "Could not start local server.", 0));
             must_be_destroyed = true;
             return false;
         }
@@ -301,7 +301,7 @@ bool GameState::startAndConnectLocalServer()
 
     //EWWWWWWWWWWWWWWW
     //Temporary
-    SetForegroundWindow(getGame()->getWindow().getSystemHandle());
+    SetForegroundWindow(getGame().getWindow().getSystemHandle());
 
     return handshake;
 }
@@ -338,7 +338,7 @@ bool GameState::handshakeRemoteServer()
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
                 std::cerr << "Time out while waiting for server handshake" << std::endl;
-                getGame()->addStateOnTop(new ErrorState(getGame(), "Timeout while waiting for server handshake.", 0));
+                getGame().addStateOnTop(new ErrorState(getGame(), "Timeout while waiting for server handshake.", 0));
                 must_be_destroyed = true;
                 return false;
             }
@@ -375,7 +375,7 @@ bool GameState::handshakeRemoteServer()
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
     {
         std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
-        getGame()->addStateOnTop(new ErrorState(getGame(), "Server has wrong version!", 0));
+        getGame().addStateOnTop(new ErrorState(getGame(), "Server has wrong version!", 0));
         must_be_destroyed = true;
         return false;
     }
@@ -413,7 +413,7 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::clog << "Received disconnect code from server." << std::endl;
-                    getGame()->addStateOnTop(new ErrorState(getGame(), "Disconnected from server.", 0));
+                    getGame().addStateOnTop(new ErrorState(getGame(), "Disconnected from server.", 0));
                     must_be_destroyed = true;
                     break;
 
@@ -503,7 +503,7 @@ void GameState::receiverLoop()
             break;
         case sf::Socket::Disconnected:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
-            getGame()->addStateOnTop(new ErrorState(getGame(), "Server socket unreachable.", 0));
+            getGame().addStateOnTop(new ErrorState(getGame(), "Server socket unreachable.", 0));
             must_be_destroyed = true;
             break;
         case sf::Socket::Error:

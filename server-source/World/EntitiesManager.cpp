@@ -6,7 +6,7 @@
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
 
-EntitiesManager::EntitiesManager(Server* server) :
+EntitiesManager::EntitiesManager(Server& server) :
     server(server),
     next_entity_id(0)
 {
@@ -38,7 +38,7 @@ bool EntitiesManager::newEntity(Entity* entity)
     sf::Packet packet;
     entity->makeNewEntityPacket(packet);
 
-    server->getClientsManager().sendToAll(packet);
+    server.getClientsManager().sendToAll(packet);
 
     return true;
 }
@@ -54,7 +54,7 @@ void EntitiesManager::removeEntity(unsigned int id)
 
     packet << id;
 
-    server->getClientsManager().sendToAll(packet);
+    server.getClientsManager().sendToAll(packet);
 }
 
 void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos, const Client& client)

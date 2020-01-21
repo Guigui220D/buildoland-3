@@ -2,14 +2,14 @@
 
 #include "../Game.h"
 
-GuiElement::GuiElement(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align) :
+GuiElement::GuiElement(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align) :
     game(game),
     zone(zone),
     ratio(aspect_ratio),
     halign(horizontal_align),
     valign(vertical_align)
 {
-    calculateView(game->getWindow().getSize());
+    calculateView(game.getWindow().getSize());
 }
 
 GuiElement::~GuiElement()

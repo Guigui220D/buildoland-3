@@ -48,6 +48,8 @@ class ItemStack
         inline uint8_t getAmount() const { return amount; }
         inline Item const * getItem() const { return item; }
 
+        inline uint32_t getInt() const { return item->getId() & amount << 16; }
+
     private:
         Item const * item;
         uint8_t amount;

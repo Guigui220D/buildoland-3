@@ -4,10 +4,11 @@
 //TEST
 //#include <cmath>
 
+#include "../../Networking/NetworkingCodes.h"
+
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
-    #include "../../Networking/ClientToServerCodes.h"
     #include "../../../client-source/States/GameState.h"
 #else
     #include "../../../server-source/World/World.h"
@@ -18,8 +19,6 @@
 #include "../../Blocks/GameBlocks.h"
 
 #include "../../../common-source/Constants.h"
-#include "../../Networking/CtoS_PlayerActionCodes.h"
-#include "../../Networking/ServerToClientCodes.h"
 
 #ifdef CLIENT_SIDE
 unsigned int Player::this_player_id = 0;

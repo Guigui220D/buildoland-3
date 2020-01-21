@@ -487,6 +487,15 @@ void GameState::receiverLoop()
                     }
                     break;
 
+                case Networking::StoC::InventoryUpdate:
+                    {
+                        if (!Player::this_player)
+                            break;
+
+                        Player::this_player->getInventory().takeInventoryUpdatePacket(packet);
+                    }
+                    break;
+
                 default:
                     std::cerr << "Unknown packet code" << std::endl;
                     break;

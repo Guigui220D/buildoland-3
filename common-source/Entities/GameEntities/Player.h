@@ -34,11 +34,15 @@ class Player : public LivingEntity
         void draw(sf::RenderTarget& target) const;
         #else
         void takePlayerActionPacket(sf::Packet& packet);
+
+        inline const Client& getClient() const { return client; }
         #endif
 
         inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
 
         bool isSubscribedTo(sf::Vector2i chunk) const;
+
+        inline PlayerInventory& getInventory() { return inventory; }
 
     private:
         PlayerInventory inventory;

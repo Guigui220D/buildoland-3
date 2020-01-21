@@ -7,6 +7,7 @@
 class Player;
 
 #ifdef CLIENT_SIDE
+    #include <SFML/Network.hpp>
 class GameState;
 #else
 class Server;
@@ -29,6 +30,10 @@ class PlayerInventory
 
         bool insertItemStack(ItemStack& stack);
         void insertNewItemStack(ItemStack stack);
+
+        #ifdef CLIENT_SIDE
+        bool takeInventoryUpdatePacket(sf::Packet& packet);
+        #endif // CLIENT_SIDE
 
     protected:
 

@@ -23,7 +23,7 @@ class Inventory
 
         virtual ~Inventory();
 
-        std::array<ItemStack, 24> contents;
+        std::array<ItemStack, 25> contents; //24 items and hand item
 
         void describe() const;
 

@@ -43,6 +43,8 @@ class ItemStack
          */
         void reset();
 
+        operator bool() const;
+
         inline uint8_t getAmount() const { return amount; }
         inline Item const * getItem() const { return item; }
 

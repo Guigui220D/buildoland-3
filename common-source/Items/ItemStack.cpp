@@ -49,7 +49,7 @@ ItemStack ItemStack::takeHalf()
 
 bool ItemStack::add(ItemStack& other)
 {
-    if (item == 0 || amount == 0)
+    if (operator bool())
     {
         swap(other);
         return true;
@@ -78,4 +78,9 @@ void ItemStack::reset()
 {
     amount = 0;
     item = ItemsRegister::NULL_ITEM;
+}
+
+ItemStack::operator bool() const
+{
+    return (amount != 0 && item != ItemsRegister::NULL_ITEM);
 }

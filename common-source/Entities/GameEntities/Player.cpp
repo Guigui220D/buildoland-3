@@ -153,8 +153,6 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
-
-
             sf::Vector2f diff = pos - position;
 
             setWalkingDirection(mov);
@@ -206,8 +204,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 inventory.insertItemStack(stack);
 
             getWorld()->setBlock(pos, 0);
-
-            inventory.describe();
+            //inventory.describe();
         }
         break;
 
@@ -222,12 +219,6 @@ bool Player::isSubscribedTo(sf::Vector2i chunk) const
 {
     sf::Vector2i diff = chunk - getChunkOn();
     int distance_squared = diff.x * diff.x + diff.y * diff.y;
-
-    /*
-    std::cout << "==========\n" << distance_squared << std::endl;
-    std::cout << position.x << ", " << position.y << std::endl;
-    std::cout << "==========\n" << std::endl;
-    */
 
     //TODO : Make render distance constant
     return distance_squared < Constants::CHUNK_LOADING_DISTANCE;

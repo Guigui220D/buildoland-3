@@ -17,10 +17,7 @@ Inventory::Inventory(Entity const * owner, GameState* game) :
 Inventory::Inventory(Entity const * owner, Server* server) :
     owner(owner),
     server(server)
-{
-    insertNewItemStack(ItemStack(GameBlocks::GOLD->getDefaultItem(), 254));
-    //insertNewItemStack(ItemStack(ItemsRegister::BALL, 3));
-}
+{}
 #endif // CLIENT_SIDE
 
 Inventory::~Inventory()
@@ -30,7 +27,6 @@ Inventory::~Inventory()
 
 void Inventory::describe() const
 {
-    #ifndef CLIENT_SIDE
     //TEMP
     std::cout << "=== INVENTORY ===\n";
     for (const ItemStack& stack : contents)
@@ -39,7 +35,6 @@ void Inventory::describe() const
             std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n'; //OOPH
     }
     std::cout <<  std::endl;
-    #endif
 }
 
 bool Inventory::insertItemStack(ItemStack& stack)

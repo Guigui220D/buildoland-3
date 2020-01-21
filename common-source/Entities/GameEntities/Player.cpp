@@ -25,16 +25,16 @@
 unsigned int Player::this_player_id = 0;
 Player* Player::this_player = nullptr;
 
-Player::Player(World* world, unsigned int id) :
+Player::Player(World& world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-    inventory(this, world->getState())
+    inventory(*this, world.getState())
 {
     if (Player::this_player_id == id)
         Player::this_player = this;
 
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, .8f));
-    rs.setTexture(&world->getGame()->getResourceManager().getTexture("CHARA_TEST"));
+    rs.setTexture(&world.getGame().getResourceManager().getTexture("CHARA_TEST"));
 
     rs.setFillColor(id == Player::this_player_id ? sf::Color::Green : sf::Color::Red);
 
@@ -43,9 +43,9 @@ Player::Player(World* world, unsigned int id) :
     shadow.setFillColor(sf::Color(0, 0, 0, 64));
 }
 #else
-Player::Player(World* world, unsigned int id, const Client& client) :
+Player::Player(World& world, unsigned int id, const Client& client) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-    inventory(this, world->getServer()),
+    inventory(*this, world.getServer()),
     client(client)
 {}
 #endif
@@ -62,7 +62,7 @@ void Player::update(float delta)
     {
         sf::Vector2f dir;
 
-        if (getWorld()->getGame()->getWindow().hasFocus())
+        if (getWorld().getGame().getWindow().hasFocus())
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
             dir += sf::Vector2f(0, -1.f);
@@ -82,7 +82,7 @@ void Player::update(float delta)
             move_packet << (unsigned short)EntityActions::CtoS::Walk;
             move_packet << dir.x << dir.y;
             move_packet << position.x << position.y;
-            getWorld()->getState()->sendToServer(move_packet);
+            getWorld().getState().sendToServer(move_packet);
 
             last_walking_direction = dir;
             setWalkingDirection(dir);
@@ -99,7 +99,7 @@ void Player::update(float delta)
                 move_packet << (unsigned short)EntityActions::CtoS::Walk;
                 move_packet << dir.x << dir.y;
                 move_packet << position.x << position.y;
-                getWorld()->getState()->sendToServer(move_packet);
+                getWorld().getState().sendToServer(move_packet);
             }
         }
     }
@@ -125,7 +125,7 @@ void Player::draw(sf::RenderTarget& target) const
 void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
     if (getId() == Player::this_player_id)
-        getWorld()->updateChunks(new_chunk);
+        getWorld().updateChunks(new_chunk);
 }
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)
@@ -182,7 +182,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
-            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), *getWorld(), pos);
+            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos);
         }
         break;
 
@@ -198,13 +198,12 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
-            auto drops = getWorld()->getBlock(pos)->getDrops();
+            auto drops = getWorld().getBlock(pos)->getDrops();
 
             for (ItemStack& stack : drops)
                 inventory.insertItemStack(stack);
 
-            getWorld()->setBlock(pos, 0);
-            //inventory.describe();
+            getWorld().setBlock(pos, 0);
         }
         break;
 

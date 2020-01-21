@@ -1,6 +1,6 @@
 #include "GuiTitle.h"
 
-GuiTitle::GuiTitle(Game* game) :
+GuiTitle::GuiTitle(Game& game) :
     GuiElement(game, sf::FloatRect(.1f, .2f, .8f, .2f), (1000.f / 137.f), GuiAlign::Center, GuiAlign::Center)
 {
 

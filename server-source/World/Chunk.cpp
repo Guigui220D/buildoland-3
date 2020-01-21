@@ -14,17 +14,17 @@
 
 const int Chunk::CHUNK_SIZE = 16;
 
-Chunk::Chunk(World* world, sf::Vector2i pos) :
+Chunk::Chunk(World& world, sf::Vector2i pos) :
     ready(false),
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 1),
     pos(pos),
-    server(world->getServer()),
+    server(world.getServer()),
     world(world),
     packet(new sf::Packet()),
     packet_ready(false)
 {
-    world->getGenerator()->generateChunk(this);
+    world.getGenerator()->generateChunk(this);
 
     ready = true;
 }
@@ -60,7 +60,7 @@ const Block* Chunk::getBlock(int x, int y) const
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
-    return server->getBlocksManager().getBlockByID(getBlockId(x, y));
+    return server.getBlocksManager().getBlockByID(getBlockId(x, y));
 }
 
 const Ground* Chunk::getGround(int x, int y) const
@@ -69,7 +69,7 @@ const Ground* Chunk::getGround(int x, int y) const
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
-    return server->getGroundsManager().getGroundByID(getGroundId(x, y));
+    return server.getGroundsManager().getGroundByID(getGroundId(x, y));
 }
 
 void Chunk::setBlock(int x, int y, uint16_t id)

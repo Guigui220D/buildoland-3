@@ -4,7 +4,7 @@
 #include "LoadingScreenState.h"
 #include "GameState.h"
 
-MainMenuState::MainMenuState(Game* game, unsigned int id) :
+MainMenuState::MainMenuState(Game& game, unsigned int id) :
     State(game, id),
     test_button_1(new GuiButton(game, sf::FloatRect(.1f, .5f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::BottomOrRight, "Singleplayer")),
     test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::TopOrLeft, "Multiplayer")),
@@ -50,10 +50,10 @@ void MainMenuState::update(float delta_time)
     gui_manager.updateEverything(delta_time);
 
     if (test_button_1->hasBeenClicked())
-        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, serv_debug_checkbox->isChecked()));
+        getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, serv_debug_checkbox->isChecked()));
 
     if (test_button_2->hasBeenClicked())
-        getGame()->addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress(getGame()->getSettingsManager().server_address), 58888));
+        getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress(getGame().getSettingsManager().server_address), 58888));
 }
 
 void MainMenuState::draw(sf::RenderTarget& target) const
@@ -63,5 +63,5 @@ void MainMenuState::draw(sf::RenderTarget& target) const
 
 void MainMenuState::updateView()
 {
-    gui_manager.updateWindowSize(getGame()->getWindow().getSize());
+    gui_manager.updateWindowSize(getGame().getWindow().getSize());
 }

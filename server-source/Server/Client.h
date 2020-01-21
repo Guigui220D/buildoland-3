@@ -41,7 +41,7 @@ struct IpAndPort
 class Client
 {
     public:
-        Client(Server* server, IpAndPort ip_and_port, Player* player);
+        Client(Server& server, IpAndPort ip_and_port, Player* player);
         virtual ~Client();
 
         inline const IpAndPort& getIpAndPort() const { return ip_and_port; }
@@ -85,5 +85,5 @@ class Client
         Player* player;
 
     private:
-        Server* const server;
+        Server& server;
 };

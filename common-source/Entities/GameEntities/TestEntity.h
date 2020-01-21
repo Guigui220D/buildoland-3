@@ -13,7 +13,7 @@ class TestEntity : public LivingEntity
     public:
         inline unsigned short getEntityCode() const { return Entities::TestEntity; };
 
-        TestEntity(World* world, unsigned int id);
+        TestEntity(World& world, unsigned int id);
         ~TestEntity();
 
         void update(float delta);

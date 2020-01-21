@@ -20,8 +20,8 @@ class ItemsRegister;
 class World
 {
     public:
-        World(Server* server);
-        World(Server* server, int seed);
+        World(Server& server);
+        World(Server& server, int seed);
         virtual ~World();
 
         void init();
@@ -43,7 +43,7 @@ class World
 
         EntitiesManager& getEntityManager() { return entities; }
 
-        inline Server* getServer() const { return server; }
+        inline Server& getServer() const { return server; }
 
         /**
          * Gets a const reference to a chunk with its position
@@ -137,7 +137,7 @@ class World
         Generator* generator;
 
     private:
-        Server* server;
+        Server& server;
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;
 

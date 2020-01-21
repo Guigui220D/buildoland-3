@@ -9,7 +9,7 @@
 class TitleScreenState : public LoadingScreenState<MainMenuState>
 {
     public:
-        TitleScreenState(Game* game, unsigned int id);
+        TitleScreenState(Game& game, unsigned int id);
         ~TitleScreenState();
 
         void init() override;

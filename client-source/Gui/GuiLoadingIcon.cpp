@@ -1,6 +1,6 @@
 #include "GuiLoadingIcon.h"
 
-GuiLoadingIcon::GuiLoadingIcon(Game* game) :
+GuiLoadingIcon::GuiLoadingIcon(Game& game) :
     GuiElement(game, sf::FloatRect(.87f, .87f, .1f, .1f), 1.f, GuiAlign::BottomOrRight, GuiAlign::BottomOrRight)
 {
     icon.setSize(sf::Vector2f(1.f, 1.f));

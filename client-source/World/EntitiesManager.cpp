@@ -16,7 +16,7 @@
 
 #include "../States/GameState.h"
 
-EntitiesManager::EntitiesManager(World* world) :
+EntitiesManager::EntitiesManager(World& world) :
     world(world)
 {
     //ctor
@@ -218,7 +218,7 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
         sf::Packet request;
         request << Networking::CtoS::RequestEntityInfo;
         request << id;
-        world->getState()->sendToServer(request);
+        world.getState().sendToServer(request);
         return false;
     }
 

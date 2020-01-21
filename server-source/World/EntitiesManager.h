@@ -10,7 +10,7 @@ class Server;
 class EntitiesManager
 {
     public:
-        EntitiesManager(Server* server);
+        EntitiesManager(Server& server);
         ~EntitiesManager();
 
         /**
@@ -53,7 +53,7 @@ class EntitiesManager
     private:
         std::map<unsigned int, Entity*> entities;
 
-        Server* const server;
+        Server& server;
 
         unsigned int next_entity_id;
 };

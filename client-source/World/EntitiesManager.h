@@ -13,7 +13,7 @@ class EntitiesManager
     friend class World;
 
     public:
-        EntitiesManager(World* world);
+        EntitiesManager(World& world);
         ~EntitiesManager();
 
         /**
@@ -46,7 +46,7 @@ class EntitiesManager
         mutable sf::Mutex entities_mutex;
 
     private:
-        World* const world;
+        World& world;
 
         bool gotPlayer = false;
 

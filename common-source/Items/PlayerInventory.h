@@ -4,7 +4,7 @@
 
 #include <array>
 
-class Entity;
+class Player;
 
 #ifdef CLIENT_SIDE
 class GameState;
@@ -12,16 +12,16 @@ class GameState;
 class Server;
 #endif // CLIENT_SIDE
 
-class Inventory
+class PlayerInventory
 {
     public:
         #ifdef CLIENT_SIDE
-        Inventory(Entity const * owner, GameState* game);
+        PlayerInventory(const Player& owner, GameState& game);
         #else
-        Inventory(Entity const * owner, Server* server);
+        PlayerInventory(const Player& owner, Server& server);
         #endif // CLIENT_SIDE
 
-        virtual ~Inventory();
+        virtual ~PlayerInventory();
 
         std::array<ItemStack, 25> contents; //24 items and hand item
 
@@ -33,11 +33,11 @@ class Inventory
     protected:
 
     private:
-        Entity const * owner;
+        const Player& owner;
 
         #ifdef CLIENT_SIDE
-        GameState* game;
+        GameState& game;
         #else
-        Server* server;
+        Server& server;
         #endif // CLIENT_SIDE
 };

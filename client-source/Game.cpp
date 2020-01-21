@@ -30,13 +30,13 @@ int Game::init()
 {
     settings_manager.load();
 
-    window.create(sf::VideoMode(settings_manager.getIntSetting("window_size_x"), settings_manager.getIntSetting("window_size_y")), "BuildOLand 3");
+    window.create(sf::VideoMode(settings_manager.getInt("window_size_x"), settings_manager.getInt("window_size_y")), "BuildOLand 3");
 
-    bool vsync = settings_manager.getBoolSetting("vsync_enabled");
+    bool vsync = settings_manager.getBool("vsync_enabled");
 
     if (!vsync)
     {
-        int fps_limit = settings_manager.getIntSetting("fps_limit");
+        int fps_limit = settings_manager.getInt("fps_limit");
         if (fps_limit < 0)
             fps_limit = 0;
         window.setFramerateLimit(fps_limit);

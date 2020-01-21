@@ -35,7 +35,10 @@ Player::Player(World* world, unsigned int id) :
     rs.setOrigin(sf::Vector2f(.5f, .8f));
     rs.setTexture(&world->getGame()->getResourceManager().getTexture("CHARA_TEST"));
 
-    rs.setFillColor(id == Player::this_player_id ? sf::Color::Green : sf::Color::Red);
+    sf::Color col = id == Player::this_player_id ? sf::Color(world->getGame()->getSettingsManager().getInt("player_shirt_color")) : sf::Color::Red;
+    col.a = 255;
+
+    rs.setFillColor(col);
 
     shadow.setRadius(.17f);
     shadow.setOrigin(sf::Vector2f(.17f, .17f));

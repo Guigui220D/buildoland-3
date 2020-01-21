@@ -19,22 +19,8 @@
 		"uuid": "none",
 		"nick_name": "Guigui@",
 		
-		"shoes_colors": {
-			"r": 127,
-			"g": 64,
-			"b": 0
-		},
-		
-		"pants_colors": {
-			"r": 127,
-			"g": 64,
-			"b": 0
-		},
-		
-		"shirt_colors": {
-			"r": 127,
-			"g": 64,
-			"b": 0
-		}
+		"shoes_color": 4202496,
+		"pants_color": 4227327,
+		"shirt_color": 16776960
 	}
 }

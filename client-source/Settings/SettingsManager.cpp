@@ -3,7 +3,7 @@
 #include <fstream>
 #include <iostream>
 
-#include <SFML/System.hpp>
+
 
 #include "../../common-source/Utils/UsernameCheck.h"
 
@@ -17,7 +17,7 @@ SettingsManager::~SettingsManager()
 {
 }
 
-int SettingsManager::getIntSetting(const std::string setting_name) const
+int SettingsManager::getInt(const std::string setting_name) const
 {
     auto i = int_settings.find(setting_name);
 
@@ -27,7 +27,7 @@ int SettingsManager::getIntSetting(const std::string setting_name) const
     return i->second;
 }
 
-bool SettingsManager::getBoolSetting(const std::string setting_name) const
+bool SettingsManager::getBool(const std::string setting_name) const
 {
     auto i = bool_settings.find(setting_name);
 
@@ -37,7 +37,7 @@ bool SettingsManager::getBoolSetting(const std::string setting_name) const
     return i->second;
 }
 
-const std::string& SettingsManager::getStringSetting(const std::string setting_name) const
+const std::string& SettingsManager::getString(const std::string setting_name) const
 {
     auto i = string_settings.find(setting_name);
 
@@ -64,12 +64,16 @@ void SettingsManager::load()
     loadIntSetting({ "window" }, "fps_limit", "fps_limit", 0);
     loadBoolSetting({ "window" }, "vsync_enabled", "vsync_enabled", true);
 
+    loadIntSetting({ "player" }, "shoes_color", "player_shoes_color", 0xFFFF0000);
+    loadIntSetting({ "player" }, "shirt_color", "player_shirt_color", 0xFFFFFFFF);
+    loadIntSetting({ "player" }, "pants_color", "player_pants_color", 0xFF0000FF);
+
     std::cout << "Loaded all settings in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
 }
 
 bool SettingsManager::loadIntSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, int default_value)
 {
-    auto i = int_settings.find(name);
+    auto i = int_settings.find(setting_name);
     if (i != int_settings.end())
         int_settings.erase(i);
 
@@ -114,7 +118,7 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
 
 bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, bool default_value)
 {
-    auto i = bool_settings.find(name);
+    auto i = bool_settings.find(setting_name);
     if (i != bool_settings.end())
         bool_settings.erase(i);
 
@@ -159,7 +163,7 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
 
 bool SettingsManager::loadStringSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, const std::string default_value)
 {
-    auto i = string_settings.find(name);
+    auto i = string_settings.find(setting_name);
     if (i != string_settings.end())
         string_settings.erase(i);
 

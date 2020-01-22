@@ -20,6 +20,7 @@ void Game::loadResources()
         !resource_manager.loadTextureFromFile("Terrain/blocks.png", "BLOCK_TEXTURES");
     //Entities
     fail_count +=
+        !resource_manager.loadTextureFromFile("Temp/zombie.png", "ZOMBIE") +
         !resource_manager.loadTextureFromFile("Character/naked.png", "CHARA_BASE") +
         !resource_manager.loadTextureFromFile("Character/shoes.png", "CHARA_SHOES") +
         !resource_manager.loadTextureFromFile("Character/pants.png", "CHARA_PANTS") +

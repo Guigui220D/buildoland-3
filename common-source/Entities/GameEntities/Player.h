@@ -52,8 +52,10 @@ class Player : public LivingEntity
         #ifdef CLIENT_SIDE
         void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;
 
-        sf::Texture texture;
-        sf::RectangleShape rs;
+        sf::RectangleShape base;
+        sf::RectangleShape shoes;
+        sf::RectangleShape pants;
+        sf::RectangleShape shirt;
         sf::CircleShape shadow;
 
         sf::Vector2f last_walking_direction;

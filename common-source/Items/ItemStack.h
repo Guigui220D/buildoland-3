@@ -2,6 +2,8 @@
 
 #include "Item.h"
 
+class ItemsRegister;
+
 class ItemStack
 {
     public:
@@ -10,6 +12,7 @@ class ItemStack
 
         ItemStack(Item const * item, uint8_t amount = 1);
         ItemStack();
+        ItemStack(uint32_t integer, const ItemsRegister& reg);
 
         ~ItemStack();
 
@@ -48,7 +51,7 @@ class ItemStack
         inline uint8_t getAmount() const { return amount; }
         inline Item const * getItem() const { return item; }
 
-        inline uint32_t getInt() const { return item->getId() & amount << 16; }
+        inline uint32_t getInt() const { return item->getId() | amount << 16; }
 
     private:
         Item const * item;

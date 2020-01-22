@@ -6,7 +6,8 @@ namespace InventoryUpdates
     {
         enum : unsigned short
         {
-            AddStack
+            AddStack,
+            SetStack
         };
     }
 }

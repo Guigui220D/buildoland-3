@@ -126,6 +126,11 @@ void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
     if (getId() == Player::this_player_id)
         getWorld().updateChunks(new_chunk);
 }
+
+void Player::useHand(sf::Vector2i pos)
+{
+    inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
+}
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)
 {
@@ -181,7 +186,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
-            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos);
+            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
         }
         break;
 

@@ -32,6 +32,8 @@ class Player : public LivingEntity
         void update(float delta);
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
+
+        void useHand(sf::Vector2i pos);
         #else
         void takePlayerActionPacket(sf::Packet& packet);
 

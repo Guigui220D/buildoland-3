@@ -15,6 +15,11 @@ ItemStack::ItemStack() :
     amount(0)
 {}
 
+ItemStack::ItemStack(uint32_t integer, const ItemsRegister& reg) :
+    item(reg.getItemByID(integer & 0xFFFF)),
+    amount((integer & 0xFF0000) >> 16)
+{}
+
 ItemStack::~ItemStack() {}
 
 void ItemStack::swap(ItemStack& other)
@@ -49,7 +54,7 @@ ItemStack ItemStack::takeHalf()
 
 bool ItemStack::add(ItemStack& other)
 {
-    if (operator bool())
+    if (!operator bool())
     {
         swap(other);
         return true;

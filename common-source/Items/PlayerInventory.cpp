@@ -7,6 +7,9 @@
 
 #ifndef CLIENT_SIDE
     #include "../../server-source/Server/Server.h"
+#else
+    #include "../../client-source/States/GameState.h"
+    #include "../../client-source/Game.h"
 #endif
 
 #ifdef CLIENT_SIDE
@@ -32,8 +35,8 @@ void PlayerInventory::describe() const
     std::cout << "=== INVENTORY ===\n";
     for (const ItemStack& stack : contents)
     {
-        if (stack.getAmount() != 0 && stack.getItem()->getId() != 0)
-            std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n'; //OOPH
+        if (stack)
+            std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
     }
     std::cout <<  std::endl;
 }
@@ -58,6 +61,16 @@ bool PlayerInventory::insertItemStack(ItemStack& stack)
 
 void PlayerInventory::insertNewItemStack(ItemStack stack)
 {
+    #ifndef CLIENT_SIDE
+    sf::Packet insert;
+
+    insert << (unsigned short)Networking::StoC::InventoryUpdate;
+    insert << (unsigned short)InventoryUpdates::StoC::AddStack;
+    insert << stack.getInt();
+
+    owner.getClient().send(insert);
+    #endif
+
     for (ItemStack& istack : contents)
         if (istack.add(stack))
             return;
@@ -78,7 +91,33 @@ bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
     switch (type)
     {
     case InventoryUpdates::StoC::AddStack:
-        std::cout << "ADD STACK" << std::endl;
+        {
+            uint32_t itemstack; packet >> itemstack;
+            if (packet)
+            {
+                ItemStack stack(itemstack, game.getGame().getItemsRegister());
+                std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+                insertItemStack(stack);
+            }
+        }
+        describe();
+        return true;
+    case InventoryUpdates::StoC::SetStack:
+        {
+            unsigned int pos; packet >> pos;
+            uint32_t itemstack; packet >> itemstack;
+            if (packet)
+            {
+                if (pos >= contents.size())
+                    return false;
+
+                ItemStack stack(itemstack, game.getGame().getItemsRegister());
+                std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+
+                contents.at(pos).swap(stack);
+            }
+        }
+        describe();
         return true;
     default:
         std::cerr << "Could not read inventory update, unknown type." << std::endl;

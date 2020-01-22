@@ -8,9 +8,7 @@ class BallItem : public Item
         BallItem();
         virtual ~BallItem();
 
-        #ifndef CLIENT_SIDE
-        void use(ItemStack& stack, World& world, sf::Vector2i click_pos) const;
-        #endif // CLIENT_SIDE
+        void use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const;
 
     protected:
 

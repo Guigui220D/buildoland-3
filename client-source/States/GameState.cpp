@@ -154,12 +154,9 @@ bool GameState::handleEvent(sf::Event& event)
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-            sf::Packet place_packet;
-            place_packet << (unsigned short)Networking::CtoS::PlayerAction;
-            place_packet << (unsigned short)EntityActions::CtoS::UseItem;
-            place_packet << world_pos_i.x << world_pos_i.y;
+            if(Player::this_player)
+                Player::this_player->useHand(world_pos_i);
 
-            sendToServer(place_packet);
         }
         break;
 

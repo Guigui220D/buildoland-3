@@ -5,7 +5,7 @@
 class PhysicsEntity : public Entity
 {
     public:
-        PhysicsEntity(World* world, unsigned int id, sf::Vector2f hitbox_size);
+        PhysicsEntity(World& world, unsigned int id, sf::Vector2f hitbox_size);
         virtual ~PhysicsEntity();
 
         bool canBeHere(sf::Vector2f new_position) const;

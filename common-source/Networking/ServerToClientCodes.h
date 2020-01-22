@@ -15,7 +15,8 @@ namespace Networking
             EntityAction,
             BlockUpdate,
             GroundUpdate,
-            PlayerRectification
+            PlayerRectification,
+            InventoryUpdate
         };
     }
 }

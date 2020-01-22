@@ -1,0 +1,48 @@
+#include "BlockItem.h"
+
+#include "../ItemStack.h"
+
+#include "../../Entities/GameEntities/Player.h"
+
+#include "../../Blocks/GameBlocks.h"
+
+#ifdef CLIENT_SIDE
+    #include "../../../client-source/World/World.h"
+#else
+    #include "../../../server-source/World/World.h"
+    #include "../../../server-source/Server/ClientsManager.h"
+#endif // CLIENT_SIDE
+
+BlockItem::BlockItem(Block const * block) :
+    Item(block->getName() + "_block"),
+    block(block)
+{
+    //ctor
+}
+
+BlockItem::~BlockItem()
+{
+    //dtor
+}
+
+void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
+{
+    if (world.getBlock(click_pos) == GameBlocks::AIR)
+    {
+        stack.takeSome(1);
+
+        #ifndef CLIENT_SIDE
+        world.setBlock(click_pos, block->getId());
+
+        sf::Packet set;
+
+        set << (unsigned short)Networking::StoC::InventoryUpdate;
+        set << (unsigned short)InventoryUpdates::StoC::AddStack;
+        set << 0;   //We set the first slot of the inventory (hand)
+        set << stack.getInt();
+
+        player.getClient().send(set);
+        #endif
+    }
+}
+

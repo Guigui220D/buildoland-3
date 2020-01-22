@@ -44,7 +44,7 @@ int Game::init()
     else
         window.setVerticalSyncEnabled(true);
 
-    addStateOnTop(new TitleScreenState(this, 0));
+    addStateOnTop(new TitleScreenState(*this, 0));
     return 0;
 }
 

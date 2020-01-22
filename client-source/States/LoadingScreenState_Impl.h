@@ -4,7 +4,7 @@
 
 template <class T>
 template <typename... Args>
-LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game* game, unsigned int id, Args&&... args) :
+LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game& game, unsigned int id, Args&&... args) :
     State(game, id),
     loading_thread(&LoadingScreenState::load, this),
     fade_in(fade_in),
@@ -65,7 +65,7 @@ void LoadingScreenState<T>::update(float delta_time)
             //std::cout << "Loading took " << working_time.getElapsedTime().asSeconds() << " seconds." << std::endl;
             working = false;
             fade_clock.restart();
-            getGame()->addStateUnderTop(state_being_loaded, false);
+            getGame().addStateUnderTop(state_being_loaded, false);
         }
 
         if (fade_clock.getElapsedTime().asMilliseconds())

@@ -13,7 +13,7 @@
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
-LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
+LivingEntity::LivingEntity(World& world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed),
     animation(32, 3, .15f)
@@ -27,7 +27,7 @@ LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_si
 
 }
 #else
-LivingEntity::LivingEntity(World* world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
+LivingEntity::LivingEntity(World& world, unsigned int id, sf::Vector2f hitbox_size, float speed) :
     PhysicsEntity(world, id, hitbox_size),
     walking_speed(speed)
 {

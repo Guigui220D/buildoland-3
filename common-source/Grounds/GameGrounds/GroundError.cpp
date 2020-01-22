@@ -1,7 +1,7 @@
 #include "GroundError.h"
 
 GroundError::GroundError() :
-    Ground("error", 0)
+    Ground("error", false, 0)
 {
     //ctor
 }

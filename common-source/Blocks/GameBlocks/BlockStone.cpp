@@ -1,7 +1,7 @@
 #include "BlockStone.h"
 
 BlockStone::BlockStone() :
-    Block("stone", 2)
+    Block("stone", true, 2)
 {
     //ctor
 }

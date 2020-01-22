@@ -4,7 +4,7 @@
 #include "LoadingScreenState.h"
 #include "GameState.h"
 
-ErrorState::ErrorState(Game* game, sf::String error, unsigned int id) :
+ErrorState::ErrorState(Game& game, sf::String error, unsigned int id) :
     State(game, id),
     go_back_button(game, sf::FloatRect(.1f, .7f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::Center, "Back to main menu"),
     message(game, sf::FloatRect(.05f, .4f, .9f, .2f), 8.f, GuiAlign::Center, GuiAlign::Center, error)
@@ -58,6 +58,6 @@ void ErrorState::draw(sf::RenderTarget& target) const
 
 void ErrorState::updateView()
 {
-    go_back_button.calculateView(getGame()->getWindow().getSize());
-    message.calculateView(getGame()->getWindow().getSize());
+    go_back_button.calculateView(getGame().getWindow().getSize());
+    message.calculateView(getGame().getWindow().getSize());
 }

@@ -4,7 +4,7 @@
 
 #include <iostream>
 
-ClientsManager::ClientsManager(Server* server) :
+ClientsManager::ClientsManager(Server& server) :
     server(server)
 {
     //ctor
@@ -87,7 +87,7 @@ int ClientsManager::doTimeOuts(float timeout_s)
 
             if (client.hasPlayer())
             {
-                server->getWorld().getEntityManager().removeEntity(client.getPlayer()->getId());
+                server.getWorld().getEntityManager().removeEntity(client.getPlayer()->getId());
                 client.setPlayer(nullptr);
             }
 

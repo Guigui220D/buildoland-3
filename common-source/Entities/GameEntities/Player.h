@@ -8,6 +8,8 @@
     class Client;
 #endif // CLIENT_SIDE
 
+#include "../../Items/playerInventory.h"
+
 class Chunk;
 
 class Player : public LivingEntity
@@ -21,23 +23,32 @@ class Player : public LivingEntity
         inline unsigned short getEntityCode() const { return Entities::Player; };
 
         #ifdef CLIENT_SIDE
-            Player(World* world, unsigned int id);
+            Player(World& world, unsigned int id);
         #else
-            Player(World* world, unsigned int id, const Client& client);
+            Player(World& world, unsigned int id, const Client& client);
         #endif // CLIENT_SIDE
         ~Player();
 
         void update(float delta);
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
+
+        void useHand(sf::Vector2i pos);
         #else
         void takePlayerActionPacket(sf::Packet& packet);
+
+        inline const Client& getClient() const { return client; }
         #endif
 
         inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
 
         bool isSubscribedTo(sf::Vector2i chunk) const;
+
+        inline PlayerInventory& getInventory() { return inventory; }
+
     private:
+        PlayerInventory inventory;
+
         #ifdef CLIENT_SIDE
         void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;
 

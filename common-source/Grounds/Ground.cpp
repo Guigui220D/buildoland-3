@@ -14,8 +14,9 @@ Ground::~Ground()
 }
 
 #ifndef CLIENT_SIDE
-Ground::Ground(const std::string name, uint32_t default_texture) :
-    name(name)
+Ground::Ground(const std::string name, bool should_have_item, uint32_t default_texture) :
+    name(name),
+    has_item(should_have_item)
 {
     //ctor
 }
@@ -23,8 +24,9 @@ Ground::Ground(const std::string name, uint32_t default_texture) :
 const TilesetHelper<16, 16, 1> Ground::tilesetHelper;
 const TilesetHelper<16, 8, 1> Ground::tilesetHelperDetails;
 
-Ground::Ground(const std::string name, uint32_t default_texture) :
+Ground::Ground(const std::string name, bool should_have_item, uint32_t default_texture) :
     name(name),
+    has_item(should_have_item),
     default_texture(default_texture)
 {
     //ctor
@@ -34,7 +36,7 @@ uint32_t Ground::getRandomInt(GroundInfo info, int add)
 {
     //Pseudo random from seed and ground position
     sf::Vector2i pos = info.getPos();
-    return XXH32(&pos, sizeof(pos), info.getWorld()->getSeed() + add);
+    return XXH32(&pos, sizeof(pos), info.getWorld().getSeed() + add);
 }
 
 sf::VertexArray Ground::getSurfaceDetails(GroundInfo info, int frame) const
@@ -46,7 +48,7 @@ sf::VertexArray Ground::getSurfaceDetails(GroundInfo info, int frame) const
 
 bool Ground::acceptsTextureBleedings(GroundInfo info, const Ground* other) const
 {
-    return (other == info.getWorld()->getGame()->getGroundsManager().WATER && other->getId() != getId()) || (other->hasTextureBleedings() && (other->getId() > id));
+    return (other == GameGrounds::WATER && other->getId() != getId()) || (other->hasTextureBleedings() && (other->getId() > id));
 }
 
 void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array, int frame) const
@@ -54,7 +56,7 @@ void Ground::addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array
     for (int i = 0; i < 4; i++)
     {
         sf::Vector2i opos = info.getPos() + utils::getRelativeBlock(i);
-        const Ground* other_ground = info.getWorld()->getGround(opos);
+        const Ground* other_ground = info.getWorld().getGround(opos);
         if (acceptsTextureBleedings(info, other_ground))
         {
             Quad tex = tilesetHelperDetails.getFourVertices(other_ground->getBleedingForNeighborGrounds(GroundInfo(info.getWorld(), opos), frame), i);

@@ -9,7 +9,7 @@ class State
 {
     public:
         //The constructor should not take time! every time consuming action should be done in a init function
-        State(Game* game, unsigned int id = 0);
+        State(Game& game, unsigned int id = 0);
         virtual ~State();
 
         virtual void init();
@@ -49,10 +49,10 @@ class State
          */
         inline unsigned int getID() const { return id; }
         /**
-         * To get the the game this state belongs to
+         * To get the game this state belongs to
          * @return The pointer to the game
          */
-        inline Game* getGame() const { return game; }
+        inline Game& getGame() const { return game; }
 
         std::atomic<bool> must_be_destroyed = false;
 
@@ -61,6 +61,6 @@ class State
         bool update_transparent, draw_transparent;
 
     private:
-        Game* game;
+        Game& game;
         unsigned int id;
 };

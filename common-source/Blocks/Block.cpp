@@ -1,17 +1,24 @@
 #include "Block.h"
 
+#ifndef CLIENT_SIDE
+#include "../Items/ItemsRegister.h"
+#endif // CLIENT_SIDE
+
 #ifdef CLIENT_SIDE
 const TilesetHelper<16, 16, 1> Block::tilesetHelper;
 
-Block::Block(const std::string name, uint32_t default_texture) :
+Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
     name(name),
+    has_item(should_have_item),
     default_texture(default_texture)
 {
     //ctor
 }
 #else
-Block::Block(const std::string name, uint32_t default_texture) :
-    name(name)
+Block::Block(const std::string name, bool should_have_item, uint32_t default_texture) :
+    name(name),
+    has_item(should_have_item),
+    drop(ItemsRegister::NULL_ITEM)
 {
     //ctor
 }
@@ -41,5 +48,12 @@ TextQuad Block::getSideVertices(BlockInfo info) const
         for (int i = 0; i < 4; i++)
             side.verts[i].color = sf::Color(127, 127, 127);
     return side;
+}
+#else
+std::vector<ItemStack> Block::getDrops() const
+{
+    if (!has_item)
+        return {};
+    return { ItemStack(drop) };
 }
 #endif

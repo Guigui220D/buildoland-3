@@ -9,7 +9,7 @@
 class ErrorState : public State
 {
     public:
-        ErrorState(Game* game, sf::String error, unsigned int id = 0);
+        ErrorState(Game& game, sf::String error, unsigned int id = 0);
         ~ErrorState();
 
         void init() override;

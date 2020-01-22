@@ -18,10 +18,10 @@ class Chunk
 
         static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
 
-        Chunk(World* world, sf::Vector2i pos);
+        Chunk(World& world, sf::Vector2i pos);
         ~Chunk();
 
-        inline Server* getServer() const { return server; }
+        inline Server& getServer() const { return server; }
 
         inline sf::Vector2i getPos() const { return pos; }
 
@@ -89,8 +89,8 @@ class Chunk
         Arr2D<uint16_t> blocks, grounds;
         const sf::Vector2i pos;
 
-        Server* server;
-        World* world;
+        Server& server;
+        World& world;
 
         std::unique_ptr<sf::Packet> packet;
         bool packet_ready;

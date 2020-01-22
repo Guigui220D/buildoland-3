@@ -11,8 +11,8 @@ class GameState : public State
     friend class World;
 
     public:
-        GameState(Game* game, unsigned int id, bool show_server_console);
-        GameState(Game* game, unsigned int id, sf::IpAddress server_address, uint16_t server_port);
+        GameState(Game& game, unsigned int id, bool show_server_console);
+        GameState(Game& game, unsigned int id, sf::IpAddress server_address, uint16_t server_port);
         ~GameState();
 
         void init() override;
@@ -60,9 +60,4 @@ class GameState : public State
         sf::RectangleShape block_pointer_side;
         sf::RectangleShape block_pointer_icon;
         bool bp_volume;
-
-        sf::Vector2i test_chunk_pos;
-        sf::Vector2i test_next_chunk_pos_turn;
-        int test_chunk_next_distance = 1;
-        int test_chunk_next_direction = 0;
 };

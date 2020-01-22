@@ -8,7 +8,7 @@
 
 #include "../Blocks/Block.h"
 
-PhysicsEntity::PhysicsEntity(World* world, unsigned int id, sf::Vector2f hitbox_size) :
+PhysicsEntity::PhysicsEntity(World& world, unsigned int id, sf::Vector2f hitbox_size) :
     Entity(world, id),
     hitbox_size(hitbox_size)
 {
@@ -31,7 +31,7 @@ bool PhysicsEntity::canBeHere(sf::Vector2f new_position) const
     for (int i = 0; i < 4; i++)
     {
         sf::Vector2i block_pos(std::floor(points[i].x + .5f), std::floor(points[i].y + .5f));
-        if (getWorld()->getBlock(block_pos)->isSolid(BlockInfo(getWorld(), block_pos)))
+        if (getWorld().getBlock(block_pos)->isSolid(BlockInfo(getWorld(), block_pos)))
             return false;
     }
 

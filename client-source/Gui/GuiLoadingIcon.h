@@ -5,7 +5,7 @@
 class GuiLoadingIcon : public GuiElement
 {
     public:
-        GuiLoadingIcon(Game* game);
+        GuiLoadingIcon(Game& game);
         virtual ~GuiLoadingIcon();
 
         virtual void draw(sf::RenderTarget& target) const override;

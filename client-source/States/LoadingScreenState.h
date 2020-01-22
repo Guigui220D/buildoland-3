@@ -10,7 +10,7 @@ class LoadingScreenState : public State
         static_assert(std::is_base_of<State, T>::value, "The loading screen must load a state.");
 
         template <typename... Args>
-        LoadingScreenState(bool fade_in, bool fade_out, Game* game, unsigned int id, Args&&... args);
+        LoadingScreenState(bool fade_in, bool fade_out, Game& game, unsigned int id, Args&&... args);
         ~LoadingScreenState();
 
         bool handleEvent(sf::Event& event) override;

@@ -1,6 +1,6 @@
 #include "State.h"
 
-State::State(Game* game, unsigned int id) :
+State::State(Game& game, unsigned int id) :
     game(game),
     id(id)
 {

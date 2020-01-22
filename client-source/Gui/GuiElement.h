@@ -20,7 +20,7 @@ class GuiElement
          * @param zone : The place where the element should be fit on the screen (values between 0 and 1)
          * @param aspect_ratio : the ratio of the element (not of the zone), it's the width divided by the height
          */
-        GuiElement(Game* game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align);
+        GuiElement(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align);
         virtual ~GuiElement();
 
         /**
@@ -80,7 +80,7 @@ class GuiElement
          * To get the the game this element belongs to
          * @return The pointer to the game
          */
-        inline Game* getGame() const { return game; }
+        inline Game& getGame() const { return game; }
 
     protected:
         /**
@@ -99,7 +99,7 @@ class GuiElement
         inline float getAspectRatio() const { return ratio; }
 
     private:
-        Game* game;
+        Game& game;
 
         sf::FloatRect zone;
         float ratio;

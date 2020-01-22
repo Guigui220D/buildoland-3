@@ -1,7 +1,7 @@
 #include "BlockGold.h"
 
 BlockGold::BlockGold() :
-    Block("gold", 5)
+    Block("gold", true, 5)
 {
     //ctor
 }

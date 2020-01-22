@@ -19,7 +19,7 @@ class Ground
         static const TilesetHelper<16, 8, 1> tilesetHelperDetails;
         #endif
 
-        Ground(const std::string name, uint32_t default_texture);   //Textude id shall be ignored in server
+        Ground(const std::string name, bool should_have_item, uint32_t default_texture);   //Textude id shall be ignored in server
         virtual ~Ground();
 
         /**
@@ -33,6 +33,10 @@ class Ground
          * @return The id of this ground
          */
         inline uint16_t getId() const { return id; }
+        /**
+         * @return Returns true if that ground has an item
+         */
+        inline bool hasItem() const { return has_item; }
 
         #ifdef CLIENT_SIDE
         /**
@@ -110,6 +114,8 @@ class Ground
     private:
         std::string name;
         mutable uint16_t id;
+
+        const bool has_item;
 
         #ifdef CLIENT_SIDE
         uint32_t default_texture;

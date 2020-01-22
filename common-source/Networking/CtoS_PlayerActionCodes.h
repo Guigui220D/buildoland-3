@@ -7,9 +7,8 @@ namespace EntityActions
         enum : unsigned short
         {
             Walk,
-            PlaceBlock,
             BreakBlock,
-            SetGround
+            UseItem
         };
     }
 }

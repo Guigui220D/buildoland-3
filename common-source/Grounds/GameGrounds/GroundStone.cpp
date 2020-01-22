@@ -1,7 +1,7 @@
 #include "GroundStone.h"
 
 GroundStone::GroundStone() :
-    Ground("stone", 1)
+    Ground("stone", true, 1)
 {
     //ctor
 }

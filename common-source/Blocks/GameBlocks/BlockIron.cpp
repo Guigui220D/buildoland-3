@@ -1,7 +1,7 @@
 #include "BlockIron.h"
 
 BlockIron::BlockIron() :
-    Block("iron", 4)
+    Block("iron", true, 4)
 {
     //ctor
 }

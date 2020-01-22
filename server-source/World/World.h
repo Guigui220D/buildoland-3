@@ -4,7 +4,6 @@
 
 #include "../Utils/Utils.h"
 #include "EntitiesManager.h"
-
 #include "Generator.h"
 
 #include <map>
@@ -16,12 +15,13 @@ class Ground;
 
 class GameBlocks;
 class GameGrounds;
+class ItemsRegister;
 
 class World
 {
     public:
-        World(Server* server);
-        World(Server* server, int seed);
+        World(Server& server);
+        World(Server& server, int seed);
         virtual ~World();
 
         void init();
@@ -43,11 +43,7 @@ class World
 
         EntitiesManager& getEntityManager() { return entities; }
 
-        /**
-         * Gets the game that own this world
-         * @return A pointer to the game
-         */
-        inline Server* getServer() const { return server; }
+        inline Server& getServer() const { return server; }
 
         /**
          * Gets a const reference to a chunk with its position
@@ -70,42 +66,13 @@ class World
          */
         inline bool isChunkLoaded(sf::Vector2i pos) const { return chunks.find(utils::combine(pos.x, pos.y)) != chunks.end(); }
 
-        /**
-         * Gets a block id from its position
-         * @param pos : the position of the block
-         * @return The id of the block
-         */
         uint16_t getBlockId(sf::Vector2i pos);
-        /**
-         * Gets a ground id from its position
-         * @param pos : the position of the ground
-         * @return The id of the ground
-         */
         uint16_t getGroundId(sf::Vector2i pos);
 
-        /**
-         * Gets a block from its position
-         * @param pos : the position of the block
-         * @return The pointer to the block
-         */
         const Block* getBlock(sf::Vector2i pos);
-        /**
-         * Gets a ground from its position
-         * @param pos : the position of the ground
-         * @return The pointer to the ground
-         */
         const Ground* getGround(sf::Vector2i pos);
-        /**
-         * Sets a block at a position with its id
-         * @param pos : the position of the block to set
-         * @param id : the id of the block
-         */
+
         void setBlock(sf::Vector2i pos, uint16_t id);
-        /**
-         * Sets a block at a position with its id
-         * @param pos : the position of the block to set
-         * @param id : the id of the block
-         */
         void setGround(sf::Vector2i pos, uint16_t id);
 
         /**
@@ -152,15 +119,7 @@ class World
             return result;
         }
 
-        /**
-         * Get a reference to the blockManager of the game
-         * @return A reference to the blockManager
-         */
         inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
-        /**
-         * Get a reference to the groundManager of the game
-         * @return A reference to the groundsManager
-         */
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
         inline Generator* getGenerator() const { return generator; };
@@ -178,7 +137,7 @@ class World
         Generator* generator;
 
     private:
-        Server* server;
+        Server& server;
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;
 

@@ -8,17 +8,17 @@ class GameBlocks;
 class BlockInfo
 {
     public:
-        BlockInfo(World* world, sf::Vector2i block_pos) :
+        BlockInfo(World& world, sf::Vector2i block_pos) :
             world(world),
             block_pos(block_pos)
         { }
 
-        inline World* getWorld() const { return world; }
+        inline World& getWorld() const { return world; }
         inline sf::Vector2i getPos() const { return block_pos; }
 
         const GameBlocks& getBlocksManager() const;
 
     private:
-        World* world;
+        World& world;
         sf::Vector2i block_pos;
 };

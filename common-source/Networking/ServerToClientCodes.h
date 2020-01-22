@@ -4,7 +4,7 @@ namespace Networking
 {
     namespace StoC
     {
-        enum : unsigned short
+        enum
         {
             Disconnect = 0,
 

@@ -69,7 +69,7 @@ bool Server::init(uint16_t port)
         clients_manager.getClient(owner).setPlayer(owner_player);
 
         sf::Packet handshake;
-        handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+        handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
         handshake << player_id;
         server_socket.send(handshake, owner.address, owner.port);
 
@@ -126,7 +126,7 @@ void Server::close()
 {
     receiver_thread.wait();
 
-    sf::Packet server_stopping; server_stopping << (unsigned short)Networking::StoC::Disconnect;
+    sf::Packet server_stopping; server_stopping << Networking::StoC::Disconnect;
     clients_manager.sendToAll(server_stopping);
 
     server_socket.unbind();
@@ -154,7 +154,7 @@ void Server::receiver()
 
                 clients_manager.resetClientTimer(iandp);
 
-                unsigned short code; packet >> code;
+                int code; packet >> code;
 
                 switch (code)
                 {
@@ -205,7 +205,7 @@ void Server::receiver()
                         clients_manager.getClient(iandp).setPlayer(new_player);
 
                         sf::Packet handshake;
-                        handshake << (unsigned short)Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+                        handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
                         handshake << player_id;
 
                         server_socket.send(handshake, address, port);
@@ -275,7 +275,7 @@ void Server::passReceiveOnce()
 {
     //When we stop the server from outside the receiver, the receive function is blocking so it will wait for something to happen and block
     //To avoid that we send a packet to ourselves to pass the receive once, enough for the while loop of the thread to stop
-    sf::Packet p; p << (unsigned short)Networking::CtoS::KeepAlive;
+    sf::Packet p; p << Networking::CtoS::KeepAlive;
 
     server_socket.send(p, sf::IpAddress::LocalHost, server_socket.getLocalPort());
 }

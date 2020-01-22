@@ -60,8 +60,8 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
     {
         sf::Packet leave;
 
-        leave << (unsigned short)Networking::StoC::EntityAction;
-        leave << (unsigned short)EntityActions::StoC::ForgetEntity;
+        leave << Networking::StoC::EntityAction;
+        leave << EntityActions::StoC::ForgetEntity;
         leave << getId();
 
         getWorld().sendToSubscribersWithException(leave, old_chunk, new_chunk);
@@ -87,9 +87,9 @@ void Entity::makeNewEntityPacket(sf::Packet& packet) const
 {
     packet.clear();
 
-    packet << (unsigned short)Networking::StoC::EntityAction;
-    packet << (unsigned short)EntityActions::StoC::AddEntity;
-    packet << (unsigned short)getEntityCode();
+    packet << Networking::StoC::EntityAction;
+    packet << EntityActions::StoC::AddEntity;
+    packet << getEntityCode();
     packet << getId();
 
     addInfoToNewEntityPacket(packet);

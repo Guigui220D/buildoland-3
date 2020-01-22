@@ -73,8 +73,9 @@ Entity* EntitiesManager::getEntity(unsigned int id)
 
 bool EntitiesManager::readEntityPacket(sf::Packet& packet)
 {
-    unsigned short entity_action_code;
-    if (!(packet >> entity_action_code))
+    int entity_action_code; packet >> entity_action_code;
+
+    if (!packet)
     {
         std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
         return false;
@@ -100,15 +101,15 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
 
 bool EntitiesManager::addEntity(sf::Packet& packet)
 {
-    unsigned short entity_code;
-    if (!(packet >> entity_code))
+    unsigned short entity_code; packet >> entity_code;
+    if (!packet)
     {
         std::cerr << "Entity packet was too short (reading type code)." << std::endl;
         return false;
     }
 
-    unsigned int entity_id;
-    if (!(packet >> entity_id))
+    unsigned int entity_id; packet >> entity_id;
+    if (!packet)
     {
         std::cerr << "Entity packet was too short (reading entity id)." << std::endl;
         return false;

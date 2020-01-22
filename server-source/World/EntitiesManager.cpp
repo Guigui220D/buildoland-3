@@ -49,8 +49,8 @@ void EntitiesManager::removeEntity(unsigned int id)
         entities.erase(entities.find(id));
 
     sf::Packet packet;
-    packet << (unsigned short)Networking::StoC::EntityAction;
-    packet << (unsigned short)EntityActions::StoC::ForgetEntity;
+    packet << Networking::StoC::EntityAction;
+    packet << EntityActions::StoC::ForgetEntity;
 
     packet << id;
 

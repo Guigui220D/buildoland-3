@@ -61,7 +61,7 @@ GameState::~GameState()
     {
         //TEMP
         sf::Packet quit;
-        quit << (unsigned short)Networking::CtoS::Disconnect;
+        quit << Networking::CtoS::Disconnect;
         sendToServer(quit);
     }
 }
@@ -140,8 +140,8 @@ bool GameState::handleEvent(sf::Event& event)
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
             sf::Packet break_packet;
-            break_packet << (unsigned short)Networking::CtoS::PlayerAction;
-            break_packet << (unsigned short)EntityActions::CtoS::BreakBlock;
+            break_packet << Networking::CtoS::PlayerAction;
+            break_packet << EntityActions::CtoS::BreakBlock;
             break_packet << world_pos_i.x << world_pos_i.y;
 
             sendToServer(break_packet);
@@ -310,7 +310,7 @@ bool GameState::handshakeRemoteServer()
     //TEMP
     //At the moment we send RequestConnection now but this will be done in the connecting to server state
     sf::Packet request;
-    request << (unsigned short)Networking::CtoS::RequestConnection;
+    request << Networking::CtoS::RequestConnection;
     sendToServer(request);
 
     bool handshake = receiveServerHandshake(true);
@@ -360,9 +360,9 @@ bool GameState::handshakeRemoteServer()
             if (!known_port)
                 remote_port = port;
 
-            if (packet.getDataSize() == 15)
+            if (packet.getDataSize() != 15)
             {
-                unsigned short code = 0; packet >> code;
+                int code = 0; packet >> code;
 
                 if (code != Networking::StoC::FinalHandshake)
                 {
@@ -414,7 +414,7 @@ void GameState::receiverLoop()
 
             if (packet.getDataSize() >= 2)
             {
-                unsigned short code; packet >> code;
+                int code; packet >> code;
 
                 switch (code)
                 {

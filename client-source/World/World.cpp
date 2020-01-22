@@ -148,7 +148,7 @@ void World::requestChunk(sf::Vector2i pos)
 {
     sf::Packet request;
 
-    request << (unsigned short)Networking::CtoS::RequestChunk;
+    request << Networking::CtoS::RequestChunk;
     request << pos.x << pos.y;
 
     state_game.sendToServer(request);

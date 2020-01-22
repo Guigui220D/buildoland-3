@@ -4,7 +4,7 @@ namespace EntityActions
 {
     namespace StoC
     {
-        enum : unsigned short
+        enum
         {
             AddEntity,
             ForgetEntity,

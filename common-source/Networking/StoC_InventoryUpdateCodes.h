@@ -4,7 +4,7 @@ namespace InventoryUpdates
 {
     namespace StoC
     {
-        enum : unsigned short
+        enum
         {
             AddStack,
             SetStack

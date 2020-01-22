@@ -20,7 +20,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos, sf::Packet& packet, bool& success) 
     game(world.getGame()),
     world(world)
 {
-    size_t header_size = sizeof(int) * 2 + 2;
+    size_t header_size = sizeof(int) * 3;
 
     if (packet.getDataSize() < getChunkDataSize() + header_size)
     {

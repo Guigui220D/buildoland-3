@@ -37,7 +37,7 @@ Chunk::~Chunk()
 void Chunk::generatePacket()
 {
     packet->clear();
-    (*packet) << (unsigned short)Networking::StoC::SendChunk;
+    (*packet) << Networking::StoC::SendChunk;
     (*packet) << getPos().x << getPos().y;
 
     packet->append(blocks.getData(), blocks.getDataSize());

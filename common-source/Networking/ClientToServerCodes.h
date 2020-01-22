@@ -4,7 +4,7 @@ namespace Networking
 {
     namespace CtoS
     {
-        enum : unsigned short
+        enum
         {
             KeepAlive = 0,
             Disconnect,

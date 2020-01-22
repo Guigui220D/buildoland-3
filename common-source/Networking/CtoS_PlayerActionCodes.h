@@ -4,7 +4,7 @@ namespace EntityActions
 {
     namespace CtoS
     {
-        enum : unsigned short
+        enum
         {
             Walk,
             BreakBlock,

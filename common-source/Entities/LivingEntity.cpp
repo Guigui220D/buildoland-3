@@ -44,9 +44,9 @@ LivingEntity::~LivingEntity()
 #ifdef CLIENT_SIDE
 bool LivingEntity::takePacket(sf::Packet& packet)
 {
-    unsigned short action_code;
+    int action_code; packet >> action_code;
 
-    if (!(packet >> action_code))
+    if (!packet)
     {
         std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
         return false;
@@ -105,10 +105,10 @@ void LivingEntity::setWalkingDirection(sf::Vector2f new_direction)
     #ifndef CLIENT_SIDE
         sf::Packet packet;
         //Codes
-        packet << (unsigned short)Networking::StoC::EntityAction;
-        packet << (unsigned short)EntityActions::StoC::EntityAction;
+        packet << Networking::StoC::EntityAction;
+        packet << EntityActions::StoC::EntityAction;
         packet << getId();
-        packet << (unsigned short)Walk;
+        packet << Walk;
         //Direction
         packet << new_direction.x;
         packet << new_direction.y;

@@ -50,7 +50,7 @@ void GameBlocks::addBlock(Block const * block)
     std::cout << "Added block \"" << name << "\" with id " << id << std::endl;
 }
 
-Block const * GameBlocks::getBlockByID(unsigned short id) const
+Block const * GameBlocks::getBlockByID(uint16_t id) const
 {
     if (id >= blocks.size())
         return ERROR;

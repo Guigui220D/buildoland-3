@@ -30,8 +30,8 @@ void Item::useItem(ItemStack& stack, World& world, sf::Vector2i click_pos, Playe
     #ifdef CLIENT_SIDE
     sf::Packet use_packet;
 
-    use_packet << (unsigned short)Networking::CtoS::PlayerAction;
-    use_packet << (unsigned short)EntityActions::CtoS::UseItem;
+    use_packet << Networking::CtoS::PlayerAction;
+    use_packet << EntityActions::CtoS::UseItem;
     use_packet << click_pos.x << click_pos.y;
 
     world.getState().sendToServer(use_packet);

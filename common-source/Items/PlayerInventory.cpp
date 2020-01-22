@@ -46,8 +46,8 @@ bool PlayerInventory::insertItemStack(ItemStack& stack)
     #ifndef CLIENT_SIDE
     sf::Packet insert;
 
-    insert << (unsigned short)Networking::StoC::InventoryUpdate;
-    insert << (unsigned short)InventoryUpdates::StoC::AddStack;
+    insert << Networking::StoC::InventoryUpdate;
+    insert << InventoryUpdates::StoC::AddStack;
     insert << stack.getInt();
 
     owner.getClient().send(insert);
@@ -64,8 +64,8 @@ void PlayerInventory::insertNewItemStack(ItemStack stack)
     #ifndef CLIENT_SIDE
     sf::Packet insert;
 
-    insert << (unsigned short)Networking::StoC::InventoryUpdate;
-    insert << (unsigned short)InventoryUpdates::StoC::AddStack;
+    insert << Networking::StoC::InventoryUpdate;
+    insert << InventoryUpdates::StoC::AddStack;
     insert << stack.getInt();
 
     owner.getClient().send(insert);
@@ -79,7 +79,7 @@ void PlayerInventory::insertNewItemStack(ItemStack stack)
 #ifdef CLIENT_SIDE
 bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
 {
-    unsigned short type; packet >> type;
+    int type; packet >> type;
 
     if (!packet)
     {

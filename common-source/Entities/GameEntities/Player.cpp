@@ -80,8 +80,8 @@ void Player::update(float delta)
         {
             //Send packet to server
             sf::Packet move_packet;
-            move_packet << (unsigned short)Networking::CtoS::PlayerAction;
-            move_packet << (unsigned short)EntityActions::CtoS::Walk;
+            move_packet << Networking::CtoS::PlayerAction;
+            move_packet << EntityActions::CtoS::Walk;
             move_packet << dir.x << dir.y;
             move_packet << position.x << position.y;
             getWorld().getState().sendToServer(move_packet);
@@ -97,8 +97,8 @@ void Player::update(float delta)
 
                 //We update the server on our movement every second to avoid desynchronisations
                 sf::Packet move_packet;
-                move_packet << (unsigned short)Networking::CtoS::PlayerAction;
-                move_packet << (unsigned short)EntityActions::CtoS::Walk;
+                move_packet << Networking::CtoS::PlayerAction;
+                move_packet << EntityActions::CtoS::Walk;
                 move_packet << dir.x << dir.y;
                 move_packet << position.x << position.y;
                 getWorld().getState().sendToServer(move_packet);
@@ -137,7 +137,7 @@ void Player::useHand(sf::Vector2i pos)
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)
 {
-    unsigned short action; packet >> action;
+    int action; packet >> action;
 
     if (!packet)
     {
@@ -167,7 +167,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
             if (diff.x * diff.x + diff.y * diff.y >= 1.f)
             {
                 sf::Packet rectification;
-                rectification << (unsigned short)Networking::StoC::PlayerRectification;
+                rectification << Networking::StoC::PlayerRectification;
                 rectification << position.x << position.y;
                 client.send(rectification);
             }

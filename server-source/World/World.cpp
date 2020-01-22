@@ -139,7 +139,7 @@ void World::setBlock(sf::Vector2i pos, uint16_t id)
     getChunk(chunk).setBlock(getBlockPosInChunk(pos), id);
 
     sf::Packet block_set;
-    block_set << (unsigned short)Networking::StoC::BlockUpdate;
+    block_set << Networking::StoC::BlockUpdate;
     block_set << pos.x << pos.y;
     block_set << id;
 
@@ -156,7 +156,7 @@ void World::setGround(sf::Vector2i pos, uint16_t id)
     getChunk(chunk).setBlock(getBlockPosInChunk(pos), id);
 
     sf::Packet ground_set;
-    ground_set << (unsigned short)Networking::StoC::GroundUpdate;
+    ground_set << Networking::StoC::GroundUpdate;
     ground_set << pos.x << pos.y;
     ground_set << id;
 

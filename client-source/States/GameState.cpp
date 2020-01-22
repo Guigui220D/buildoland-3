@@ -329,9 +329,19 @@ bool GameState::handshakeRemoteServer()
 
     while (1)
     {
-        while (client_socket.receive(packet, address, port) != sf::Socket::Done)
+        sf::Socket::Status status;
+        while ((status = client_socket.receive(packet, address, port)) != sf::Socket::Done)
         {
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
+
+            if (status == sf::Socket::Disconnected)
+            {
+                std::cerr << "Server unreachable" << std::endl;
+                getGame().addStateOnTop(new ErrorState(getGame(), "Socket disconnected before handshake.", 0));
+                must_be_destroyed = true;
+                return false;
+            }
+
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
                 std::cerr << "Time out while waiting for server handshake" << std::endl;

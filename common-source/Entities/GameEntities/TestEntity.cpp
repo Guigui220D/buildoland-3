@@ -14,9 +14,31 @@ TestEntity::TestEntity(World& world, unsigned int id) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f)
 {
     #ifdef CLIENT_SIDE
+    sf::RenderTexture chara_render; chara_render.create(96, 256);
+
+    chara_render.clear(sf::Color::Transparent);
+
+    {
+        //TODO : Put that somewhere else
+        sf::Sprite base; base.setTexture(world.getGame().getResourceManager().getTexture("CHARA_BASE"));
+        sf::Sprite shoes; shoes.setTexture(world.getGame().getResourceManager().getTexture("CHARA_SHOES"));
+        sf::Sprite pants; pants.setTexture(world.getGame().getResourceManager().getTexture("CHARA_PANTS"));
+        sf::Sprite shirt; shirt.setTexture(world.getGame().getResourceManager().getTexture("CHARA_SHIRT"));
+
+        base.setColor(sf::Color::Green);
+
+        chara_render.draw(base);
+        chara_render.draw(shoes);
+        chara_render.draw(pants);
+        chara_render.draw(shirt);
+    }
+
+    chara_render.display();
+    texture = chara_render.getTexture();
+
     rs.setSize(sf::Vector2f(1.f, 1.f));
     rs.setOrigin(sf::Vector2f(.5f, .8f));
-    rs.setTexture(&world.getGame().getResourceManager().getTexture("CHARA_TEST"));
+    rs.setTexture(&texture);
 
     shadow.setRadius(.17f);
     shadow.setOrigin(sf::Vector2f(.17f, .17f));

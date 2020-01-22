@@ -22,6 +22,7 @@ class TestEntity : public LivingEntity
         #endif
     private:
         #ifdef CLIENT_SIDE
+        sf::Texture texture;
         sf::RectangleShape rs;
         sf::CircleShape shadow;
         #else

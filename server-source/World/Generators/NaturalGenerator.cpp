@@ -49,7 +49,10 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
 
             if (perlin_value < 0.)
                 perlin_value = 0.;
-            //std::cout << perlinValue << std::endl;
+
+            if (std::round(perlin_value) >= 4 && std::rand() % 20 == 0)
+                chunk->setBlock(x, y, GameBlocks::BOULDER);
+
             chunk->setGround(x, y, ground_levels.at(std::round(perlin_value)));
         }
     }

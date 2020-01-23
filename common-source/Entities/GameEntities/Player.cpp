@@ -159,6 +159,8 @@ bool Player::takeNewEntityPacket(sf::Packet& packet)
         pants.setFillColor(sf::Color(outfit_colors[1]));
         shirt.setFillColor(sf::Color(outfit_colors[2]));
     }
+
+    return true;
 }
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)

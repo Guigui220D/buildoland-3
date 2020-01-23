@@ -9,6 +9,7 @@ Block const * const GameBlocks::STONE           = new BlockStone();
 Block const * const GameBlocks::STONE_BRICKS    = new BlockStoneBricks;
 Block const * const GameBlocks::IRON            = new BlockIron();
 Block const * const GameBlocks::GOLD            = new BlockGold();
+Block const * const GameBlocks::BOULDER         = new BlockBoulder();
 
 GameBlocks::GameBlocks()
 {
@@ -32,6 +33,7 @@ void GameBlocks::initBlocks()
     addBlock(STONE_BRICKS);
     addBlock(IRON);
     addBlock(GOLD);
+    addBlock(BOULDER);
 }
 
 void GameBlocks::addBlock(Block const * block)

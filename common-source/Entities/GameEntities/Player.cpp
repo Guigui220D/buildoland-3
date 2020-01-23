@@ -262,11 +262,11 @@ void Player::makeNewEntityPacket(sf::Packet& packet) const
 }
 #endif
 
-bool Player::isSubscribedTo(sf::Vector2i chunk) const
+bool Player::isSubscribedTo(sf::Vector2i chunk, bool twice) const
 {
     sf::Vector2i diff = chunk - getChunkOn();
     int distance_squared = diff.x * diff.x + diff.y * diff.y;
 
     //TODO : Make render distance constant
-    return distance_squared < Constants::CHUNK_LOADING_DISTANCE;
+    return distance_squared < (Constants::CHUNK_LOADING_DISTANCE + Constants::CHUNK_LOADING_DISTANCE * twice);
 }

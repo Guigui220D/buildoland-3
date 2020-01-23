@@ -1,6 +1,7 @@
 #include "Client.h"
 
 #include <assert.h>
+#include <iostream>
 
 #include "Server.h"
 
@@ -23,8 +24,8 @@ sf::Vector2i Client::getNextRequestedChunk()
 
     assert(!chunk_requests.empty());
 
-    sf::Vector2i chunk_request = chunk_requests.front();
-    chunk_requests.pop();
+    sf::Vector2i chunk_request = chunk_requests.back();
+    chunk_requests.pop_back();
 
     chunk_requests_mutex.unlock();
 
@@ -33,9 +34,16 @@ sf::Vector2i Client::getNextRequestedChunk()
 
 void Client::addRequestedChunk(sf::Vector2i chunk)
 {
-    chunk_requests_mutex.lock();
-    chunk_requests.push(chunk);
-    chunk_requests_mutex.unlock();
+    sf::Lock lock(chunk_requests_mutex);
+
+    if (!player->isSubscribedTo(chunk, true))
+        return;
+
+    for (sf::Vector2i pos : chunk_requests)
+        if (pos == chunk)
+            return;
+
+    chunk_requests.push_back(chunk);
 }
 
 void Client::send(sf::Packet& packet) const

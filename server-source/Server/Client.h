@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SFML/Network.hpp>
-#include <queue>
+#include <vector>
 
 #include "../../common-source/Entities/GameEntities/Player.h"
 
@@ -79,7 +79,7 @@ class Client
     protected:
         IpAndPort ip_and_port;
 
-        std::queue<sf::Vector2i> chunk_requests;
+        std::vector<sf::Vector2i> chunk_requests;
         mutable sf::Mutex chunk_requests_mutex;
 
         Player* player;

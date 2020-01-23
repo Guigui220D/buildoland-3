@@ -46,7 +46,7 @@ class Player : public LivingEntity
 
         inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
 
-        bool isSubscribedTo(sf::Vector2i chunk) const;
+        bool isSubscribedTo(sf::Vector2i chunk, bool twice = false) const;
 
         inline PlayerInventory& getInventory() { return inventory; }
 

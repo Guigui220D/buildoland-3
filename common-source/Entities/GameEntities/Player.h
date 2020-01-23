@@ -34,10 +34,14 @@ class Player : public LivingEntity
         void draw(sf::RenderTarget& target) const;
 
         void useHand(sf::Vector2i pos);
+
+        bool takeNewEntityPacket(sf::Packet& packet) override;
         #else
         void takePlayerActionPacket(sf::Packet& packet);
 
         inline const Client& getClient() const { return client; }
+
+        void makeNewEntityPacket(sf::Packet& packet) const override;
         #endif
 
         inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
@@ -48,6 +52,8 @@ class Player : public LivingEntity
 
     private:
         PlayerInventory inventory;
+
+        std::array<uint32_t, 4> outfit_colors;
 
         #ifdef CLIENT_SIDE
         void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;

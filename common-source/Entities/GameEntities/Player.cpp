@@ -40,10 +40,6 @@ Player::Player(World& world, unsigned int id) :
     shoes.setTexture(&world.getGame().getResourceManager().getTexture("CHARA_SHOES"));
     shirt.setTexture(&world.getGame().getResourceManager().getTexture("CHARA_SHIRT"));
 
-    pants.setFillColor(sf::Color::Red);
-    shirt.setFillColor(sf::Color::Yellow);
-    shoes.setFillColor(sf::Color::Green);
-
     shadow.setRadius(.17f);
     shadow.setOrigin(sf::Vector2f(.17f, .17f));
     shadow.setFillColor(sf::Color(0, 0, 0, 64));
@@ -53,7 +49,10 @@ Player::Player(World& world, unsigned int id, const Client& client) :
     LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
     inventory(*this, world.getServer()),
     client(client)
-{}
+{
+    for (uint32_t& color : outfit_colors)
+        color = ((std::rand() & 0xFF) << 24) | ((std::rand() & 0xFF) << 16) | ((std::rand() & 0xFF) << 8) | 0xFF;
+}
 #endif
 
 Player::~Player()
@@ -148,6 +147,19 @@ void Player::useHand(sf::Vector2i pos)
 {
     inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
 }
+
+bool Player::takeNewEntityPacket(sf::Packet& packet)
+{
+    for (uint32_t& color : outfit_colors)
+        packet >> color;
+
+    if (packet)
+    {
+        shoes.setFillColor(sf::Color(outfit_colors[0]));
+        pants.setFillColor(sf::Color(outfit_colors[1]));
+        shirt.setFillColor(sf::Color(outfit_colors[2]));
+    }
+}
 #else
 void Player::takePlayerActionPacket(sf::Packet& packet)
 {
@@ -232,6 +244,21 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
         std::cerr << "Could not read playerAction, action code unknown" << std::endl;
         break;
     }
+}
+
+void Player::makeNewEntityPacket(sf::Packet& packet) const
+{
+    packet.clear();
+
+    packet << Networking::StoC::EntityAction;
+    packet << EntityActions::StoC::AddEntity;
+    packet << getEntityCode();
+    packet << getId();
+
+    for (uint32_t color : outfit_colors)
+        packet << color;
+
+    addInfoToNewEntityPacket(packet);
 }
 #endif
 

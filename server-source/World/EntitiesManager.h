@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 
 #include "../../common-source/Entities/Entity.h"
 #include "../Server/Client.h"
@@ -51,7 +51,7 @@ class EntitiesManager
         inline unsigned int getNextEntityId() { return next_entity_id++; }
 
     private:
-        std::map<unsigned int, Entity*> entities;
+        std::unordered_map<unsigned int, Entity*> entities;
 
         Server& server;
 

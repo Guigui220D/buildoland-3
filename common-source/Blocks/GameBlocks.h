@@ -10,7 +10,7 @@
 #include "GameBlocks/BlockGold.h"
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <assert.h>
 
@@ -49,7 +49,7 @@ class GameBlocks
 
     private:
         std::vector<Block const *> blocks;
-        std::map<std::string, uint16_t> names;
+        std::unordered_map<std::string, uint16_t> names;
 
         /**
          * Adds a block to the block list and its name

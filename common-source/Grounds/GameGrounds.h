@@ -9,7 +9,7 @@
 #include "GameGrounds/GroundWater.h"
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <assert.h>
 
@@ -47,7 +47,7 @@ class GameGrounds
 
     private:
         std::vector<Ground const *> grounds;
-        std::map<std::string, uint16_t> names;
+        std::unordered_map<std::string, uint16_t> names;
 
         /**
          * Adds a ground to the ground list and its name

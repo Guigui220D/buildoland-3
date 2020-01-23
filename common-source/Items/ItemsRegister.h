@@ -3,7 +3,7 @@
 #include "Item.h"
 
 #include <vector>
-#include <map>
+#include <unordered_map>
 #include <string>
 #include <assert.h>
 
@@ -42,7 +42,7 @@ class ItemsRegister
 
     private:
         std::vector<Item const *> items;
-        std::map<std::string, uint16_t> names;
+        std::unordered_map<std::string, uint16_t> names;
 
         /**
          * Adds an item to the item list and its name

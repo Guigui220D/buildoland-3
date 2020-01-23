@@ -6,7 +6,7 @@
 #include "EntitiesManager.h"
 #include "Generator.h"
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 class Server;
@@ -125,9 +125,9 @@ class World
         inline Generator* getGenerator() const { return generator; };
 
         inline size_t getChunksCount() const { return chunks.size(); };
-        inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksBegin() const { return chunks.cbegin(); }
-        inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksEnd() const { return chunks.cend(); }
 
     protected:
@@ -141,5 +141,5 @@ class World
         const GameBlocks& game_blocks_manager;
         const GameGrounds& game_grounds_manager;
 
-        std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
+        std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
 };

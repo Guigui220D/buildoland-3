@@ -1,6 +1,6 @@
 #pragma once
 
-#include <map>
+#include <unordered_map>
 #include <vector>
 
 #include <SFML/Graphics.hpp>
@@ -51,7 +51,7 @@ class EntitiesManager
         bool gotPlayer = false;
 
         //We have two containers
-        std::map<unsigned int, Entity*> entities_map;   //One to get an entity by its id
+        std::unordered_map<unsigned int, Entity*> entities_map;   //One to get an entity by its id
         mutable std::vector<Entity*> entities_vector;   //One to easily iterate through entities, that we keep sorted for rendering
 
         //Used for sorting entities

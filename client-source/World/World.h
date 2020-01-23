@@ -4,7 +4,7 @@
 #include "EntitiesManager.h"
 #include "../Utils/Utils.h"
 
-#include <map>
+#include <unordered_map>
 #include <memory>
 
 class GameState;
@@ -170,9 +170,9 @@ class World
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
         inline size_t getChunksCount() const { return chunks.size(); };
-        inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksBegin() const { return chunks.cbegin(); }
-        inline std::map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksEnd() const { return chunks.cend(); }
 
     protected:
@@ -186,7 +186,7 @@ class World
         const GameGrounds& game_grounds_manager;
         int seed;
 
-        std::map<uint64_t, std::unique_ptr<Chunk>> chunks;
+        std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
         std::vector<Chunk*> chunks_to_add;
         sf::Vector2i player_chunk_pos;
         sf::Mutex chunks_to_add_mutex;

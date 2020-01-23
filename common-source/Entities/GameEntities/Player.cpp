@@ -215,6 +215,9 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 break;
             }
 
+            if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
+                return;
+
             inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
         }
         break;
@@ -230,6 +233,9 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
                 std::cerr << "Could not read playerAction, packet too short" << std::endl;
                 break;
             }
+
+            if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
+                return;
 
             auto drops = getWorld().getBlock(pos)->getDrops();
 

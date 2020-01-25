@@ -53,6 +53,8 @@ class EntitiesManager
     private:
         std::unordered_map<unsigned int, Entity*> entities;
 
+        sf::Mutex entities_mutex;
+
         Server& server;
 
         unsigned int next_entity_id;

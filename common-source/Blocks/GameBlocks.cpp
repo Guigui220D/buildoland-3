@@ -5,10 +5,11 @@
 
 Block const * const GameBlocks::AIR             = new BlockAir();
 Block const * const GameBlocks::ERROR           = new BlockError();
-Block const * const GameBlocks::STONE           = new BlockStone();
-Block const * const GameBlocks::STONE_BRICKS    = new BlockStoneBricks;
-Block const * const GameBlocks::IRON            = new BlockIron();
-Block const * const GameBlocks::GOLD            = new BlockGold();
+Block const * const GameBlocks::STONE           = new Block("stone", true, 2);
+Block const * const GameBlocks::STONE_BRICKS    = new Block("bricks", true, 3);
+Block const * const GameBlocks::IRON            = new Block("iron", true, 4);
+Block const * const GameBlocks::GOLD            = new Block("gold", true, 5);
+Block const * const GameBlocks::WOOD            = new Block("wood", true, 7);
 Block const * const GameBlocks::BOULDER         = new BlockBoulder();
 
 GameBlocks::GameBlocks()
@@ -33,6 +34,7 @@ void GameBlocks::initBlocks()
     addBlock(STONE_BRICKS);
     addBlock(IRON);
     addBlock(GOLD);
+    addBlock(WOOD);
     addBlock(BOULDER);
 }
 

@@ -4,10 +4,6 @@
 
 #include "GameBlocks/BlockAir.h"
 #include "GameBlocks/BlockError.h"
-#include "GameBlocks/BlockStone.h"
-#include "GameBlocks/BlockStoneBricks.h"
-#include "GameBlocks/BlockIron.h"
-#include "GameBlocks/BlockGold.h"
 #include "GameBlocks/BlockBoulder.h"
 
 #include <vector>
@@ -47,6 +43,7 @@ class GameBlocks
         static Block const * const STONE_BRICKS;
         static Block const * const IRON;
         static Block const * const GOLD;
+        static Block const * const WOOD;
         static Block const * const BOULDER;
 
     private:

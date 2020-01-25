@@ -2,6 +2,7 @@
 
 #include "Ground.h"
 
+#include "StaticGround.h"
 #include "GameGrounds/GroundError.h"
 #include "GameGrounds/GroundStone.h"
 #include "GameGrounds/GroundSand.h"
@@ -44,6 +45,7 @@ class GameGrounds
         static Ground const * const STONE;
         static Ground const * const SAND;
         static Ground const * const GRASS;
+        static Ground const * const WOOD;
 
     private:
         std::vector<Ground const *> grounds;

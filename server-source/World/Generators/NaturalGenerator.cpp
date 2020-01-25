@@ -25,6 +25,7 @@ void NaturalGenerator::init()
     random_blocks.push_back(GameBlocks::GOLD->getId());
     random_blocks.push_back(GameBlocks::STONE->getId());
     random_blocks.push_back(GameBlocks::STONE_BRICKS->getId());
+    random_blocks.push_back(GameBlocks::WOOD->getId());
 }
 
 void NaturalGenerator::generateChunk(Chunk* chunk)
@@ -34,7 +35,7 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
         for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
         {
-            chunk->setGround(x, y, GameGrounds::STONE);
+            chunk->setGround(x, y, GameGrounds::WOOD);
 
             if (std::rand() & 1)
                 chunk->setBlock(x, y, random_blocks.at(std::rand() % random_blocks.size()));

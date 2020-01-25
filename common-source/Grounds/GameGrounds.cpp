@@ -8,6 +8,7 @@ Ground const * const GameGrounds::WATER = new GroundWater();
 Ground const * const GameGrounds::STONE = new GroundStone();
 Ground const * const GameGrounds::SAND  = new GroundSand();
 Ground const * const GameGrounds::GRASS = new GroundGrass();
+Ground const * const GameGrounds::WOOD = new StaticGround("wood", true, 5);
 
 
 GameGrounds::GameGrounds()
@@ -31,6 +32,7 @@ void GameGrounds::initGrounds()
     addGround(STONE);
     addGround(SAND);
     addGround(GRASS);
+    addGround(WOOD);
 }
 
 void GameGrounds::addGround(Ground const * ground)

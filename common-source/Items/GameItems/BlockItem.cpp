@@ -41,7 +41,7 @@ void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Play
         sf::Packet set;
 
         set << Networking::StoC::InventoryUpdate;
-        set << InventoryUpdates::StoC::AddStack;
+        set << InventoryUpdates::StoC::SetStack;
         set << 0;   //We set the first slot of the inventory (hand)
         set << stack.getInt();
 

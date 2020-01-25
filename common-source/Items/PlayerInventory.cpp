@@ -76,6 +76,25 @@ void PlayerInventory::insertNewItemStack(ItemStack stack)
             return;
 }
 
+void PlayerInventory::swapHands(int pos)
+{
+    if (pos <= 0 || pos >= 25)
+        return;
+
+    #ifdef CLIENT_SIDE
+    sf::Packet swap;
+
+    swap << Networking::CtoS::PlayerAction;
+    swap << EntityActions::CtoS::SwapInventoryItem;
+    swap << pos;
+
+    game.sendToServer(swap);
+    #endif
+
+    if (!contents.at(pos).add(contents.at(0)))
+        contents.at(0).swap(contents.at(pos));
+}
+
 #ifdef CLIENT_SIDE
 bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
 {
@@ -100,7 +119,7 @@ bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
                 insertItemStack(stack);
             }
         }
-        describe();
+        //describe();
         return true;
     case InventoryUpdates::StoC::SetStack:
         {
@@ -117,27 +136,11 @@ bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
                 contents.at(pos).swap(stack);
             }
         }
-        describe();
+        //describe();
         return true;
     default:
         std::cerr << "Could not read inventory update, unknown type." << std::endl;
         return false;
     }
-}
-
-void PlayerInventory::swapHands(int pos)
-{
-    if (pos <= 0 || pos >= 25)
-        return;
-
-    sf::Packet swap;
-
-    swap << Networking::CtoS::PlayerAction;
-    swap << EntityActions::CtoS::SwapInventoryItem;
-    swap << pos;
-
-    game.sendToServer(swap);
-
-    contents.at(0).swap(contents.at(pos));
 }
 #endif // CLIENT_SIDE

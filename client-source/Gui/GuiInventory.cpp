@@ -80,7 +80,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     item_hand.setTextureRect(hand.getItem()->getTexture(hand));
     sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
     item_hand.setPosition(pos);
-    number_draw.setPosition(pos);
+    number_draw.setPosition(pos + sf::Vector2f(-8.f, 0));
 
     switch (hand.getItem()->getTexturesSet())
     {

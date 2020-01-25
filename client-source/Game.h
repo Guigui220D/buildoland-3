@@ -65,6 +65,8 @@ class Game
 
         inline void useDefaultView() { window.setView(default_view); }
 
+        inline State* getTopState() const { return states_stack.back().get(); }
+
 
     private:
         friend class TitleScreenState;

@@ -255,10 +255,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
             if (!packet)
                 break;
 
-            if (pos <= 0 || pos >= 25)
-                break;
-
-            inventory.contents.at(0).swap(inventory.contents.at(pos));
+            inventory.swapHands(pos);
         }
         break;
 

@@ -238,7 +238,7 @@ void GameState::draw(sf::RenderTarget& target) const
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
-    if (!bp_volume)
+    if (!bp_volume && isTopState())
     {
         target.draw(block_pointer);
         target.draw(block_pointer_icon);
@@ -246,10 +246,11 @@ void GameState::draw(sf::RenderTarget& target) const
 
     entities.drawAll(target);
 
-    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
-        target.draw(i->second->getBlockTopsVertexArray(), block_textures);
 
-    if (bp_volume)
+    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+    target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+
+    if (isTopState() && bp_volume)
     {
         target.draw(block_pointer);
         target.draw(block_pointer_icon);

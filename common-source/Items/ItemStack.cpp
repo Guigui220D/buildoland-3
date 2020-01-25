@@ -54,11 +54,12 @@ ItemStack ItemStack::takeHalf()
 
 bool ItemStack::add(ItemStack& other)
 {
-    if (!operator bool())
+    if (!operator bool() || !other)
     {
         swap(other);
         return true;
     }
+    //std::cout << (int)other.amount << "x " << other.item->getName() << " added to " << (int)amount << "x " << item->getName() << std::endl;
 
     if (item != other.item)
         return false;

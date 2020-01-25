@@ -54,6 +54,8 @@ class State
          */
         inline Game& getGame() const { return game; }
 
+        bool isTopState() const;
+
         std::atomic<bool> must_be_destroyed = false;
 
     protected:

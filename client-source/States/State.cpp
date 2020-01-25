@@ -1,5 +1,7 @@
 #include "State.h"
 
+#include "../Game.h"
+
 State::State(Game& game, unsigned int id) :
     game(game),
     id(id)
@@ -22,3 +24,8 @@ void State::update(float delta_time) {}
 void State::draw(sf::RenderTarget& target) const {}
 
 void State::updateView() {}
+
+bool State::isTopState() const
+{
+    return this == game.getTopState();
+}

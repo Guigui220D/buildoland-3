@@ -6,6 +6,9 @@
 #ifdef CLIENT_SIDE
     #include "../../client-source/Utils/TilesetHelper.h"
     #include "../../client-source/Utils/Utils.h"
+#else
+    #include "../Items/ItemStack.h"
+    #include <vector>
 #endif // CLIENT_SIDE
 
 #include "GroundInfo.h"
@@ -14,6 +17,7 @@ class Ground
 {
     friend class GameGrounds;
     friend class GroundItem;
+    friend class ItemsRegister;
     public:
         #ifdef CLIENT_SIDE
         static const TilesetHelper<16, 16, 1> tilesetHelper;
@@ -60,7 +64,10 @@ class Ground
          * @return A vertex array to add to the chunk vertex array
          */
         virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const;
+        #else
+        virtual std::vector<ItemStack> getDrops() const;
 
+        inline Item const * getDefaultItem() const { return drop; };
         #endif
     protected:
         #ifdef CLIENT_SIDE
@@ -114,11 +121,13 @@ class Ground
 
     private:
         std::string name;
-        mutable uint16_t id;
+        mutable uint16_t id = 0;
 
         const bool has_item;
 
         #ifdef CLIENT_SIDE
         uint32_t default_texture;
+        #else
+        mutable Item const * drop;
         #endif
 };

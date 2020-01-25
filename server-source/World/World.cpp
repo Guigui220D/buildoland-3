@@ -153,7 +153,7 @@ void World::setGround(sf::Vector2i pos, uint16_t id)
     if (!isChunkLoaded(chunk))
         return;
 
-    getChunk(chunk).setBlock(getBlockPosInChunk(pos), id);
+    getChunk(chunk).setGround(getBlockPosInChunk(pos), id);
 
     sf::Packet ground_set;
     ground_set << Networking::StoC::GroundUpdate;

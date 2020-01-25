@@ -6,6 +6,8 @@
 
     #include "../../client-source/World/World.h"
     #include "../../client-source/Game.h"
+#else
+    #include "../Items/ItemsRegister.h"
 #endif
 
 Ground::~Ground()
@@ -16,10 +18,19 @@ Ground::~Ground()
 #ifndef CLIENT_SIDE
 Ground::Ground(const std::string name, bool should_have_item, uint32_t default_texture) :
     name(name),
-    has_item(should_have_item)
+    has_item(should_have_item),
+    drop(ItemsRegister::NULL_ITEM)
 {
     //ctor
 }
+
+std::vector<ItemStack> Ground::getDrops() const
+{
+    if (!has_item)
+        return {};
+    return { ItemStack(drop) };
+}
+
 #else
 const TilesetHelper<16, 16, 1> Ground::tilesetHelper;
 const TilesetHelper<16, 8, 1> Ground::tilesetHelperDetails;

@@ -112,7 +112,7 @@ class Block
 
     private:
         std::string name;
-        mutable uint16_t id;
+        mutable uint16_t id = 0;
 
         const bool has_item;
 

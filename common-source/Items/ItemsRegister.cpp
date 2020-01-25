@@ -31,7 +31,13 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
     //Add all items here
     for (Ground const * ground : grounds.grounds)
         if (ground->hasItem())
-            addItem(new GroundItem(ground));
+        {
+            Item const * item = new GroundItem(ground);
+            addItem(item);
+            #ifndef CLIENT_SIDE
+            ground->drop = item;
+            #endif
+        }
 
     for (Block const * block : blocks.blocks)
         if (block->hasItem())

@@ -12,6 +12,8 @@ class GroundItem : public Item
 
         inline Ground const * getGround() { return ground; }
 
+        void use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const;
+
         #ifdef CLIENT_SIDE
         virtual inline TextureSet getTexturesSet() const { return TextureSet::GroundsTextureSet; }
         #endif // CLIENT_SIDE

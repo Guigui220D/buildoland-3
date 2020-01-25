@@ -18,6 +18,8 @@ This project uses nlohmann::json : https://github.com/nlohmann/json
 
 This project uses xxHash for c++ : https://github.com/Cyan4973/xxHash
 
+This project uses siv::PerlinNoise : https://github.com/Reputeless/PerlinNoise
+
 ### Previous versions
 
 Buildoland 1 : https://github.com/Guigui220D/OldBuildoland https://guiguii.itch.io/buildoland-2

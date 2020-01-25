@@ -8,11 +8,21 @@
     #include "../../client-source/States/GameState.h"
 #endif // CLIENT_SIDE
 
-Item::Item(const std::string name) :
+#ifdef CLIENT_SIDE
+Item::Item(const std::string name, uint32_t default_texture) :
+    name(name),
+    default_texture(default_texture)
+{
+    //ctor
+}
+#else
+Item::Item(const std::string name, uint32_t default_texture) :
     name(name)
 {
     //ctor
 }
+#endif // CLIENT_SIDE
+
 
 Item::~Item()
 {

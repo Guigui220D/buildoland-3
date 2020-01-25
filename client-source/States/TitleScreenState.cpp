@@ -3,7 +3,7 @@
 TitleScreenState::TitleScreenState(Game& game, unsigned int id) :
     LoadingScreenState<MainMenuState>(false, true, game, id),
     title(game),
-    sfml(game, sf::FloatRect(.05f, .8f, .15f, .15f), (1001.f / 304.f), GuiAlign::BottomOrRight, GuiAlign::BottomOrRight, "Resources/Logos/sfml_logo_big.png", false)
+    sfml(game, sf::FloatRect(.05f, .8f, .15f, .15f), sf::Vector2f(1001.f, 304.f), GuiAlign::BottomOrRight, GuiAlign::BottomOrRight, "Resources/Logos/sfml_logo_big.png", false)
 {
     //ctor
 }

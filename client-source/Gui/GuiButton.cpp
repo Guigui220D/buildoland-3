@@ -2,11 +2,11 @@
 
 #include "../Game.h"
 
-GuiButton::GuiButton(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string) :
-    GuiElement(game, zone, aspect_ratio, horizontal_align, vertical_align),
+GuiButton::GuiButton(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string) :
+    GuiElement(game, zone, size, horizontal_align, vertical_align),
     string(text_string)
 {
-    button.setSize(sf::Vector2f(aspect_ratio, 1));
+    button.setSize(size);
     button.setFillColor(sf::Color::White);
 }
 

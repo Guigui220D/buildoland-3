@@ -27,6 +27,7 @@ void Game::loadResources()
         !resource_manager.loadTextureFromFile("Character/shirt.png", "CHARA_SHIRT");
     //Gui
     fail_count +=
+        !resource_manager.loadTextureFromFile("Gui/inventory.png", "INVENTORY") +
         !resource_manager.loadTextureFromFile("Gui/blocks_pointer.png", "BLOCK_POINTER") +
         !resource_manager.loadTextureFromFile("Gui/blocks_pointer_rotate.png", "BLOCK_POINTER_B");
     //FONTS

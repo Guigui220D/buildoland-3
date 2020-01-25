@@ -14,6 +14,10 @@ class BlockItem : public Item
 
         void use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const;
 
+        #ifdef CLIENT_SIDE
+        virtual inline TextureSet getTexturesSet() const { return TextureSet::BlocksTextureSet; }
+        #endif // CLIENT_SIDE
+
     protected:
         Block const * const block;
 

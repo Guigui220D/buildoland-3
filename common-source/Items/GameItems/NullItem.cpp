@@ -1,7 +1,7 @@
 #include "NullItem.h"
 
 NullItem::NullItem() :
-    Item("null")
+    Item("null", 0)
 {
 
 }

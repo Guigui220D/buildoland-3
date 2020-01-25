@@ -15,7 +15,15 @@ class Item
 {
     friend class ItemsRegister;
     public:
-        Item(const std::string name);
+        enum TextureSet
+        {
+            ItemsTextureSet,
+            GroundsTextureSet,
+            BlocksTextureSet
+        };
+
+
+        Item(const std::string name, uint32_t default_texture); //Default texture ignored by server
         virtual ~Item();
 
         /**
@@ -38,6 +46,11 @@ class Item
          */
         void useItem(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const;
 
+        #ifdef CLIENT_SIDE
+        virtual inline uint32_t getTexture(ItemStack& stack) const { return default_texture; }
+        virtual inline TextureSet getTexturesSet() const { return TextureSet::ItemsTextureSet; }
+        #endif // CLIENT_SIDE
+
     protected:
         /**
          * Use the item
@@ -48,4 +61,8 @@ class Item
     private:
         std::string name;
         mutable uint16_t id;
+
+        #ifdef CLIENT_SIDE
+        uint32_t default_texture;
+        #endif // CLIENT_SIDE
 };

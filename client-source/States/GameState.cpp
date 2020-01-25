@@ -19,6 +19,7 @@
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
 #include "ErrorScreen.h"
+#include "InventoryMenuState.h"
 
 #define YEET break;
 
@@ -167,6 +168,9 @@ bool GameState::handleEvent(sf::Event& event)
                 getGame().addStateOnTop(new ErrorState(getGame(), "State interrupted (for testing).", 0));
                     must_be_destroyed = true;
             }
+        if (event.key.code == sf::Keyboard::E)
+            if (Player::this_player)
+                getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
         break;
 
     default:

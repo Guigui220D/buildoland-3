@@ -12,6 +12,10 @@ class GroundItem : public Item
 
         inline Ground const * getGround() { return ground; }
 
+        #ifdef CLIENT_SIDE
+        virtual inline TextureSet getTexturesSet() const { return TextureSet::GroundsTextureSet; }
+        #endif // CLIENT_SIDE
+
     protected:
         Ground const * const ground;
 

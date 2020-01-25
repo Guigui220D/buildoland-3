@@ -2,8 +2,8 @@
 
 #include "../Game.h"
 
-GuiLabel::GuiLabel(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align, const std::string message) :
-    GuiElement(game, zone, aspect_ratio, horizontal_align, vertical_align),
+GuiLabel::GuiLabel(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, const std::string message) :
+    GuiElement(game, zone, size, horizontal_align, vertical_align),
     message(message)
 {
 

@@ -8,7 +8,7 @@
 #endif // CLIENT_SIDE
 
 BallItem::BallItem() :
-    Item("ball")
+    Item("ball", 1)
 {
 
 }

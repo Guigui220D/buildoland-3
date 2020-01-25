@@ -13,6 +13,7 @@
 class Ground
 {
     friend class GameGrounds;
+    friend class GroundItem;
     public:
         #ifdef CLIENT_SIDE
         static const TilesetHelper<16, 16, 1> tilesetHelper;

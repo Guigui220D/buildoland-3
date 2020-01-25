@@ -19,6 +19,7 @@ class Block
 {
     friend class GameBlocks;
     friend class ItemsRegister;
+    friend class BlockItem;
     public:
         #ifdef CLIENT_SIDE
         static const TilesetHelper<16, 16, 1> tilesetHelper;

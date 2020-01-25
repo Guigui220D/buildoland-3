@@ -6,8 +6,8 @@
 
 MainMenuState::MainMenuState(Game& game, unsigned int id) :
     State(game, id),
-    test_button_1(new GuiButton(game, sf::FloatRect(.1f, .5f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::BottomOrRight, "Singleplayer")),
-    test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), 8.f, GuiAlign::Center, GuiAlign::TopOrLeft, "Multiplayer")),
+    test_button_1(new GuiButton(game, sf::FloatRect(.1f, .5f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::BottomOrRight, "Singleplayer")),
+    test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::TopOrLeft, "Multiplayer")),
     serv_debug_checkbox(new GuiCheckBox(game, sf::FloatRect(.85f, .5f, .1f, .1f), GuiAlign::Center, GuiAlign::BottomOrRight))
 {
     update_transparent = false;

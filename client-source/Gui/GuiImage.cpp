@@ -2,8 +2,8 @@
 
 #include "../Game.h"
 
-GuiImage::GuiImage(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align, const std::string texture_path, bool use_resource_manager) :
-    GuiElement(game, zone, aspect_ratio, horizontal_align, vertical_align),
+GuiImage::GuiImage(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, const std::string texture_path, bool use_resource_manager) :
+    GuiElement(game, zone, size, horizontal_align, vertical_align),
     texture_path(texture_path),
     use_manager(use_resource_manager)
 {
@@ -28,7 +28,7 @@ void GuiImage::init()
         texture->loadFromFile(texture_path);
     }
     rectangle.setTexture(texture);
-    rectangle.setSize(sf::Vector2f(((float)texture->getSize().x / texture->getSize().y), 1.f));
+    rectangle.setSize(getSize());
 }
 
 void GuiImage::draw(sf::RenderTarget& target) const

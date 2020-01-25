@@ -20,7 +20,7 @@ class GuiElement
          * @param zone : The place where the element should be fit on the screen (values between 0 and 1)
          * @param aspect_ratio : the ratio of the element (not of the zone), it's the width divided by the height
          */
-        GuiElement(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align);
+        GuiElement(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align);
         virtual ~GuiElement();
 
         /**
@@ -62,6 +62,11 @@ class GuiElement
          */
         inline sf::FloatRect getZone() const { return zone; }
         /**
+         * Gets the zone size inside
+         * @return The size
+         */
+        sf::Vector2f getSize() const { return size; }
+        /**
          * Gets the aspect ratio (width / height of the object)
          * @return The aspect ratio
          */
@@ -102,6 +107,7 @@ class GuiElement
         Game& game;
 
         sf::FloatRect zone;
+        sf::Vector2f size;
         float ratio;
         GuiAlign halign, valign;
         sf::View calculated_view;

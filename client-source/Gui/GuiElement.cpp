@@ -2,10 +2,11 @@
 
 #include "../Game.h"
 
-GuiElement::GuiElement(Game& game, sf::FloatRect zone, float aspect_ratio, GuiAlign horizontal_align, GuiAlign vertical_align) :
+GuiElement::GuiElement(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align) :
     game(game),
     zone(zone),
-    ratio(aspect_ratio),
+    size(size),
+    ratio(size.x / size.y),
     halign(horizontal_align),
     valign(vertical_align)
 {
@@ -50,7 +51,7 @@ void GuiElement::update(float delta_time) {}
 
 void GuiElement::calculateView(sf::Vector2u window_size)
 {
-    sf::View view(sf::FloatRect(0, 0, ratio, 1.f));
+    sf::View view(sf::FloatRect(0, 0, size.x, size.y));
     sf::FloatRect zone_rect(zone.left * window_size.x, zone.top * window_size.y, zone.width * window_size.x, zone.height * window_size.y);
     float zone_ratio = zone_rect.width / zone_rect.height;
 

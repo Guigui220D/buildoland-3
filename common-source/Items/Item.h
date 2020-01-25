@@ -5,6 +5,10 @@
 #include <SFML/System.hpp>
 #include <SFML/Network.hpp>
 
+#ifdef CLIENT_SIDE
+    #include "../../client-source/Utils/TilesetHelper.h"
+#endif // CLIENT_SIDE
+
 #include "../Networking/NetworkingCodes.h"
 
 class World;
@@ -15,6 +19,10 @@ class Item
 {
     friend class ItemsRegister;
     public:
+        #ifdef CLIENT_SIDE
+        static const TilesetHelper<16, 16, 1> tilesetHelper;
+        #endif
+
         enum TextureSet
         {
             ItemsTextureSet,
@@ -47,7 +55,7 @@ class Item
         void useItem(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const;
 
         #ifdef CLIENT_SIDE
-        virtual inline uint32_t getTexture(ItemStack& stack) const { return default_texture; }
+        virtual inline sf::IntRect getTexture(ItemStack& stack) const { return tilesetHelper.getIntRect(default_texture); }
         virtual inline TextureSet getTexturesSet() const { return TextureSet::ItemsTextureSet; }
         #endif // CLIENT_SIDE
 

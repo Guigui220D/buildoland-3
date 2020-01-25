@@ -124,4 +124,20 @@ bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
         return false;
     }
 }
+
+void PlayerInventory::swapHands(int pos)
+{
+    if (pos <= 0 || pos >= 25)
+        return;
+
+    sf::Packet swap;
+
+    swap << Networking::CtoS::PlayerAction;
+    swap << EntityActions::CtoS::SwapInventoryItem;
+    swap << pos;
+
+    game.sendToServer(swap);
+
+    contents.at(0).swap(contents.at(pos));
+}
 #endif // CLIENT_SIDE

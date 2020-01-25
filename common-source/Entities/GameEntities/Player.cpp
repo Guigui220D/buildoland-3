@@ -248,6 +248,20 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
         }
         break;
 
+    case EntityActions::CtoS::SwapInventoryItem:
+        {
+            int pos; packet >> pos;
+
+            if (!packet)
+                break;
+
+            if (pos <= 0 || pos >= 25)
+                break;
+
+            inventory.contents.at(0).swap(inventory.contents.at(pos));
+        }
+        break;
+
     default:
         std::cerr << "Could not read playerAction, action code unknown" << std::endl;
         break;

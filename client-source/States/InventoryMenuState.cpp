@@ -21,6 +21,11 @@ void InventoryMenuState::init()
 
 bool InventoryMenuState::handleEvent(sf::Event& event)
 {
+    if (event.type == sf::Event::Resized)
+    {
+        inventory.calculateView(sf::Vector2u(event.size.width, event.size.height));
+        return false;
+    }
     inventory.handleEvent(event);
     return true;
 }

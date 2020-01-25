@@ -31,8 +31,12 @@ class PlayerInventory
         bool insertItemStack(ItemStack& stack);
         void insertNewItemStack(ItemStack stack);
 
+
+
         #ifdef CLIENT_SIDE
         bool takeInventoryUpdatePacket(sf::Packet& packet);
+
+        void swapHands(int pos);
         #endif // CLIENT_SIDE
 
     protected:

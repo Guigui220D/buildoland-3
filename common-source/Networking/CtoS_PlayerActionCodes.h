@@ -8,7 +8,8 @@ namespace EntityActions
         {
             Walk,
             BreakBlock,
-            UseItem
+            UseItem,
+            SwapInventoryItem
         };
     }
 }

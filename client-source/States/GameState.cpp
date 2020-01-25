@@ -125,7 +125,7 @@ bool GameState::handleEvent(sf::Event& event)
                 window.setSize(sf::Vector2u(window.getSize().x, 200));
         }
         updateView();
-        break;
+        return false;
 
     case sf::Event::MouseWheelScrolled:
         break;

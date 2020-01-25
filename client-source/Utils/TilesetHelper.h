@@ -10,6 +10,7 @@ class TilesetHelper
         TilesetHelper();
 
         sf::FloatRect getFloatRect(unsigned int number, unsigned int width = 1, unsigned int height = 1) const;
+        sf::IntRect getIntRect(unsigned int number, unsigned int width = 1, unsigned int height = 1) const;
         Quad getFourVertices(unsigned int number, uint8_t rotation = 0, unsigned int width = 1, unsigned int height = 1) const;
 
     private:
@@ -23,6 +24,17 @@ template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>
 sf::FloatRect TilesetHelper<TextureSize, TilesetWidth, MarginSize>::getFloatRect(unsigned int number, unsigned int width, unsigned int height) const
 {
     return sf::FloatRect(
+        (number % TilesetWidth) * (TextureSize + MarginSize * 2) + MarginSize,
+        (number / TilesetWidth) * (TextureSize + MarginSize * 2) + MarginSize,
+        (TextureSize + MarginSize * 2) * width - MarginSize * 2,
+        (TextureSize + MarginSize * 2) * height - MarginSize * 2
+    );
+}
+
+template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>
+sf::IntRect TilesetHelper<TextureSize, TilesetWidth, MarginSize>::getIntRect(unsigned int number, unsigned int width, unsigned int height) const
+{
+    return sf::IntRect(
         (number % TilesetWidth) * (TextureSize + MarginSize * 2) + MarginSize,
         (number / TilesetWidth) * (TextureSize + MarginSize * 2) + MarginSize,
         (TextureSize + MarginSize * 2) * width - MarginSize * 2,

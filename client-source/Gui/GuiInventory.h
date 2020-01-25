@@ -15,9 +15,17 @@ class GuiInventory : public GuiElement
         void update(float delta_time) override;
 
     private:
-        sf::Texture const* texture;
+        sf::Texture const * texture;
         sf::RectangleShape rectangle;
+
+        mutable sf::RectangleShape item_hand;
+
         mutable sf::RectangleShape item_draw;
+        mutable sf::Text number_draw;
+
+        sf::Texture const * block_textures;
+        sf::Texture const * ground_textures;
+        sf::Texture const * item_textures;
 
         PlayerInventory& inventory;
 };

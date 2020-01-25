@@ -9,6 +9,8 @@
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
+const TilesetHelper<16, 16, 1> Item::tilesetHelper;
+
 Item::Item(const std::string name, uint32_t default_texture) :
     name(name),
     default_texture(default_texture)

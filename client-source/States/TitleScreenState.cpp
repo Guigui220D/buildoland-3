@@ -26,6 +26,7 @@ bool TitleScreenState::handleEvent(sf::Event& event)
         title.calculateView(getGame().getWindow().getSize());
         sfml.calculateView(getGame().getWindow().getSize());
         loading_icon.calculateView(getGame().getWindow().getSize());
+        return false;
     }
     return true;
 }

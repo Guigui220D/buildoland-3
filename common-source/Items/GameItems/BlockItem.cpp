@@ -14,7 +14,11 @@
 #endif // CLIENT_SIDE
 
 BlockItem::BlockItem(Block const * block) :
+    #ifdef CLIENT_SIDE
     Item(block->getName() + "_block", block->default_texture),
+    #else
+    Item(block->getName() + "_block", 0),
+    #endif // CLIENT_SIDE
     block(block)
 {
     //ctor

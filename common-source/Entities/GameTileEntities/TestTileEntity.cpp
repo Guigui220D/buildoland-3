@@ -1,5 +1,7 @@
 #include "TestTileEntity.h"
 
+#include <iostream>
+
 TestTileEntity::TestTileEntity(World& world, unsigned int id, Chunk& chunk, sf::Vector2i tile_pos) :
     TileEntity(world, id, chunk, tile_pos)
 {
@@ -18,6 +20,7 @@ TestTileEntity::~TestTileEntity()
 #ifdef CLIENT_SIDE
 void TestTileEntity::draw(sf::RenderTarget& target) const
 {
+    std::cout << "DIIIII" << std::endl;
     target.draw(rectangle);
 }
 #endif

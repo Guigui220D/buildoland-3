@@ -8,6 +8,7 @@
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
 #else
+    #include "../Networking/NetworkingCodes.h"
     #include <SFML/System.hpp>
 #endif // CLIENT_SIDE
 
@@ -40,7 +41,7 @@ class Entity
          * @param packet : the packet to read
          * @return true if the packet was succesfully read and something was done
          */
-        virtual bool takePacket(sf::Packet& packet) = 0;
+        virtual bool takePacket(sf::Packet& packet);
         /**
          * Reads a new entity packet
          * @param packet : the packet to read

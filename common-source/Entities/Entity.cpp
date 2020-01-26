@@ -1,11 +1,8 @@
 #include "Entity.h"
 
-
-
 #ifdef CLIENT_SIDE
     #include "../../client-source/World/World.h"
 #else
-    #include "../Networking/NetworkingCodes.h"
     #include "../../server-source/World/World.h"
 #endif // CLIENT_SIDE
 
@@ -80,6 +77,8 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 
 #ifdef CLIENT_SIDE
 void Entity::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) {}
+
+bool Entity::takePacket(sf::Packet& packet) { return true; }
 
 bool Entity::takeNewEntityPacket(sf::Packet& packet) { return true; }
 #else

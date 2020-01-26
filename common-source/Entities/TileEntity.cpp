@@ -19,3 +19,19 @@ TileEntity::~TileEntity()
 {
     //dtor
 }
+
+#ifndef CLIENT_SIDE
+void TileEntity::makeNewEntityPacket(sf::Packet& packet) const
+{
+    packet.clear();
+
+    packet << Networking::StoC::EntityAction;
+    packet << EntityActions::StoC::AddEntity;
+    packet << getEntityCode(); //This is tile entity
+    packet << getId();
+    packet << getTileEntityCode();
+    packet << tile_pos.x << tile_pos.y;
+
+    addInfoToNewEntityPacket(packet);
+}
+#endif

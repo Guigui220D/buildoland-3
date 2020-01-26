@@ -9,10 +9,14 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Networking/StoC_EntityActionCodes.h"
+
 #include "../../common-source/Entities/EntityCodes.h"
+#include "../../common-source/Entities/TileEntityCodes.h"
 
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
+
+#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
 
 #include "../States/GameState.h"
 
@@ -102,16 +106,11 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
 bool EntitiesManager::addEntity(sf::Packet& packet)
 {
     unsigned short entity_code; packet >> entity_code;
-    if (!packet)
-    {
-        std::cerr << "Entity packet was too short (reading type code)." << std::endl;
-        return false;
-    }
-
     unsigned int entity_id; packet >> entity_id;
+
     if (!packet)
     {
-        std::cerr << "Entity packet was too short (reading entity id)." << std::endl;
+        std::cerr << "Entity packet was too short (reading type code and id)." << std::endl;
         return false;
     }
 
@@ -131,7 +130,44 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
     case Entities::None:
         return true;
     case Entities::TileEntity:
-        std::cout << "TILE ENTITY" << std::endl;
+        {
+            unsigned short tile_entity_code; packet >> tile_entity_code;
+
+            sf::Vector2i tile_pos;
+            packet >> tile_pos.x >> tile_pos.y;
+
+            if (!packet)
+            {
+                std::cerr << "Tile entity packet was too short." << std::endl;
+                return false;
+            }
+
+            sf::Vector2i chunk_pos = World::getChunkPosFromBlockPos(tile_pos);
+
+            std::cout << "Tile entity to add to chunk " << chunk_pos.x << ", " << chunk_pos.y << " (at position " << tile_pos.x << ", " << tile_pos.y << ")." << std::endl;
+
+            if (!world.isChunkLoaded(chunk_pos))
+            {
+                std::cerr << "Tile entity wasn't added (chunk is unloaded)." << std::endl;
+                return false;
+            }
+
+
+
+            Chunk& chunk = world.getChunk(chunk_pos);
+
+            switch (tile_entity_code)
+            {
+            case TileEntities::None:
+                return true;
+            case TileEntities::TestTileEntity:
+                new_entity = new TestTileEntity(world, entity_id, chunk, tile_pos);
+                return true;
+            default:
+                std::cerr << "Tile entity type code unknown." << std::endl;
+                return false;
+            }
+        }
         break;
     case Entities::Player:
         new_entity = new Player(world, entity_id);

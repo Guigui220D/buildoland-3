@@ -128,6 +128,11 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
     switch (entity_code)
     {
+    case Entities::None:
+        return true;
+    case Entities::TileEntity:
+        std::cout << "TILE ENTITY" << std::endl;
+        break;
     case Entities::Player:
         new_entity = new Player(world, entity_id);
         break;

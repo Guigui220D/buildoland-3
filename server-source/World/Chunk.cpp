@@ -10,6 +10,9 @@
 //TMP
 #include <cstdlib>
 
+//TEST
+#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
+
 #include "../../common-source/Networking/NetworkingCodes.h"
 
 const int Chunk::CHUNK_SIZE = 16;
@@ -25,6 +28,8 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
     packet_ready(false)
 {
     world.getGenerator()->generateChunk(this);
+
+    world.getEntityManager().newEntity(new TestTileEntity(world, world.getEntityManager().getNextEntityId(), *this, getBlockPosInWorld(0, 0)));
 
     ready = true;
 }

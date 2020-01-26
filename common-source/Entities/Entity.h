@@ -89,6 +89,8 @@ class Entity
         virtual void addInfoToNewEntityPacket(sf::Packet& packet) const;
         #endif // CLIENT_SIDE
 
+        sf::Vector2i chunk_on;
+
     private:
         void onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk);
         #ifdef CLIENT_SIDE
@@ -97,6 +99,4 @@ class Entity
 
         const unsigned int id;
         World& world;
-
-        sf::Vector2i chunk_on;
 };

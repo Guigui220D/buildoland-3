@@ -11,7 +11,7 @@ class Chunk;
 class TestEntity : public LivingEntity
 {
     public:
-        inline unsigned short getEntityCode() const { return Entities::TestEntity; };
+        inline unsigned short getEntityCode() const override { return Entities::TestEntity; };
 
         TestEntity(World& world, unsigned int id);
         ~TestEntity();

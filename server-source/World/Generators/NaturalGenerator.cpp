@@ -26,6 +26,7 @@ void NaturalGenerator::init()
     random_blocks.push_back(GameBlocks::STONE->getId());
     random_blocks.push_back(GameBlocks::STONE_BRICKS->getId());
     random_blocks.push_back(GameBlocks::WOOD->getId());
+    random_blocks.push_back(GameBlocks::DOOR_CLOSED->getId());
 }
 
 void NaturalGenerator::generateChunk(Chunk* chunk)

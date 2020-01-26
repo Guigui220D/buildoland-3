@@ -34,6 +34,7 @@ bool TitleScreenState::handleEvent(sf::Event& event)
 void TitleScreenState::beforeInitTask()
 {
     //We can access that because Game has TitleScreenState as a friend
+    this->getGame().language_manager.load(this->getGame().settings_manager.getString("game_language"));
     this->getGame().loadResources();
     this->getGame().game_blocks_manager.initBlocks();
     this->getGame().game_grounds_manager.initGrounds();

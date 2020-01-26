@@ -8,6 +8,7 @@
 #include "States/State.h"
 
 #include "Settings/SettingsManager.h"
+#include "Settings/LanguageManager.h"
 #include "Res/ResourceManager.h"
 #include "Res/AudioManager.h"
 
@@ -62,6 +63,7 @@ class Game
         inline AudioManager& getAudioManager() { return audio_manager; }
 
         inline SettingsManager& getSettingsManager() { return settings_manager; }
+        inline LanguageManager& getLanguageManager() { return language_manager; }
 
         inline void useDefaultView() { window.setView(default_view); }
 
@@ -75,6 +77,7 @@ class Game
         sf::View default_view;
 
         SettingsManager settings_manager;
+        LanguageManager language_manager;
 
         GameBlocks game_blocks_manager;
         GameGrounds game_grounds_manager;

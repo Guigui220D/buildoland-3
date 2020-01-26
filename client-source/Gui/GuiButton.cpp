@@ -17,7 +17,7 @@ GuiButton::~GuiButton()
 
 void GuiButton::init()
 {
-    text.setString(string);
+    text.setString(game.getLanguageManager().getString(string));
     text.setCharacterSize(100);
     text.scale(sf::Vector2f(1.f / 120.f, 1.f / 120.f));
     text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));

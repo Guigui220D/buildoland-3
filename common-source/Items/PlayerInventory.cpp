@@ -121,7 +121,7 @@ bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
             if (packet)
             {
                 ItemStack stack(itemstack, game.getGame().getItemsRegister());
-                std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+                //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
                 insertItemStack(stack);
             }
         }
@@ -137,7 +137,7 @@ bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
                     return false;
 
                 ItemStack stack(itemstack, game.getGame().getItemsRegister());
-                std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+                //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
 
                 contents.at(pos).swap(stack);
             }

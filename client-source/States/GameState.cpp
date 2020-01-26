@@ -165,7 +165,7 @@ bool GameState::handleEvent(sf::Event& event)
         if (event.key.code == sf::Keyboard::A)
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
             {
-                getGame().addStateOnTop(new ErrorState(getGame(), "State interrupted (for testing).", 0));
+                getGame().addStateOnTop(new ErrorState(getGame(), "STATE_INTERRUPTED", 0));
                     must_be_destroyed = true;
             }
         if (event.key.code == sf::Keyboard::E)
@@ -293,7 +293,7 @@ bool GameState::startAndConnectLocalServer()
         if (code)
         {
             std::cerr << "Could not start server!" << std::endl;
-            getGame().addStateOnTop(new ErrorState(getGame(), "Could not start local server.", 0));
+            getGame().addStateOnTop(new ErrorState(getGame(), "SERVER_DIDNT_START", 0));
             must_be_destroyed = true;
             return false;
         }
@@ -342,7 +342,7 @@ bool GameState::handshakeRemoteServer()
             if (status == sf::Socket::Disconnected)
             {
                 std::cerr << "Server unreachable" << std::endl;
-                getGame().addStateOnTop(new ErrorState(getGame(), "Socket disconnected before handshake.", 0));
+                getGame().addStateOnTop(new ErrorState(getGame(), "SOCKET_DISCONNECTED", 0));
                 must_be_destroyed = true;
                 return false;
             }
@@ -350,7 +350,7 @@ bool GameState::handshakeRemoteServer()
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
                 std::cerr << "Time out while waiting for server handshake" << std::endl;
-                getGame().addStateOnTop(new ErrorState(getGame(), "Timeout while waiting for server handshake.", 0));
+                getGame().addStateOnTop(new ErrorState(getGame(), "TIMEOUT_HANDSHAKE", 0));
                 must_be_destroyed = true;
                 return false;
             }
@@ -387,7 +387,7 @@ bool GameState::handshakeRemoteServer()
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
     {
         std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
-        getGame().addStateOnTop(new ErrorState(getGame(), "Server has wrong version!", 0));
+        getGame().addStateOnTop(new ErrorState(getGame(), "WRONG_VERSION", 0));
         must_be_destroyed = true;
         return false;
     }
@@ -425,7 +425,7 @@ void GameState::receiverLoop()
                 {
                 case Networking::StoC::Disconnect:
                     std::clog << "Received disconnect code from server." << std::endl;
-                    getGame().addStateOnTop(new ErrorState(getGame(), "Disconnected from server.", 0));
+                    getGame().addStateOnTop(new ErrorState(getGame(), "DISCONNECTED_BY_SERVER", 0));
                     must_be_destroyed = true;
                     break;
 
@@ -524,7 +524,7 @@ void GameState::receiverLoop()
             break;
         case sf::Socket::Disconnected:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
-            getGame().addStateOnTop(new ErrorState(getGame(), "Server socket unreachable.", 0));
+            getGame().addStateOnTop(new ErrorState(getGame(), "SOCKET_DISCONNECTED", 0));
             must_be_destroyed = true;
             break;
         case sf::Socket::Error:

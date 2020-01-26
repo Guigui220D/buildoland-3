@@ -1,0 +1,14 @@
+{
+	"test": "Ceci est un test",
+	
+	"SINGLEPLAYER_BUTTON": "Mode solo",
+	"MULTIPLAYER_BUTTON": "Mode multi",
+	"BACK_TO_MAIN_MENU_BUTTON": "Retourner au menu",
+	
+	"STATE_INTERRUPTED": "Jeu interrompu (test)",
+	"SERVER_DIDNT_START": "Le serveur local n'a pas pu être démarré",
+	"SOCKET_DISCONNECTED": "Port non joignable",
+	"TIMEOUT_HANDSHAKE": "Timeout pendant la connexion",
+	"WRONG_VERSION": "Le serveur n'a pas la même version",
+	"DISCONNECTED_BY_SERVER": "Déconnecté par le serveur"
+}

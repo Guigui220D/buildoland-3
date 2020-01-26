@@ -56,6 +56,8 @@ void SettingsManager::load()
 
     std::cout << "Started loading settings..." << std::endl;
 
+    loadStringSetting({}, "language", "game_language", "eng");
+
     loadStringSetting({ "online" }, "address", "online_server_address", "localhost");
     loadStringSetting({ "player" }, "nick_name", "online_player_name", "Anonymous");
 

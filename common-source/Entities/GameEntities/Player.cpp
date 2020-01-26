@@ -69,13 +69,13 @@ void Player::update(float delta)
 
         if (getWorld().getGame().getWindow().hasFocus())
         {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
             dir += sf::Vector2f(0, -1.f);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 dir += sf::Vector2f(-1.f, 0);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
                 dir += sf::Vector2f(0, 1.f);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D))
+            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
                 dir += sf::Vector2f(1.f, 0);
         }
 

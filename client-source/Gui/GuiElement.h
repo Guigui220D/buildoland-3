@@ -103,8 +103,9 @@ class GuiElement
          */
         inline float getAspectRatio() const { return ratio; }
 
-    private:
         Game& game;
+
+    private:
 
         sf::FloatRect zone;
         sf::Vector2f size;

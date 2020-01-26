@@ -17,7 +17,7 @@ PlayerInventory::PlayerInventory(const Player& owner, GameState& game) :
     owner(owner),
     game(game)
 {
-    ItemStack a(game.getGame().getItemsRegister().getItemByID(2), 50);
+    ItemStack a(ItemsRegister::SHOVEL, 1);
     contents.at(0).swap(a);
 }
 #else
@@ -25,7 +25,7 @@ PlayerInventory::PlayerInventory(const Player& owner, Server& server) :
     owner(owner),
     server(server)
 {
-    ItemStack a(server.getItemsRegister().getItemByID(2), 50);
+    ItemStack a(ItemsRegister::SHOVEL, 1);
     contents.at(0).swap(a);
 }
 #endif // CLIENT_SIDE

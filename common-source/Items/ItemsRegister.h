@@ -48,6 +48,7 @@ class ItemsRegister
         //Put items here
         static Item const * const NULL_ITEM;
         static Item const * const BALL;
+        static Item const * const SHOVEL;
 
     private:
         std::vector<Item const *> items;

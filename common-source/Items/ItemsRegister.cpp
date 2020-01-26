@@ -8,9 +8,11 @@
 
 #include "GameItems/NullItem.h"
 #include "GameItems/BallItem.h"
+#include "GameItems/ShovelItem.h"
 
 Item const * const ItemsRegister::NULL_ITEM = new NullItem();
 Item const * const ItemsRegister::BALL      = new BallItem();
+Item const * const ItemsRegister::SHOVEL    = new ShovelItem();
 
 #ifdef CLIENT_SIDE
 ItemsRegister::ItemsRegister(LanguageManager& language) :
@@ -56,8 +58,8 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
             #endif
         }
 
-
     addItem(BALL);
+    addItem(SHOVEL);
 }
 
 void ItemsRegister::addItem(Item const * item)

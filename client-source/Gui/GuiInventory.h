@@ -15,6 +15,8 @@ class GuiInventory : public GuiElement
         void update(float delta_time) override;
 
     private:
+        sf::Text title;
+
         sf::Texture const * texture;
         sf::RectangleShape rectangle;
 

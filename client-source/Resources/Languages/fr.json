@@ -12,6 +12,8 @@
 	"WRONG_VERSION": "Le serveur n'a pas la même version",
 	"DISCONNECTED_BY_SERVER": "Déconnecté par le serveur",
 	
+	"INVENTORY_TITLE": "Inventaire",
+	
 	"wood_block": "Bloc de bois",
 	"stone_block": "Bloc de pierre",
 	"bricks_block": "Briques de pierre",
@@ -25,5 +27,6 @@
 	"grass_ground": "Herbe",
 	"water_ground": "Eau peu profonde",
 	
-	"ball": "Balle rose"
+	"ball": "Balle rose",
+	"shovel": "Pelle"
 }

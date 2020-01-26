@@ -10,7 +10,9 @@
 	"SOCKET_DISCONNECTED": "Socket unreachable",
 	"TIMEOUT_HANDSHAKE": "Timeout during server handshake",
 	"WRONG_VERSION": "Server doesn't have the same version",
-	"DISCONNECTED_BY_SERVER": "Disconnected by server"
+	"DISCONNECTED_BY_SERVER": "Disconnected by server",
+	
+	"INVENTORY_TITLE": "Inventory",
 	
 	"wood_block": "Wooden block",
 	"stone_block": "Stone block",
@@ -25,5 +27,6 @@
 	"grass_ground": "Grass",
 	"water_ground": "Shallow water",
 	
-	"ball": "Pink ball"
+	"ball": "Pink ball",
+	"shovel": "Shovel"
 }

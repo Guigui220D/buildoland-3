@@ -34,7 +34,7 @@ void InventoryMenuState::update(float delta_time)
 {
     inventory.update(delta_time);
 
-    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::E))
+    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
         must_be_destroyed = true;
 }
 

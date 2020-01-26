@@ -168,7 +168,7 @@ bool GameState::handleEvent(sf::Event& event)
                 getGame().addStateOnTop(new ErrorState(getGame(), "STATE_INTERRUPTED", 0));
                     must_be_destroyed = true;
             }
-        if (event.key.code == sf::Keyboard::E)
+        if (event.key.code == sf::Keyboard::Space)
             if (Player::this_player)
                 getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
         break;

@@ -18,6 +18,8 @@ class LanguageManager
     private:
         const std::string language_setting;
 
+        bool success = false;
+
         LanguageManager();
         ~LanguageManager();
 

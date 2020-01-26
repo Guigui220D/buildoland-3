@@ -50,7 +50,13 @@ const std::string& SettingsManager::getString(const std::string setting_name) co
 void SettingsManager::load()
 {
     std::ifstream is(SETTINGS_FILE_PATH);
-    is >> json;
+    if (!is.is_open())
+    {
+        std::cerr << "Could not load settings file!" << std::endl;
+        json = "{}"_json;
+    }
+    else
+        is >> json;
 
     sf::Clock clk;
 
@@ -111,7 +117,7 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
         return false;
     }
 
-    std::cout << "Successfully loaded int setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
+    std::clog << "Successfully loaded int setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
 
     int_settings.emplace(std::pair<std::string, int>(setting_name, value));
 
@@ -156,7 +162,7 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
         return false;
     }
 
-    std::cout << "Successfully loaded bool setting \"" << setting_name << "\" with value " << std::boolalpha << value << '.' << std::endl;
+    std::clog << "Successfully loaded bool setting \"" << setting_name << "\" with value " << std::boolalpha << value << '.' << std::endl;
 
     bool_settings.emplace(std::pair<std::string, bool>(setting_name, value));
 
@@ -201,7 +207,7 @@ bool SettingsManager::loadStringSetting(const std::initializer_list<const std::s
         return false;
     }
 
-    std::cout << "Successfully loaded string setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
+    std::clog << "Successfully loaded string setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
 
     string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
 

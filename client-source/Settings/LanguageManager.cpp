@@ -19,6 +19,8 @@ const std::string& LanguageManager::getString(const std::string identifier)
 
     if (i == strings.end())
     {
+        if (success)
+            std::clog << "Warning! (language) " << identifier << " isn't loaded." << std::endl;
         strings.emplace(std::pair<std::string, const std::string>(identifier, identifier));
         i = strings.find(identifier);
     }
@@ -28,9 +30,31 @@ const std::string& LanguageManager::getString(const std::string identifier)
 
 void LanguageManager::load(const std::string language)
 {
+    strings.emplace(std::pair<std::string, const std::string>("", ""));
 
     std::ifstream is("Resources/Languages/" + language + ".json");
-    is >> json;
+    if (!is.is_open())
+    {
+        std::cerr << "Language file " << language << "could not be opened! Trying eng" << std::endl;
+
+        std::ifstream is_eng("Resources/Languages/eng.json");
+
+        if (!is_eng.is_open())
+        {
+            std::cerr << "Could not load language file! This is gonna be messy :/" << std::endl;
+            json = "{}"_json;
+            return;
+        }
+        else
+        {
+            std::clog << "Loaded eng as fallback language." << std::endl;
+            is_eng >> json;
+        }
+    }
+    else
+        is >> json;
+
+    success = true;
 
     sf::Clock clk;
 
@@ -38,9 +62,16 @@ void LanguageManager::load(const std::string language)
 
     for (nlohmann::json::iterator i = json.begin(); i != json.end(); i++)
     {
-        //TODO : Make all of that safe, IT'S NOT
-        strings.emplace(std::pair<std::string, const std::string>(i.key(), i.value()));
-        std::cout << "Added \"" << i.key() << "\" : " << i.value() << "." << std::endl;
+        try
+        {
+            strings.emplace(std::pair<std::string, const std::string>(i.key(), i.value()));
+            std::clog << "Added \"" << i.key() << "\" : " << i.value() << "." << std::endl;
+        }
+        catch (std::exception& e)
+        {
+            std::cerr << "Could not read language entry : " << e.what() << std::endl;
+        }
+
     }
 
     std::cout << "Loaded language in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;

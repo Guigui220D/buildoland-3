@@ -1,0 +1,14 @@
+{
+	"TEST": "This is a test",
+	
+	"SINGLEPLAYER_BUTTON": "Singleplayer",
+	"MULTIPLAYER_BUTTON": "Multiplayer",
+	"BACK_TO_MAIN_MENU_BUTTON": "Back to main menu",
+	
+	"STATE_INTERRUPTED": "State interrupted by player (for testing)",
+	"SERVER_DIDNT_START": "Local server couldn't be started",
+	"SOCKET_DISCONNECTED": "Socket unreachable",
+	"TIMEOUT_HANDSHAKE": "Timeout during server handshake",
+	"WRONG_VERSION": "Server doesn't have the same version",
+	"DISCONNECTED_BY_SERVER": "Disconnected by server"
+}

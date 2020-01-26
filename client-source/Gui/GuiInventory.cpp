@@ -74,31 +74,55 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     }
 
     ItemStack& hand = inventory.contents.at(0);
-    if (!hand)
-        return;
-
-    item_hand.setTextureRect(hand.getItem()->getTexture(hand));
-    sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
-    item_hand.setPosition(pos);
-    number_draw.setPosition(pos + sf::Vector2f(-8.f, 0));
-
-    switch (hand.getItem()->getTexturesSet())
+    if (hand)
     {
-    case Item::BlocksTextureSet:
-        item_hand.setTexture(block_textures);
-        break;
-    case Item::GroundsTextureSet:
-        item_hand.setTexture(ground_textures);
-        break;
-    case Item::ItemsTextureSet:
-        item_hand.setTexture(item_textures);
-        break;
+        item_hand.setTextureRect(hand.getItem()->getTexture(hand));
+        sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
+        item_hand.setPosition(pos);
+        number_draw.setPosition(pos + sf::Vector2f(-8.f, 0));
+
+        switch (hand.getItem()->getTexturesSet())
+        {
+        case Item::BlocksTextureSet:
+            item_hand.setTexture(block_textures);
+            break;
+        case Item::GroundsTextureSet:
+            item_hand.setTexture(ground_textures);
+            break;
+        case Item::ItemsTextureSet:
+            item_hand.setTexture(item_textures);
+            break;
+        }
+
+        number_draw.setString(std::to_string(hand.getAmount()));
+
+        target.draw(number_draw);
+        target.draw(item_hand);
     }
 
-    number_draw.setString(std::to_string(hand.getAmount()));
+    {
+        sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
+        pos -= sf::Vector2f(1.f, 1.f);
+        pos /= 18.f;
 
-    target.draw(number_draw);
-    target.draw(item_hand);
+        sf::Vector2i i_pos(pos.x, pos.y);
+
+        if (i_pos.x < 0 || i_pos.y < 0 || i_pos.x >= 6 || i_pos.y >= 4)
+        {}
+        else
+        {
+            ItemStack& stack = inventory.contents.at(i_pos.x + i_pos.y * 6 + 1);
+
+            if (stack)
+            {
+                hover_text.setString(stack.getItem()->getDisplayName());
+                hover_text.setPosition(getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow())) - sf::Vector2f(0, 4.f));
+                target.draw(hover_text);
+            }
+        }
+    }
+
+
 }
 
 void GuiInventory::init()
@@ -120,6 +144,13 @@ void GuiInventory::init()
     number_draw.setString("foo");
     number_draw.setCharacterSize(100);
     number_draw.scale(sf::Vector2f(.04f, .04f));
+
+    hover_text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));
+    hover_text.setString("foo");
+    hover_text.setCharacterSize(100);
+    hover_text.scale(sf::Vector2f(.04f, .04f));
+    hover_text.setOutlineColor(sf::Color::Black);
+    hover_text.setOutlineThickness(4.f);
 }
 
 void GuiInventory::update(float delta_time)

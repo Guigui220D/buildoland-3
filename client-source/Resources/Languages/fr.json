@@ -10,5 +10,20 @@
 	"SOCKET_DISCONNECTED": "Port non joignable",
 	"TIMEOUT_HANDSHAKE": "Timeout pendant la connexion",
 	"WRONG_VERSION": "Le serveur n'a pas la même version",
-	"DISCONNECTED_BY_SERVER": "Déconnecté par le serveur"
+	"DISCONNECTED_BY_SERVER": "Déconnecté par le serveur",
+	
+	"wood_block": "Bloc de bois",
+	"stone_block": "Bloc de pierre",
+	"bricks_block": "Briques de pierre",
+	"iron_block": "Bloc de fer",
+	"gold_block": "Bloc d'or",
+	"boulder_block": "Rocher",
+	
+	"wood_ground": "Parquet",
+	"stone_ground": "Sol en pierre",
+	"sand_ground": "Sable",
+	"grass_ground": "Herbe",
+	"water_ground": "Eau peu profonde",
+	
+	"ball": "Balle rose"
 }

@@ -57,6 +57,8 @@ class Item
         #ifdef CLIENT_SIDE
         virtual inline sf::IntRect getTexture(ItemStack& stack) const { return tilesetHelper.getIntRect(default_texture); }
         virtual inline TextureSet getTexturesSet() const { return TextureSet::ItemsTextureSet; }
+
+        inline std::string& getDisplayName() const { return display_name; }
         #endif // CLIENT_SIDE
 
     protected:
@@ -72,5 +74,7 @@ class Item
 
         #ifdef CLIENT_SIDE
         uint32_t default_texture;
+
+        mutable std::string display_name;
         #endif // CLIENT_SIDE
 };

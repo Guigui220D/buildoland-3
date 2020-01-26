@@ -10,10 +10,19 @@
 #include "../Blocks/GameBlocks.h"
 #include "../Grounds/GameGrounds.h"
 
+#ifdef CLIENT_SIDE
+    #include "../../client-source/Settings/LanguageManager.h"
+#endif // CLIENT_SIDE
+
 class ItemsRegister
 {
     public:
+        #ifdef CLIENT_SIDE
+        ItemsRegister(LanguageManager& language);
+        #else
         ItemsRegister();
+        #endif // CLIENT_SIDE
+
         ~ItemsRegister();
 
         /**
@@ -50,4 +59,8 @@ class ItemsRegister
          * @param item : the item to add, must be a constant pointer to a constant item inside of THIS class
          */
         void addItem(Item const * item);
+
+        #ifdef CLIENT_SIDE
+        LanguageManager& language;
+        #endif // CLIENT_SIDE
 };

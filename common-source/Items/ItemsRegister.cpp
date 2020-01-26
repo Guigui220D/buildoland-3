@@ -12,10 +12,17 @@
 Item const * const ItemsRegister::NULL_ITEM = new NullItem();
 Item const * const ItemsRegister::BALL      = new BallItem();
 
+#ifdef CLIENT_SIDE
+ItemsRegister::ItemsRegister(LanguageManager& language) :
+    language(language)
+{
+}
+#else
 ItemsRegister::ItemsRegister()
 {
     //ctor
 }
+#endif // CLIENT_SIDE
 
 ItemsRegister::~ItemsRegister()
 {
@@ -65,6 +72,9 @@ void ItemsRegister::addItem(Item const * item)
     names.emplace(name, id);
     items.push_back(item);
     item->id = id;
+    #ifdef CLIENT_SIDE
+    item->display_name = language.getString(name);
+    #endif // CLIENT_SIDE
 
     std::cout << "Added item \"" << name << "\" with id " << id << std::endl;
 }

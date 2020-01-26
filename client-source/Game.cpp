@@ -6,7 +6,8 @@
 #include "States/TitleScreenState.h"
 
 Game::Game() :
-    audio_manager(resource_manager)
+    audio_manager(resource_manager),
+    game_items_register(language_manager)
 {
     //TODO WHEN SETTINGS MANAGER WORKS
 

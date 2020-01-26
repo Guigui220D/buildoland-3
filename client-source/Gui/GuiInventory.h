@@ -18,6 +18,8 @@ class GuiInventory : public GuiElement
         sf::Texture const * texture;
         sf::RectangleShape rectangle;
 
+        mutable sf::Text hover_text;
+
         mutable sf::RectangleShape item_hand;
 
         mutable sf::RectangleShape item_draw;

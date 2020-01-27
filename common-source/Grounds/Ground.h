@@ -43,6 +43,8 @@ class Ground
          */
         inline bool hasItem() const { return has_item; }
 
+        virtual inline bool isShovelable(GroundInfo info) const { return true; }
+
         #ifdef CLIENT_SIDE
         /**
          * Get four vertices ready to add to the chunk vertex array, for the base texture

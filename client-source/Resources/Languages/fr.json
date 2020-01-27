@@ -15,8 +15,8 @@
 	"INVENTORY_TITLE": "Inventaire",
 	
 	"wood_block": "Bloc de bois",
-	"stone_block": "Bloc de pierre",
-	"bricks_block": "Briques de pierre",
+	"stone_block": "Bloc de béton",
+	"bricks_block": "Bloc de pierres",
 	"iron_block": "Bloc de fer",
 	"gold_block": "Bloc d'or",
 	"boulder_block": "Rocher",

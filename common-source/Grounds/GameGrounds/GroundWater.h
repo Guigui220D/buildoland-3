@@ -8,6 +8,8 @@ class GroundWater : public Ground
         GroundWater();
         ~GroundWater();
 
+        inline bool isShovelable(GroundInfo info) const override { return false; }
+
         #ifdef CLIENT_SIDE
         virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const override;
 

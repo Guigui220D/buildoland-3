@@ -4,11 +4,12 @@
 #include <iostream>
 
 Ground const * const GameGrounds::ERROR = new GroundError();
+Ground const * const GameGrounds::DIRT =  new GroundDirt();
 Ground const * const GameGrounds::WATER = new GroundWater();
 Ground const * const GameGrounds::STONE = new GroundStone();
 Ground const * const GameGrounds::SAND  = new GroundSand();
 Ground const * const GameGrounds::GRASS = new GroundGrass();
-Ground const * const GameGrounds::WOOD = new StaticGround("wood", true, 5);
+Ground const * const GameGrounds::WOOD =  new StaticGround("wood", true, 5);
 
 
 GameGrounds::GameGrounds()
@@ -27,6 +28,8 @@ void GameGrounds::initGrounds()
     grounds.clear();
     //Add all grounds here
     addGround(ERROR);
+
+    addGround(DIRT);
 
     addGround(WATER);
     addGround(STONE);

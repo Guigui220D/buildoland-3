@@ -24,11 +24,15 @@ ShovelItem::~ShovelItem()
 void ShovelItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
 {
     #ifndef CLIENT_SIDE
-    auto drops = world.getGround(click_pos)->getDrops();
+    if (world.getGround(click_pos)->isShovelable(GroundInfo(world, click_pos))
+        && world.getBlock(click_pos) == GameBlocks::AIR)
+    {
+        auto drops = world.getGround(click_pos)->getDrops();
 
-    for (ItemStack& stack : drops)
-        player.getInventory().insertItemStack(stack);
+        for (ItemStack& stack : drops)
+            player.getInventory().insertItemStack(stack);
 
-    world.setGround(click_pos, GameGrounds::ERROR->getId());
+        world.setGround(click_pos, GameGrounds::DIRT->getId());
+    }
     #endif // CLIENT_SIDE
 }

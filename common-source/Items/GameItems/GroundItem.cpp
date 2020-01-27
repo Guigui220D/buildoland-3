@@ -6,6 +6,8 @@
     #include "../../../server-source/World/World.h"
 #endif // CLIENT_SIDE
 
+#include "../../Grounds/GameGrounds.h"
+
 #include "../ItemStack.h"
 
 GroundItem::GroundItem(Ground const * ground) :
@@ -26,16 +28,11 @@ GroundItem::~GroundItem()
 
 void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
 {
-    if (world.getGround(click_pos) != ground)
+    if (world.getGround(click_pos) == GameGrounds::DIRT)
     {
         stack.takeSome(1);
 
         #ifndef CLIENT_SIDE
-        auto drops = world.getGround(click_pos)->getDrops();
-
-        for (ItemStack& stack : drops)
-            player.getInventory().insertItemStack(stack);
-
         world.setGround(click_pos, ground->getId());
 
         sf::Packet set;

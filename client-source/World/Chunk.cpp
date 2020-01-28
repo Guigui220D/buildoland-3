@@ -186,7 +186,10 @@ void Chunk::generateGroundDetailVertices() const
             {
                 const Ground* ground = getGround(x, y);
 
-                GroundInfo gi(world, getBlockPosInWorld(x, y));
+                sf::Vector2i tile_pos = getBlockPosInWorld(x, y);
+
+                GroundInfo gi(world, tile_pos);
+                BlockInfo bi(world, tile_pos);
 
                 if (!ground->hasSurfaceDetails(gi))
                     continue;
@@ -216,7 +219,14 @@ void Chunk::generateBlockSideVertices() const
                 continue;
 
             if (!block->hasVolume(bi))
+            {
+                TextQuad plane = block->getTopVertices(bi);
+
+                for (size_t i = 0; i < 4; i++)
+                    block_side_vertices.append(plane.verts[i]);
+
                 continue;
+            }
 
             if (!block->alwaysVisible() && block_down->occults(bi_down))
                 continue;
@@ -239,6 +249,9 @@ void Chunk::generateBlockTopVertices() const
             BlockInfo bi(world, getBlockPosInWorld(x, y));
 
             if (block == GameBlocks::AIR)
+                continue;
+
+            if (!block->hasVolume(bi))
                 continue;
 
             TextQuad top = block->getTopVertices(bi);

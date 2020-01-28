@@ -1,7 +1,12 @@
 #include "Block.h"
 
-#ifndef CLIENT_SIDE
-#include "../Items/ItemsRegister.h"
+#ifdef CLIENT_SIDE
+    #include "../../client-source/Utils/XXHash.hpp"
+    #include "../../client-source/Utils/XXHash_bis.hpp"
+
+    #include "../../client-source/World/World.h"
+#else
+    #include "../Items/ItemsRegister.h"
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
@@ -48,6 +53,13 @@ TextQuad Block::getSideVertices(BlockInfo info) const
         for (int i = 0; i < 4; i++)
             side.verts[i].color = sf::Color(127, 127, 127);
     return side;
+}
+
+uint32_t Block::getRandomInt(BlockInfo info, int add)
+{
+    //Pseudo random from seed and ground position
+    sf::Vector2i pos = info.getPos();
+    return XXH32(&pos, sizeof(pos), info.getWorld().getSeed() + add);
 }
 #else
 std::vector<ItemStack> Block::getDrops() const

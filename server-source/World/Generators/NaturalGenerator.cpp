@@ -20,6 +20,7 @@ void NaturalGenerator::init()
     ground_levels.push_back(GameGrounds::GRASS->getId());
     ground_levels.push_back(GameGrounds::STONE->getId());
     ground_levels.push_back(GameGrounds::STONE->getId());
+    ground_levels.push_back(GameGrounds::STONE->getId());
 
     random_blocks.push_back(GameBlocks::IRON->getId());
     random_blocks.push_back(GameBlocks::GOLD->getId());
@@ -52,8 +53,28 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
             if (perlin_value < 0.)
                 perlin_value = 0.;
 
-            if (std::round(perlin_value) >= 4 && std::rand() % 20 == 0)
-                chunk->setBlock(x, y, GameBlocks::BOULDER);
+            if (std::round(perlin_value) >= 5 && std::rand() % 22 == 0)
+                chunk->setBlock(x, y, GameBlocks::STONE_PLATE);
+
+            if (std::round(perlin_value) >= 3 && std::round(perlin_value) <= 4 && std::rand() % 18 == 0)
+                chunk->setBlock(x, y, GameBlocks::STICKS);
+
+            if (std::round(perlin_value) >= 6 && std::rand() % 3 == 0)
+            {
+                switch (std::rand() % 4)
+                {
+                case 0: case 1:
+                    chunk->setBlock(x, y, GameBlocks::BOULDER);
+                    break;
+                case 2:
+                    chunk->setBlock(x, y, GameBlocks::COPPER_ORE);
+                    break;
+                case 3:
+                    chunk->setBlock(x, y, GameBlocks::GOLD_ORE);
+                    break;
+                }
+            }
+
 
             chunk->setGround(x, y, ground_levels.at(std::round(perlin_value)));
         }

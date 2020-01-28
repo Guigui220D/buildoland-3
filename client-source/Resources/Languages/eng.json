@@ -20,6 +20,8 @@
 	"iron_block": "Iron block",
 	"gold_block": "Gold block",
 	"boulder_block": "Boulder",
+	"wood_sticks_block": "Stick",
+	"stone_pebbles_block": "Pebbles",
 	
 	"wood_ground": "Parquet",
 	"stone_ground": "Stone ground",

@@ -20,6 +20,8 @@
 	"iron_block": "Bloc de fer",
 	"gold_block": "Bloc d'or",
 	"boulder_block": "Rocher",
+	"wood_sticks_block": "Baton de bois",
+	"stone_pebbles_block": "Cailloux",
 	
 	"wood_ground": "Parquet",
 	"stone_ground": "Sol en pierre",

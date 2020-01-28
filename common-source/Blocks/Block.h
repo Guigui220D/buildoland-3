@@ -108,6 +108,14 @@ class Block
          * @return True if the side should be darkened
          */
         virtual inline bool darkenSide() const { return true; }
+        /**
+         * Get a random-looking int deterministically depending on the position of the block and seed of the world
+         * @param info : Info about the block, for position and seed
+         * @return The pseudo-random int
+         */
+        static uint32_t getRandomInt(BlockInfo info, int add = 0);
+
+        inline uint32_t getDefaultTexture() const { return default_texture; }
         #endif
 
     private:
@@ -117,7 +125,7 @@ class Block
         const bool has_item;
 
         #ifdef CLIENT_SIDE
-        uint32_t default_texture;
+        const uint32_t default_texture;
         #else
         mutable Item const * drop;
         #endif

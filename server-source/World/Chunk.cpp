@@ -21,6 +21,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
     ready(false),
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 1),
+    tile_entities(CHUNK_SIZE, CHUNK_SIZE, nullptr),
     pos(pos),
     server(world.getServer()),
     world(world),
@@ -29,13 +30,22 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 {
     world.getGenerator()->generateChunk(this);
 
-    world.getEntityManager().newEntity(new TestTileEntity(world, world.getEntityManager().getNextEntityId(), *this, getBlockPosInWorld(0, 0)));
+    TestTileEntity* te = new TestTileEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(0, 0));
+    te->assignChunk(this);
+    world.getEntityManager().newEntity(te, false);
+
 
     ready = true;
 }
 
 Chunk::~Chunk()
 {
+    for (int i = 0; i < tile_entities.getDataSize(); i++)
+    {
+        tile_entities.getData()[i]->assignChunk(nullptr);
+        //tile_entities.getData()[i]->to_be_destroyed = true;
+    }
+
     //dtor
 }
 

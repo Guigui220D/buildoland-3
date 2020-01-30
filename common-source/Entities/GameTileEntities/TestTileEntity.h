@@ -11,7 +11,7 @@ class TestTileEntity : public TileEntity
     public:
         inline unsigned short getTileEntityCode() const override { return TileEntities::TestTileEntity; };
 
-        TestTileEntity(World& world, unsigned int id, Chunk& chunk, sf::Vector2i tile_pos);
+        TestTileEntity(World& world, unsigned int id, sf::Vector2i tile_pos);
         ~TestTileEntity();
 
         #ifdef CLIENT_SIDE

@@ -7,6 +7,7 @@
 #include <SFML/Network.hpp>
 
 #include "../../common-source/Entities/Entity.h"
+#include "../../common-source/Entities/TileEntity.h"
 
 class EntitiesManager
 {
@@ -26,6 +27,8 @@ class EntitiesManager
          * @param target : the render target on which to draw on
          */
         void drawAll(sf::RenderTarget& target) const;
+
+        void declareNewChunkForTileEntities(Chunk* new_chunk);
 
         /**
          * Get a pointer to an entity using its id

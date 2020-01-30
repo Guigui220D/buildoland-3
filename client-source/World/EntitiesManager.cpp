@@ -54,6 +54,7 @@ void EntitiesManager::updateAll(float delta)
 
     for (Entity*& entity : entities_vector)
         entity->updateBase(delta);
+
     entities_mutex.unlock();
 }
 
@@ -142,27 +143,13 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
                 return false;
             }
 
-            sf::Vector2i chunk_pos = World::getChunkPosFromBlockPos(tile_pos);
-
-            std::cout << "Tile entity to add to chunk " << chunk_pos.x << ", " << chunk_pos.y << " (at position " << tile_pos.x << ", " << tile_pos.y << ")." << std::endl;
-
-            if (!world.isChunkLoaded(chunk_pos))
-            {
-                std::cerr << "Tile entity wasn't added (chunk is unloaded)." << std::endl;
-                return false;
-            }
-
-
-
-            Chunk& chunk = world.getChunk(chunk_pos);
-
             switch (tile_entity_code)
             {
             case TileEntities::None:
                 return true;
             case TileEntities::TestTileEntity:
-                new_entity = new TestTileEntity(world, entity_id, chunk, tile_pos);
-                return true;
+                new_entity = new TestTileEntity(world, entity_id, tile_pos);
+                break;
             default:
                 std::cerr << "Tile entity type code unknown." << std::endl;
                 return false;
@@ -267,4 +254,22 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
     sf::Lock lock(entities_mutex);
 
     return en->takePacket(packet);
+}
+
+void EntitiesManager::declareNewChunkForTileEntities(Chunk* new_chunk)
+{
+    entities_mutex.lock();
+
+    for (Entity*& entity : entities_vector)
+    {
+        if (entity->isTileEntity())
+        {
+            TileEntity* te = (TileEntity*) entity;
+
+            if (!te->isReady())
+                te->assignChunk(new_chunk);
+        }
+    }
+
+    entities_mutex.unlock();
 }

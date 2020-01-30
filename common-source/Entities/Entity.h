@@ -67,6 +67,8 @@ class Entity
         inline sf::Vector2i getBlockOn() const { return sf::Vector2i(std::floor(position.x + .5f), std::floor(position.y + .5f)); }
         sf::Vector2i getChunkOn() const;
 
+        virtual inline bool isTileEntity() const { return false; }
+
     protected:
         /**
          * Updates this entity

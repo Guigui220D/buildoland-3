@@ -13,6 +13,7 @@ const int Chunk::CHUNK_SIZE = 16;
 Chunk::Chunk(World& world, sf::Vector2i pos, sf::Packet& packet, bool& success) :
     blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
+    tile_entities(CHUNK_SIZE, CHUNK_SIZE, nullptr),
     pos(pos),
     ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
     block_side_vertices(sf::Quads),

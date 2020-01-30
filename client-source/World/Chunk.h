@@ -6,6 +6,8 @@
 
 #include "../Utils/Arr2D.h"
 
+#include "../../common-source/Entities/TileEntity.h"
+
 class Game;
 class Block;
 class Ground;
@@ -13,6 +15,8 @@ class World;
 
 class Chunk
 {
+    friend class TileEntity;
+
     public:
         static const int CHUNK_SIZE;
 
@@ -120,6 +124,7 @@ class Chunk
         bool ready = false;
 
         Arr2D<uint16_t> blocks, grounds;
+        Arr2D<TileEntity*> tile_entities;
         const sf::Vector2i pos;
 
         mutable sf::VertexArray ground_vertices, block_side_vertices, block_top_vertices;

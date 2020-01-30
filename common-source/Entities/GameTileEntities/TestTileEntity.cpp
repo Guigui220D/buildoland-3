@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-TestTileEntity::TestTileEntity(World& world, unsigned int id, Chunk& chunk, sf::Vector2i tile_pos) :
-    TileEntity(world, id, chunk, tile_pos)
+TestTileEntity::TestTileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :
+    TileEntity(world, id, tile_pos)
 {
     #ifdef CLIENT_SIDE
     rectangle.setPosition(getPosition());
@@ -20,7 +20,9 @@ TestTileEntity::~TestTileEntity()
 #ifdef CLIENT_SIDE
 void TestTileEntity::draw(sf::RenderTarget& target) const
 {
-    std::cout << "DIIIII" << std::endl;
+    if (!isReady())
+        return;
+
     target.draw(rectangle);
 }
 #endif

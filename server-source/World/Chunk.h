@@ -4,6 +4,8 @@
 
 #include "../Utils/Arr2D.h"
 
+#include "../../common-source/Entities/TileEntity.h"
+
 //#include "../Ground/GameGrounds.h"
 
 class Server;
@@ -13,6 +15,8 @@ class Ground;
 
 class Chunk
 {
+    friend class TileEntity;
+
     public:
         static const int CHUNK_SIZE;
 
@@ -87,6 +91,7 @@ class Chunk
         bool ready = false;
 
         Arr2D<uint16_t> blocks, grounds;
+        Arr2D<TileEntity*> tile_entities;
         const sf::Vector2i pos;
 
         Server& server;

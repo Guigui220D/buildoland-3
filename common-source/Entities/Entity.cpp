@@ -66,6 +66,8 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
     {
         sf::Packet enter;
 
+
+        std::cout << "New entity spawn packet, for " << getId() << " (chunkchange)" << std::endl;
         makeNewEntityPacket(enter);
 
         getWorld().sendToSubscribersWithException(enter, new_chunk, old_chunk);

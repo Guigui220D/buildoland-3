@@ -169,6 +169,13 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
     assert(new_entity);
 
+    if (new_entity->isTileEntity())
+        if (world.isChunkLoaded(new_entity->getChunkOn()))
+        {
+            TileEntity* te = (TileEntity*) new_entity;
+            te->assignChunk(&world.getChunk(new_entity->getChunkOn()));
+        }
+
     new_entity->takeNewEntityPacket(packet);
 
     sf::Lock lock(entities_mutex);

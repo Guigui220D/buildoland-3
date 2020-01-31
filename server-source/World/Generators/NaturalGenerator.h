@@ -18,6 +18,6 @@ class NaturalGenerator : public Generator
     private:
         siv::PerlinNoise perlin;
 
-        std::vector<uint16_t> ground_levels;
-        std::vector<uint16_t> random_blocks;
+        std::vector<Ground const *> ground_levels;
+        std::vector<Block const *> random_blocks;
 };

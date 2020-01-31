@@ -19,7 +19,7 @@ TileEntity::TileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :
     chunk_pos(World::getChunkPosFromBlockPos(tile_pos)),
     ready(false)
 {
-    position = sf::Vector2f(.5f + tile_pos.x, .5f + tile_pos.y);
+    position = sf::Vector2f(-.5f + tile_pos.x, -.5f + tile_pos.y);
     chunk_on = chunk_pos;
 }
 
@@ -34,9 +34,15 @@ void TileEntity::assignChunk(Chunk* chunk_ptr)
     chunk = chunk_ptr;
 
     if (chunk_ptr)
+    {
         chunk->tile_entities.set(pos.x, pos.y, this);
-
-    ready = !!chunk_ptr;
+        ready = true;
+    }
+    else
+    {
+        to_be_removed = true;
+        ready = false;
+    }
 }
 
 void TileEntity::update(float delta)

@@ -30,11 +30,6 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 {
     world.getGenerator()->generateChunk(this);
 
-    TestTileEntity* te = new TestTileEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(0, 0));
-    te->assignChunk(this);
-    world.getEntityManager().newEntity(te, false);
-
-
     ready = true;
 }
 
@@ -87,32 +82,52 @@ const Ground* Chunk::getGround(int x, int y) const
     return server.getGroundsManager().getGroundByID(getGroundId(x, y));
 }
 
-void Chunk::setBlock(int x, int y, uint16_t id)
-{
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < CHUNK_SIZE);
-    assert(y < CHUNK_SIZE);
-    blocks.set(x, y, id);
-    packet_ready = false;
-}
-
-void Chunk::setGround(int x, int y, uint16_t id)
-{
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < CHUNK_SIZE);
-    assert(y < CHUNK_SIZE);
-    grounds.set(x, y, id);
-    packet_ready = false;
-}
-
 void Chunk::setBlock(int x, int y, const Block* block)
 {
-    setBlock(x, y, block->getId());
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+
+    blocks.set(x, y, block->getId());
+
+    packet_ready = false;
+
+    TileEntity* old = tile_entities.get(x, y);
+
+    if (old)
+    {
+        tile_entities.set(x, y, nullptr);
+        old->assignChunk(nullptr);
+    }
+
+
+    TileEntity* te = nullptr;
+
+    switch (block->getTileEntityCode())
+    {
+    case TileEntities::None:
+        return;
+
+    case TileEntities::TestTileEntity:
+        te = new TestTileEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
+        break;
+    }
+
+    assert(te);
+
+    te->assignChunk(this);
+    world.getEntityManager().newEntity(te, ready);
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
 {
-    setGround(x, y, ground->getId());
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+
+    grounds.set(x, y, ground->getId());
+
+    packet_ready = false;
 }

@@ -81,50 +81,25 @@ const Ground* Chunk::getGround(int x, int y) const
     return game.getGroundsManager().getGroundByID(getGroundId(x, y));
 }
 
-
-void Chunk::setBlock(int x, int y, uint16_t id)
-{
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < CHUNK_SIZE);
-    assert(y < CHUNK_SIZE);
-    blocks.set(x, y, id);
-    if (x == 0)
-        notifyChunk(3);
-    if (y == 0)
-        notifyChunk(0);
-    if (x == CHUNK_SIZE - 1)
-        notifyChunk(1);
-    if (y == CHUNK_SIZE - 1)
-        notifyChunk(2);
-    vertices_ready = false;
-}
-
-void Chunk::setGround(int x, int y, uint16_t id)
-{
-    assert(x >= 0);
-    assert(y >= 0);
-    assert(x < CHUNK_SIZE);
-    assert(y < CHUNK_SIZE);
-    grounds.set(x, y, id);
-    if (x == 0)
-        notifyChunk(3);
-    if (y == 0)
-        notifyChunk(0);
-    if (x == CHUNK_SIZE - 1)
-        notifyChunk(1);
-    if (y == CHUNK_SIZE - 1)
-        notifyChunk(2);
-    vertices_ready = false;
-}
-
 void Chunk::setBlock(int x, int y, const Block* block)
 {
     assert(x >= 0);
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
-    setBlock(x, y, block->getId());
+
+    blocks.set(x, y, block->getId());
+
+    if (x == 0)
+        notifyChunk(3);
+    if (y == 0)
+        notifyChunk(0);
+    if (x == CHUNK_SIZE - 1)
+        notifyChunk(1);
+    if (y == CHUNK_SIZE - 1)
+        notifyChunk(2);
+
+    vertices_ready = false;
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
@@ -133,7 +108,19 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
-    setGround(x, y, ground->getId());
+
+    grounds.set(x, y, ground->getId());
+
+    if (x == 0)
+        notifyChunk(3);
+    if (y == 0)
+        notifyChunk(0);
+    if (x == CHUNK_SIZE - 1)
+        notifyChunk(1);
+    if (y == CHUNK_SIZE - 1)
+        notifyChunk(2);
+
+    vertices_ready = false;
 }
 
 void Chunk::generateVertices() const

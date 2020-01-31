@@ -48,8 +48,6 @@ class Entity
          * @return true if the packet was succesfully read and something was done
          */
         virtual bool takeNewEntityPacket(sf::Packet& packet);
-
-        bool to_be_removed = false;
         #else
         /**
          * Makes a new entity packet
@@ -58,6 +56,8 @@ class Entity
          */
         virtual void makeNewEntityPacket(sf::Packet& packet) const;
         #endif // CLIENT_SIDE
+
+        bool to_be_removed = false;
 
         inline unsigned int getId() const { return id; }
 

@@ -36,7 +36,7 @@ void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
         for (ItemStack& stack : drops)
             player.getInventory().insertItemStack(stack);
 
-        world.setGround(click_pos, ground->getId());
+        world.setGround(click_pos, ground);
 
         sf::Packet set;
 

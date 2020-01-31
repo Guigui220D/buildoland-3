@@ -455,7 +455,7 @@ void GameState::receiverLoop()
                         sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
                         if (test_world.isChunkLoaded(chunk))
                         {
-                            test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), id);
+                            test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), getGame().getBlocksManager().getBlockByID(id));
                         }
 
                         //std::cout << "Block update at " << pos.y << "; " << pos.y << " | New ID is " << id << std::endl;
@@ -479,7 +479,7 @@ void GameState::receiverLoop()
                         sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
                         if (test_world.isChunkLoaded(chunk))
                         {
-                            test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(pos), id);
+                            test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(pos), getGame().getGroundsManager().getGroundByID(id));
                         }
                     }
                     break;

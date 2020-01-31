@@ -129,36 +129,36 @@ const Ground* World::getGround(sf::Vector2i pos)
     return game_grounds_manager.getGroundByID(getGroundId(pos));
 }
 
-void World::setBlock(sf::Vector2i pos, uint16_t id)
+void World::setBlock(sf::Vector2i pos, Block const * block)
 {
     sf::Vector2i chunk = getChunkPosFromBlockPos(pos);
 
     if (!isChunkLoaded(chunk))
         return;
 
-    getChunk(chunk).setBlock(getBlockPosInChunk(pos), id);
+    getChunk(chunk).setBlock(getBlockPosInChunk(pos), block);
 
     sf::Packet block_set;
     block_set << Networking::StoC::BlockUpdate;
     block_set << pos.x << pos.y;
-    block_set << id;
+    block_set << block->getId();
 
     sendToSubscribers(block_set, chunk);
 }
 
-void World::setGround(sf::Vector2i pos, uint16_t id)
+void World::setGround(sf::Vector2i pos, Ground const * ground)
 {
     sf::Vector2i chunk = getChunkPosFromBlockPos(pos);
 
     if (!isChunkLoaded(chunk))
         return;
 
-    getChunk(chunk).setGround(getBlockPosInChunk(pos), id);
+    getChunk(chunk).setGround(getBlockPosInChunk(pos), ground);
 
     sf::Packet ground_set;
     ground_set << Networking::StoC::GroundUpdate;
     ground_set << pos.x << pos.y;
-    ground_set << id;
+    ground_set << ground->getId();
 
     sendToSubscribers(ground_set, chunk);
 }

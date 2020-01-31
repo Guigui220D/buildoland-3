@@ -17,6 +17,7 @@ GuiLabel::~GuiLabel()
 void GuiLabel::init()
 {
     text.setString(game.getLanguageManager().getString(message));
+
     text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));
     text.setCharacterSize(100);
     text.scale(sf::Vector2f(8.f / text.getGlobalBounds().width, 8.f / text.getGlobalBounds().width));

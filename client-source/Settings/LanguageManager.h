@@ -6,12 +6,14 @@
 
 #include "../Utils/Json.hpp"
 
+#include <SFML/System.hpp>
+
 class LanguageManager
 {
     friend class Game;
 
     public:
-        const std::string& getString(const std::string identifier);
+        const sf::String& getString(const std::string identifier);
 
         void load(const std::string language);
 
@@ -23,7 +25,7 @@ class LanguageManager
         LanguageManager();
         ~LanguageManager();
 
-        std::unordered_map<std::string, const std::string> strings;
+        std::unordered_map<std::string, const sf::String> strings;
 
         nlohmann::json json;
 };

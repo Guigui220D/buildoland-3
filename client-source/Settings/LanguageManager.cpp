@@ -13,7 +13,7 @@ LanguageManager::~LanguageManager()
 {
 }
 
-const std::string& LanguageManager::getString(const std::string identifier)
+const sf::String& LanguageManager::getString(const std::string identifier)
 {
     auto i = strings.find(identifier);
 
@@ -21,7 +21,7 @@ const std::string& LanguageManager::getString(const std::string identifier)
     {
         if (success)
             std::clog << "Warning! (language) " << identifier << " isn't loaded." << std::endl;
-        strings.emplace(std::pair<std::string, const std::string>(identifier, identifier));
+        strings.emplace(std::pair<std::string, const sf::String>(identifier, identifier));
         i = strings.find(identifier);
     }
 
@@ -64,8 +64,9 @@ void LanguageManager::load(const std::string language)
     {
         try
         {
-            strings.emplace(std::pair<std::string, const std::string>(i.key(), i.value()));
-            std::clog << "Added \"" << i.key() << "\" : " << i.value() << "." << std::endl;
+            std::string str = i.value();
+            strings.emplace(std::pair<std::string, const std::string>(i.key(), sf::String::fromUtf8(str.begin(), str.end())));
+            std::clog << "Added \"" << i.key() << "\" : " << str << "." << std::endl;
         }
         catch (std::exception& e)
         {

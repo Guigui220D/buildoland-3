@@ -28,6 +28,12 @@ class EntitiesManager
          */
         void drawAll(sf::RenderTarget& target) const;
 
+        /**
+         * Draw parts of all entities taht are above everything
+         * @param target : the render target on which to draw on
+         */
+        void drawAllAbove(sf::RenderTarget& target) const;
+
         void declareNewChunkForTileEntities(Chunk* new_chunk);
 
         /**

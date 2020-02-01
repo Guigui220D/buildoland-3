@@ -15,7 +15,7 @@ class BlockBoulder : public Block
         inline bool darkenSide() const override { return false; }
         #endif
 
-        inline unsigned short getTileEntityCode() const override { return TileEntities::TestTileEntity; }
+        //inline unsigned short getTileEntityCode() const override { return TileEntities::TestTileEntity; }
     private:
 };
 

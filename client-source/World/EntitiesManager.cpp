@@ -17,6 +17,7 @@
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
+#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
 
 #include "../States/GameState.h"
 
@@ -66,6 +67,14 @@ void EntitiesManager::drawAll(sf::RenderTarget& target) const
 
     for (Entity*& entity : entities_vector)
         entity->draw(target);
+    entities_mutex.unlock();
+}
+
+void EntitiesManager::drawAllAbove(sf::RenderTarget& target) const
+{
+    entities_mutex.lock();
+    for (Entity*& entity : entities_vector)
+        entity->drawAbove(target);
     entities_mutex.unlock();
 }
 
@@ -128,8 +137,8 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
     switch (entity_code)
     {
-    case Entities::None:
-        return true;
+    case Entities::None: return true;
+
     case Entities::TileEntity:
         {
             unsigned short tile_entity_code; packet >> tile_entity_code;
@@ -145,26 +154,22 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
             switch (tile_entity_code)
             {
-            case TileEntities::None:
-                return true;
-            case TileEntities::TestTileEntity:
-                new_entity = new TestTileEntity(world, entity_id, tile_pos);
-                break;
-            default:
-                std::cerr << "Tile entity type code unknown." << std::endl;
-                return false;
+            case TileEntities::None: return true;
+
+            case TileEntities::TestTileEntity: new_entity = new TestTileEntity(world, entity_id, tile_pos); break;
+
+            case TileEntities::TreeTopEntity: new_entity = new TreeTopEntity(world, entity_id, tile_pos); break;
+
+            default: std::cerr << "Tile entity type code unknown." << std::endl; return false;
             }
         }
         break;
-    case Entities::Player:
-        new_entity = new Player(world, entity_id);
-        break;
-    case Entities::TestEntity:
-        new_entity = new TestEntity(world, entity_id);
-        break;
-    default:
-        std::cerr << "Entity type code unknown." << std::endl;
-        return false;
+
+    case Entities::Player: new_entity = new Player(world, entity_id); break;
+
+    case Entities::TestEntity: new_entity = new TestEntity(world, entity_id); break;
+
+    default: std::cerr << "Entity type code unknown." << std::endl; return false;
     }
 
     assert(new_entity);

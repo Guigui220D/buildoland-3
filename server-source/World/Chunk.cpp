@@ -12,6 +12,7 @@
 
 //TEST
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
+#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 
@@ -111,6 +112,10 @@ void Chunk::setBlock(int x, int y, const Block* block)
 
     case TileEntities::TestTileEntity:
         te = new TestTileEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
+        break;
+
+    case TileEntities::TreeTopEntity:
+        te = new TreeTopEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
         break;
     }
 

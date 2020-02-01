@@ -24,7 +24,8 @@ void Game::loadResources()
         !resource_manager.loadTextureFromFile("Character/naked.png", "CHARA_BASE") +
         !resource_manager.loadTextureFromFile("Character/shoes.png", "CHARA_SHOES") +
         !resource_manager.loadTextureFromFile("Character/pants.png", "CHARA_PANTS") +
-        !resource_manager.loadTextureFromFile("Character/shirt.png", "CHARA_SHIRT");
+        !resource_manager.loadTextureFromFile("Character/shirt.png", "CHARA_SHIRT") +
+        !resource_manager.loadTextureFromFile("Entities/tree.png", "TREE_TOP");
     //Items
     fail_count +=
         !resource_manager.loadTextureFromFile("Items/items.png", "ITEM_TEXTURES");

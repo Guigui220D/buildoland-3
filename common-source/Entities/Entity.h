@@ -35,6 +35,11 @@ class Entity
          * @param target : the render target on which to draw
          */
         virtual void draw(sf::RenderTarget& target) const;
+        /**
+         * Draws more things that should be drawn over block tops
+         * @param target : the render target on which to draw
+         */
+        virtual void drawAbove(sf::RenderTarget& target) const;
 
         /**
          * Reads an entity action packet

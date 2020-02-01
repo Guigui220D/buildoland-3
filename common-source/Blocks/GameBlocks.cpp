@@ -11,6 +11,7 @@ Block const * const GameBlocks::IRON            = new Block("iron", true, 4);
 Block const * const GameBlocks::GOLD            = new Block("gold", true, 5);
 Block const * const GameBlocks::WOOD            = new Block("wood", true, 7);
 Block const * const GameBlocks::BOULDER         = new BlockBoulder();
+Block const * const GameBlocks::TREE            = new BlockTree();
 Block const * const GameBlocks::DOOR_CLOSED     = new BlockDoorClosed();
 
 GameBlocks::GameBlocks()
@@ -37,6 +38,7 @@ void GameBlocks::initBlocks()
     addBlock(GOLD);
     addBlock(WOOD);
     addBlock(BOULDER);
+    addBlock(TREE);
     addBlock(DOOR_CLOSED);
 }
 

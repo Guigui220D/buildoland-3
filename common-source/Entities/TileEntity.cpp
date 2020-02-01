@@ -19,7 +19,7 @@ TileEntity::TileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :
     chunk_pos(World::getChunkPosFromBlockPos(tile_pos)),
     ready(false)
 {
-    position = sf::Vector2f(-.5f + tile_pos.x, -.5f + tile_pos.y);
+    position = sf::Vector2f(std::round(tile_pos.x), std::round(tile_pos.y));
     chunk_on = chunk_pos;
 }
 

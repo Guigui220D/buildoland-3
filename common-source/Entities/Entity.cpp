@@ -44,6 +44,7 @@ void Entity::send(sf::Packet& packet)
 
 #ifdef CLIENT_SIDE
 void Entity::draw(sf::RenderTarget& target) const {}
+void Entity::drawAbove(sf::RenderTarget& target) const {}
 #endif // CLIENT_SIDE
 
 sf::Vector2i Entity::getChunkOn() const

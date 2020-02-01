@@ -49,31 +49,31 @@ Arr2D<T>::~Arr2D()
 template <typename T>
 void Arr2D<T>::set(uint16_t x, uint16_t y, T value)
 {
-    assert(x < msizex);
-    assert(y < msizey);
+    if (!(x < msizex)) throw std::out_of_range("Arr2D::set");
+    if (!(y < msizey)) throw std::out_of_range("Arr2D::set");
     values[x + y * msizex] = value;
 }
 
 template <typename T>
 T Arr2D<T>::get(uint16_t x, uint16_t y) const
 {
-    assert(x < msizex);
-    assert(y < msizey);
+    if (!(x < msizex)) throw std::out_of_range("Arr2D::get");
+    if (!(y < msizey)) throw std::out_of_range("Arr2D::get");
     return values[x + y * msizex];
 }
 
 template <typename T>
 T& Arr2D<T>::at(uint16_t x, uint16_t y)
 {
-    assert(x < msizex);
-    assert(y < msizey);
+    if (!(x < msizex)) throw std::out_of_range("Arr2D::at");
+    if (!(y < msizey)) throw std::out_of_range("Arr2D::at");
     return values[x + y * msizex];
 }
 
 template <typename T>
 const T& Arr2D<T>::constAt(uint16_t x, uint16_t y) const
 {
-    assert(x < msizex);
-    assert(y < msizey);
+    if (!(x < msizex)) throw std::out_of_range("Arr2D::constAt");
+    if (!(y < msizey)) throw std::out_of_range("Arr2D::constAt");
     return values[x + y * msizex];
 }

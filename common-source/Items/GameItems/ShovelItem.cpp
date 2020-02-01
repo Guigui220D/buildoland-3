@@ -32,7 +32,7 @@ void ShovelItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
         for (ItemStack& stack : drops)
             player.getInventory().insertItemStack(stack);
 
-        world.setGround(click_pos, GameGrounds::DIRT->getId());
+        world.setGround(click_pos, GameGrounds::DIRT);
     }
     #endif // CLIENT_SIDE
 }

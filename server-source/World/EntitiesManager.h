@@ -24,9 +24,10 @@ class EntitiesManager
          * If the entity couldnt be added, it will be deleted
          * A packet will be sent to all the clients to inform them
          * @param entity : the pointer to the entity to add
+         * @param declare : if the new entity should be sent to all players in the chunk (false if that entity was generated WITH the chunk)
          * @return True if the entity was added, False if it wasn't and deleted
          */
-        bool newEntity(Entity* entity);
+        bool newEntity(Entity* entity, bool declare = true);
 
         /**
          * Removes an entity using its id

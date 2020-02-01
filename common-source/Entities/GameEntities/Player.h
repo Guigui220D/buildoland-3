@@ -20,7 +20,7 @@ class Player : public LivingEntity
         static Player* this_player;
         #endif // CLIENT_SIDE
 
-        inline unsigned short getEntityCode() const { return Entities::Player; };
+        inline unsigned short getEntityCode() const override { return Entities::Player; };
 
         #ifdef CLIENT_SIDE
             Player(World& world, unsigned int id);

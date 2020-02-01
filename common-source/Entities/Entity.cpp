@@ -1,11 +1,8 @@
 #include "Entity.h"
 
-
-
 #ifdef CLIENT_SIDE
     #include "../../client-source/World/World.h"
 #else
-    #include "../Networking/NetworkingCodes.h"
     #include "../../server-source/World/World.h"
 #endif // CLIENT_SIDE
 
@@ -47,6 +44,7 @@ void Entity::send(sf::Packet& packet)
 
 #ifdef CLIENT_SIDE
 void Entity::draw(sf::RenderTarget& target) const {}
+void Entity::drawAbove(sf::RenderTarget& target) const {}
 #endif // CLIENT_SIDE
 
 sf::Vector2i Entity::getChunkOn() const
@@ -68,7 +66,7 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
     }
     {
         sf::Packet enter;
-
+        //std::cout << "New entity spawn packet, for " << getId() << " (chunkchange)" << std::endl;
         makeNewEntityPacket(enter);
 
         getWorld().sendToSubscribersWithException(enter, new_chunk, old_chunk);
@@ -80,6 +78,8 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 
 #ifdef CLIENT_SIDE
 void Entity::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) {}
+
+bool Entity::takePacket(sf::Packet& packet) { return true; }
 
 bool Entity::takeNewEntityPacket(sf::Packet& packet) { return true; }
 #else

@@ -9,10 +9,15 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Networking/StoC_EntityActionCodes.h"
+
 #include "../../common-source/Entities/EntityCodes.h"
+#include "../../common-source/Entities/TileEntityCodes.h"
 
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
+
+#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
+#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
 
 #include "../States/GameState.h"
 
@@ -50,6 +55,7 @@ void EntitiesManager::updateAll(float delta)
 
     for (Entity*& entity : entities_vector)
         entity->updateBase(delta);
+
     entities_mutex.unlock();
 }
 
@@ -61,6 +67,14 @@ void EntitiesManager::drawAll(sf::RenderTarget& target) const
 
     for (Entity*& entity : entities_vector)
         entity->draw(target);
+    entities_mutex.unlock();
+}
+
+void EntitiesManager::drawAllAbove(sf::RenderTarget& target) const
+{
+    entities_mutex.lock();
+    for (Entity*& entity : entities_vector)
+        entity->drawAbove(target);
     entities_mutex.unlock();
 }
 
@@ -102,16 +116,11 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
 bool EntitiesManager::addEntity(sf::Packet& packet)
 {
     unsigned short entity_code; packet >> entity_code;
-    if (!packet)
-    {
-        std::cerr << "Entity packet was too short (reading type code)." << std::endl;
-        return false;
-    }
-
     unsigned int entity_id; packet >> entity_id;
+
     if (!packet)
     {
-        std::cerr << "Entity packet was too short (reading entity id)." << std::endl;
+        std::cerr << "Entity packet was too short (reading type code and id)." << std::endl;
         return false;
     }
 
@@ -128,18 +137,49 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
 
     switch (entity_code)
     {
-    case Entities::Player:
-        new_entity = new Player(world, entity_id);
+    case Entities::None: return true;
+
+    case Entities::TileEntity:
+        {
+            unsigned short tile_entity_code; packet >> tile_entity_code;
+
+            sf::Vector2i tile_pos;
+            packet >> tile_pos.x >> tile_pos.y;
+
+            if (!packet)
+            {
+                std::cerr << "Tile entity packet was too short." << std::endl;
+                return false;
+            }
+
+            switch (tile_entity_code)
+            {
+            case TileEntities::None: return true;
+
+            case TileEntities::TestTileEntity: new_entity = new TestTileEntity(world, entity_id, tile_pos); break;
+
+            case TileEntities::TreeTopEntity: new_entity = new TreeTopEntity(world, entity_id, tile_pos); break;
+
+            default: std::cerr << "Tile entity type code unknown." << std::endl; return false;
+            }
+        }
         break;
-    case Entities::TestEntity:
-        new_entity = new TestEntity(world, entity_id);
-        break;
-    default:
-        std::cerr << "Entity type code unknown." << std::endl;
-        return false;
+
+    case Entities::Player: new_entity = new Player(world, entity_id); break;
+
+    case Entities::TestEntity: new_entity = new TestEntity(world, entity_id); break;
+
+    default: std::cerr << "Entity type code unknown." << std::endl; return false;
     }
 
     assert(new_entity);
+
+    if (new_entity->isTileEntity())
+        if (world.isChunkLoaded(new_entity->getChunkOn()))
+        {
+            TileEntity* te = (TileEntity*) new_entity;
+            te->assignChunk(&world.getChunk(new_entity->getChunkOn()));
+        }
 
     new_entity->takeNewEntityPacket(packet);
 
@@ -226,4 +266,22 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
     sf::Lock lock(entities_mutex);
 
     return en->takePacket(packet);
+}
+
+void EntitiesManager::declareNewChunkForTileEntities(Chunk* new_chunk)
+{
+    entities_mutex.lock();
+
+    for (Entity*& entity : entities_vector)
+    {
+        if (entity->isTileEntity())
+        {
+            TileEntity* te = (TileEntity*) entity;
+
+            if (!te->isReady())
+                te->assignChunk(new_chunk);
+        }
+    }
+
+    entities_mutex.unlock();
 }

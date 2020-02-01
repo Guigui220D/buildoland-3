@@ -238,23 +238,20 @@ void GameState::draw(sf::RenderTarget& target) const
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
         target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
-    if (!bp_volume && isTopState())
-    {
-        target.draw(block_pointer);
-        target.draw(block_pointer_icon);
-    }
-
     entities.drawAll(target);
-
 
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
     target.draw(i->second->getBlockTopsVertexArray(), block_textures);
 
-    if (isTopState() && bp_volume)
+    entities.drawAllAbove(target);
+
+    if (isTopState())
     {
         target.draw(block_pointer);
         target.draw(block_pointer_icon);
-        target.draw(block_pointer_side);
+
+        if (bp_volume)
+            target.draw(block_pointer_side);
     }
 }
 
@@ -455,7 +452,7 @@ void GameState::receiverLoop()
                         sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
                         if (test_world.isChunkLoaded(chunk))
                         {
-                            test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), id);
+                            test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), getGame().getBlocksManager().getBlockByID(id));
                         }
 
                         //std::cout << "Block update at " << pos.y << "; " << pos.y << " | New ID is " << id << std::endl;
@@ -479,7 +476,7 @@ void GameState::receiverLoop()
                         sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
                         if (test_world.isChunkLoaded(chunk))
                         {
-                            test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(pos), id);
+                            test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(pos), getGame().getGroundsManager().getGroundByID(id));
                         }
                     }
                     break;

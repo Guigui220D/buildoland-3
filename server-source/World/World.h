@@ -72,8 +72,8 @@ class World
         const Block* getBlock(sf::Vector2i pos);
         const Ground* getGround(sf::Vector2i pos);
 
-        void setBlock(sf::Vector2i pos, uint16_t id);
-        void setGround(sf::Vector2i pos, uint16_t id);
+        void setBlock(sf::Vector2i pos, Block const * block);
+        void setGround(sf::Vector2i pos, Ground const * ground);
 
         /**
          * Calculate the position of the chunk that the block is in

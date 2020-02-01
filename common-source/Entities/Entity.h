@@ -8,6 +8,7 @@
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
 #else
+    #include "../Networking/NetworkingCodes.h"
     #include <SFML/System.hpp>
 #endif // CLIENT_SIDE
 
@@ -34,21 +35,24 @@ class Entity
          * @param target : the render target on which to draw
          */
         virtual void draw(sf::RenderTarget& target) const;
+        /**
+         * Draws more things that should be drawn over block tops
+         * @param target : the render target on which to draw
+         */
+        virtual void drawAbove(sf::RenderTarget& target) const;
 
         /**
          * Reads an entity action packet
          * @param packet : the packet to read
          * @return true if the packet was succesfully read and something was done
          */
-        virtual bool takePacket(sf::Packet& packet) = 0;
+        virtual bool takePacket(sf::Packet& packet);
         /**
          * Reads a new entity packet
          * @param packet : the packet to read
          * @return true if the packet was succesfully read and something was done
          */
         virtual bool takeNewEntityPacket(sf::Packet& packet);
-
-        bool to_be_removed = false;
         #else
         /**
          * Makes a new entity packet
@@ -58,6 +62,8 @@ class Entity
         virtual void makeNewEntityPacket(sf::Packet& packet) const;
         #endif // CLIENT_SIDE
 
+        bool to_be_removed = false;
+
         inline unsigned int getId() const { return id; }
 
         inline sf::Vector2f getPosition() const { return position; }
@@ -65,6 +71,8 @@ class Entity
 
         inline sf::Vector2i getBlockOn() const { return sf::Vector2i(std::floor(position.x + .5f), std::floor(position.y + .5f)); }
         sf::Vector2i getChunkOn() const;
+
+        virtual inline bool isTileEntity() const { return false; }
 
     protected:
         /**
@@ -89,6 +97,8 @@ class Entity
         virtual void addInfoToNewEntityPacket(sf::Packet& packet) const;
         #endif // CLIENT_SIDE
 
+        sf::Vector2i chunk_on;
+
     private:
         void onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk);
         #ifdef CLIENT_SIDE
@@ -97,6 +107,4 @@ class Entity
 
         const unsigned int id;
         World& world;
-
-        sf::Vector2i chunk_on;
 };

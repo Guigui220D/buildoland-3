@@ -36,7 +36,7 @@ void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Play
         stack.takeSome(1);
 
         #ifndef CLIENT_SIDE
-        world.setBlock(click_pos, block->getId());
+        world.setBlock(click_pos, block);
 
         sf::Packet set;
 

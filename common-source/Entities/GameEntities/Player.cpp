@@ -244,7 +244,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
             for (ItemStack& stack : drops)
                 inventory.insertItemStack(stack);
 
-            getWorld().setBlock(pos, 0);
+            getWorld().setBlock(pos, GameBlocks::AIR);
         }
         break;
 

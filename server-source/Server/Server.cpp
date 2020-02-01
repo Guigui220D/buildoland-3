@@ -92,7 +92,14 @@ void Server::run()
 
     while (running)
     {
-        std::this_thread::sleep_for(std::chrono::milliseconds(50 - server_clock.getElapsedTime().asMilliseconds()));
+        int ms = server_clock.getElapsedTime().asMilliseconds();
+
+        if (ms > 50)
+        {
+            std::clog << "Tick took too much time! Running " << (ms - 50) << "ms behind." << std::endl;
+        }
+        else
+            std::this_thread::sleep_for(std::chrono::milliseconds(50 - ms));
 
         delta = server_clock.restart().asSeconds();
 

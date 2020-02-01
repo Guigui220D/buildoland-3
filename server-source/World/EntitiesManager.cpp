@@ -6,6 +6,8 @@
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
 
+#include <iostream>
+
 EntitiesManager::EntitiesManager(Server& server) :
     server(server),
     next_entity_id(0)
@@ -22,12 +24,32 @@ EntitiesManager::~EntitiesManager()
 void EntitiesManager::updateAll(float delta)
 {
     entities_mutex.lock();
+
+    for (auto i = entities.begin(); i != entities.end();)
+    {
+        if (i->second->to_be_removed)
+        {
+            sf::Packet packet;
+            packet << Networking::StoC::EntityAction;
+            packet << EntityActions::StoC::ForgetEntity;
+
+            packet << i->second->getId();
+
+            server.getClientsManager().sendToAll(packet);
+
+            delete i->second;
+            i = entities.erase(i);
+        }
+        else
+            i++;
+    }
+
     for (auto i = entities.begin(); i != entities.end(); i++)
         i->second->updateBase(delta);
     entities_mutex.unlock();
 }
 
-bool EntitiesManager::newEntity(Entity* entity)
+bool EntitiesManager::newEntity(Entity* entity, bool declare)
 {
     sf::Lock lock(entities_mutex);
 
@@ -39,10 +61,14 @@ bool EntitiesManager::newEntity(Entity* entity)
 
     entities.emplace(std::pair<unsigned int, Entity*>(entity->getId(), entity));
 
-    sf::Packet packet;
-    entity->makeNewEntityPacket(packet);
+    if (declare)
+    {
+        sf::Packet packet;
+        //std::cout << "New entity spawn packet, for " << entity->getId() << " (newEntity)" << std::endl;
+        entity->makeNewEntityPacket(packet);
 
-    server.getClientsManager().sendToAll(packet);
+        server.getClientsManager().sendToAll(packet);
+    }
 
     return true;
 }
@@ -73,6 +99,7 @@ void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos
         Entity* entity = i->second;
         if (entity->getChunkOn() == chunk_pos)
         {
+            //std::cout << "New entity spawn packet, for " << entity->getId() << " (allentities)" << std::endl;
             entity->makeNewEntityPacket(packet);
             client.send(packet);
         }

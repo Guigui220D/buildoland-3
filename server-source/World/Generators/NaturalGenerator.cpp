@@ -13,20 +13,19 @@ NaturalGenerator::~NaturalGenerator()
 
 void NaturalGenerator::init()
 {
-    ground_levels.push_back(GameGrounds::WATER->getId());
-    ground_levels.push_back(GameGrounds::WATER->getId());
-    ground_levels.push_back(GameGrounds::SAND->getId());
-    ground_levels.push_back(GameGrounds::GRASS->getId());
-    ground_levels.push_back(GameGrounds::GRASS->getId());
-    ground_levels.push_back(GameGrounds::STONE->getId());
-    ground_levels.push_back(GameGrounds::STONE->getId());
-    ground_levels.push_back(GameGrounds::STONE->getId());
+    ground_levels.push_back(GameGrounds::WATER);
+    ground_levels.push_back(GameGrounds::WATER);
+    ground_levels.push_back(GameGrounds::SAND);
+    ground_levels.push_back(GameGrounds::GRASS);
+    ground_levels.push_back(GameGrounds::GRASS);
+    ground_levels.push_back(GameGrounds::STONE);
+    ground_levels.push_back(GameGrounds::STONE);
 
-    random_blocks.push_back(GameBlocks::IRON->getId());
-    random_blocks.push_back(GameBlocks::GOLD->getId());
-    random_blocks.push_back(GameBlocks::STONE->getId());
-    random_blocks.push_back(GameBlocks::STONE_BRICKS->getId());
-    random_blocks.push_back(GameBlocks::WOOD->getId());
+    random_blocks.push_back(GameBlocks::IRON);
+    random_blocks.push_back(GameBlocks::GOLD);
+    random_blocks.push_back(GameBlocks::STONE);
+    random_blocks.push_back(GameBlocks::STONE_BRICKS);
+    random_blocks.push_back(GameBlocks::WOOD);
 }
 
 void NaturalGenerator::generateChunk(Chunk* chunk)
@@ -75,6 +74,8 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
                 }
             }
 
+            if (std::round(perlin_value) >= 3 && std::round(perlin_value) <= 4 && std::rand() % 40 == 0)
+                chunk->setBlock(x, y, GameBlocks::TREE);
 
             chunk->setGround(x, y, ground_levels.at(std::round(perlin_value)));
         }

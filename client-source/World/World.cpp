@@ -46,6 +46,8 @@ void World::updateLoadedChunk()
     {
         uint64_t key = utils::combine(chunk->getPos().x, chunk->getPos().y);
         chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
+
+        entities.declareNewChunkForTileEntities(chunk);
     }
     chunks_to_add.clear();
     chunks_to_add_mutex.unlock();

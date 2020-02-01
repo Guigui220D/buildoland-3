@@ -5,6 +5,8 @@
 #include "GameBlocks/BlockAir.h"
 #include "GameBlocks/BlockError.h"
 #include "GameBlocks/BlockBoulder.h"
+#include "GameBlocks/BlockTree.h"
+
 #include "GroundBlock.h"
 
 #include <vector>
@@ -50,6 +52,7 @@ class GameBlocks
         static Block const * const BOULDER;
         static Block const * const GOLD_ORE;
         static Block const * const COPPER_ORE;
+        static Block const * const TREE;
 
     private:
         std::vector<Block const *> blocks;

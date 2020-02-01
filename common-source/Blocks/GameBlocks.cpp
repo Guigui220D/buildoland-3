@@ -15,6 +15,7 @@ Block const * const GameBlocks::STONE_PLATE     = new GroundBlock("stone_pebbles
 Block const * const GameBlocks::BOULDER         = new BlockBoulder("boulder", 20, 36);
 Block const * const GameBlocks::GOLD_ORE        = new BlockBoulder("gold_ore", 21, 37);
 Block const * const GameBlocks::COPPER_ORE      = new BlockBoulder("copper_ore", 22, 38);
+Block const * const GameBlocks::TREE            = new BlockTree();
 
 GameBlocks::GameBlocks()
 {
@@ -44,6 +45,7 @@ void GameBlocks::initBlocks()
     addBlock(BOULDER);
     addBlock(GOLD_ORE);
     addBlock(COPPER_ORE);
+    addBlock(TREE);
 }
 
 void GameBlocks::addBlock(Block const * block)

@@ -6,20 +6,10 @@
 #include "States/TitleScreenState.h"
 
 Game::Game() :
-    audio_manager(resource_manager),
-    game_items_register(language_manager)
+    game_items_register(language_manager),
+    audio_manager(resource_manager)
 {
-    //TODO WHEN SETTINGS MANAGER WORKS
 
-    //auto& ws = settings_manager.window_settings;
-    //auto& as = settings_manager.window_settings;
-
-    //window.create(sf::VideoMode(ws.size_x, ws.size_y), "BuildOLand 3", ws.type);
-    //window.setFramerateLimit(ws.fps_limit);
-    //window.setVerticalSyncEnabled(ws.vsync_enabled);
-
-
-    //window.setFramerateLimit(60);
 }
 
 Game::~Game()

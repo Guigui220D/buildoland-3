@@ -14,6 +14,8 @@ class BlockBoulder : public Block
         inline uint32_t getSideTextureNumber(BlockInfo info) const override { return side_texture; }
         inline bool darkenSide() const override { return false; }
         #endif
+
+        //inline unsigned short getTileEntityCode() const override { return TileEntities::TestTileEntity; }
     private:
         uint32_t side_texture;
 };

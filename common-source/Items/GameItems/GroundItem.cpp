@@ -33,7 +33,7 @@ void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
         stack.takeSome(1);
 
         #ifndef CLIENT_SIDE
-        world.setGround(click_pos, ground->getId());
+        world.setGround(click_pos, ground);
 
         sf::Packet set;
 

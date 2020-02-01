@@ -6,6 +6,8 @@
 
 #include "../Utils/Arr2D.h"
 
+#include "../../common-source/Entities/TileEntity.h"
+
 class Game;
 class Block;
 class Ground;
@@ -13,6 +15,8 @@ class World;
 
 class Chunk
 {
+    friend class TileEntity;
+
     public:
         static const int CHUNK_SIZE;
 
@@ -48,14 +52,8 @@ class Chunk
         inline const Block* getBlock(sf::Vector2i pos) const { return getBlock(pos.x, pos.y); }
         inline const Ground* getGround(sf::Vector2i pos) const { return getGround(pos.x, pos.y); }
 
-        void setBlock(int x, int y, uint16_t id);
-        void setGround(int x, int y, uint16_t id);
-
         void setBlock(int x, int y, const Block* block);
         void setGround(int x, int y, const Ground* ground);
-
-        inline void setBlock(sf::Vector2i pos, uint16_t id) { setBlock(pos.x, pos.y, id); }
-        inline void setGround(sf::Vector2i pos, uint16_t id) { setGround(pos.x, pos.y, id); }
 
         inline void setBlock(sf::Vector2i pos, const Block* block) { setBlock(pos.x, pos.y, block); }
         inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
@@ -120,6 +118,7 @@ class Chunk
         bool ready = false;
 
         Arr2D<uint16_t> blocks, grounds;
+        Arr2D<TileEntity*> tile_entities;
         const sf::Vector2i pos;
 
         mutable sf::VertexArray ground_vertices, block_side_vertices, block_top_vertices;

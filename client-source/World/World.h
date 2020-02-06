@@ -175,6 +175,8 @@ class World
         inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksEnd() const { return chunks.cend(); }
 
+        inline void setSeed(int new_seed) { seed = new_seed; }
+
     protected:
         //Entities
         EntitiesManager entities;

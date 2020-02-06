@@ -327,13 +327,20 @@ bool GameState::handshakeRemoteServer()
     client_socket.setBlocking(false);
 
     sf::Packet packet; sf::IpAddress address; uint16_t port;
+
     sf::Clock timeout_clock;
+
+    //Misc handshake info
+    char vers[6];
+    int seed;   //Maybe this shouldn't be here
+    unsigned int player_id;
 
     while (1)
     {
         sf::Socket::Status status;
         while ((status = client_socket.receive(packet, address, port)) != sf::Socket::Done)
         {
+            //Just taking our time
             std::this_thread::sleep_for(std::chrono::milliseconds(50));
 
             if (status == sf::Socket::Disconnected)
@@ -342,7 +349,7 @@ bool GameState::handshakeRemoteServer()
                 getGame().addStateOnTop(new ErrorState(getGame(), "SOCKET_DISCONNECTED", 0));
                 must_be_destroyed = true;
                 return false;
-            }
+            } //Server unreachable
 
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
@@ -350,36 +357,44 @@ bool GameState::handshakeRemoteServer()
                 getGame().addStateOnTop(new ErrorState(getGame(), "TIMEOUT_HANDSHAKE", 0));
                 must_be_destroyed = true;
                 return false;
-            }
+            } //Timeout during handshake
         }
 
-        if (address != remote_ip || (port != remote_port && known_port))
+        if (address != remote_ip || (known_port && port != remote_port))
         {
             std::cerr << "Received packet from wrong address." << std::endl;
-        }
+        } //Wrong address
         else
         {
             if (!known_port)
                 remote_port = port;
 
-            if (packet.getDataSize() != 15)
-            {
-                int code = 0; packet >> code;
+            int code = 0; packet >> code;
 
-                if (code != Networking::StoC::FinalHandshake)
+            if (packet && code == Networking::StoC::FinalHandshake)
+            {
+                packet >> vers;
+                vers[5] = 0;
+
+                packet >> seed;
+                packet >> player_id;
+
+                if (!packet)
                 {
-                    std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << " but got " << code << std::endl;
-                }
+                    std::cerr << "Malformed handshake packet." << std::endl;
+                    getGame().addStateOnTop(new ErrorState(getGame(), "MALFORMED_HANDSHAKE", 0));
+                    must_be_destroyed = true;
+                    return false;
+                }   //Weird packet
                 else
-                    break;
+                    break; //Exit the waiting for handshake loop, we got a handshake!
             }
             else
-                std::cerr << "Received wrong handshake packet! Expected 11 bytes, got " << packet.getDataSize() << '.' << std::endl;
+                std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << "." << std::endl;
+                //Not a handshake
         }
     }
 
-    char vers[6]; packet >> vers;
-    vers[5] = 0;
 
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
     {
@@ -387,14 +402,14 @@ bool GameState::handshakeRemoteServer()
         getGame().addStateOnTop(new ErrorState(getGame(), "WRONG_VERSION", 0));
         must_be_destroyed = true;
         return false;
-    }
+    }   //Wrong version
 
-    unsigned int player_id; packet >> player_id;
+    test_world.setSeed(seed);
 
     Player::this_player_id = player_id;
     std::clog << "Received handshake from local server! Its version is " << vers << ". Our player has id " << player_id << '.' << std::endl;
 
-    return true;
+    return true; //Yay
 }
 
 void GameState::receiverLoop()

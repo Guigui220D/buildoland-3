@@ -72,6 +72,7 @@ bool Server::init(uint16_t port)
 
         sf::Packet handshake;
         handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+        handshake << world.getGenerator()->getSeed();
         handshake << player_id;
         server_socket.send(handshake, owner.address, owner.port);
 
@@ -215,6 +216,7 @@ void Server::receiver()
 
                         sf::Packet handshake;
                         handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+                        handshake << world.getGenerator()->getSeed();
                         handshake << player_id;
 
                         server_socket.send(handshake, address, port);

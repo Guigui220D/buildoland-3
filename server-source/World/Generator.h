@@ -24,6 +24,8 @@ class Generator
         */
         virtual void generateChunk(Chunk* chunk) = 0;
 
+        inline int getSeed() const { return seed; }
+
     protected:
 
         const int seed;

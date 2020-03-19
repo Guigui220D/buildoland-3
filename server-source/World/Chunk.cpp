@@ -20,9 +20,9 @@ const int Chunk::CHUNK_SIZE = 16;
 
 Chunk::Chunk(World& world, sf::Vector2i pos) :
     ready(false),
-    blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
-    grounds(CHUNK_SIZE, CHUNK_SIZE, 1),
-    tile_entities(CHUNK_SIZE, CHUNK_SIZE, nullptr),
+    blocks(CHUNK_SIZE*CHUNK_SIZE, 0),
+    grounds(CHUNK_SIZE*CHUNK_SIZE, 1),
+    tile_entities(CHUNK_SIZE * CHUNK_SIZE, nullptr),
     pos(pos),
     server(world.getServer()),
     world(world),
@@ -36,9 +36,9 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 
 Chunk::~Chunk()
 {
-    for (int i = 0; i < tile_entities.getDataSize(); i++)
+    for (int i = 0; i < tile_entities.size(); i++)
     {
-        tile_entities.getData()[i]->assignChunk(nullptr);
+        tile_entities[i]->assignChunk(nullptr);
         //tile_entities.getData()[i]->to_be_destroyed = true;
     }
 
@@ -51,8 +51,8 @@ void Chunk::generatePacket()
     (*packet) << Networking::StoC::SendChunk;
     (*packet) << getPos().x << getPos().y;
 
-    packet->append(blocks.getData(), blocks.getDataSize());
-    packet->append(grounds.getData(), grounds.getDataSize());
+    packet->append(blocks.data(), blocks.size() * sizeof(blocks[0]));
+    packet->append(grounds.data(), grounds.size() * sizeof(grounds[0]));
 
     packet_ready = true;
 }
@@ -90,15 +90,15 @@ void Chunk::setBlock(int x, int y, const Block* block)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
-    blocks.set(x, y, block->getId());
+    blocks[y*CHUNK_SIZE + x] = block->getId();
 
     packet_ready = false;
 
-    TileEntity* old = tile_entities.get(x, y);
+    TileEntity* old = tile_entities[y*CHUNK_SIZE + x];
 
     if (old)
     {
-        tile_entities.set(x, y, nullptr);
+        tile_entities[y*CHUNK_SIZE + x] = nullptr;
         old->assignChunk(nullptr);
     }
 
@@ -132,7 +132,7 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
-    grounds.set(x, y, ground->getId());
+    grounds[y*CHUNK_SIZE + x] = ground->getId();
 
     packet_ready = false;
 }

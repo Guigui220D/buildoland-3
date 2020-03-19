@@ -56,7 +56,7 @@ class State
 
         bool isTopState() const;
 
-        std::atomic<bool> must_be_destroyed = false;
+        std::atomic<bool> must_be_destroyed {false};
 
     protected:
         // If true, the next state should be updated/drawn

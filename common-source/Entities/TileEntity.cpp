@@ -35,7 +35,7 @@ void TileEntity::assignChunk(Chunk* chunk_ptr)
 
     if (chunk_ptr)
     {
-        chunk->tile_entities.set(pos.x, pos.y, this);
+        chunk->tile_entities[pos.y*Chunk::CHUNK_SIZE + pos.x] = this;
         ready = true;
     }
     else

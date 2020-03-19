@@ -2,7 +2,7 @@
 
 #include <SFML/Network.hpp>
 
-#include "../Utils/Arr2D.h"
+#include <cassert>
 
 #include "../../common-source/Entities/TileEntity.h"
 
@@ -39,13 +39,13 @@ class Chunk
         inline uint16_t getBlockId(int x, int y) const
         {
             assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);
-            return blocks.get(x, y);
+            return blocks[y*CHUNK_SIZE + x];
         }
 
         inline uint16_t getGroundId(int x, int y) const
         {
             assert(x >= 0); assert(y >= 0); assert(x < CHUNK_SIZE); assert(y < CHUNK_SIZE);
-            return grounds.get(x, y);
+            return grounds[y*CHUNK_SIZE + x];
         }
 
         const Block* getBlock(int x, int y) const;
@@ -84,8 +84,9 @@ class Chunk
     private:
         bool ready = false;
 
-        Arr2D<uint16_t> blocks, grounds;
-        Arr2D<TileEntity*> tile_entities;
+        std::vector<uint16_t> blocks;
+        std::vector<uint16_t> grounds;
+        std::vector<TileEntity*> tile_entities;
         const sf::Vector2i pos;
 
         Server& server;

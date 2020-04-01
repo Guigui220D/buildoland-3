@@ -40,7 +40,7 @@ void Item::useItem(ItemStack& stack, World& world, sf::Vector2i click_pos, Playe
     }
 
     #ifdef CLIENT_SIDE
-    sf::Packet use_packet;
+    ECCPacket use_packet;
 
     use_packet << Networking::CtoS::PlayerAction;
     use_packet << EntityActions::CtoS::UseItem;

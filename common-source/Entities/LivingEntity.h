@@ -28,11 +28,11 @@ class LivingEntity : public PhysicsEntity
         #ifdef CLIENT_SIDE
         inline sf::IntRect getCurrentTextureRect() const { return animation.getCurrentTextureRect(); }
 
-        bool takePacket(sf::Packet& packet) override;
+        bool takePacket(ECCPacket& packet) override;
 
-        bool takeNewEntityPacket(sf::Packet& packet) override;
+        bool takeNewEntityPacket(ECCPacket& packet) override;
         #else
-        void addInfoToNewEntityPacket(sf::Packet& packet) const override;
+        void addInfoToNewEntityPacket(ECCPacket& packet) const override;
         #endif
     private:
         float walking_speed;

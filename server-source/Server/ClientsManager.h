@@ -59,7 +59,7 @@ class ClientsManager
          * Sends a packet to all clients
          * @param packet : the packet to send
          */
-        void sendToAll(sf::Packet& packet);
+        void sendToAll(ECCPacket& packet);
 
         mutable sf::Mutex clients_mutex;
 

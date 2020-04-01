@@ -37,7 +37,7 @@ void World::init()
     generator->init();
 }
 
-void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const
+void World::sendToSubscribers(ECCPacket& packet, sf::Vector2i chunk) const
 {
     ClientsManager& cm = server.getClientsManager();
 
@@ -55,7 +55,7 @@ void World::sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const
     }
 }
 
-void World::sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const
+void World::sendToSubscribersWithException(ECCPacket& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const
 {
     ClientsManager& cm = server.getClientsManager();
 
@@ -138,7 +138,7 @@ void World::setBlock(sf::Vector2i pos, Block const * block)
 
     getChunk(chunk).setBlock(getBlockPosInChunk(pos), block);
 
-    sf::Packet block_set;
+    ECCPacket block_set;
     block_set << Networking::StoC::BlockUpdate;
     block_set << pos.x << pos.y;
     block_set << block->getId();
@@ -155,7 +155,7 @@ void World::setGround(sf::Vector2i pos, Ground const * ground)
 
     getChunk(chunk).setGround(getBlockPosInChunk(pos), ground);
 
-    sf::Packet ground_set;
+    ECCPacket ground_set;
     ground_set << Networking::StoC::GroundUpdate;
     ground_set << pos.x << pos.y;
     ground_set << ground->getId();

@@ -10,10 +10,10 @@
 
 const int Chunk::CHUNK_SIZE = 16;
 
-Chunk::Chunk(World& world, sf::Vector2i pos, sf::Packet& packet, bool& success) :
-    blocks(CHUNK_SIZE, CHUNK_SIZE, 0),
-    grounds(CHUNK_SIZE, CHUNK_SIZE, 0),
-    tile_entities(CHUNK_SIZE, CHUNK_SIZE, nullptr),
+Chunk::Chunk(World& world, sf::Vector2i pos, ECCPacket& packet, bool& success) :
+    blocks(CHUNK_SIZE*CHUNK_SIZE, 0),
+    grounds(CHUNK_SIZE*CHUNK_SIZE, 0),
+    tile_entities(CHUNK_SIZE*CHUNK_SIZE, nullptr),
     pos(pos),
     ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
     block_side_vertices(sf::Quads),
@@ -32,8 +32,8 @@ Chunk::Chunk(World& world, sf::Vector2i pos, sf::Packet& packet, bool& success) 
     const char* data = (const char*)packet.getData();
 
     //Copying data
-    memcpy(blocks.getData(), data + header_size, blocks.getDataSize());
-    memcpy(grounds.getData(), data + header_size + blocks.getDataSize(), grounds.getDataSize());
+    memcpy(blocks.data(), data + header_size, blocks.size()*sizeof(blocks[0]));
+    memcpy(grounds.data(), data + header_size + blocks.size()*sizeof(blocks[0]), grounds.size()*sizeof(grounds[0]));
 
 
     //Prepare vertices
@@ -88,7 +88,7 @@ void Chunk::setBlock(int x, int y, const Block* block)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
-    blocks.set(x, y, block->getId());
+    blocks[y*CHUNK_SIZE + x] = block->getId();
 
     if (x == 0)
         notifyChunk(3);
@@ -109,7 +109,7 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
-    grounds.set(x, y, ground->getId());
+    grounds[y*CHUNK_SIZE + x] = ground->getId();
 
     if (x == 0)
         notifyChunk(3);

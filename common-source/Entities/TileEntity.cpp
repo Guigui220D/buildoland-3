@@ -60,7 +60,7 @@ void TileEntity::update(float delta)
 }
 
 #ifndef CLIENT_SIDE
-void TileEntity::makeNewEntityPacket(sf::Packet& packet) const
+void TileEntity::makeNewEntityPacket(ECCPacket& packet) const
 {
     packet.clear();
 

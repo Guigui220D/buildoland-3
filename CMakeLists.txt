@@ -12,7 +12,7 @@ set(SFML_DIR "F:/SFML/SFML-2.5.1-sources/SFML-2.5.1-build")
 
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
-option(BUILD_SERVER "Build server-side" ON)
+option(BUILD_SERVER "Build server-side" OFF)
 
 include_directories(
     client-source

@@ -36,7 +36,7 @@ void Entity::updateBase(float delta)
 void Entity::update(float delta) {}
 
 #ifndef CLIENT_SIDE
-void Entity::send(sf::Packet& packet)
+void Entity::send(ECCPacket& packet)
 {
     getWorld().sendToSubscribers(packet, chunk_on);
 }
@@ -56,7 +56,7 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
     #ifndef CLIENT_SIDE
     {
-        sf::Packet leave;
+        ECCPacket leave;
 
         leave << Networking::StoC::EntityAction;
         leave << EntityActions::StoC::ForgetEntity;
@@ -65,7 +65,7 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
         getWorld().sendToSubscribersWithException(leave, old_chunk, new_chunk);
     }
     {
-        sf::Packet enter;
+        ECCPacket enter;
         //std::cout << "New entity spawn packet, for " << getId() << " (chunkchange)" << std::endl;
         makeNewEntityPacket(enter);
 
@@ -79,11 +79,11 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 #ifdef CLIENT_SIDE
 void Entity::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) {}
 
-bool Entity::takePacket(sf::Packet& packet) { return true; }
+bool Entity::takePacket(ECCPacket& packet) { return true; }
 
-bool Entity::takeNewEntityPacket(sf::Packet& packet) { return true; }
+bool Entity::takeNewEntityPacket(ECCPacket& packet) { return true; }
 #else
-void Entity::makeNewEntityPacket(sf::Packet& packet) const
+void Entity::makeNewEntityPacket(ECCPacket& packet) const
 {
     packet.clear();
 
@@ -95,5 +95,5 @@ void Entity::makeNewEntityPacket(sf::Packet& packet) const
     addInfoToNewEntityPacket(packet);
 }
 
-void Entity::addInfoToNewEntityPacket(sf::Packet& packet) const {}
+void Entity::addInfoToNewEntityPacket(ECCPacket& packet) const {}
 #endif // CLIENT_SIDE

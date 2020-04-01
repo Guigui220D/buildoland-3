@@ -50,7 +50,7 @@ void PlayerInventory::describe() const
 bool PlayerInventory::insertItemStack(ItemStack& stack)
 {
     #ifndef CLIENT_SIDE
-    sf::Packet insert;
+    ECCPacket insert;
 
     insert << Networking::StoC::InventoryUpdate;
     insert << InventoryUpdates::StoC::AddStack;
@@ -68,7 +68,7 @@ bool PlayerInventory::insertItemStack(ItemStack& stack)
 void PlayerInventory::insertNewItemStack(ItemStack stack)
 {
     #ifndef CLIENT_SIDE
-    sf::Packet insert;
+    ECCPacket insert;
 
     insert << Networking::StoC::InventoryUpdate;
     insert << InventoryUpdates::StoC::AddStack;
@@ -88,7 +88,7 @@ void PlayerInventory::swapHands(int pos)
         return;
 
     #ifdef CLIENT_SIDE
-    sf::Packet swap;
+    ECCPacket swap;
 
     swap << Networking::CtoS::PlayerAction;
     swap << EntityActions::CtoS::SwapInventoryItem;
@@ -102,7 +102,7 @@ void PlayerInventory::swapHands(int pos)
 }
 
 #ifdef CLIENT_SIDE
-bool PlayerInventory::takeInventoryUpdatePacket(sf::Packet& packet)
+bool PlayerInventory::takeInventoryUpdatePacket(ECCPacket& packet)
 {
     int type; packet >> type;
 

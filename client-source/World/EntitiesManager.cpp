@@ -85,7 +85,7 @@ Entity* EntitiesManager::getEntity(unsigned int id)
     return (i != entities_map.end() ? i->second : nullptr);
 }
 
-bool EntitiesManager::readEntityPacket(sf::Packet& packet)
+bool EntitiesManager::readEntityPacket(ECCPacket& packet)
 {
     int entity_action_code; packet >> entity_action_code;
 
@@ -113,7 +113,7 @@ bool EntitiesManager::readEntityPacket(sf::Packet& packet)
     }
 }
 
-bool EntitiesManager::addEntity(sf::Packet& packet)
+bool EntitiesManager::addEntity(ECCPacket& packet)
 {
     unsigned short entity_code; packet >> entity_code;
     unsigned int entity_id; packet >> entity_id;
@@ -202,7 +202,7 @@ bool EntitiesManager::addEntity(sf::Packet& packet)
     return true;
 }
 
-void EntitiesManager::removeEntity(sf::Packet& packet)
+void EntitiesManager::removeEntity(ECCPacket& packet)
 {
     unsigned int entity_id;
     if (!(packet >> entity_id))
@@ -235,7 +235,7 @@ void EntitiesManager::removeEntity(sf::Packet& packet)
     delete entity_ptr;
 }
 
-bool EntitiesManager::doEntityAction(sf::Packet& packet)
+bool EntitiesManager::doEntityAction(ECCPacket& packet)
 {
     unsigned int id;
     if (!(packet >> id))
@@ -256,7 +256,7 @@ bool EntitiesManager::doEntityAction(sf::Packet& packet)
         std::cerr << "The entity with that code couldn't be found (doEntityAction). Sending a request." << std::endl;
 
         //We ask the server to tell us about that entity because we don't have it
-        sf::Packet request;
+        ECCPacket request;
         request << Networking::CtoS::RequestEntityInfo;
         request << id;
         world.getState().sendToServer(request);

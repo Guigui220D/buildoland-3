@@ -42,7 +42,7 @@ LivingEntity::~LivingEntity()
 }
 
 #ifdef CLIENT_SIDE
-bool LivingEntity::takePacket(sf::Packet& packet)
+bool LivingEntity::takePacket(ECCPacket& packet)
 {
     int action_code; packet >> action_code;
 
@@ -73,7 +73,7 @@ bool LivingEntity::takePacket(sf::Packet& packet)
     }
 }
 
-bool LivingEntity::takeNewEntityPacket(sf::Packet& packet)
+bool LivingEntity::takeNewEntityPacket(ECCPacket& packet)
 {
     sf::Vector2f new_pos, new_direction;
 
@@ -88,7 +88,7 @@ bool LivingEntity::takeNewEntityPacket(sf::Packet& packet)
     return true;
 }
 #else
-void LivingEntity::addInfoToNewEntityPacket(sf::Packet& packet) const
+void LivingEntity::addInfoToNewEntityPacket(ECCPacket& packet) const
 {
     packet << position.x;
     packet << position.y;
@@ -103,7 +103,7 @@ void LivingEntity::setWalkingDirection(sf::Vector2f new_direction)
     walking_direction = new_direction;
 
     #ifndef CLIENT_SIDE
-        sf::Packet packet;
+        ECCPacket packet;
         //Codes
         packet << Networking::StoC::EntityAction;
         packet << EntityActions::StoC::EntityAction;

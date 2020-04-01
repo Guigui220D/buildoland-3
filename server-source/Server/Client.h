@@ -67,7 +67,7 @@ class Client
         inline Player* getPlayer() const { return player; }
         inline void setPlayer(Player* new_player) { player =  new_player; }
 
-        void send(sf::Packet& packet) const;
+        void send(ECCPacket& packet) const;
 
         inline bool operator==(const Client& other) const
         {

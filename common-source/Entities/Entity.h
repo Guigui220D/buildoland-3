@@ -4,6 +4,7 @@
 
 #include <cmath>
 #include <SFML/Network.hpp>
+#include "ECCPacket.h"
 
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>
@@ -46,20 +47,20 @@ class Entity
          * @param packet : the packet to read
          * @return true if the packet was succesfully read and something was done
          */
-        virtual bool takePacket(sf::Packet& packet);
+        virtual bool takePacket(ECCPacket& packet);
         /**
          * Reads a new entity packet
          * @param packet : the packet to read
          * @return true if the packet was succesfully read and something was done
          */
-        virtual bool takeNewEntityPacket(sf::Packet& packet);
+        virtual bool takeNewEntityPacket(ECCPacket& packet);
         #else
         /**
          * Makes a new entity packet
          * The packet is composed, then addInfoToNewEntityPacket is called on it to add custom info depending on the packet
          * @param packet : the packet to make in
          */
-        virtual void makeNewEntityPacket(sf::Packet& packet) const;
+        virtual void makeNewEntityPacket(ECCPacket& packet) const;
         #endif // CLIENT_SIDE
 
         bool to_be_removed = false;
@@ -89,12 +90,12 @@ class Entity
          * Sends a packet to all clients who know of this entity
          * @param packet : the packet to send
          */
-        void send(sf::Packet& packet);
+        void send(ECCPacket& packet);
         /**
          * Adds custom info to the packet that will be sent to new entity
          * @param packet : the packet append to
          */
-        virtual void addInfoToNewEntityPacket(sf::Packet& packet) const;
+        virtual void addInfoToNewEntityPacket(ECCPacket& packet) const;
         #endif // CLIENT_SIDE
 
         sf::Vector2i chunk_on;

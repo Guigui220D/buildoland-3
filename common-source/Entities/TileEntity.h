@@ -22,7 +22,7 @@ class TileEntity : public Entity
         #ifdef CLIENT_SIDE
         inline void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override {}
         #else
-        void makeNewEntityPacket(sf::Packet& packet) const override;
+        void makeNewEntityPacket(ECCPacket& packet) const override;
         #endif // CLIENT_SIDE
 
         inline bool isTileEntity() const override { return true; }

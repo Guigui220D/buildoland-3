@@ -53,7 +53,7 @@ class World
          * @param packet : the packet to unpack
          * @return True if the chunk was added
          */
-        bool addChunk(sf::Packet& packet);
+        bool addChunk(ECCPacket& packet);
 
         /**
          * Gets a reference to a chunk with its position

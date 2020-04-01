@@ -38,7 +38,7 @@ void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Play
         #ifndef CLIENT_SIDE
         world.setBlock(click_pos, block);
 
-        sf::Packet set;
+        ECCPacket set;
 
         set << Networking::StoC::InventoryUpdate;
         set << InventoryUpdates::StoC::SetStack;

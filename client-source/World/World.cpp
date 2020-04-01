@@ -77,7 +77,7 @@ void World::updateLoadedChunk()
     }
 }
 
-bool World::addChunk(sf::Packet& packet)
+bool World::addChunk(ECCPacket& packet)
 {
     //We expect the packet to be of that size
     //4 bytes per tile (2 for block and 2 for ground)
@@ -148,7 +148,7 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
 
 void World::requestChunk(sf::Vector2i pos)
 {
-    sf::Packet request;
+    ECCPacket request;
 
     request << Networking::CtoS::RequestChunk;
     request << pos.x << pos.y;

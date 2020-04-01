@@ -32,14 +32,14 @@ class World
         * @param packet : the packet to send
         * @param chunk : the chunk we want to send to the subscribers of
         */
-        void sendToSubscribers(sf::Packet& packet, sf::Vector2i chunk) const;
+        void sendToSubscribers(ECCPacket& packet, sf::Vector2i chunk) const;
 
         /**
         * Sends a packet to all users that are "subscribed" to chunk_a, BUT NOT to chunk_b
         * @param packet : the packet to send
         * @param chunk_a, chunk_b : the chunks
         */
-        void sendToSubscribersWithException(sf::Packet& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const;
+        void sendToSubscribersWithException(ECCPacket& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const;
 
         EntitiesManager& getEntityManager() { return entities; }
 

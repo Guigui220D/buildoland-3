@@ -26,7 +26,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
     pos(pos),
     server(world.getServer()),
     world(world),
-    packet(new sf::Packet()),
+    packet(new ECCPacket()),
     packet_ready(false)
 {
     world.getGenerator()->generateChunk(this);
@@ -57,7 +57,7 @@ void Chunk::generatePacket()
     packet_ready = true;
 }
 
-sf::Packet& Chunk::getPacket()
+ECCPacket& Chunk::getPacket()
 {
     if (!packet_ready)
         generatePacket();

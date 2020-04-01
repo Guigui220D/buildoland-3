@@ -46,7 +46,7 @@ void Client::addRequestedChunk(sf::Vector2i chunk)
     chunk_requests.push_back(chunk);
 }
 
-void Client::send(sf::Packet& packet) const
+void Client::send(ECCPacket& packet) const
 {
     server.server_socket.send(packet, ip_and_port.address, ip_and_port.port);
 }

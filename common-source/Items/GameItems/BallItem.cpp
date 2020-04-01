@@ -23,7 +23,7 @@ void BallItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Playe
     stack.takeSome(1);
 
     #ifndef CLIENT_SIDE
-    sf::Packet set;
+    ECCPacket set;
 
     set << Networking::StoC::InventoryUpdate;
     set << InventoryUpdates::StoC::SetStack;

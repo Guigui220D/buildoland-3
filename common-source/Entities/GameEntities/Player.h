@@ -35,13 +35,13 @@ class Player : public LivingEntity
 
         void useHand(sf::Vector2i pos);
 
-        bool takeNewEntityPacket(sf::Packet& packet) override;
+        bool takeNewEntityPacket(ECCPacket& packet) override;
         #else
-        void takePlayerActionPacket(sf::Packet& packet);
+        void takePlayerActionPacket(ECCPacket& packet);
 
         inline const Client& getClient() const { return client; }
 
-        void makeNewEntityPacket(sf::Packet& packet) const override;
+        void makeNewEntityPacket(ECCPacket& packet) const override;
         #endif
 
         inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }

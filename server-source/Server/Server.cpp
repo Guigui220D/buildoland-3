@@ -70,7 +70,7 @@ bool Server::init(uint16_t port)
         Player* owner_player = new Player(&world, player_id, clients_manager.getClient(owner));
         clients_manager.getClient(owner).setPlayer(owner_player);
 
-        sf::Packet handshake;
+        ECCPacket handshake;
         handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
         handshake << world.getGenerator()->getSeed();
         handshake << player_id;
@@ -118,7 +118,7 @@ void Server::run()
             {
                 sf::Vector2i pos = i->second->getNextRequestedChunk();
 
-                sf::Packet p = world.getChunk(pos).getPacket();
+                ECCPacket p = world.getChunk(pos).getPacket();
                 server_socket.send(p, i->first.address, i->first.port);
 
                 world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(pos, *(i->second));
@@ -136,7 +136,7 @@ void Server::close()
 {
     receiver_thread.wait();
 
-    sf::Packet server_stopping; server_stopping << Networking::StoC::Disconnect;
+    ECCPacket server_stopping; server_stopping << Networking::StoC::Disconnect;
     clients_manager.sendToAll(server_stopping);
 
     server_socket.unbind();
@@ -149,7 +149,7 @@ void Server::receiver()
     {
         //std::cout << "A" << std::endl;
 
-        sf::Packet packet;
+        ECCPacket packet;
         sf::IpAddress address;
         uint16_t port;
         sf::Socket::Status status = server_socket.receive(packet, address, port);
@@ -158,7 +158,11 @@ void Server::receiver()
         {
         case sf::Socket::Done:
             //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-            if (packet.getDataSize() >= 2)
+            if (packet.isCorrupted())
+            {
+                std::cerr << "Received a corrupted packet : " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+            }
+            else if (packet.getDataSize() >= 2)
             {
                 IpAndPort iandp(address, port);
 
@@ -214,7 +218,7 @@ void Server::receiver()
                         Player* new_player = new Player(world, player_id, clients_manager.getClient(iandp));
                         clients_manager.getClient(iandp).setPlayer(new_player);
 
-                        sf::Packet handshake;
+                        ECCPacket handshake;
                         handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
                         handshake << world.getGenerator()->getSeed();
                         handshake << player_id;
@@ -286,7 +290,7 @@ void Server::passReceiveOnce()
 {
     //When we stop the server from outside the receiver, the receive function is blocking so it will wait for something to happen and block
     //To avoid that we send a packet to ourselves to pass the receive once, enough for the while loop of the thread to stop
-    sf::Packet p; p << Networking::CtoS::KeepAlive;
+    ECCPacket p; p << Networking::CtoS::KeepAlive;
 
     server_socket.send(p, sf::IpAddress::LocalHost, server_socket.getLocalPort());
 }

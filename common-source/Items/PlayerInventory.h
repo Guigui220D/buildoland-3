@@ -1,6 +1,7 @@
 #pragma once
 
 #include "ItemStack.h"
+#include "Networking/ECCPacket.h"
 
 #include <array>
 
@@ -34,7 +35,7 @@ class PlayerInventory
         void swapHands(int pos);
 
         #ifdef CLIENT_SIDE
-        bool takeInventoryUpdatePacket(sf::Packet& packet);
+        bool takeInventoryUpdatePacket(ECCPacket& packet);
         #endif // CLIENT_SIDE
 
     protected:

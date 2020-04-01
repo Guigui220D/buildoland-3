@@ -61,7 +61,7 @@ GameState::~GameState()
     if (connected)
     {
         //TEMP
-        sf::Packet quit;
+        ECCPacket quit;
         quit << Networking::CtoS::Disconnect;
         sendToServer(quit);
     }
@@ -140,7 +140,7 @@ bool GameState::handleEvent(sf::Event& event)
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-            sf::Packet break_packet;
+            ECCPacket break_packet;
             break_packet << Networking::CtoS::PlayerAction;
             break_packet << EntityActions::CtoS::BreakBlock;
             break_packet << world_pos_i.x << world_pos_i.y;
@@ -220,7 +220,7 @@ void GameState::update(float delta_time)
     if (connected && heartbeat_clock.getElapsedTime().asSeconds() >= 5.f)
     {
         heartbeat_clock.restart();
-        sf::Packet heartbeat; heartbeat << Networking::CtoS::KeepAlive;
+        ECCPacket heartbeat; heartbeat << Networking::CtoS::KeepAlive;
         sendToServer(heartbeat);
     }
 }
@@ -311,7 +311,7 @@ bool GameState::handshakeRemoteServer()
 
     //TEMP
     //At the moment we send RequestConnection now but this will be done in the connecting to server state
-    sf::Packet request;
+    ECCPacket request;
     request << Networking::CtoS::RequestConnection;
     sendToServer(request);
 
@@ -326,7 +326,7 @@ bool GameState::handshakeRemoteServer()
 
     client_socket.setBlocking(false);
 
-    sf::Packet packet; sf::IpAddress address; uint16_t port;
+    ECCPacket packet; sf::IpAddress address; uint16_t port;
 
     sf::Clock timeout_clock;
 
@@ -416,7 +416,7 @@ void GameState::receiverLoop()
 {
     while (true)
     {
-        sf::Packet packet;
+        ECCPacket packet;
         sf::IpAddress address;
         uint16_t port;
         sf::Socket::Status status = client_socket.receive(packet, address, port);

@@ -49,7 +49,7 @@ class EntitiesManager
          * @param packet : the packet to read
          * @return True if the packet was successfully read and something was done
          */
-        bool readEntityPacket(sf::Packet& packet);
+        bool readEntityPacket(ECCPacket& packet);
 
         //Just for when we add entities from an other thread
         mutable sf::Mutex entities_mutex;
@@ -75,18 +75,18 @@ class EntitiesManager
          * @param packet : the packet to read
          * @return True if the entity was added
          */
-        bool addEntity(sf::Packet& packet);
+        bool addEntity(ECCPacket& packet);
         /**
          * Removes an entity
          * This function is thread safe
          * @param packet : the packet to read
          */
-        void removeEntity(sf::Packet& packet);
+        void removeEntity(ECCPacket& packet);
         /**
          * Sends an action packet to the right entity
          * This function is thread safe
          * @param packet : the packet to read
          * @return true if the entity was found and something was done
          */
-        bool doEntityAction(sf::Packet& packet);
+        bool doEntityAction(ECCPacket& packet);
 };

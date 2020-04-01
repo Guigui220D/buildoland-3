@@ -29,7 +29,7 @@ void EntitiesManager::updateAll(float delta)
     {
         if (i->second->to_be_removed)
         {
-            sf::Packet packet;
+            ECCPacket packet;
             packet << Networking::StoC::EntityAction;
             packet << EntityActions::StoC::ForgetEntity;
 
@@ -63,7 +63,7 @@ bool EntitiesManager::newEntity(Entity* entity, bool declare)
 
     if (declare)
     {
-        sf::Packet packet;
+        ECCPacket packet;
         //std::cout << "New entity spawn packet, for " << entity->getId() << " (newEntity)" << std::endl;
         entity->makeNewEntityPacket(packet);
 
@@ -80,7 +80,7 @@ void EntitiesManager::removeEntity(unsigned int id)
     if (entities.find(id) != entities.cend())
         entities.erase(entities.find(id));
 
-    sf::Packet packet;
+    ECCPacket packet;
     packet << Networking::StoC::EntityAction;
     packet << EntityActions::StoC::ForgetEntity;
 
@@ -93,7 +93,7 @@ void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos
 {
     sf::Lock lock(entities_mutex);
 
-    sf::Packet packet;
+    ECCPacket packet;
     for (auto i = entities.begin(); i != entities.end(); i++)
     {
         Entity* entity = i->second;
@@ -114,7 +114,7 @@ void EntitiesManager::sendAddEntityToClient(unsigned int id, const Client& clien
     if (i == entities.end())
         return;
 
-    sf::Packet packet;
+    ECCPacket packet;
     i->second->makeNewEntityPacket(packet);
     client.send(packet);
 }

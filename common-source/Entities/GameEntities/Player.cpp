@@ -82,7 +82,7 @@ void Player::update(float delta)
         if (dir != last_walking_direction)
         {
             //Send packet to server
-            sf::Packet move_packet;
+            ECCPacket move_packet;
             move_packet << Networking::CtoS::PlayerAction;
             move_packet << EntityActions::CtoS::Walk;
             move_packet << dir.x << dir.y;
@@ -99,7 +99,7 @@ void Player::update(float delta)
                 frequent_walk_update.restart();
 
                 //We update the server on our movement every second to avoid desynchronisations
-                sf::Packet move_packet;
+                ECCPacket move_packet;
                 move_packet << Networking::CtoS::PlayerAction;
                 move_packet << EntityActions::CtoS::Walk;
                 move_packet << dir.x << dir.y;
@@ -148,7 +148,7 @@ void Player::useHand(sf::Vector2i pos)
     inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
 }
 
-bool Player::takeNewEntityPacket(sf::Packet& packet)
+bool Player::takeNewEntityPacket(ECCPacket& packet)
 {
     for (uint32_t& color : outfit_colors)
         packet >> color;
@@ -163,7 +163,7 @@ bool Player::takeNewEntityPacket(sf::Packet& packet)
     return true;
 }
 #else
-void Player::takePlayerActionPacket(sf::Packet& packet)
+void Player::takePlayerActionPacket(ECCPacket& packet)
 {
     int action; packet >> action;
 
@@ -194,7 +194,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
 
             if (diff.x * diff.x + diff.y * diff.y >= 1.f)
             {
-                sf::Packet rectification;
+                ECCPacket rectification;
                 rectification << Networking::StoC::PlayerRectification;
                 rectification << position.x << position.y;
                 client.send(rectification);
@@ -265,7 +265,7 @@ void Player::takePlayerActionPacket(sf::Packet& packet)
     }
 }
 
-void Player::makeNewEntityPacket(sf::Packet& packet) const
+void Player::makeNewEntityPacket(ECCPacket& packet) const
 {
     packet.clear();
 

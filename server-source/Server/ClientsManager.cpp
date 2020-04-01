@@ -103,7 +103,7 @@ int ClientsManager::doTimeOuts(float timeout_s)
     return yeet_count;
 }
 
-void ClientsManager::sendToAll(sf::Packet& packet)
+void ClientsManager::sendToAll(ECCPacket& packet)
 {
     sf::Lock l(clients_mutex);
 

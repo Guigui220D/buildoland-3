@@ -35,7 +35,7 @@ void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
         #ifndef CLIENT_SIDE
         world.setGround(click_pos, ground);
 
-        sf::Packet set;
+        ECCPacket set;
 
         set << Networking::StoC::InventoryUpdate;
         set << InventoryUpdates::StoC::SetStack;

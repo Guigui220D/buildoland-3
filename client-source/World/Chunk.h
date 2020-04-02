@@ -3,8 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <SFML/Network.hpp>
 #include <array>
-
-#include "../Utils/Arr2D.h"
+#include <cassert>
 
 #include "../../common-source/Entities/TileEntity.h"
 

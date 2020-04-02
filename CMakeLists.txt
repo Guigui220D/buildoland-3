@@ -60,3 +60,9 @@ endif()
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network)
+
+if (NOT BUILD_SERVER)
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bld-client")
+else()
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bld-server")
+endif()

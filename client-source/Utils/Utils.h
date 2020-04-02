@@ -15,6 +15,11 @@ class utils
             lon |= 0xFFFFFFFF & b;
             return lon;
         }
+        static constexpr void unpack(int64_t val, int32_t& a, int32_t& b)
+        {
+            a = val >> 32;
+            b = val & 0xFFFFFFFF;
+        }
 
         static TextQuad getSquare(Quad tex, sf::Vector2i pos)
         {

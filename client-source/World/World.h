@@ -44,7 +44,7 @@ class World
         /**
          * Loads close chunks and unload other chunks
          */
-        void updateLoadedChunk();
+        void updateLoadedChunk(float delta_time);
 
         /**
          * Adds a chunk from a received packet
@@ -190,6 +190,7 @@ class World
 
         std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
         std::vector<Chunk*> chunks_to_add;
+        std::unordered_map<uint64_t, sf::Time> pending_chunk_requests;
         sf::Vector2i player_chunk_pos;
         sf::Mutex chunks_to_add_mutex;
 };

@@ -38,7 +38,7 @@ World::~World()
         delete chunk;
 }
 
-void World::updateLoadedChunk()
+void World::updateLoadedChunk(float delta_time)
 {
     //Add chunks waiting to be added
     chunks_to_add_mutex.lock();
@@ -51,6 +51,19 @@ void World::updateLoadedChunk()
     }
     chunks_to_add.clear();
     chunks_to_add_mutex.unlock();
+
+    for (auto& pending_request : pending_chunk_requests)
+    {
+        pending_request.second -= sf::seconds(delta_time);
+        if (pending_request.second <= sf::Time::Zero) // timeout; re-request the block
+        {
+            sf::Vector2i pos;
+            utils::unpack(pending_request.first, pos.x, pos.y);
+
+            requestChunk(pos);
+            //std::cerr << "Outdated request for chunk " << pending_request.first << " !\n";
+        }
+    }
 
     //Unload all the chunks that need to be removed
     for (auto i = chunks.begin(); i != chunks.end();)
@@ -117,6 +130,12 @@ bool World::addChunk(ECCPacket& packet)
         return false;
     }
 
+    auto it = pending_chunk_requests.find(utils::combine(pos.x, pos.y));
+    if (it != pending_chunk_requests.end())
+    {
+        pending_chunk_requests.erase(it);
+    }
+
     //Add the new chunk!
     chunks_to_add_mutex.lock();
     chunks_to_add.push_back(new_chunk);
@@ -154,6 +173,8 @@ void World::requestChunk(sf::Vector2i pos)
     request << pos.x << pos.y;
 
     state_game.sendToServer(request);
+
+    pending_chunk_requests[utils::combine(pos.x, pos.y)] = sf::seconds(1); // chunk request timeout : 1 second
 }
 
 void World::updateChunks(sf::Vector2i center)

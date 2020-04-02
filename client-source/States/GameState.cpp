@@ -190,7 +190,7 @@ void GameState::update(float delta_time)
         anim_frame = (anim_frame + 1) % 4;
     }
 
-    test_world.updateLoadedChunk();
+    test_world.updateLoadedChunk(delta_time);
 
     entities.updateAll(delta_time);
 
@@ -526,7 +526,7 @@ void GameState::receiverLoop()
                 }
             }
             else
-
+                ;
             break;
         case sf::Socket::NotReady:
             //std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;

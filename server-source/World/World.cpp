@@ -6,6 +6,7 @@
 #include <iostream>
 
 #include "../../common-source/Networking/NetworkingCodes.h"
+#include "../Packets/SetTilePacket.h"
 
 #include "Generators/NaturalGenerator.h"
 
@@ -138,11 +139,7 @@ void World::setBlock(sf::Vector2i pos, Block const * block)
 
     getChunk(chunk).setBlock(getBlockPosInChunk(pos), block);
 
-    ECCPacket block_set;
-    block_set << Networking::StoC::BlockUpdate;
-    block_set << pos.x << pos.y;
-    block_set << block->getId();
-
+    SetTilePacket block_set(false, block->getId(), pos);
     sendToSubscribers(block_set, chunk);
 }
 
@@ -155,10 +152,6 @@ void World::setGround(sf::Vector2i pos, Ground const * ground)
 
     getChunk(chunk).setGround(getBlockPosInChunk(pos), ground);
 
-    ECCPacket ground_set;
-    ground_set << Networking::StoC::GroundUpdate;
-    ground_set << pos.x << pos.y;
-    ground_set << ground->getId();
-
+    SetTilePacket ground_set(true, ground->getId(), pos);
     sendToSubscribers(ground_set, chunk);
 }

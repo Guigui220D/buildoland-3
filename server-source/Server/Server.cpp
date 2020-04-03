@@ -11,6 +11,7 @@
 #include "../Utils/Utils.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
+#include "../Packets/HandshakePacket.h"
 
 //TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
@@ -138,7 +139,7 @@ void Server::close()
 {
     receiver_thread.wait();
 
-    ECCPacket server_stopping; server_stopping << Networking::StoC::Disconnect;
+    ECCPacket server_stopping(Networking::StoC::Disconnect);
     clients_manager.sendToAll(server_stopping);
 
     server_socket.unbind();
@@ -220,11 +221,7 @@ void Server::receiver()
                         Player* new_player = new Player(world, player_id, clients_manager.getClient(iandp));
                         clients_manager.getClient(iandp).setPlayer(new_player);
 
-                        ECCPacket handshake;
-                        handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
-                        handshake << world.getGenerator()->getSeed();
-                        handshake << player_id;
-
+                        HandshakePacket handshake(world.getGenerator()->getSeed(), player_id);
                         server_socket.send(handshake, address, port);
 
                         world.getEntityManager().newEntity(new_player);
@@ -292,7 +289,7 @@ void Server::passReceiveOnce()
 {
     //When we stop the server from outside the receiver, the receive function is blocking so it will wait for something to happen and block
     //To avoid that we send a packet to ourselves to pass the receive once, enough for the while loop of the thread to stop
-    ECCPacket p; p << Networking::CtoS::KeepAlive;
+    ECCPacket p(Networking::CtoS::KeepAlive);
 
     server_socket.send(p, sf::IpAddress::LocalHost, server_socket.getLocalPort());
 }

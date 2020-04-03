@@ -7,6 +7,7 @@
 
 #ifndef CLIENT_SIDE
     #include "../../server-source/Server/Server.h"
+    #include "../../server-source/Packets/InventoryAddPacket.h"
 #else
     #include "../../client-source/States/GameState.h"
     #include "../../client-source/Game.h"
@@ -52,12 +53,7 @@ void PlayerInventory::describe() const
 bool PlayerInventory::insertItemStack(ItemStack& stack)
 {
     #ifndef CLIENT_SIDE
-    ECCPacket insert;
-
-    insert << Networking::StoC::InventoryUpdate;
-    insert << InventoryUpdates::StoC::AddStack;
-    insert << stack.getInt();
-
+    InventoryAddPacket insert(stack.getInt());
     owner.getClient().send(insert);
     #endif
 
@@ -70,12 +66,7 @@ bool PlayerInventory::insertItemStack(ItemStack& stack)
 void PlayerInventory::insertNewItemStack(ItemStack stack)
 {
     #ifndef CLIENT_SIDE
-    ECCPacket insert;
-
-    insert << Networking::StoC::InventoryUpdate;
-    insert << InventoryUpdates::StoC::AddStack;
-    insert << stack.getInt();
-
+    InventoryAddPacket insert(stack.getInt());
     owner.getClient().send(insert);
     #endif
 

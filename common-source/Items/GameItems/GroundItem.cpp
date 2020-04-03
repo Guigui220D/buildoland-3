@@ -4,6 +4,7 @@
     #include "../../../client-source/World/World.h"
 #else
     #include "../../../server-source/World/World.h"
+    #include "../../../server-source/Packets/InventorySetPacket.h"
 #endif // CLIENT_SIDE
 
 #include "../../Grounds/GameGrounds.h"
@@ -35,13 +36,7 @@ void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
         #ifndef CLIENT_SIDE
         world.setGround(click_pos, ground);
 
-        ECCPacket set;
-
-        set << Networking::StoC::InventoryUpdate;
-        set << InventoryUpdates::StoC::SetStack;
-        set << 0;   //We set the first slot of the inventory (hand)
-        set << stack.getInt();
-
+        InventorySetPacket set(0, stack.getInt());
         player.getClient().send(set);
         #endif
     }

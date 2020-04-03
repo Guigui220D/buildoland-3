@@ -5,6 +5,7 @@
 
 #ifndef CLIENT_SIDE
     #include "../../../server-source/Server/ClientsManager.h"
+    #include "../../../server-source/Packets/InventorySetPacket.h"
 #endif // CLIENT_SIDE
 
 BallItem::BallItem() :
@@ -23,13 +24,7 @@ void BallItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Playe
     stack.takeSome(1);
 
     #ifndef CLIENT_SIDE
-    ECCPacket set;
-
-    set << Networking::StoC::InventoryUpdate;
-    set << InventoryUpdates::StoC::SetStack;
-    set << 0;   //We set the first slot of the inventory (hand)
-    set << stack.getInt();
-
+    InventorySetPacket set(0, stack.getInt());
     player.getClient().send(set);
     #endif // CLIENT_SIDE
 }

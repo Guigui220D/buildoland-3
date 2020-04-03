@@ -15,6 +15,7 @@
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
+    #include "../../../server-source/Packets/PlayerRectificationPacket.h"
     #include <cstdio>
 #endif
 
@@ -188,9 +189,7 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
 
             if (diff.x * diff.x + diff.y * diff.y >= 1.f)
             {
-                ECCPacket rectification;
-                rectification << Networking::StoC::PlayerRectification;
-                rectification << position.x << position.y;
+                PlayerRectificationPacket rectification(position);
                 client.send(rectification);
             }
             else

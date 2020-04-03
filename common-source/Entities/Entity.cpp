@@ -4,6 +4,8 @@
     #include "../../client-source/World/World.h"
 #else
     #include "../../server-source/World/World.h"
+
+    #include "../../server-source/Packets/EntityChunkLeavePacket.h"
 #endif // CLIENT_SIDE
 
 #include <iostream>
@@ -56,12 +58,7 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
     #ifndef CLIENT_SIDE
     {
-        ECCPacket leave;
-
-        leave << Networking::StoC::EntityAction;
-        leave << EntityActions::StoC::ForgetEntity;
-        leave << getId();
-
+        EntityChunkLeavePacket leave(getId());
         getWorld().sendToSubscribersWithException(leave, old_chunk, new_chunk);
     }
     {

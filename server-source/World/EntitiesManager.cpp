@@ -5,6 +5,7 @@
 #include <SFML/Network.hpp>
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
+#include "../Packets/ForgetEntityPacket.h"
 
 #include <iostream>
 
@@ -29,12 +30,7 @@ void EntitiesManager::updateAll(float delta)
     {
         if (i->second->to_be_removed)
         {
-            ECCPacket packet;
-            packet << Networking::StoC::EntityAction;
-            packet << EntityActions::StoC::ForgetEntity;
-
-            packet << i->second->getId();
-
+            ForgetEntityPacket packet(i->second->getId());
             server.getClientsManager().sendToAll(packet);
 
             delete i->second;
@@ -80,12 +76,7 @@ void EntitiesManager::removeEntity(unsigned int id)
     if (entities.find(id) != entities.cend())
         entities.erase(entities.find(id));
 
-    ECCPacket packet;
-    packet << Networking::StoC::EntityAction;
-    packet << EntityActions::StoC::ForgetEntity;
-
-    packet << id;
-
+    ForgetEntityPacket packet(id);
     server.getClientsManager().sendToAll(packet);
 }
 

@@ -9,6 +9,8 @@
     #include "CtoS_PlayerActionCodes.h"
 #else
     #include "ServerToClientCodes.h"
+    #include "StoC_EntityActionCodes.h"
+    #include "StoC_InventoryUpdateCodes.h"
 #endif // CLIENT_SIDE
 
 class ECCPacket : public sf::Packet

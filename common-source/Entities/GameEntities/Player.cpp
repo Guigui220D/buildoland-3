@@ -10,6 +10,8 @@
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
     #include "../../../client-source/States/GameState.h"
+
+    #include "../../../client-source/Packets/WalkPacket.h"
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
@@ -82,11 +84,7 @@ void Player::update(float delta)
         if (dir != last_walking_direction)
         {
             //Send packet to server
-            ECCPacket move_packet;
-            move_packet << Networking::CtoS::PlayerAction;
-            move_packet << EntityActions::CtoS::Walk;
-            move_packet << dir.x << dir.y;
-            move_packet << position.x << position.y;
+            WalkPacket move_packet(dir, position);
             getWorld().getState().sendToServer(move_packet);
 
             last_walking_direction = dir;
@@ -99,11 +97,7 @@ void Player::update(float delta)
                 frequent_walk_update.restart();
 
                 //We update the server on our movement every second to avoid desynchronisations
-                ECCPacket move_packet;
-                move_packet << Networking::CtoS::PlayerAction;
-                move_packet << EntityActions::CtoS::Walk;
-                move_packet << dir.x << dir.y;
-                move_packet << position.x << position.y;
+                WalkPacket move_packet(dir, position);
                 getWorld().getState().sendToServer(move_packet);
             }
         }

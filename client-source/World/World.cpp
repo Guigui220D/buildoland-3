@@ -7,6 +7,8 @@
 #include "../../common-source/Constants.h"
 #include "../../common-source/Entities/GameEntities/Player.h"
 
+#include "../Packets/ChunkRequestPacket.h"
+
 #include <iostream>
 
 int unsigned World::RENDER_DISTANCE = 3;
@@ -177,10 +179,7 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
 
 void World::requestChunk(sf::Vector2i pos)
 {
-    ECCPacket request;
-
-    request << Networking::CtoS::RequestChunk;
-    request << pos.x << pos.y;
+    ChunkRequestPacket request(pos);
 
     state_game.sendToServer(request);
 

@@ -10,6 +10,8 @@
 #else
     #include "../../client-source/States/GameState.h"
     #include "../../client-source/Game.h"
+
+    #include "../../client-source/Packets/InventorySwapPacket.h"
 #endif
 
 #ifdef CLIENT_SIDE
@@ -88,11 +90,7 @@ void PlayerInventory::swapHands(int pos)
         return;
 
     #ifdef CLIENT_SIDE
-    ECCPacket swap;
-
-    swap << Networking::CtoS::PlayerAction;
-    swap << EntityActions::CtoS::SwapInventoryItem;
-    swap << pos;
+    InventorySwapPacket swap(pos);
 
     game.sendToServer(swap);
     #endif

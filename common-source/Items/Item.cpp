@@ -6,6 +6,8 @@
 
 #ifdef CLIENT_SIDE
     #include "../../client-source/States/GameState.h"
+
+    #include "../../client-source/Packets/ItemUsePacket.h"
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
@@ -40,12 +42,7 @@ void Item::useItem(ItemStack& stack, World& world, sf::Vector2i click_pos, Playe
     }
 
     #ifdef CLIENT_SIDE
-    ECCPacket use_packet;
-
-    use_packet << Networking::CtoS::PlayerAction;
-    use_packet << EntityActions::CtoS::UseItem;
-    use_packet << click_pos.x << click_pos.y;
-
+    ItemUsePacket use_packet(click_pos);
     world.getState().sendToServer(use_packet);
     #endif
 

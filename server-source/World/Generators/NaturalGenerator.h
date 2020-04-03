@@ -2,7 +2,7 @@
 
 #include "../Generator.h"
 
-#include "../../Utils/PerlinNoise.hpp"
+#include "../../../external/perlin/PerlinNoise.hpp"
 #include <vector>
 
 class NaturalGenerator : public Generator

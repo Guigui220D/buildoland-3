@@ -21,6 +21,8 @@
 
 #include "../States/GameState.h"
 
+#include "../Packets/RequestEntityInfoPacket.h"
+
 EntitiesManager::EntitiesManager(World& world) :
     world(world)
 {
@@ -256,9 +258,7 @@ bool EntitiesManager::doEntityAction(ECCPacket& packet)
         std::cerr << "The entity with that code couldn't be found (doEntityAction). Sending a request." << std::endl;
 
         //We ask the server to tell us about that entity because we don't have it
-        ECCPacket request;
-        request << Networking::CtoS::RequestEntityInfo;
-        request << id;
+        RequestEntityInfoPacket request(id);
         world.getState().sendToServer(request);
         return false;
     }

@@ -21,6 +21,8 @@
 #include "ErrorScreen.h"
 #include "InventoryMenuState.h"
 
+#include "../Packets/BreakBlockPacket.h"
+
 #define YEET break;
 
 //TEMPORARY
@@ -61,8 +63,7 @@ GameState::~GameState()
     if (connected)
     {
         //TEMP
-        ECCPacket quit;
-        quit << Networking::CtoS::Disconnect;
+        ECCPacket quit(Networking::CtoS::Disconnect);
         sendToServer(quit);
     }
 }
@@ -140,12 +141,8 @@ bool GameState::handleEvent(sf::Event& event)
 
             sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-            ECCPacket break_packet;
-            break_packet << Networking::CtoS::PlayerAction;
-            break_packet << EntityActions::CtoS::BreakBlock;
-            break_packet << world_pos_i.x << world_pos_i.y;
-
-            sendToServer(break_packet);
+            BreakBlockPacket packet(world_pos_i);
+            sendToServer(packet);
         }
 
         if (event.mouseButton.button == sf::Mouse::Right)
@@ -220,7 +217,7 @@ void GameState::update(float delta_time)
     if (connected && heartbeat_clock.getElapsedTime().asSeconds() >= 5.f)
     {
         heartbeat_clock.restart();
-        ECCPacket heartbeat; heartbeat << Networking::CtoS::KeepAlive;
+        ECCPacket heartbeat(Networking::CtoS::KeepAlive);
         sendToServer(heartbeat);
     }
 }
@@ -310,9 +307,8 @@ bool GameState::handshakeRemoteServer()
     assert(!solo_mode);
 
     //TEMP
-    //At the moment we send RequestConnection now but this will be done in the connecting to server state
-    ECCPacket request;
-    request << Networking::CtoS::RequestConnection;
+    //At the moment we send RequestConnection here but this will be done in the connecting to server state
+    ECCPacket request(Networking::CtoS::RequestConnection);
     sendToServer(request);
 
     bool handshake = receiveServerHandshake(true);

@@ -16,7 +16,7 @@
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
     #include "../../../server-source/Packets/PlayerRectificationPacket.h"
-    #include "../../../server-source/Packets/InventorySetPacket.h"
+    #include "../../../server-source/Packets/FullInventoryPacket.h"
     #include <cstdio>
 #endif
 
@@ -215,9 +215,8 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
 
             if (inventory.contents.at(0).getInt() != item_in_hand)
             {
-                //TODO : send full inventory instead
-                InventorySetPacket isp(0, inventory.contents.at(0).getInt());
-                getClient().send(isp);
+                FullInventoryPacket fip(inventory);
+                getClient().send(fip);
                 break;
             }
 
@@ -266,11 +265,9 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
 
             if (inventory.contents.at(0).getInt() != hand_item || inventory.contents.at(pos).getInt() != slot_item)
             {
-                InventorySetPacket isp1(0, inventory.contents.at(0).getInt());
-                InventorySetPacket isp2(pos, inventory.contents.at(pos).getInt());
-
-                getClient().send(isp1);
-                getClient().send(isp2);
+                FullInventoryPacket fip(inventory);
+                getClient().send(fip);
+                break;
             }
 
             inventory.swapHands(pos);

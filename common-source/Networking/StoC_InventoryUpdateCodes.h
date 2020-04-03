@@ -7,7 +7,8 @@ namespace InventoryUpdates
         enum
         {
             AddStack,
-            SetStack
+            SetStack,
+            SetInventory
         };
     }
 }

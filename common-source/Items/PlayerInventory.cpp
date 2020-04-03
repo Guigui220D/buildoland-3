@@ -133,6 +133,23 @@ bool PlayerInventory::takeInventoryUpdatePacket(ECCPacket& packet)
         }
         //describe();
         return true;
+
+    case InventoryUpdates::StoC::SetInventory:
+        {
+            for (int i = 0; i < 25; i++)
+            {
+                uint32_t stack; packet >> stack;
+
+                if (!packet)
+                    return false;
+
+                ItemStack itemstack(stack, game.getGame().getItemsRegister());
+
+                contents.at(i).swap(itemstack);
+            }
+        }
+        return true;
+
     default:
         std::cerr << "Could not read inventory update, unknown type." << std::endl;
         return false;

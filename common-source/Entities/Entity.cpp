@@ -5,7 +5,7 @@
 #else
     #include "../../server-source/World/World.h"
 
-    #include "../../server-source/Packets/EntityChunkLeavePacket.h"
+    #include "../../server-source/Packets/ForgetEntityPacket.h"
 #endif // CLIENT_SIDE
 
 #include <iostream>
@@ -58,7 +58,7 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
     #ifndef CLIENT_SIDE
     {
-        EntityChunkLeavePacket leave(getId());
+        ForgetEntityPacket leave(getId());
         getWorld().sendToSubscribersWithException(leave, old_chunk, new_chunk);
     }
     {

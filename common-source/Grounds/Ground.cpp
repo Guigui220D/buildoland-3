@@ -1,8 +1,8 @@
 #include "Ground.h"
 
 #ifdef CLIENT_SIDE
-    #include "../../client-source/Utils/XXHash.hpp"
-    #include "../../client-source/Utils/XXHash_bis.hpp"
+    #include "../../external/xxhash/XXHash.hpp"
+    #include "../../external/xxhash/XXHash_bis.hpp"
 
     #include "../../client-source/World/World.h"
     #include "../../client-source/Game.h"

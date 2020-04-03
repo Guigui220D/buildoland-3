@@ -13,7 +13,7 @@ LanguageManager::~LanguageManager()
 {
 }
 
-const sf::String& LanguageManager::getString(const std::string identifier)
+const sf::String& LanguageManager::getFmtString(const std::string& identifier)
 {
     auto i = strings.find(identifier);
 
@@ -28,7 +28,7 @@ const sf::String& LanguageManager::getString(const std::string identifier)
     return i->second;
 }
 
-void LanguageManager::load(const std::string language)
+void LanguageManager::load(const std::string& language)
 {
     strings.emplace(std::pair<std::string, const std::string>("", ""));
 

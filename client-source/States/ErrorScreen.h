@@ -9,7 +9,15 @@
 class ErrorState : public State
 {
     public:
-        ErrorState(Game& game, sf::String error, unsigned int id = 0);
+        template <typename... FmtArgs>
+        ErrorState(Game& game, unsigned int id, sf::String error, FmtArgs&&... fmt_args) :
+            State(game, id),
+            go_back_button(game, sf::FloatRect(.1f, .7f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::Center, "BACK_TO_MAIN_MENU_BUTTON"),
+              message(game, sf::FloatRect(.05f, .4f, .9f, .2f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::Center, error, std::forward<FmtArgs>(fmt_args)...)
+        {
+            draw_transparent = false;
+        }
+
         ~ErrorState();
 
         void init() override;

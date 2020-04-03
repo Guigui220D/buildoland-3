@@ -6,7 +6,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "../Utils/Json.hpp"
+#include "../../external/json/Json.hpp"
 
 //This class can load and save settings
 class SettingsManager

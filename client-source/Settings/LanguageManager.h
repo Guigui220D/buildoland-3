@@ -3,8 +3,10 @@
 #include <string>
 #include <initializer_list>
 #include <unordered_map>
+#include <iostream>
 
-#include "../Utils/Json.hpp"
+#include "../../external/json/Json.hpp"
+#include "../../external/fmt/include/fmt/format.h"
 
 #include <SFML/System.hpp>
 
@@ -13,11 +15,30 @@ class LanguageManager
     friend class Game;
 
     public:
-        const sf::String& getString(const std::string identifier);
+        template<typename... FmtArgs>
+        sf::String getString(const std::string& identifier, FmtArgs&&... args)
+        {
+            std::string str = (const char*)getFmtString(identifier).toUtf8().data();
+            try
+            {
+                str = fmt::format(str, std::forward<FmtArgs>(args)...);
+            }
+            catch (const fmt::format_error& err)
+            {
+                std::cerr << "Invalid language format for '" << identifier << "' : ";
+                std::cerr << err.what() << "\n";
+            }
 
-        void load(const std::string language);
+            sf::String sf_str;
+            sf_str = sf::String::fromUtf8(str.begin(), str.end());
+            return sf_str;
+        }
+
+        void load(const std::string& language);
 
     private:
+        const sf::String& getFmtString(const std::string& identifier);
+
         const std::string language_setting;
 
         bool success = false;

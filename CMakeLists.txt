@@ -41,25 +41,29 @@ include_directories(
 
 file(GLOB_RECURSE CLIENT_SRCS client-source/*.cpp client-source/*.cc client-source/*.c client-source/*.h)
 file(GLOB_RECURSE COMMON_SRCS common-source/*.cpp common-source/*.cc common-source/*.c common-source/*.h)
+#file(GLOB_RECURSE EXTERNAL_SRCS external/*.cpp external/*.cc external/*.c external/*.h)
 file(GLOB_RECURSE SERVER_SRCS server-source/*.cpp server-source/*.cc server-source/*.c server-source/*.h)
 
 if (NOT BUILD_SERVER)
     set (SRCS
         ${CLIENT_SRCS}
         ${COMMON_SRCS}
+        external/xxhash/XXHash.cc
     )
     add_definitions(-DCLIENT_SIDE)
 else()
     set (SRCS
         ${SERVER_SRCS}
         ${COMMON_SRCS}
+        external/xxhash/XXHash.cc
     )
 endif()
 
+add_subdirectory(external/fmt)
 
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network)
+target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network fmt)
 
 if (NOT BUILD_SERVER)
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bld-client")

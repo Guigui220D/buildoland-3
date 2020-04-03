@@ -8,7 +8,7 @@
 	"STATE_INTERRUPTED": "Jeu interrompu par le joueur (test)",
 	"SERVER_DIDNT_START": "Le serveur local n'a pas pu être démarré",
 	"SOCKET_DISCONNECTED": "Port non joignable",
-	"TIMEOUT_HANDSHAKE": "Timeout pendant la connexion",
+	"TIMEOUT_HANDSHAKE": "Timeout pendant la connexion ({}s)",
 	"WRONG_VERSION": "Le serveur n'a pas la même version",
 	"DISCONNECTED_BY_SERVER": "Déconnecté par le serveur",
 	

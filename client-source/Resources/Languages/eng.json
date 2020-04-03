@@ -8,7 +8,7 @@
 	"STATE_INTERRUPTED": "State interrupted by player (for testing)",
 	"SERVER_DIDNT_START": "Local server couldn't be started",
 	"SOCKET_DISCONNECTED": "Socket unreachable",
-	"TIMEOUT_HANDSHAKE": "Timeout during server handshake",
+	"TIMEOUT_HANDSHAKE": "Timeout during server handshake ({}s)",
 	"WRONG_VERSION": "Server doesn't have the same version",
 	"DISCONNECTED_BY_SERVER": "Disconnected by server",
 	

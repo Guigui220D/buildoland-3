@@ -4,7 +4,7 @@
 
 #include <cmath>
 #include <SFML/Network.hpp>
-#include "ECCPacket.h"
+#include "../Networking/ECCPacket.h"
 
 #ifdef CLIENT_SIDE
     #include <SFML/Graphics.hpp>

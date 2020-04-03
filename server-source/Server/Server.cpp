@@ -118,10 +118,12 @@ void Server::run()
             {
                 sf::Vector2i pos = i->second->getNextRequestedChunk();
 
-                ECCPacket p = world.getChunk(pos).getPacket();
-                server_socket.send(p, i->first.address, i->first.port);
-
-                world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(pos, *(i->second));
+                if (!i->second->hasPlayer() || i->second->getPlayer()->isSubscribedTo(pos, true))
+                {
+                    ECCPacket p = world.getChunk(pos).getPacket();
+                    server_socket.send(p, i->first.address, i->first.port);
+                    world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(pos, *(i->second));
+                }
             }
         }
         clients_manager.clients_mutex.unlock();

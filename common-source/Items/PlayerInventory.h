@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ItemStack.h"
-#include "Networking/ECCPacket.h"
+#include "../Networking/ECCPacket.h"
 
 #include <array>
 

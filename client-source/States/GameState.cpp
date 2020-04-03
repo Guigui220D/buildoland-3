@@ -429,6 +429,12 @@ void GameState::receiverLoop()
             if (address != remote_ip || port != remote_port)
                 YEET
 
+            if (packet.isCorrupted())
+            {
+                std::cerr << "Received a corrupted packet from the server, ignoring it." << std::endl;
+                YEET
+            }
+
             if (packet.getDataSize() >= 2)
             {
                 int code; packet >> code;

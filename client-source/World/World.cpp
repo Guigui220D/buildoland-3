@@ -52,17 +52,27 @@ void World::updateLoadedChunk(float delta_time)
     chunks_to_add.clear();
     chunks_to_add_mutex.unlock();
 
-    for (auto& pending_request : pending_chunk_requests)
+    for (auto i = pending_chunk_requests.begin(); i != pending_chunk_requests.end();)
     {
-        pending_request.second -= sf::seconds(delta_time);
-        if (pending_request.second <= sf::Time::Zero) // timeout; re-request the block
+        if (i->second.getElapsedTime().asSeconds() >= 1.f) // timeout; re-request the block
         {
             sf::Vector2i pos;
-            utils::unpack(pending_request.first, pos.x, pos.y);
+            utils::unpack(i->first, pos.x, pos.y);
+
+            sf::Vector2i diff = player_chunk_pos - pos;
+
+            int distance_squared = diff.x * diff.x + diff.y * diff.y;
+
+            if (distance_squared >= Constants::CHUNK_LOADING_DISTANCE)
+            {
+                i = pending_chunk_requests.erase(i);
+                continue;
+            }
 
             requestChunk(pos);
-            //std::cerr << "Outdated request for chunk " << pending_request.first << " !\n";
+            std::cerr << "Outdated request for chunk " << pos.x << "; " << pos.y << " !\n";
         }
+        i++;
     }
 
     //Unload all the chunks that need to be removed
@@ -111,12 +121,12 @@ bool World::addChunk(ECCPacket& packet)
     packet >> pos.x;
     packet >> pos.y;
 
+    std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
+
     sf::Vector2i diff = pos - player_chunk_pos;
     int distance_squared = diff.x * diff.x + diff.y * diff.y;
     if (distance_squared >= Constants::CHUNK_LOADING_DISTANCE)
         return true;    //Ignore chunk because it's too far
-
-    //std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
 
     //Construct new chunk
     bool success = false;
@@ -174,7 +184,7 @@ void World::requestChunk(sf::Vector2i pos)
 
     state_game.sendToServer(request);
 
-    pending_chunk_requests[utils::combine(pos.x, pos.y)] = sf::seconds(1); // chunk request timeout : 1 second
+    pending_chunk_requests[utils::combine(pos.x, pos.y)].restart(); // chunk request timeout : 1 second
 }
 
 void World::updateChunks(sf::Vector2i center)

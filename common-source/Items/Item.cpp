@@ -42,7 +42,7 @@ void Item::useItem(ItemStack& stack, World& world, sf::Vector2i click_pos, Playe
     }
 
     #ifdef CLIENT_SIDE
-    ItemUsePacket use_packet(click_pos);
+    ItemUsePacket use_packet(click_pos, stack.getInt());
     world.getState().sendToServer(use_packet);
     #endif
 

@@ -16,6 +16,7 @@
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Server/Client.h"
     #include "../../../server-source/Packets/PlayerRectificationPacket.h"
+    #include "../../../server-source/Packets/InventorySetPacket.h"
     #include <cstdio>
 #endif
 
@@ -201,8 +202,10 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
     case EntityActions::CtoS::UseItem:
         {
             sf::Vector2i pos;
+            uint32_t item_in_hand;
 
             packet >> pos.x >> pos.y;
+            packet >> item_in_hand;
 
             if (!packet)
             {
@@ -210,8 +213,16 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
                 break;
             }
 
+            if (inventory.contents.at(0).getInt() != item_in_hand)
+            {
+                //TODO : send full inventory instead
+                InventorySetPacket isp(0, inventory.contents.at(0).getInt());
+                getClient().send(isp);
+                break;
+            }
+
             if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
-                return;
+                break;
 
             inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
         }
@@ -230,7 +241,7 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
             }
 
             if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
-                return;
+                break;
 
             auto drops = getWorld().getBlock(pos)->getDrops();
 
@@ -243,10 +254,24 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
 
     case EntityActions::CtoS::SwapInventoryItem:
         {
-            int pos; packet >> pos;
+            int pos;
+            uint32_t hand_item, slot_item;
+
+            packet >> pos;
+            packet >> hand_item;
+            packet >> slot_item;
 
             if (!packet)
                 break;
+
+            if (inventory.contents.at(0).getInt() != hand_item || inventory.contents.at(pos).getInt() != slot_item)
+            {
+                InventorySetPacket isp1(0, inventory.contents.at(0).getInt());
+                InventorySetPacket isp2(pos, inventory.contents.at(pos).getInt());
+
+                getClient().send(isp1);
+                getClient().send(isp2);
+            }
 
             inventory.swapHands(pos);
         }

@@ -81,7 +81,7 @@ void PlayerInventory::swapHands(int pos)
         return;
 
     #ifdef CLIENT_SIDE
-    InventorySwapPacket swap(pos);
+    InventorySwapPacket swap(pos, contents.at(0).getInt(), contents.at(pos).getInt());
 
     game.sendToServer(swap);
     #endif

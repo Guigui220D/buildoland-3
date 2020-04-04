@@ -46,6 +46,10 @@ void World::updateLoadedChunk(float delta_time)
     for (Chunk*& chunk : chunks_to_add)
     {
         uint64_t key = utils::combine(chunk->getPos().x, chunk->getPos().y);
+
+        if (chunks.find(key) != chunks.end())
+            chunks.erase(chunks.find(key));
+
         chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
 
         entities.declareNewChunkForTileEntities(chunk);
@@ -96,6 +100,12 @@ void World::updateLoadedChunk(float delta_time)
         else
             i++;
     }
+
+
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
+        if (pending_chunk_requests.find(utils::combine(player_chunk_pos.x, player_chunk_pos.y)) == pending_chunk_requests.end())
+            requestChunk(player_chunk_pos);
+
 }
 
 bool World::addChunk(ECCPacket& packet)
@@ -140,9 +150,7 @@ bool World::addChunk(ECCPacket& packet)
 
     auto it = pending_chunk_requests.find(utils::combine(pos.x, pos.y));
     if (it != pending_chunk_requests.end())
-    {
         pending_chunk_requests.erase(it);
-    }
 
     //Add the new chunk!
     chunks_to_add.push_back(new_chunk);

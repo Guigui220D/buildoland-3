@@ -219,9 +219,24 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
 
                 if (hand.getItem() != inventory.contents.at(0).getItem())
                 {
+                    bool has_item = false;
+                    for (int i = 1; i < 25; i++)
+                    {
+                        ItemStack& is = inventory.contents.at(i);
+                        if (!is)
+                            continue;
+                        if (is.getItem() == hand.getItem())
+                        {
+                            inventory.swapHands(i);
+                            has_item = true;
+                            break;
+                        }
+                    }
+
                     FullInventoryPacket fip(inventory);
                     getClient().send(fip);
-                    break;
+                    if (!has_item)
+                        break;
                 }
             }
 

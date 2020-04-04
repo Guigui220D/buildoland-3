@@ -2,7 +2,7 @@
 
 #include "ECCPacket.h"
 
-#include "../server-source/Server/Client.h"
+#include "../../server-source/Server/Client.h"
 
 #include <SFML/System/Vector2.hpp>
 

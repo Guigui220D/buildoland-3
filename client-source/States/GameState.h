@@ -5,8 +5,8 @@
 #include <SFML/Network.hpp>
 
 #include "../World/World.h"
-#include "../Networking/NetworkRequestQueue.h"
-#include "../Networking/ServerToClientRequests.h"
+#include "../../common-source/Networking/NetworkRequestQueue.h"
+#include "../../common-source/Networking/ServerToClientRequests.h"
 
 class GameState : public State
 {

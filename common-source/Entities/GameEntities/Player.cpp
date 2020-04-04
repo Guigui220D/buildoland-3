@@ -17,6 +17,7 @@
     #include "../../../server-source/Server/Client.h"
     #include "../../../server-source/Packets/PlayerRectificationPacket.h"
     #include "../../../server-source/Packets/FullInventoryPacket.h"
+    #include "../../../server-source/Server/Server.h"
     #include <cstdio>
 #endif
 
@@ -213,11 +214,15 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
                 break;
             }
 
-            if (inventory.contents.at(0).getInt() != item_in_hand)
             {
-                FullInventoryPacket fip(inventory);
-                getClient().send(fip);
-                break;
+                ItemStack hand(item_in_hand, getWorld().getServer().getItemsRegister());
+
+                if (hand.getItem() != inventory.contents.at(0).getItem())
+                {
+                    FullInventoryPacket fip(inventory);
+                    getClient().send(fip);
+                    break;
+                }
             }
 
             if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
@@ -265,6 +270,9 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
 
             if (inventory.contents.at(0).getInt() != hand_item || inventory.contents.at(pos).getInt() != slot_item)
             {
+                if (inventory.contents.at(0).getInt() == slot_item && inventory.contents.at(pos).getInt() == hand_item)
+                    break;
+
                 FullInventoryPacket fip(inventory);
                 getClient().send(fip);
                 break;

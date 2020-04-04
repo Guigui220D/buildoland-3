@@ -29,29 +29,29 @@
 #include <windows.h>
 
 GameState::GameState(Game& game, unsigned int id, bool show_server_console) :
-    State(game, id),
-    solo_mode(true),
-    connected(false),
-    show_console(show_server_console),
-    remote_ip(sf::IpAddress::LocalHost),
-    remote_port(0),
-    receiver_thread(&GameState::receiverLoop, this),
-    test_world(*this),
-    entities(test_world.getEntityManager())
+      State(game, id),
+      solo_mode(true),
+      connected(false),
+      show_console(show_server_console),
+      remote_ip(sf::IpAddress::LocalHost),
+      remote_port(0),
+      receiver_thread(&GameState::receiverLoop, this),
+      test_world(*this),
+      entities(test_world.getEntityManager())
 {
     update_transparent = false;
     draw_transparent = false;
 }
 
 GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, uint16_t server_port) :
-    State(game, id),
-    solo_mode(false),
-    connected(false),
-    remote_ip(server_address),
-    remote_port(server_port),
-    receiver_thread(&GameState::receiverLoop, this),
-    test_world(*this),
-    entities(test_world.getEntityManager())
+      State(game, id),
+      solo_mode(false),
+      connected(false),
+      remote_ip(server_address),
+      remote_port(server_port),
+      receiver_thread(&GameState::receiverLoop, this),
+      test_world(*this),
+      entities(test_world.getEntityManager())
 {
     update_transparent = false;
     draw_transparent = false;
@@ -104,7 +104,7 @@ void GameState::init()
     }
     else
         if (!handshakeRemoteServer())
-            return;
+        return;
 
     connected = true;
     client_socket.setBlocking(true);
@@ -117,7 +117,7 @@ bool GameState::handleEvent(sf::Event& event)
 {
     switch (event.type)
     {
-    case sf::Event::Resized:
+        case sf::Event::Resized:
         {
             sf::RenderWindow& window = getGame().getWindow();
             if (window.getSize().x < 200)
@@ -125,53 +125,53 @@ bool GameState::handleEvent(sf::Event& event)
             if (window.getSize().y < 200)
                 window.setSize(sf::Vector2u(window.getSize().x, 200));
         }
-        updateView();
-        return false;
+            updateView();
+            return false;
 
-    case sf::Event::MouseWheelScrolled:
-        break;
-
-    case sf::Event::MouseButtonReleased:
-        if (!connected)
+        case sf::Event::MouseWheelScrolled:
             break;
-        if (event.mouseButton.button == sf::Mouse::Left)
-        {
-            sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
-            world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
-            sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
-
-            BreakBlockPacket packet(world_pos_i);
-            sendToServer(packet);
-        }
-
-        if (event.mouseButton.button == sf::Mouse::Right)
-        {
-            sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
-            world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
-
-            sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
-
-            if(Player::this_player)
-                Player::this_player->useHand(world_pos_i);
-
-        }
-        break;
-
-    case sf::Event::KeyPressed:
-        if (event.key.code == sf::Keyboard::A)
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+        case sf::Event::MouseButtonReleased:
+            if (!connected)
+                break;
+            if (event.mouseButton.button == sf::Mouse::Left)
             {
-                getGame().addStateOnTop(new ErrorState(getGame(), 0, "STATE_INTERRUPTED"));
-                    must_be_destroyed = true;
-            }
-        if (event.key.code == sf::Keyboard::Space)
-            if (Player::this_player)
-                getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
-        break;
+                sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+                world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
-    default:
-        break;
+                sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+
+                BreakBlockPacket packet(world_pos_i);
+                sendToServer(packet);
+            }
+
+            if (event.mouseButton.button == sf::Mouse::Right)
+            {
+                sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+                world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
+
+                sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+
+                if(Player::this_player)
+                    Player::this_player->useHand(world_pos_i);
+
+            }
+            break;
+
+        case sf::Event::KeyPressed:
+            if (event.key.code == sf::Keyboard::A)
+                if (sf::Keyboard::isKeyPressed(sf::Keyboard::Escape))
+                {
+                    getGame().addStateOnTop(new ErrorState(getGame(), 0, "STATE_INTERRUPTED"));
+                    must_be_destroyed = true;
+                }
+            if (event.key.code == sf::Keyboard::Space)
+                if (Player::this_player)
+                    getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
+            break;
+
+        default:
+            break;
     }
     return true;
 }
@@ -240,7 +240,7 @@ void GameState::draw(sf::RenderTarget& target) const
     entities.drawAll(target);
 
     for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
-    target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+        target.draw(i->second->getBlockTopsVertexArray(), block_textures);
 
     entities.drawAllAbove(target);
 
@@ -258,18 +258,18 @@ void GameState::updateView()
 {
     sf::RenderWindow& window = getGame().getWindow();
     //Resize without deformation
-	if (window.getSize().y > window.getSize().x)
-	{
-		float ratio = (float)window.getSize().y / window.getSize().x;
-		float y_size = ratio * zoom;
-		my_view.setSize(sf::Vector2f(zoom, y_size));
-	}
-	else
-	{
-		float ratio = (float)window.getSize().x / window.getSize().y;
-		float x_size = ratio * zoom;
-		my_view.setSize(sf::Vector2f(x_size, zoom));
-	}
+    if (window.getSize().y > window.getSize().x)
+    {
+        float ratio = (float)window.getSize().y / window.getSize().x;
+        float y_size = ratio * zoom;
+        my_view.setSize(sf::Vector2f(zoom, y_size));
+    }
+    else
+    {
+        float ratio = (float)window.getSize().x / window.getSize().y;
+        float x_size = ratio * zoom;
+        my_view.setSize(sf::Vector2f(x_size, zoom));
+    }
 }
 
 bool GameState::startAndConnectLocalServer()
@@ -318,7 +318,7 @@ bool GameState::handshakeRemoteServer()
     return handshake;
 }
 
- bool GameState::receiveServerHandshake(bool known_port)
+bool GameState::receiveServerHandshake(bool known_port)
 {
     std::clog << "Waiting for handshake from server..." << std::endl;
 
@@ -389,7 +389,7 @@ bool GameState::handshakeRemoteServer()
             }
             else
                 std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << "." << std::endl;
-                //Not a handshake
+            //Not a handshake
         }
     }
 
@@ -421,112 +421,168 @@ void GameState::receiverLoop()
 
         switch (status)
         {
-        case sf::Socket::Done:
-            //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+            case sf::Socket::Done:
+                //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
 
-            if (address != remote_ip || port != remote_port)
-                YEET
+                if (address != remote_ip || port != remote_port)
+                    YEET
 
-            if (packet.isCorrupted())
-            {
-                std::cerr << "Received a corrupted packet from the server, ignoring it." << std::endl;
-                YEET
-            }
+                        if (packet.isCorrupted())
+                    {
+                        std::cerr << "Received a corrupted packet from the server, ignoring it." << std::endl;
+                        YEET
+                    }
 
-            if (packet.getDataSize() >= 2)
-            {
-                int code; packet >> code;
-
-                switch (code)
+                if (packet.getDataSize() >= 2)
                 {
-                case Networking::StoC::Disconnect:
-                    request_queue.pushRequest(Networking::StoC::DisconnectRequest{});
-                    break;
+                    int code; packet >> code;
 
-                case Networking::StoC::SendChunk:
-                    request_queue.pushRequest(Networking::StoC::SendChunkRequest{packet});
-                    break;
+                    switch (code)
+                    {
+                        case Networking::StoC::Disconnect:
+                            request_queue.pushRequest(Networking::StoC::DisconnectRequest{});
+                            break;
 
-                case Networking::StoC::EntityAction:
-                    request_queue.pushRequest(Networking::StoC::EntityActionRequest{packet});
-                    break;
-
-                case Networking::StoC::BlockUpdate:
-                    {   //TODO : movee that somewhere else
-                        sf::Vector2i pos;
-                        uint16_t id;
-
-                        packet >> pos.x >> pos.y;
-                        packet >> id;
-
-                        if (!packet)
+                        case Networking::StoC::SendChunk:
                         {
-                            std::cerr << "Could not read blockUpdate, packet too short" << std::endl;
+                            //We expect the packet to be of that size
+                            //4 bytes per tile (2 for block and 2 for ground)
+                            //8 bytes for the position
+                            //2 bytes for the packet header
+                            size_t expected_packet_size = Chunk::getChunkDataSize();
+                            expected_packet_size += sizeof(int) * 2; //Position
+                            expected_packet_size += 2;
+
+                            if (packet.getDataSize() < expected_packet_size)
+                            {
+                                std::cerr << "Chunk packet is too small! Expected " << expected_packet_size << " bytes, got " << packet.getDataSize() << " bytes." << std::endl;
+                                break;
+                            }
+
+                            //Get chunk position
+                            sf::Vector2i pos;
+                            packet >> pos.x;
+                            packet >> pos.y;
+
+                            Networking::StoC::SendChunkRequest rq;
+                            rq.pos = pos;
+                            rq.chunk_data.resize(packet.getDataSize());
+                            std::memcpy(rq.chunk_data.data(), packet.getData(), rq.chunk_data.size());
+
+                            request_queue.pushRequest(std::move(rq));
                             break;
                         }
 
-                        request_queue.pushRequest(Networking::StoC::BlockUpdateRequest{pos, id});
-                    }
-                    break;
-
-                case Networking::StoC::GroundUpdate:
-                    {
-                        sf::Vector2i pos;
-                        uint16_t id;
-
-                        packet >> pos.x >> pos.y;
-                        packet >> id;
-
-                        if (!packet)
-                        {
-                            std::cerr << "Could not read groundUpdate, packet too short" << std::endl;
+                        case Networking::StoC::EntityAction:
+                            request_queue.pushRequest(Networking::StoC::EntityActionRequest{packet});
                             break;
+
+                        case Networking::StoC::BlockUpdate:
+                        {   //TODO : movee that somewhere else
+                            sf::Vector2i pos;
+                            uint16_t id;
+
+                            packet >> pos.x >> pos.y;
+                            packet >> id;
+
+                            if (!packet)
+                            {
+                                std::cerr << "Could not read blockUpdate, packet too short" << std::endl;
+                                break;
+                            }
+
+                            request_queue.pushRequest(Networking::StoC::BlockUpdateRequest{pos, id});
                         }
+                        break;
 
-                        request_queue.pushRequest(Networking::StoC::GroundUpdateRequest{pos, id});
-                    }
-                    break;
+                        case Networking::StoC::GroundUpdate:
+                        {
+                            sf::Vector2i pos;
+                            uint16_t id;
 
-                case Networking::StoC::PlayerRectification:
-                    {
-                        sf::Vector2f pos;
-                        packet >> pos.x >> pos.y;
+                            packet >> pos.x >> pos.y;
+                            packet >> id;
 
-                        if (!packet)
+                            if (!packet)
+                            {
+                                std::cerr << "Could not read groundUpdate, packet too short" << std::endl;
+                                break;
+                            }
+
+                            request_queue.pushRequest(Networking::StoC::GroundUpdateRequest{pos, id});
+                        }
+                        break;
+
+                        case Networking::StoC::PlayerRectification:
+                        {
+                            sf::Vector2f pos;
+                            packet >> pos.x >> pos.y;
+
+                            if (!packet)
+                                break;
+
+                            request_queue.pushRequest(Networking::StoC::PlayerRectificationRequest{pos});
+                        }
+                        break;
+
+                        case Networking::StoC::InventoryUpdate:
+                        {
+                            Networking::StoC::InventoryUpdateRequest rq;
+                            packet >> rq.type;
+
+                            if (!packet)
+                            {
+                                std::cerr << "Could not read inventory update, packet too short to get type." << std::endl;
+                                break;
+                            }
+
+                            switch (rq.type)
+                            {
+                                case InventoryUpdates::StoC::AddStack:
+                                    packet >> rq.stack_add;
+                                    break;
+                                case InventoryUpdates::StoC::SetStack:
+                                    packet >> rq.pos;
+                                    if (!packet)
+                                        break;
+                                    packet >> rq.stack_set;
+                                    break;
+                                case InventoryUpdates::StoC::SetInventory:
+                                    for (int i = 0; i < 25; i++)
+                                    {
+                                        packet >> rq.stack_list[i];
+                                        if (!packet)
+                                            break;
+                                    }
+                                    break;
+                            }
+
+                            request_queue.pushRequest(std::move(rq));
+                        }
+                        break;
+
+                        default:
+                            std::cerr << "Unknown packet code" << std::endl;
                             break;
-
-                        request_queue.pushRequest(Networking::StoC::PlayerRectificationRequest{pos});
                     }
-                    break;
-
-                case Networking::StoC::InventoryUpdate:
-                    {
-                        request_queue.pushRequest(Networking::StoC::InventoryUpdateRequest{packet});
-                    }
-                    break;
-
-                default:
-                    std::cerr << "Unknown packet code" << std::endl;
-                    break;
                 }
-            }
-            else
-                ;
-            break;
-        case sf::Socket::NotReady:
-            //std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
-            break;
-        case sf::Socket::Partial:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
-            break;
-        case sf::Socket::Disconnected:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
-            getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
-            must_be_destroyed = true;
-            break;
-        case sf::Socket::Error:
-            std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;
-            break;
+                else
+                    ;
+                break;
+            case sf::Socket::NotReady:
+                //std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
+                break;
+            case sf::Socket::Partial:
+                std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
+                break;
+            case sf::Socket::Disconnected:
+                std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
+                getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
+                must_be_destroyed = true;
+                break;
+            case sf::Socket::Error:
+                std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;
+                break;
         }
     }
 }
@@ -545,7 +601,7 @@ void GameState::processPacketQueue()
         }
         else if (auto rq = request_queue.tryPop<SendChunkRequest>())
         {
-            test_world.addChunk(rq->data_packet);
+            test_world.addChunk(rq->pos, (const char*)rq->chunk_data.data(), rq->chunk_data.size());
         }
         else if (auto rq = request_queue.tryPop<EntityActionRequest>())
         {
@@ -576,7 +632,7 @@ void GameState::processPacketQueue()
         else if (auto rq = request_queue.tryPop<InventoryUpdateRequest>())
         {
             if (Player::this_player)
-                Player::this_player->getInventory().takeInventoryUpdatePacket(rq->data_packet);
+                Player::this_player->getInventory().handleInventoryUpdateRequest(rq.value());
         }
         else
         {

@@ -49,6 +49,8 @@ if (NOT BUILD_SERVER)
         ${CLIENT_SRCS}
         ${COMMON_SRCS}
         external/xxhash/XXHash.cc
+        external/fmt/src/os.cc
+        external/fmt/src/format.cc
     )
     add_definitions(-DCLIENT_SIDE)
 else()
@@ -56,14 +58,14 @@ else()
         ${SERVER_SRCS}
         ${COMMON_SRCS}
         external/xxhash/XXHash.cc
+        external/fmt/src/os.cc
+        external/fmt/src/format.cc
     )
 endif()
 
-add_subdirectory(external/fmt)
-
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
 
-target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network fmt)
+target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network)
 
 if (NOT BUILD_SERVER)
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bld-client")

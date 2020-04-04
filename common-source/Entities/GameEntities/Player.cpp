@@ -7,18 +7,18 @@
 #include "../../Networking/NetworkingCodes.h"
 
 #ifdef CLIENT_SIDE
-    #include "../../../client-source/Game.h"
-    #include "../../../client-source/World/World.h"
-    #include "../../../client-source/States/GameState.h"
+#include "../../../client-source/Game.h"
+#include "../../../client-source/World/World.h"
+#include "../../../client-source/States/GameState.h"
 
-    #include "../../../client-source/Packets/WalkPacket.h"
+#include "../../../client-source/Packets/WalkPacket.h"
 #else
-    #include "../../../server-source/World/World.h"
-    #include "../../../server-source/Server/Client.h"
-    #include "../../../server-source/Packets/PlayerRectificationPacket.h"
-    #include "../../../server-source/Packets/FullInventoryPacket.h"
-    #include "../../../server-source/Server/Server.h"
-    #include <cstdio>
+#include "../../../server-source/World/World.h"
+#include "../../../server-source/Server/Client.h"
+#include "../../../server-source/Packets/PlayerRectificationPacket.h"
+#include "../../../server-source/Packets/FullInventoryPacket.h"
+#include "../../../server-source/Server/Server.h"
+#include <cstdio>
 #endif
 
 #include "../../Blocks/GameBlocks.h"
@@ -30,8 +30,8 @@ unsigned int Player::this_player_id = 0;
 Player* Player::this_player = nullptr;
 
 Player::Player(World& world, unsigned int id) :
-    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-    inventory(*this, world.getState())
+      LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
+      inventory(*this, world.getState())
 {
     if (Player::this_player_id == id)
         Player::this_player = this;
@@ -51,9 +51,9 @@ Player::Player(World& world, unsigned int id) :
 }
 #else
 Player::Player(World& world, unsigned int id, const Client& client) :
-    LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-    inventory(*this, world.getServer()),
-    client(client)
+      LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
+      inventory(*this, world.getServer()),
+      client(client)
 {
     for (uint32_t& color : outfit_colors)
         color = ((std::rand() & 0xFF) << 24) | ((std::rand() & 0xFF) << 16) | ((std::rand() & 0xFF) << 8) | 0xFF;
@@ -67,7 +67,7 @@ Player::~Player()
 
 void Player::update(float delta)
 {
-    #ifdef CLIENT_SIDE
+#ifdef CLIENT_SIDE
     if (getId() == Player::this_player_id)
     {
         sf::Vector2f dir;
@@ -75,7 +75,7 @@ void Player::update(float delta)
         if (getWorld().getGame().getWindow().hasFocus())
         {
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
-            dir += sf::Vector2f(0, -1.f);
+                dir += sf::Vector2f(0, -1.f);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
                 dir += sf::Vector2f(-1.f, 0);
             if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
@@ -119,9 +119,9 @@ void Player::update(float delta)
     shoes.setTextureRect(getCurrentTextureRect());
 
     shadow.setPosition(position);
-    #else
+#else
     walk(delta);
-    #endif // CLIENT_SIDE
+#endif // CLIENT_SIDE
 }
 
 #ifdef CLIENT_SIDE
@@ -160,62 +160,35 @@ bool Player::takeNewEntityPacket(ECCPacket& packet)
     return true;
 }
 #else
-void Player::takePlayerActionPacket(ECCPacket& packet)
+void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionRequest& rq)
 {
-    int action; packet >> action;
-
-    if (!packet)
+    switch (rq.type)
     {
-        std::cerr << "Could not read playerAction, packet too short" << std::endl;
-        return;
-    }
-
-    switch (action)
-    {
-    case EntityActions::CtoS::Walk:
+        case EntityActions::CtoS::Walk:
         {
-            sf::Vector2f mov, pos;
+            sf::Vector2f walk_pos(rq.walk_pos_x, rq.walk_pos_y);
+            sf::Vector2f walk_mov(rq.walk_mov_x, rq.walk_mov_y);
 
-            packet >> mov.x >> mov.y;
-            packet >> pos.x >> pos.y;
+            sf::Vector2f diff = walk_pos - position;
 
-            if (!packet)
-            {
-                std::cerr << "Could not read playerAction, packet too short" << std::endl;
-                break;
-            }
-
-            sf::Vector2f diff = pos - position;
-
-            setWalkingDirection(mov);
+            setWalkingDirection(walk_mov);
 
             if (diff.x * diff.x + diff.y * diff.y >= 1.f)
             {
                 PlayerRectificationPacket rectification(position);
                 client.send(rectification);
             }
-            else
-                if (canBeHere(pos))
-                    position = pos;
+            else if (canBeHere(walk_pos))
+                position = walk_pos;
         }
         break;
 
-    case EntityActions::CtoS::UseItem:
+        case EntityActions::CtoS::UseItem:
         {
-            sf::Vector2i pos;
-            uint32_t item_in_hand;
-
-            packet >> pos.x >> pos.y;
-            packet >> item_in_hand;
-
-            if (!packet)
-            {
-                std::cerr << "Could not read playerAction, packet too short" << std::endl;
-                break;
-            }
+            sf::Vector2i item_pos(rq.item_pos_x, rq.item_pos_y);
 
             {
-                ItemStack hand(item_in_hand, getWorld().getServer().getItemsRegister());
+                ItemStack hand(rq.item_in_hand, getWorld().getServer().getItemsRegister());
 
                 if (hand.getItem() != inventory.contents.at(0).getItem())
                 {
@@ -240,52 +213,32 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
                 }
             }
 
-            if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
+            if (!isSubscribedTo(World::getChunkPosFromBlockPos(item_pos)))
                 break;
 
-            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
+            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), item_pos, *this);
         }
         break;
 
-    case EntityActions::CtoS::BreakBlock:
+        case EntityActions::CtoS::BreakBlock:
         {
-            sf::Vector2i pos;
-
-            packet >> pos.x >> pos.y;
-
-            if (!packet)
-            {
-                std::cerr << "Could not read playerAction, packet too short" << std::endl;
-                break;
-            }
-
-            if (!isSubscribedTo(World::getChunkPosFromBlockPos(pos)))
+            if (!isSubscribedTo(World::getChunkPosFromBlockPos(rq.break_block_pos)))
                 break;
 
-            auto drops = getWorld().getBlock(pos)->getDrops();
+            auto drops = getWorld().getBlock(rq.break_block_pos)->getDrops();
 
             for (ItemStack& stack : drops)
                 inventory.insertItemStack(stack);
 
-            getWorld().setBlock(pos, GameBlocks::AIR);
+            getWorld().setBlock(rq.break_block_pos, GameBlocks::AIR);
         }
         break;
 
-    case EntityActions::CtoS::SwapInventoryItem:
+        case EntityActions::CtoS::SwapInventoryItem:
         {
-            int pos;
-            uint32_t hand_item, slot_item;
-
-            packet >> pos;
-            packet >> hand_item;
-            packet >> slot_item;
-
-            if (!packet)
-                break;
-
-            if (inventory.contents.at(0).getInt() != hand_item || inventory.contents.at(pos).getInt() != slot_item)
+            if (inventory.contents.at(0).getInt() != rq.hand_item || inventory.contents.at(rq.item_swap_pos).getInt() != rq.slot_item)
             {
-                if (inventory.contents.at(0).getInt() == slot_item && inventory.contents.at(pos).getInt() == hand_item)
+                if (inventory.contents.at(0).getInt() == rq.slot_item && inventory.contents.at(rq.item_swap_pos).getInt() == rq.hand_item)
                     break;
 
                 FullInventoryPacket fip(inventory);
@@ -293,13 +246,13 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
                 break;
             }
 
-            inventory.swapHands(pos);
+            inventory.swapHands(rq.item_swap_pos);
         }
         break;
 
-    default:
-        std::cerr << "Could not read playerAction, action code unknown" << std::endl;
-        break;
+        default:
+            std::cerr << "Could not read playerAction, action code unknown" << std::endl;
+            break;
     }
 }
 

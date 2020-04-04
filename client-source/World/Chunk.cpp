@@ -10,7 +10,7 @@
 
 const int Chunk::CHUNK_SIZE = 16;
 
-Chunk::Chunk(World& world, sf::Vector2i pos, ECCPacket& packet, bool& success) :
+Chunk::Chunk(World& world, sf::Vector2i pos, const char* chunk_data, unsigned chunk_data_size, bool& success) :
     blocks(CHUNK_SIZE*CHUNK_SIZE, 0),
     grounds(CHUNK_SIZE*CHUNK_SIZE, 0),
     tile_entities(CHUNK_SIZE*CHUNK_SIZE, nullptr),
@@ -23,17 +23,15 @@ Chunk::Chunk(World& world, sf::Vector2i pos, ECCPacket& packet, bool& success) :
 {
     size_t header_size = sizeof(int) * 3;
 
-    if (packet.getDataSize() < getChunkDataSize() + header_size)
+    if (chunk_data_size < getChunkDataSize() + header_size)
     {
         success = false;
         return;
     }
 
-    const char* data = (const char*)packet.getData();
-
     //Copying data
-    memcpy(blocks.data(), data + header_size, blocks.size()*sizeof(blocks[0]));
-    memcpy(grounds.data(), data + header_size + blocks.size()*sizeof(blocks[0]), grounds.size()*sizeof(grounds[0]));
+    memcpy(blocks.data(), chunk_data + header_size, blocks.size()*sizeof(blocks[0]));
+    memcpy(grounds.data(), chunk_data + header_size + blocks.size()*sizeof(blocks[0]), grounds.size()*sizeof(grounds[0]));
 
 
     //Prepare vertices

@@ -21,7 +21,7 @@ class Chunk
 
         static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
 
-        Chunk(World& world, sf::Vector2i pos, ECCPacket& packet, bool& success);
+        Chunk(World& world, sf::Vector2i pos, const char *chunk_data, unsigned chunk_data_size, bool& success);
         ~Chunk();
 
         inline Game& getGame() const { return game; }

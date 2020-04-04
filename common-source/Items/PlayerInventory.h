@@ -2,6 +2,9 @@
 
 #include "ItemStack.h"
 #include "../Networking/ECCPacket.h"
+#ifdef CLIENT_SIDE
+#include "../Networking/ServerToClientRequests.h"
+#endif
 
 #include <array>
 
@@ -35,7 +38,7 @@ class PlayerInventory
         void swapHands(int pos);
 
         #ifdef CLIENT_SIDE
-        bool takeInventoryUpdatePacket(ECCPacket& packet);
+        bool handleInventoryUpdateRequest(const Networking::StoC::InventoryUpdateRequest &rq);
         #endif // CLIENT_SIDE
 
     protected:

@@ -6,6 +6,7 @@
     #include "../../../client-source/Utils/Animation.h"
 #else
     class Client;
+#include "../../../common-source/Networking/ClientToServerRequests.h"
 #endif // CLIENT_SIDE
 
 #include "../../Items/playerInventory.h"
@@ -37,7 +38,7 @@ class Player : public LivingEntity
 
         bool takeNewEntityPacket(ECCPacket& packet) override;
         #else
-        void takePlayerActionPacket(ECCPacket& packet);
+        void handlePlayerActionRequest(const Networking::CtoS::PlayerActionRequest& rq);
 
         inline const Client& getClient() const { return client; }
 

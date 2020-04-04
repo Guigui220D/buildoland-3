@@ -18,7 +18,7 @@ class ClientsManager
          * @param client : the ip and port of the client
          * @return True if the ip and port has a corresponding client object
          */
-        inline bool isConnected(IpAndPort client) const { sf::Lock l(clients_mutex); return clients.find(client) != clients.cend(); }
+        inline bool isConnected(IpAndPort client) const { return clients.find(client) != clients.cend(); }
 
         /**
          * Creates a client object for the client and adds it to the map
@@ -60,8 +60,6 @@ class ClientsManager
          * @param packet : the packet to send
          */
         void sendToAll(ECCPacket& packet);
-
-        mutable sf::Mutex clients_mutex;
 
         inline std::map<IpAndPort, std::unique_ptr<Client>>::const_iterator
             getClientsBegin() const { return clients.cbegin(); }

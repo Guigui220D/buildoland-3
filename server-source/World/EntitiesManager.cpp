@@ -24,8 +24,6 @@ EntitiesManager::~EntitiesManager()
 
 void EntitiesManager::updateAll(float delta)
 {
-    entities_mutex.lock();
-
     for (auto i = entities.begin(); i != entities.end();)
     {
         if (i->second->to_be_removed)
@@ -42,13 +40,10 @@ void EntitiesManager::updateAll(float delta)
 
     for (auto i = entities.begin(); i != entities.end(); i++)
         i->second->updateBase(delta);
-    entities_mutex.unlock();
 }
 
 bool EntitiesManager::newEntity(Entity* entity, bool declare)
 {
-    sf::Lock lock(entities_mutex);
-
     if (entities.find(entity->getId()) != entities.cend())
     {
         delete entity;
@@ -71,8 +66,6 @@ bool EntitiesManager::newEntity(Entity* entity, bool declare)
 
 void EntitiesManager::removeEntity(unsigned int id)
 {
-    sf::Lock lock(entities_mutex);
-
     if (entities.find(id) != entities.cend())
         entities.erase(entities.find(id));
 
@@ -82,8 +75,6 @@ void EntitiesManager::removeEntity(unsigned int id)
 
 void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos, const Client& client)
 {
-    sf::Lock lock(entities_mutex);
-
     ECCPacket packet;
     for (auto i = entities.begin(); i != entities.end(); i++)
     {
@@ -99,8 +90,6 @@ void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos
 
 void EntitiesManager::sendAddEntityToClient(unsigned int id, const Client& client)
 {
-    sf::Lock lock(entities_mutex);
-
     auto i = entities.find(id);
     if (i == entities.end())
         return;

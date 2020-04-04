@@ -31,15 +31,12 @@ EntitiesManager::EntitiesManager(World& world) :
 
 EntitiesManager::~EntitiesManager()
 {
-    entities_mutex.lock();
     for (Entity*& entity : entities_vector)
         delete entity;
-    entities_mutex.unlock();
 }
 
 void EntitiesManager::updateAll(float delta)
 {
-    entities_mutex.lock();
     for (auto i = entities_vector.begin(); i != entities_vector.end();)
     {
         if ((*i)->to_be_removed)
@@ -57,32 +54,27 @@ void EntitiesManager::updateAll(float delta)
 
     for (Entity*& entity : entities_vector)
         entity->updateBase(delta);
-
-    entities_mutex.unlock();
 }
 
 void EntitiesManager::drawAll(sf::RenderTarget& target) const
 {
-    entities_mutex.lock();
     //Sorting the entities by y position
     std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::compareY);
 
     for (Entity*& entity : entities_vector)
         entity->draw(target);
-    entities_mutex.unlock();
 }
 
 void EntitiesManager::drawAllAbove(sf::RenderTarget& target) const
 {
-    entities_mutex.lock();
+    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::compareY);
+
     for (Entity*& entity : entities_vector)
         entity->drawAbove(target);
-    entities_mutex.unlock();
 }
 
 Entity* EntitiesManager::getEntity(unsigned int id)
 {
-    sf::Lock lock(entities_mutex);
     auto i = entities_map.find(id);
     return (i != entities_map.end() ? i->second : nullptr);
 }
@@ -185,8 +177,6 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
     new_entity->takeNewEntityPacket(packet);
 
-    sf::Lock lock(entities_mutex);
-
     auto ent_i = entities_map.find(entity_id);
 
     if (ent_i != entities_map.cend())
@@ -215,8 +205,6 @@ void EntitiesManager::removeEntity(ECCPacket& packet)
 
     if (entity_id == Player::this_player_id)
         return;
-
-    sf::Lock lock(entities_mutex);
 
     auto map_i = entities_map.find(entity_id);
     if (map_i == entities_map.end())
@@ -263,15 +251,11 @@ bool EntitiesManager::doEntityAction(ECCPacket& packet)
         return false;
     }
 
-    sf::Lock lock(entities_mutex);
-
     return en->takePacket(packet);
 }
 
 void EntitiesManager::declareNewChunkForTileEntities(Chunk* new_chunk)
 {
-    entities_mutex.lock();
-
     for (Entity*& entity : entities_vector)
     {
         if (entity->isTileEntity())
@@ -282,6 +266,4 @@ void EntitiesManager::declareNewChunkForTileEntities(Chunk* new_chunk)
                 te->assignChunk(new_chunk);
         }
     }
-
-    entities_mutex.unlock();
 }

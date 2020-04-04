@@ -6,6 +6,8 @@
 
 #include "../World/World.h"
 
+#include "../../common-source/Networking/ClientToServerRequests.h"
+#include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Items/ItemsRegister.h"
 
 #include "ClientsManager.h"
@@ -54,7 +56,9 @@ class Server
         sf::Clock timeout_checks;
 
         void receiver();
+        void processPacketQueue();
         sf::Thread receiver_thread;
+        Networking::CtoS::CtoSRequestQueue request_queue;
 
         std::atomic<bool> running;
         /**
@@ -64,7 +68,7 @@ class Server
 
         IpAndPort owner;
 
-        std::atomic<bool> connection_open;
+        bool connection_open;
 
         GameBlocks blocks_manager;
         GameGrounds grounds_manager;

@@ -19,7 +19,7 @@
 
 Server::Server(uint16_t client_port) :
     clients_manager(*this),
-    receiver_thread(Server::receiver, this),
+      receiver_thread(&Server::receiver, this),
     owner(sf::IpAddress::LocalHost, client_port),
     connection_open(false),
     blocks_manager(),
@@ -111,23 +111,7 @@ void Server::run()
             clients_manager.doTimeOuts(10.f);
         }
 
-        //Answer chunk requests
-        clients_manager.clients_mutex.lock();
-        for (auto i = clients_manager.getClientsBegin(); i != clients_manager.getClientsEnd(); i++)
-        {
-            if (i->second->hasRequestedChunks())
-            {
-                sf::Vector2i pos = i->second->getNextRequestedChunk();
-
-                if (!i->second->hasPlayer() || i->second->getPlayer()->isSubscribedTo(pos, true))
-                {
-                    ECCPacket p = world.getChunk(pos).getPacket();
-                    server_socket.send(p, i->first.address, i->first.port);
-                    world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(pos, *(i->second));
-                }
-            }
-        }
-        clients_manager.clients_mutex.unlock();
+        processPacketQueue();
 
         //Update entities
         world.getEntityManager().updateAll(delta);
@@ -169,101 +153,37 @@ void Server::receiver()
             {
                 IpAndPort iandp(address, port);
 
-                clients_manager.resetClientTimer(iandp);
-
                 int code; packet >> code;
 
                 switch (code)
                 {
-                case Networking::CtoS::KeepAlive: break;
-
+                case Networking::CtoS::KeepAlive:
+                    request_queue.pushRequest(Networking::CtoS::KeepAliveRequest{iandp});
+                    break;
                 case Networking::CtoS::Disconnect:
-                    #ifdef SOLO
-                        if (address == owner.address && port == owner.port)
-                        {
-                            std::cout << "Received disconnect message from owner, server will stop." << std::endl;
-                            running = false;
-                            break;
-                        }
-                        else
-                    #endif // SOLO
-                    {
-                        std::cout << "Disconnecting player." << std::endl;
-
-                        if (!clients_manager.isConnected(iandp))
-                            break;
-
-                        Client& client = clients_manager.getClient(iandp);
-                        if (client.hasPlayer())
-                        {
-                            world.getEntityManager().removeEntity(client.getPlayer()->getId());
-                            client.setPlayer(nullptr);
-                        }
-
-                        clients_manager.removeClient(iandp);
-                        std::cout << "Player disconnected." << std::endl;
-                    }
+                    request_queue.pushRequest(Networking::CtoS::DisconnectRequest{iandp});
                     break;
                 case Networking::CtoS::RequestConnection:
-
-                    std::clog << "Connection requested" << std::endl;
-
-                    if (!connection_open)
-                        break;
-                    if (clients_manager.isConnected(iandp))
-                        break;
-
-                    std::clog << "Connection accepted" << std::endl;
-                    {
-                        unsigned int player_id = world.getEntityManager().getNextEntityId();
-
-                        clients_manager.addClient(iandp);
-                        Player* new_player = new Player(world, player_id, clients_manager.getClient(iandp));
-                        clients_manager.getClient(iandp).setPlayer(new_player);
-
-                        HandshakePacket handshake(world.getGenerator()->getSeed(), player_id);
-                        server_socket.send(handshake, address, port);
-
-                        world.getEntityManager().newEntity(new_player);
-                    }
-                    std::clog << "New player added!" << std::endl;
+                    request_queue.pushRequest(Networking::CtoS::ConnectionRequest{iandp});
                     break;
                 case Networking::CtoS::RequestChunk:
                     {
-                        if (!clients_manager.isConnected(iandp))
-                            break;
-
                         sf::Vector2i pos;
                         packet >> pos.x;
                         packet >> pos.y;
 
-                        //std::clog << "Adding chunk request" << std::endl;
-
-                        clients_manager.getClient(iandp).addRequestedChunk(pos);
+                        request_queue.pushRequest(Networking::CtoS::ChunkRequest{iandp, pos});
                     }
                     break;
                 case Networking::CtoS::RequestEntityInfo:
                     {
-                        if (!clients_manager.isConnected(iandp))
-                            break;
-
                         unsigned int id; packet >> id;
 
-                        world.getEntityManager().sendAddEntityToClient(id, clients_manager.getClient(iandp));
-                    }
+                        request_queue.pushRequest(Networking::CtoS::EntityRequest{iandp, id});
+                }
                     break;
                 case Networking::CtoS::PlayerAction:
-                    {
-                        if (!clients_manager.isConnected(iandp))
-                            break;
-
-                        Client& client = clients_manager.getClient(iandp);
-
-                        if (!client.hasPlayer())
-                            break;
-
-                        client.getPlayer()->takePlayerActionPacket(packet);
-                    }
+                    request_queue.pushRequest(Networking::CtoS::PlayerActionRequest{iandp, packet});
                     break;
 
                 default:
@@ -282,6 +202,119 @@ void Server::receiver()
             //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
             break;
         }
+    }
+}
+
+void Server::processPacketQueue()
+{
+    using namespace Networking::CtoS;
+
+    while (!request_queue.empty())
+    {
+        if (auto rq = request_queue.tryPop<KeepAliveRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+        }
+        else if (auto rq = request_queue.tryPop<DisconnectRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+
+#ifdef SOLO
+            if (address == owner.address && port == owner.port)
+            {
+                std::cout << "Received disconnect message from owner, server will stop." << std::endl;
+                running = false;
+                break;
+            }
+            else
+#endif // SOLO
+            {
+                std::cout << "Disconnecting player." << std::endl;
+
+                if (!clients_manager.isConnected(rq->iandp))
+                    goto loop;
+
+                Client& client = clients_manager.getClient(rq->iandp);
+                if (client.hasPlayer())
+                {
+                    world.getEntityManager().removeEntity(client.getPlayer()->getId());
+                    client.setPlayer(nullptr);
+                }
+
+                clients_manager.removeClient(rq->iandp);
+                std::cout << "Player disconnected." << std::endl;
+            }
+        }
+        else if (auto rq = request_queue.tryPop<ConnectionRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+
+            std::clog << "Connection requested" << std::endl;
+
+            if (!connection_open)
+                goto loop;
+            if (clients_manager.isConnected(rq->iandp))
+                goto loop;
+
+            std::clog << "Connection accepted" << std::endl;
+            {
+                unsigned int player_id = world.getEntityManager().getNextEntityId();
+
+                clients_manager.addClient(rq->iandp);
+                Player* new_player = new Player(world, player_id, clients_manager.getClient(rq->iandp));
+                clients_manager.getClient(rq->iandp).setPlayer(new_player);
+
+                HandshakePacket handshake(world.getGenerator()->getSeed(), player_id);
+                server_socket.send(handshake, rq->iandp.address, rq->iandp.port);
+
+                world.getEntityManager().newEntity(new_player);
+            }
+            std::clog << "New player added!" << std::endl;
+        }
+        else if (auto rq = request_queue.tryPop<ChunkRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+
+            if (!clients_manager.isConnected(rq->iandp))
+                goto loop;
+
+            //std::clog << "Adding chunk request" << std::endl;
+
+            ECCPacket p = world.getChunk(rq->pos).getPacket();
+            server_socket.send(p, rq->iandp.address, rq->iandp.port);
+            world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
+        }
+        else if (auto rq = request_queue.tryPop<EntityRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+
+            if (!clients_manager.isConnected(rq->iandp))
+                break;
+
+            world.getEntityManager().sendAddEntityToClient(rq->id, clients_manager.getClient(rq->iandp));
+        }
+        else if (auto rq = request_queue.tryPop<PlayerActionRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+
+            if (!clients_manager.isConnected(rq->iandp))
+                goto loop;
+
+            Client& client = clients_manager.getClient(rq->iandp);
+
+            if (!client.hasPlayer())
+                goto loop;
+
+            client.getPlayer()->takePlayerActionPacket(rq->data_packet);
+        }
+        else
+        {
+            std::cerr << "Uknkown CtoS packet request type; ignoring\n";
+            request_queue.skip();
+        }
+
+        loop:
+        ;
     }
 }
 

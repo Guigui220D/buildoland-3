@@ -1,8 +1,5 @@
 #ifndef NETWORKREQUESTQUEUE_H
 #define NETWORKREQUESTQUEUE_H
-
-#ifndef NETWORKREQUESTQUEUE_H
-#define NETWORKREQUESTQUEUE_H
 #include <type_traits>
 #include <typeindex>
 #include <cstddef>
@@ -105,6 +102,14 @@ public:
         return std::move(*reinterpret_cast<T*>(&entry.data));
     }
 
+    void skip()
+    {
+        sf::Lock lock(mutex);
+        assert(!empty());
+
+        request_queue.pop();
+    }
+
     bool empty() const
     {
         sf::Lock lock(mutex);
@@ -112,8 +117,5 @@ public:
         return request_queue.empty();
     }
 };
-
-#endif // NETWORKREQUESTQUEUE_H
-
 
 #endif // NETWORKREQUESTQUEUE_H

@@ -17,8 +17,6 @@ ClientsManager::~ClientsManager()
 
 bool ClientsManager::addClient(IpAndPort& client, Player* player)
 {
-    sf::Lock l(clients_mutex);
-
     if (clients.find(client) != clients.end())
         return false;
 
@@ -29,8 +27,6 @@ bool ClientsManager::addClient(IpAndPort& client, Player* player)
 
 void ClientsManager::removeClient(IpAndPort& client)
 {
-    sf::Lock l(clients_mutex);
-
     auto i = clients.find(client);
 
     if (i == clients.cend())
@@ -43,8 +39,6 @@ void ClientsManager::removeClient(IpAndPort& client)
 
 Client& ClientsManager::getClient(IpAndPort& client) const
 {
-    sf::Lock l(clients_mutex);
-
     auto i = clients.find(client);
 
     if (i == clients.end())
@@ -55,8 +49,6 @@ Client& ClientsManager::getClient(IpAndPort& client) const
 
 void ClientsManager::resetClientTimer(IpAndPort& client)
 {
-    sf::Lock l(clients_mutex);
-
     if (clients.find(client) == clients.end())
         return;
 
@@ -66,8 +58,6 @@ void ClientsManager::resetClientTimer(IpAndPort& client)
 int ClientsManager::doTimeOuts(float timeout_s)
 {
     int yeet_count = 0;
-
-    sf::Lock l(clients_mutex);
 
     for (auto i = clients.begin(); i != clients.end(); )
     {
@@ -105,8 +95,6 @@ int ClientsManager::doTimeOuts(float timeout_s)
 
 void ClientsManager::sendToAll(ECCPacket& packet)
 {
-    sf::Lock l(clients_mutex);
-
     for (auto i = clients.begin(); i != clients.end(); i++)
         i->second->send(packet);
 }

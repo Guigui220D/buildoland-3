@@ -192,5 +192,4 @@ class World
         std::vector<Chunk*> chunks_to_add;
         std::unordered_map<uint64_t, sf::Clock> pending_chunk_requests;
         sf::Vector2i player_chunk_pos;
-        sf::Mutex chunks_to_add_mutex;
 };

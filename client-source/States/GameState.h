@@ -5,6 +5,8 @@
 #include <SFML/Network.hpp>
 
 #include "../World/World.h"
+#include "../Networking/NetworkRequestQueue.h"
+#include "../Networking/ServerToClientRequests.h"
 
 class GameState : public State
 {
@@ -38,8 +40,10 @@ class GameState : public State
         uint16_t remote_port;
         sf::Clock heartbeat_clock;
 
+        Networking::StoC::StoCRequestQueue request_queue;
         sf::Thread receiver_thread;
         void receiverLoop();
+        void processPacketQueue();
 
         //World
         World test_world;

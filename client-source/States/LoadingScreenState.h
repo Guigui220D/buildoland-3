@@ -36,8 +36,7 @@ class LoadingScreenState : public State
         void load();
         sf::Thread loading_thread;
 
-        sf::Mutex done_mutex;
-        bool done = false;
+        std::atomic<bool> done = false;
         bool working = false;
         sf::Clock working_time;
 

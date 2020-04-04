@@ -46,23 +46,6 @@ class Client
 
         inline const IpAndPort& getIpAndPort() const { return ip_and_port; }
 
-        inline bool hasRequestedChunks() const
-        {
-            sf::Lock lock(chunk_requests_mutex);
-            return !chunk_requests.empty();
-        }
-        /**
-         * Pops a value from the requested chunks queue of that client
-         * It must not be empty (check with hasRequestedChunks)
-         * @return A chunk request position
-         */
-        sf::Vector2i getNextRequestedChunk();
-        /**
-         * Adds a chunk request position to that client's queue
-         * @param chunk : the chunk position
-         */
-        void addRequestedChunk(sf::Vector2i chunk);
-
         inline bool hasPlayer() const { return player; }
         inline Player* getPlayer() const { return player; }
         inline void setPlayer(Player* new_player) { player =  new_player; }
@@ -78,9 +61,6 @@ class Client
 
     protected:
         IpAndPort ip_and_port;
-
-        std::vector<sf::Vector2i> chunk_requests;
-        mutable sf::Mutex chunk_requests_mutex;
 
         Player* player;
 

@@ -187,6 +187,8 @@ void GameState::update(float delta_time)
         anim_frame = (anim_frame + 1) % 4;
     }
 
+    processPacketQueue();
+
     test_world.updateLoadedChunk(delta_time);
 
     entities.updateAll(delta_time);
@@ -438,18 +440,15 @@ void GameState::receiverLoop()
                 switch (code)
                 {
                 case Networking::StoC::Disconnect:
-                    std::clog << "Received disconnect code from server." << std::endl;
-                    getGame().addStateOnTop(new ErrorState(getGame(), 0, "DISCONNECTED_BY_SERVER"));
-                    must_be_destroyed = true;
+                    request_queue.pushRequest(Networking::StoC::DisconnectRequest{});
                     break;
 
                 case Networking::StoC::SendChunk:
-                    test_world.addChunk(packet);
+                    request_queue.pushRequest(Networking::StoC::SendChunkRequest{packet});
                     break;
 
                 case Networking::StoC::EntityAction:
-                    if (!entities.readEntityPacket(packet))
-                        std::cerr << "Entity packet could not be read." << std::endl;
+                    request_queue.pushRequest(Networking::StoC::EntityActionRequest{packet});
                     break;
 
                 case Networking::StoC::BlockUpdate:
@@ -466,13 +465,7 @@ void GameState::receiverLoop()
                             break;
                         }
 
-                        sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
-                        if (test_world.isChunkLoaded(chunk))
-                        {
-                            test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(pos), getGame().getBlocksManager().getBlockByID(id));
-                        }
-
-                        //std::cout << "Block update at " << pos.y << "; " << pos.y << " | New ID is " << id << std::endl;
+                        request_queue.pushRequest(Networking::StoC::BlockUpdateRequest{pos, id});
                     }
                     break;
 
@@ -490,11 +483,7 @@ void GameState::receiverLoop()
                             break;
                         }
 
-                        sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
-                        if (test_world.isChunkLoaded(chunk))
-                        {
-                            test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(pos), getGame().getGroundsManager().getGroundByID(id));
-                        }
+                        request_queue.pushRequest(Networking::StoC::GroundUpdateRequest{pos, id});
                     }
                     break;
 
@@ -506,19 +495,13 @@ void GameState::receiverLoop()
                         if (!packet)
                             break;
 
-                        if (!Player::this_player)
-                            break;
-
-                        Player::this_player->setPosition(pos);
+                        request_queue.pushRequest(Networking::StoC::PlayerRectificationRequest{pos});
                     }
                     break;
 
                 case Networking::StoC::InventoryUpdate:
                     {
-                        if (!Player::this_player)
-                            break;
-
-                        Player::this_player->getInventory().takeInventoryUpdatePacket(packet);
+                        request_queue.pushRequest(Networking::StoC::InventoryUpdateRequest{packet});
                     }
                     break;
 
@@ -544,6 +527,61 @@ void GameState::receiverLoop()
         case sf::Socket::Error:
             std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;
             break;
+        }
+    }
+}
+
+void GameState::processPacketQueue()
+{
+    using namespace Networking::StoC;
+
+    while (!request_queue.empty())
+    {
+        if (auto rq = request_queue.tryPop<DisconnectRequest>())
+        {
+            std::clog << "Received disconnect code from server." << std::endl;
+            getGame().addStateOnTop(new ErrorState(getGame(), 0, "DISCONNECTED_BY_SERVER"));
+            must_be_destroyed = true;
+        }
+        else if (auto rq = request_queue.tryPop<SendChunkRequest>())
+        {
+            test_world.addChunk(rq->data_packet);
+        }
+        else if (auto rq = request_queue.tryPop<EntityActionRequest>())
+        {
+            if (!entities.readEntityPacket(rq->data_packet))
+                std::cerr << "Entity packet could not be read." << std::endl;
+        }
+        else if (auto rq = request_queue.tryPop<BlockUpdateRequest>())
+        {
+            sf::Vector2i chunk = World::getChunkPosFromBlockPos(rq->pos);
+            if (test_world.isChunkLoaded(chunk))
+            {
+                test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(rq->pos), getGame().getBlocksManager().getBlockByID(rq->id));
+            }
+        }
+        else if (auto rq = request_queue.tryPop<GroundUpdateRequest>())
+        {
+            sf::Vector2i chunk = World::getChunkPosFromBlockPos(rq->pos);
+            if (test_world.isChunkLoaded(chunk))
+            {
+                test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(rq->pos), getGame().getGroundsManager().getGroundByID(rq->id));
+            }
+        }
+        else if (auto rq = request_queue.tryPop<PlayerRectificationRequest>())
+        {
+            if (Player::this_player)
+                Player::this_player->setPosition(rq->pos);
+        }
+        else if (auto rq = request_queue.tryPop<InventoryUpdateRequest>())
+        {
+            if (Player::this_player)
+                Player::this_player->getInventory().takeInventoryUpdatePacket(rq->data_packet);
+        }
+        else
+        {
+            std::cerr << "Uknkown StoC packet request type; ignoring\n";
+            request_queue.skip();
         }
     }
 }

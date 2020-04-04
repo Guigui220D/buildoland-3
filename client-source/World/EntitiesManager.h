@@ -51,9 +51,6 @@ class EntitiesManager
          */
         bool readEntityPacket(ECCPacket& packet);
 
-        //Just for when we add entities from an other thread
-        mutable sf::Mutex entities_mutex;
-
     private:
         World& world;
 
@@ -66,7 +63,8 @@ class EntitiesManager
         //Used for sorting entities
         inline static bool compareY(Entity* a, Entity* b)
         {
-            return a->getPosition().y < b->getPosition().y;
+            return (a->getPosition().y == b->getPosition().y) ? a->getPosition().x < b->getPosition().x
+                                                              : a->getPosition().y < b->getPosition().y;
         }
 
         /**

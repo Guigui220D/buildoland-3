@@ -43,7 +43,6 @@ World::~World()
 void World::updateLoadedChunk(float delta_time)
 {
     //Add chunks waiting to be added
-    chunks_to_add_mutex.lock();
     for (Chunk*& chunk : chunks_to_add)
     {
         uint64_t key = utils::combine(chunk->getPos().x, chunk->getPos().y);
@@ -52,7 +51,6 @@ void World::updateLoadedChunk(float delta_time)
         entities.declareNewChunkForTileEntities(chunk);
     }
     chunks_to_add.clear();
-    chunks_to_add_mutex.unlock();
 
     for (auto i = pending_chunk_requests.begin(); i != pending_chunk_requests.end();)
     {
@@ -83,7 +81,6 @@ void World::updateLoadedChunk(float delta_time)
         if (i->second->to_be_removed)
         {
             //Kills entities in that chunk
-            entities.entities_mutex.lock();
             for (auto& entity : entities.entities_map)
             {
                 if (entity.second->getId() == Player::this_player_id)
@@ -92,7 +89,6 @@ void World::updateLoadedChunk(float delta_time)
                 if (entity.second->getChunkOn() == i->second->getPos())
                     entity.second->to_be_removed = true;
             }
-            entities.entities_mutex.unlock();
 
             //Removes the chunk from the map
             i = chunks.erase(i);
@@ -149,9 +145,7 @@ bool World::addChunk(ECCPacket& packet)
     }
 
     //Add the new chunk!
-    chunks_to_add_mutex.lock();
     chunks_to_add.push_back(new_chunk);
-    chunks_to_add_mutex.unlock();
     return true;
 }
 
@@ -190,7 +184,6 @@ void World::updateChunks(sf::Vector2i center)
 {
     player_chunk_pos = center;
 
-    chunks_to_add_mutex.lock();
     for (auto& chunk : chunks)
     {
         sf::Vector2i diff = chunk.second->getPos() - center;
@@ -214,7 +207,6 @@ void World::updateChunks(sf::Vector2i center)
                 requestChunk(pos);
         }
     }
-    chunks_to_add_mutex.unlock();
 }
 
 uint16_t World::getBlockId(sf::Vector2i pos)

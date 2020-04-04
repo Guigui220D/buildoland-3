@@ -10,7 +10,7 @@ LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game& gam
     fade_in(fade_in),
     fade_out(fade_out),
     view(sf::Vector2f(.5f, .5f), sf::Vector2f(1.f, 1.f)),
-    loading_icon(game)
+      loading_icon(game), done(false)
 {
     update_transparent = false;
     draw_transparent = true;
@@ -36,9 +36,7 @@ void LoadingScreenState<T>::load()
     afterInitTask();
     state_being_loaded->updateView();
     //while (clk.getElapsedTime().asSeconds() < 2.f); //Lol, making fake loading time
-    done_mutex.lock();
     done = true;
-    done_mutex.unlock();
     return;
 }
 
@@ -57,7 +55,6 @@ bool LoadingScreenState<T>::handleEvent(sf::Event& event)
 template <class T>
 void LoadingScreenState<T>::update(float delta_time)
 {
-    done_mutex.lock();
     if (done)
     {
         if (working)
@@ -91,7 +88,7 @@ void LoadingScreenState<T>::update(float delta_time)
             }
         }
     }
-    done_mutex.unlock();
+
     background.setFillColor(sf::Color(0, 0, 0, fade));
     if (working)
         loading_icon.update(delta_time);

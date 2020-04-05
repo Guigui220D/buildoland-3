@@ -74,13 +74,13 @@ void Player::update(float delta)
 
         if (getWorld().getGame().getWindow().hasFocus())
         {
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Z) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up))
+            if (getWorld().getGame().getBindingsManager().held("move_up"))
                 dir += sf::Vector2f(0, -1.f);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::Q) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
+            if (getWorld().getGame().getBindingsManager().held("move_left"))
                 dir += sf::Vector2f(-1.f, 0);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down))
+            if (getWorld().getGame().getBindingsManager().held("move_down"))
                 dir += sf::Vector2f(0, 1.f);
-            if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right))
+            if (getWorld().getGame().getBindingsManager().held("move_right"))
                 dir += sf::Vector2f(1.f, 0);
         }
 

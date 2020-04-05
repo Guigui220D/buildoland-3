@@ -115,6 +115,10 @@ void GameState::init()
 
 bool GameState::handleEvent(sf::Event& event)
 {
+    if (getGame().getBindingsManager().pressed("inventory"))
+        if (Player::this_player)
+            getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
+
     switch (event.type)
     {
         case sf::Event::Resized:
@@ -165,9 +169,6 @@ bool GameState::handleEvent(sf::Event& event)
                     getGame().addStateOnTop(new ErrorState(getGame(), 0, "STATE_INTERRUPTED"));
                     must_be_destroyed = true;
                 }
-            if (event.key.code == sf::Keyboard::Space)
-                if (Player::this_player)
-                    getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
             break;
 
         default:

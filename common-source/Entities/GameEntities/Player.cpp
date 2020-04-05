@@ -237,6 +237,7 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
                     getClient().send(fip);
                     if (!has_item)
                         break;
+                    //std::clog << "TEST : Player used wrong item but that wasn't cheating, rectifying. " << std::endl;
                 }
             }
 
@@ -283,9 +284,12 @@ void Player::takePlayerActionPacket(ECCPacket& packet)
             if (!packet)
                 break;
 
-            if (inventory.contents.at(0).getInt() != hand_item || inventory.contents.at(pos).getInt() != slot_item)
+            ItemStack hand(hand_item, getWorld().getServer().getItemsRegister());
+            ItemStack slot(slot_item, getWorld().getServer().getItemsRegister());
+
+            if (inventory.contents.at(0).getItem() != hand.getItem() || inventory.contents.at(pos).getItem() != slot.getItem())
             {
-                if (inventory.contents.at(0).getInt() == slot_item && inventory.contents.at(pos).getInt() == hand_item)
+                if (inventory.contents.at(0).getItem() == slot.getItem() && inventory.contents.at(pos).getItem() == hand.getItem())
                     break;
 
                 FullInventoryPacket fip(inventory);

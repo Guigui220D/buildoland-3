@@ -31,9 +31,9 @@ void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
 {
     if (world.getGround(click_pos) == GameGrounds::DIRT)
     {
+        #ifndef CLIENT_SIDE
         stack.takeSome(1);
 
-        #ifndef CLIENT_SIDE
         world.setGround(click_pos, ground);
 
         InventorySetPacket set(0, stack.getInt());

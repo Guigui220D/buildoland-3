@@ -20,6 +20,7 @@ Game::~Game()
 int Game::init()
 {
     settings_manager.load();
+    bindings_manager.load();
 
     window.create(sf::VideoMode(settings_manager.getInt("window_size_x"), settings_manager.getInt("window_size_y")), "BuildOLand 3");
 
@@ -58,6 +59,8 @@ int Game::run()
         sf::Event e;
         while (window.pollEvent(e))
         {
+            bindings_manager.update(e);
+
             switch (e.type)
             {
             case sf::Event::Closed:
@@ -75,6 +78,7 @@ int Game::run()
                 }
                 break;
             }
+
         }
 
         update(clock.restart().asSeconds());

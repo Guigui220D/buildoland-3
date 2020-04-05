@@ -9,6 +9,7 @@
 
 #include "Settings/SettingsManager.h"
 #include "Settings/LanguageManager.h"
+#include "Settings/BindingsManager.h"
 #include "Res/ResourceManager.h"
 #include "Res/AudioManager.h"
 
@@ -64,6 +65,7 @@ class Game
 
         inline SettingsManager& getSettingsManager() { return settings_manager; }
         inline LanguageManager& getLanguageManager() { return language_manager; }
+        inline BindingsManager& getBindingsManager() { return bindings_manager; }
 
         inline void useDefaultView() { window.setView(default_view); }
 
@@ -78,6 +80,7 @@ class Game
 
         SettingsManager settings_manager;
         LanguageManager language_manager;
+        BindingsManager bindings_manager;
 
         GameBlocks game_blocks_manager;
         GameGrounds game_grounds_manager;

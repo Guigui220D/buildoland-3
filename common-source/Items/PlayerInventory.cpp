@@ -91,45 +91,27 @@ void PlayerInventory::swapHands(int pos)
 }
 
 #ifdef CLIENT_SIDE
-bool PlayerInventory::takeInventoryUpdatePacket(ECCPacket& packet)
+bool PlayerInventory::handleInventoryUpdateRequest(const Networking::StoC::InventoryUpdateRequest& rq)
 {
-    int type; packet >> type;
-
-    if (!packet)
-    {
-        std::cerr << "Could not read inventory update, packet too short to get type." << std::endl;
-        return false;
-    }
-
-
-    switch (type)
+    switch (rq.type)
     {
     case InventoryUpdates::StoC::AddStack:
         {
-            uint32_t itemstack; packet >> itemstack;
-            if (packet)
-            {
-                ItemStack stack(itemstack, game.getGame().getItemsRegister());
+                ItemStack stack(rq.stack_add, game.getGame().getItemsRegister());
                 //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
                 insertItemStack(stack);
-            }
         }
         //describe();
         return true;
     case InventoryUpdates::StoC::SetStack:
         {
-            unsigned int pos; packet >> pos;
-            uint32_t itemstack; packet >> itemstack;
-            if (packet)
-            {
-                if (pos >= contents.size())
-                    return false;
+            if (rq.pos >= contents.size())
+                return false;
 
-                ItemStack stack(itemstack, game.getGame().getItemsRegister());
-                //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+            ItemStack stack(rq.stack_set, game.getGame().getItemsRegister());
+            //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
 
-                contents.at(pos).swap(stack);
-            }
+            contents.at(rq.pos).swap(stack);
         }
         //describe();
         return true;
@@ -138,12 +120,7 @@ bool PlayerInventory::takeInventoryUpdatePacket(ECCPacket& packet)
         {
             for (int i = 0; i < 25; i++)
             {
-                uint32_t stack; packet >> stack;
-
-                if (!packet)
-                    return false;
-
-                ItemStack itemstack(stack, game.getGame().getItemsRegister());
+                ItemStack itemstack(rq.stack_list[i], game.getGame().getItemsRegister());
 
                 contents.at(i).swap(itemstack);
             }

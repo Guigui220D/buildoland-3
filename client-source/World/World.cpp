@@ -108,27 +108,8 @@ void World::updateLoadedChunk(float delta_time)
 
 }
 
-bool World::addChunk(ECCPacket& packet)
+bool World::addChunk(sf::Vector2i pos, const char* chunk_data, unsigned chunk_size)
 {
-    //We expect the packet to be of that size
-    //4 bytes per tile (2 for block and 2 for ground)
-    //8 bytes for the position
-    //2 bytes for the packet header
-    size_t expected_packet_size = Chunk::getChunkDataSize();
-    expected_packet_size += sizeof(int) * 2; //Position
-    expected_packet_size += 2;
-
-    if (packet.getDataSize() < expected_packet_size)
-    {
-        std::cerr << "Chunk packet is too small! Expected " << expected_packet_size << " bytes, got " << packet.getDataSize() << " bytes." << std::endl;
-        return false;
-    }
-
-    //Get chunk position
-    sf::Vector2i pos;
-    packet >> pos.x;
-    packet >> pos.y;
-
     std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
 
     sf::Vector2i diff = pos - player_chunk_pos;
@@ -139,7 +120,7 @@ bool World::addChunk(ECCPacket& packet)
     //Construct new chunk
     bool success = false;
 
-    Chunk* new_chunk = new Chunk(*this, pos, packet, success);
+    Chunk* new_chunk = new Chunk(*this, pos, chunk_data, chunk_size, success);
 
     if (!success)
     {

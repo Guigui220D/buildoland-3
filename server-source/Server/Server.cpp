@@ -18,17 +18,17 @@
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
 
 Server::Server(uint16_t client_port) :
-    clients_manager(*this),
+      clients_manager(*this),
       receiver_thread(&Server::receiver, this),
-    owner(sf::IpAddress::LocalHost, client_port),
-    connection_open(false),
-    blocks_manager(),
-    grounds_manager(),
-    world(*this)
+      owner(sf::IpAddress::LocalHost, client_port),
+      connection_open(false),
+      blocks_manager(),
+      grounds_manager(),
+      world(*this)
 {
-    #ifndef SOLO
-        assert(!client_port);
-    #endif // SOLO
+#ifndef SOLO
+    assert(!client_port);
+#endif // SOLO
 }
 
 Server::~Server()
@@ -56,29 +56,29 @@ bool Server::init(uint16_t port)
 
     server_socket.setBlocking(true);
 
-    #ifdef SOLO
-        clients_manager.addClient(owner);
-    #else
-        connection_open = true;
-    #endif // SOLO
+#ifdef SOLO
+    clients_manager.addClient(owner);
+#else
+    connection_open = true;
+#endif // SOLO
 
     running = true;
     receiver_thread.launch();
 
-    #ifdef SOLO
-        unsigned int player_id = world.getEntityManager().getNextEntityId();
+#ifdef SOLO
+    unsigned int player_id = world.getEntityManager().getNextEntityId();
 
-        Player* owner_player = new Player(&world, player_id, clients_manager.getClient(owner));
-        clients_manager.getClient(owner).setPlayer(owner_player);
+    Player* owner_player = new Player(&world, player_id, clients_manager.getClient(owner));
+    clients_manager.getClient(owner).setPlayer(owner_player);
 
-        ECCPacket handshake;
-        handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
-        handshake << world.getGenerator()->getSeed();
-        handshake << player_id;
-        server_socket.send(handshake, owner.address, owner.port);
+    ECCPacket handshake;
+    handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
+    handshake << world.getGenerator()->getSeed();
+    handshake << player_id;
+    server_socket.send(handshake, owner.address, owner.port);
 
-        world.getEntityManager().newEntity(owner_player);
-    #endif // SOLO
+    world.getEntityManager().newEntity(owner_player);
+#endif // SOLO
 
     for (int i = 0; i < 10; i++)
         world.getEntityManager().newEntity(new TestEntity(world, world.getEntityManager().getNextEntityId()));
@@ -143,64 +143,120 @@ void Server::receiver()
 
         switch (status)
         {
-        case sf::Socket::Done:
-            //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-            if (packet.isCorrupted())
-            {
-                std::cerr << "Received a corrupted packet : " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-            }
-            else if (packet.getDataSize() >= 2)
-            {
-                IpAndPort iandp(address, port);
-
-                int code; packet >> code;
-
-                switch (code)
+            case sf::Socket::Done:
+                //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+                if (packet.isCorrupted())
                 {
-                case Networking::CtoS::KeepAlive:
-                    request_queue.pushRequest(Networking::CtoS::KeepAliveRequest{iandp});
-                    break;
-                case Networking::CtoS::Disconnect:
-                    request_queue.pushRequest(Networking::CtoS::DisconnectRequest{iandp});
-                    break;
-                case Networking::CtoS::RequestConnection:
-                    request_queue.pushRequest(Networking::CtoS::ConnectionRequest{iandp});
-                    break;
-                case Networking::CtoS::RequestChunk:
-                    {
-                        sf::Vector2i pos;
-                        packet >> pos.x;
-                        packet >> pos.y;
+                    std::cerr << "Received a corrupted packet : " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+                }
+                else if (packet.getDataSize() >= 2)
+                {
+                    IpAndPort iandp(address, port);
 
-                        request_queue.pushRequest(Networking::CtoS::ChunkRequest{iandp, pos});
+                    int code; packet >> code;
+
+                    switch (code)
+                    {
+                        case Networking::CtoS::KeepAlive:
+                            request_queue.pushRequest(Networking::CtoS::KeepAliveRequest{iandp});
+                            break;
+                        case Networking::CtoS::Disconnect:
+                            request_queue.pushRequest(Networking::CtoS::DisconnectRequest{iandp});
+                            break;
+                        case Networking::CtoS::RequestConnection:
+                            request_queue.pushRequest(Networking::CtoS::ConnectionRequest{iandp});
+                            break;
+                        case Networking::CtoS::RequestChunk:
+                        {
+                            sf::Vector2i pos;
+                            packet >> pos.x;
+                            packet >> pos.y;
+
+                            request_queue.pushRequest(Networking::CtoS::ChunkRequest{iandp, pos});
+                        }
+                        break;
+                        case Networking::CtoS::RequestEntityInfo:
+                        {
+                            unsigned int id; packet >> id;
+
+                            request_queue.pushRequest(Networking::CtoS::EntityRequest{iandp, id});
+                        }
+                        break;
+                        case Networking::CtoS::PlayerAction:
+                        {
+                            Networking::CtoS::PlayerActionRequest rq{iandp};
+
+                            packet >> rq.type;
+                            switch (rq.type)
+                            {
+                                case EntityActions::CtoS::Walk:
+                                {
+                                    packet >> rq.walk_mov_x >> rq.walk_mov_y;
+                                    packet >> rq.walk_pos_x >> rq.walk_pos_y;
+
+                                    if (!packet)
+                                    {
+                                        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                                        break;
+                                    }
+                                }
+                                break;
+
+                                case EntityActions::CtoS::UseItem:
+                                {
+                                    packet >> rq.item_pos_x >> rq.item_pos_y;
+                                    packet >> rq.item_in_hand;
+
+                                    if (!packet)
+                                    {
+                                        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                                        break;
+                                    }
+                                }
+                                break;
+
+                                case EntityActions::CtoS::BreakBlock:
+                                {
+                                    packet >> rq.break_block_pos.x >> rq.break_block_pos.y;
+
+                                    if (!packet)
+                                    {
+                                        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                                        break;
+                                    }
+                                }
+                                break;
+
+                                case EntityActions::CtoS::SwapInventoryItem:
+                                {
+                                    packet >> rq.item_swap_pos;
+                                    packet >> rq.hand_item;
+                                    packet >> rq.slot_item;
+
+                                    if (!packet)
+                                        break;
+                                }
+                                break;
+                            }
+                            request_queue.pushRequest(std::move(rq));
+                        }
+                        break;
+
+                        default:
+                            std::cerr << "Packet has unknown code" << std::endl;
+                            break;
                     }
-                    break;
-                case Networking::CtoS::RequestEntityInfo:
-                    {
-                        unsigned int id; packet >> id;
-
-                        request_queue.pushRequest(Networking::CtoS::EntityRequest{iandp, id});
                 }
-                    break;
-                case Networking::CtoS::PlayerAction:
-                    request_queue.pushRequest(Networking::CtoS::PlayerActionRequest{iandp, packet});
-                    break;
+                else
+                    std::cerr << "Packet is too small to be read" << std::endl;
+                break;
 
-                default:
-                    std::cerr << "Packet has unknown code" << std::endl;
-                    break;
-                }
-            }
-            else
-                std::cerr << "Packet is too small to be read" << std::endl;
-            break;
+            case sf::Socket::Disconnected: break;
 
-        case sf::Socket::Disconnected: break;
-
-        default:
-            std::cerr << "Packet has status " << utils::statusToString(status) << std::endl;
-            //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
-            break;
+            default:
+                std::cerr << "Packet has status " << utils::statusToString(status) << std::endl;
+                //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+                break;
         }
     }
 }
@@ -232,7 +288,7 @@ void Server::processPacketQueue()
                 std::cout << "Disconnecting player." << std::endl;
 
                 if (!clients_manager.isConnected(rq->iandp))
-                    goto loop;
+                    continue;
 
                 Client& client = clients_manager.getClient(rq->iandp);
                 if (client.hasPlayer())
@@ -252,9 +308,9 @@ void Server::processPacketQueue()
             std::clog << "Connection requested" << std::endl;
 
             if (!connection_open)
-                goto loop;
+                continue;
             if (clients_manager.isConnected(rq->iandp))
-                goto loop;
+                continue;
 
             std::clog << "Connection accepted" << std::endl;
             {
@@ -276,7 +332,7 @@ void Server::processPacketQueue()
             clients_manager.resetClientTimer(rq->iandp);
 
             if (!clients_manager.isConnected(rq->iandp))
-                goto loop;
+                continue;
 
             //std::clog << "Adding chunk request" << std::endl;
 
@@ -289,7 +345,7 @@ void Server::processPacketQueue()
             clients_manager.resetClientTimer(rq->iandp);
 
             if (!clients_manager.isConnected(rq->iandp))
-                break;
+                continue;
 
             world.getEntityManager().sendAddEntityToClient(rq->id, clients_manager.getClient(rq->iandp));
         }
@@ -298,23 +354,20 @@ void Server::processPacketQueue()
             clients_manager.resetClientTimer(rq->iandp);
 
             if (!clients_manager.isConnected(rq->iandp))
-                goto loop;
+                continue;
 
             Client& client = clients_manager.getClient(rq->iandp);
 
             if (!client.hasPlayer())
-                goto loop;
+                continue;
 
-            client.getPlayer()->takePlayerActionPacket(rq->data_packet);
+            client.getPlayer()->handlePlayerActionRequest(rq.value());
         }
         else
         {
             std::cerr << "Uknkown CtoS packet request type; ignoring\n";
             request_queue.skip();
         }
-
-        loop:
-        ;
     }
 }
 

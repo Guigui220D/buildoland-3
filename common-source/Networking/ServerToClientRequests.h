@@ -19,7 +19,8 @@ struct DisconnectRequest
 
 struct SendChunkRequest
 {
-    ECCPacket data_packet;
+    sf::Vector2i pos;
+    std::vector<uint8_t> chunk_data;
 };
 
 struct EntityActionRequest
@@ -46,6 +47,17 @@ struct PlayerRectificationRequest
 
 struct InventoryUpdateRequest
 {
+    int type;
+    union
+    {
+        uint32_t stack_add;
+        struct
+        {
+            uint32_t stack_set;
+            unsigned int pos;
+        };
+        uint32_t stack_list[25];
+    };
     ECCPacket data_packet;
 };
 

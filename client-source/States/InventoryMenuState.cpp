@@ -1,5 +1,7 @@
 #include "InventoryMenuState.h"
 
+#include "../../client-source/Game.h"
+
 InventoryMenuState::InventoryMenuState(Game& game, PlayerInventory& inv, unsigned int id) :
     State(game, id),
     inventory(game, inv)
@@ -34,7 +36,7 @@ void InventoryMenuState::update(float delta_time)
 {
     inventory.update(delta_time);
 
-    if (!sf::Keyboard::isKeyPressed(sf::Keyboard::Space))
+    if (!getGame().getBindingsManager().held("inventory"))
         must_be_destroyed = true;
 }
 

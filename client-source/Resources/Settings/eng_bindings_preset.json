@@ -1,0 +1,7 @@
+{
+	"inventory": "space",
+	"move_up" : ["w", "up"],
+	"move_down" : ["s", "down"],
+	"move_left" : ["a", "left"],
+	"move_right" : ["d", "right"]
+}

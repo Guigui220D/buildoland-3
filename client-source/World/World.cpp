@@ -110,7 +110,7 @@ void World::updateLoadedChunk(float delta_time)
 
 bool World::addChunk(sf::Vector2i pos, const char* chunk_data, unsigned chunk_size)
 {
-    std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
+    //std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
 
     sf::Vector2i diff = pos - player_chunk_pos;
     int distance_squared = diff.x * diff.x + diff.y * diff.y;

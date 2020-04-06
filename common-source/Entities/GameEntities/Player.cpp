@@ -237,22 +237,12 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
 
         case EntityActions::CtoS::SwapInventoryItem:
         {
-            int pos;
-            uint32_t hand_item, slot_item;
+            ItemStack hand(rq.hand_item, getWorld().getServer().getItemsRegister());
+            ItemStack slot(rq.slot_item, getWorld().getServer().getItemsRegister());
 
-            packet >> pos;
-            packet >> hand_item;
-            packet >> slot_item;
-
-            if (!packet)
-                break;
-
-            ItemStack hand(hand_item, getWorld().getServer().getItemsRegister());
-            ItemStack slot(slot_item, getWorld().getServer().getItemsRegister());
-
-            if (inventory.contents.at(0).getItem() != hand.getItem() || inventory.contents.at(pos).getItem() != slot.getItem())
+            if (inventory.contents.at(0).getItem() != hand.getItem() || inventory.contents.at(rq.item_swap_pos).getItem() != slot.getItem())
             {
-                if (inventory.contents.at(0).getItem() == slot.getItem() && inventory.contents.at(pos).getItem() == hand.getItem())
+                if (inventory.contents.at(0).getItem() == slot.getItem() && inventory.contents.at(rq.item_swap_pos).getItem() == hand.getItem())
                     break;
 
                 FullInventoryPacket fip(inventory);

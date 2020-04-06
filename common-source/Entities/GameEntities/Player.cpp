@@ -177,6 +177,20 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             {
                 PlayerRectificationPacket rectification(position);
                 client.send(rectification);
+
+                std::vector<sf::Vector2i> sent;
+
+                for (int i = -1; i <= 1; i += 2)
+                for (int j = -1; j <= 1; j += 2)
+                {
+                    sf::Vector2i cpos = World::getChunkPosFromBlockPos(getBlockOn() + sf::Vector2i(i, j));
+
+                    if (std::find(sent.begin(), sent.end(), cpos) == sent.end())
+                    {
+                        sent.push_back(cpos);
+                        getClient().send(getWorld().getChunk(getChunkOn()).getPacket());
+                    }
+                }
             }
             else if (canBeHere(walk_pos))
                 position = walk_pos;

@@ -97,9 +97,9 @@ bool PlayerInventory::handleInventoryUpdateRequest(const Networking::StoC::Inven
     {
     case InventoryUpdates::StoC::AddStack:
         {
-                ItemStack stack(rq.stack_add, game.getGame().getItemsRegister());
-                //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
-                insertItemStack(stack);
+            ItemStack stack(rq.stack_add, game.getGame().getItemsRegister());
+            //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+            insertItemStack(stack);
         }
         //describe();
         return true;

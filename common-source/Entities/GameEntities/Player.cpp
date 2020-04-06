@@ -240,7 +240,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             ItemStack hand(rq.hand_item, getWorld().getServer().getItemsRegister());
             ItemStack slot(rq.slot_item, getWorld().getServer().getItemsRegister());
 
-            if (inventory.contents.at(0).getItem() != hand.getItem() || inventory.contents.at(rq.item_swap_pos).getItem() != slot.getItem())
+            if (hand && slot && (inventory.contents.at(0).getItem() != hand.getItem() || inventory.contents.at(rq.item_swap_pos).getItem() != slot.getItem()))
             {
                 if (inventory.contents.at(0).getItem() == slot.getItem() && inventory.contents.at(rq.item_swap_pos).getItem() == hand.getItem())
                     break;

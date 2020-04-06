@@ -10,7 +10,7 @@ class BlockItem : public Item
         BlockItem(Block const * block);
         virtual ~BlockItem();
 
-        inline Block const * getBlock() { return block; }
+        inline Block const * getBlock() const { return block; }
 
         void use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const;
 

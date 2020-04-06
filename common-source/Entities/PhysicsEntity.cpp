@@ -37,3 +37,20 @@ bool PhysicsEntity::canBeHere(sf::Vector2f new_position) const
 
     return true;
 }
+
+bool PhysicsEntity::canBlockBeHere(sf::Vector2i block) const
+{
+    sf::Vector2f points[4];
+    points[0] = position - hitbox_size / 2.f;
+    points[1] = position + sf::Vector2f(hitbox_size.x / 2.f, -hitbox_size.y / 2.f);
+    points[2] = position + hitbox_size / 2.f;
+    points[3] = position + sf::Vector2f(-hitbox_size.x / 2.f, hitbox_size.y / 2.f);
+
+    for (int i = 0; i < 4; i++)
+    {
+        sf::Vector2i block_pos(std::floor(points[i].x + .5f), std::floor(points[i].y + .5f));
+        if (block_pos == block)
+            return false;
+    }
+    return true;
+}

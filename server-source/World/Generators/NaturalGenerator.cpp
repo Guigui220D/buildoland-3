@@ -30,7 +30,7 @@ void NaturalGenerator::init()
 
 void NaturalGenerator::generateChunk(Chunk* chunk)
 {
-    if (std::rand() % 10 == 0 && chunk->getPos() != sf::Vector2i())
+    if (std::rand() % 10 == 0)
     {
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
         for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
@@ -80,4 +80,6 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
             chunk->setGround(x, y, ground_levels.at(std::round(perlin_value)));
         }
     }
+    if (chunk->getPos() == sf::Vector2i())
+        chunk->setBlock(0, 0, GameBlocks::AIR);
 }

@@ -13,6 +13,7 @@
     #include "../../../server-source/Server/ClientsManager.h"
     #include "../../../server-source/Packets/InventorySetPacket.h"
     #include "../../../server-source/Packets/SetTilePacket.h"
+    #include "../../../server-source/Server/Server.h"
 #endif // CLIENT_SIDE
 
 BlockItem::BlockItem(Block const * block) :
@@ -36,6 +37,19 @@ void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Play
     #ifndef CLIENT_SIDE
     if (world.getBlock(click_pos) == GameBlocks::AIR)
     {
+        if (getBlock()->isSolid(BlockInfo(world, click_pos)))
+        {
+            for (auto i = world.getServer().getClientsManager().getClientsBegin(); i != world.getServer().getClientsManager().getClientsEnd(); i++)
+            {
+                if (i->second->hasPlayer())
+                {
+                    Player* player = i->second->getPlayer();
+                    if (!player->canBlockBeHere(click_pos))
+                        return;
+                }
+            }
+        }
+
         stack.takeSome(1);
 
         world.setBlock(click_pos, block);

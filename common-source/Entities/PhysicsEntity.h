@@ -9,6 +9,7 @@ class PhysicsEntity : public Entity
         virtual ~PhysicsEntity();
 
         bool canBeHere(sf::Vector2f new_position) const;
+        bool canBlockBeHere(sf::Vector2i block) const;
 
         inline sf::Vector2f getHitbox() const { return hitbox_size; }
 

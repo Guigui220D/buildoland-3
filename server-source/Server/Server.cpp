@@ -68,7 +68,7 @@ bool Server::init(uint16_t port)
 #ifdef SOLO
     unsigned int player_id = world.getEntityManager().getNextEntityId();
 
-    Player* owner_player = new Player(&world, player_id, clients_manager.getClient(owner));
+    Player* owner_player = new Player(world, player_id, clients_manager.getClient(owner));
     clients_manager.getClient(owner).setPlayer(owner_player);
 
     ECCPacket handshake;
@@ -276,7 +276,7 @@ void Server::processPacketQueue()
             clients_manager.resetClientTimer(rq->iandp);
 
 #ifdef SOLO
-            if (address == owner.address && port == owner.port)
+            if (rq->iandp.address == owner.address && rq->iandp.port == owner.port)
             {
                 std::cout << "Received disconnect message from owner, server will stop." << std::endl;
                 running = false;

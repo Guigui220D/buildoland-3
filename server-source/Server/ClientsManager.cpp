@@ -64,10 +64,10 @@ int ClientsManager::doTimeOuts(float timeout_s)
         if (i->second->last_packet_received.getElapsedTime().asSeconds() > timeout_s)
         {
             #ifdef SOLO
-            if (i->first == server->owner)
+            if (i->first == server.owner)
             {
-                server->running = false;
-                server->passReceiveOnce();
+                server.running = false;
+                server.passReceiveOnce();
                 break;
             }
             #endif // SOLO

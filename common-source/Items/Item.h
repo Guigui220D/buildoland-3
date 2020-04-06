@@ -25,9 +25,11 @@ class Item
 
         enum TextureSet
         {
-            ItemsTextureSet,
+            ItemsTextureSet = 0,
             GroundsTextureSet,
-            BlocksTextureSet
+            BlocksTextureSet,
+
+            TextureSetEnd
         };
 
 
@@ -59,6 +61,14 @@ class Item
         virtual inline TextureSet getTexturesSet() const { return TextureSet::ItemsTextureSet; }
 
         inline std::string& getDisplayName() const { return display_name; }
+        inline void addTexturedVertices(ItemStack& stack, sf::Vertex vertices[4]) const
+        {
+            sf::IntRect tex_rect = getTexture(stack);
+            vertices[0].texCoords = sf::Vector2f(tex_rect.left, tex_rect.top);
+            vertices[1].texCoords = sf::Vector2f(tex_rect.left+tex_rect.width, tex_rect.top);
+            vertices[2].texCoords = sf::Vector2f(tex_rect.left+tex_rect.width, tex_rect.top+tex_rect.height);
+            vertices[3].texCoords = sf::Vector2f(tex_rect.left, tex_rect.top+tex_rect.height);
+        }
         #endif // CLIENT_SIDE
 
     protected:

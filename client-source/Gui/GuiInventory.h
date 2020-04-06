@@ -22,10 +22,10 @@ class GuiInventory : public GuiElement
 
         mutable sf::Text hover_text;
 
-        mutable sf::RectangleShape item_hand;
-
-        mutable sf::RectangleShape item_draw;
         mutable sf::Text number_draw;
+
+        mutable sf::VertexArray vertex_arrays[Item::TextureSetEnd]; // a vertex array for each texture set
+
 
         sf::Texture const * block_textures;
         sf::Texture const * ground_textures;

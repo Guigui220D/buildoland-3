@@ -13,6 +13,7 @@ set(SFML_DIR "F:/SFML/SFML-2.5.1-sources/SFML-2.5.1-build")
 find_package(SFML 2.5 COMPONENTS graphics REQUIRED)
 
 option(BUILD_SERVER "Build server-side" OFF)
+option(SOLO_MODE "Build server with solo mode on" OFF)
 
 include_directories(
     client-source
@@ -63,12 +64,16 @@ else()
     )
 endif()
 
+if (SOLO_MODE)
+    add_definitions(-DSOLO)
+endif()
+
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network)
 
 if (NOT BUILD_SERVER)
-    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bld-client")
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bdl-client")
 else()
-    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bld-server")
+    set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bdl-server")
 endif()

@@ -3,12 +3,12 @@
 	
 	"SINGLEPLAYER_BUTTON": "Einzelspieler",
 	"MULTIPLAYER_BUTTON": "Mehrspieler",
-	"BACK_TO_MAIN_MENU_BUTTON": "Zurück zum Hauptmenü",
+	"BACK_TO_MAIN_MENU_BUTTON": "ZurÃ¼ck zum HauptmenÃ¼",
 	
 	"STATE_INTERRUPTED": "Status wurde durch Spieler unterbrochen (zum Testen)",
 	"SERVER_DIDNT_START": "Lokaler Server konnte nicht gestartet werden",
 	"SOCKET_DISCONNECTED": "Socket nicht erreichbar",
-	"TIMEOUT_HANDSHAKE": "Zeitüberschreitung während des Server-Handshakes ({}s)",
+	"TIMEOUT_HANDSHAKE": "ZeitÃ¼berschreitung wÃ¤hrend des Server-Handshakes ({}s)",
 	"WRONG_VERSION": "Server hat nicht diesselbe Version",
 	"DISCONNECTED_BY_SERVER": "Verbindung zum Server wurde unterbrochen",
 	

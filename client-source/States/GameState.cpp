@@ -27,9 +27,6 @@
 
 #define YEET break;
 
-//TEMPORARY
-#include <windows.h>
-
 GameState::GameState(Game& game, unsigned int id, bool show_server_console) :
       State(game, id),
       solo_mode(true),

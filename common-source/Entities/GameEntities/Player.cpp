@@ -1,6 +1,5 @@
 #include "Player.h"
 
-#include <iostream>
 //TEST
 //#include <cmath>
 
@@ -24,6 +23,7 @@
 #include "../../Blocks/GameBlocks.h"
 
 #include "../../../common-source/Constants.h"
+#include "../../../common-source/Utils/Log.h"
 
 #ifdef CLIENT_SIDE
 unsigned int Player::this_player_id = 0;
@@ -224,7 +224,6 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
                     getClient().send(fip);
                     if (!has_item)
                         break;
-                    //std::clog << "TEST : Player used wrong item but that wasn't cheating, rectifying. " << std::endl;
                 }
             }
 
@@ -269,7 +268,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
         break;
 
         default:
-            std::cerr << "Could not read playerAction, action code unknown" << std::endl;
+            log(ERROR, "Could not read playerAction, action code unknown\n");
             break;
     }
 }

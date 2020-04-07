@@ -5,29 +5,37 @@
 #include <iostream>
 
 #include "Version.h"
+#include "../../common-source/Utils/Log.h"
 
 int main()
 {
-    std::clog << "Running Buildoland 3 version " << Version::VERSION << " (short: " << Version::VERSION_SHORT << ")\n" << std::endl;
-
     std::srand(std::time(nullptr));
+
+    log_streams_by_level[INFO].push_back(&std::clog);
+    log_streams_by_level[WARN].push_back(&std::cerr);
+    log_streams_by_level[ERROR].push_back(&std::cerr);
+    min_log_level = INFO;
+
+    log(INFO, "Running Buildoland 3 version {} (short: {})\n",  Version::VERSION, Version::VERSION_SHORT);
 
     Game game;
 
-    std::clog << "Initializing game..." << std::endl;
+    log(ERROR, "hello world {} !\n", 42.007);
+
+    log(INFO, "Initializing game...\n");
 
     int init_code = game.init();
     if (init_code)
         return init_code;
 
-    std::clog << "Initialized!" << std::endl;
-    std::clog << "Starting game." << std::endl;
+    log(INFO, "Initialized!\n");
+    log(INFO, "Starting game.\n");
 
     int run_exit_code = game.run();
     if (run_exit_code)
         return run_exit_code;
 
-    std::clog << "Exiting..." << std::endl;
+    log(INFO, "Exiting...\n");
 
     game.exit();
     return 0;

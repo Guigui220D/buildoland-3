@@ -1,6 +1,5 @@
 #include "Server.h"
 
-#include <iostream>
 #include <assert.h>
 #include <cstdlib>
 
@@ -16,6 +15,8 @@
 //TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
+
+#include "../../common-source/Utils/Log.h"
 
 Server::Server(uint16_t client_port) :
       clients_manager(*this),
@@ -45,14 +46,14 @@ bool Server::init(uint16_t port)
     items_register.initItems(blocks_manager, grounds_manager);
     world.init();
 
-    std::cout << std::endl;
+    log(INFO, "\n");
 
     if (server_socket.bind(port) != sf::Socket::Done)
     {
-        std::cerr << "Could not bind server socket to port " << port << std::endl;
+        log(ERROR, "Could not bind server socket to port {}\n", port);
         return false;
     }
-    std::cout << "Bound server socket to port " << server_socket.getLocalPort() << " (UDP)." << std::endl;
+    log(INFO, "Bound server socket to port {} (UDP).\n", server_socket.getLocalPort());
 
     server_socket.setBlocking(true);
 
@@ -98,7 +99,7 @@ void Server::run()
 
         if (ms > 50)
         {
-            std::clog << "Tick took too much time! Running " << (ms - 50) << "ms behind." << std::endl;
+            log(INFO, "Tick took too much time! Running {}ms behind.\n", (ms - 50));
         }
         else
             std::this_thread::sleep_for(std::chrono::milliseconds(50 - ms));
@@ -131,10 +132,8 @@ void Server::close()
 
 void Server::receiver()
 {
-    //std::cout << "A" << std::endl;
     while (running)
     {
-        //std::cout << "A" << std::endl;
 
         ECCPacket packet;
         sf::IpAddress address;
@@ -144,10 +143,9 @@ void Server::receiver()
         switch (status)
         {
             case sf::Socket::Done:
-                //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
                 if (packet.isCorrupted())
                 {
-                    std::cerr << "Received a corrupted packet : " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+                    log(ERROR, "Received a corrupted packet : {} bytes packet from {} : {}\n", packet.getDataSize(), address.toString(), port);
                 }
                 else if (packet.getDataSize() >= 2)
                 {
@@ -196,7 +194,7 @@ void Server::receiver()
 
                                     if (!packet)
                                     {
-                                        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                                        log(ERROR, "Could not read playerAction, packet too short\n");
                                         break;
                                     }
                                 }
@@ -209,7 +207,7 @@ void Server::receiver()
 
                                     if (!packet)
                                     {
-                                        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                                        log(ERROR, "Could not read playerAction, packet too short\n");
                                         break;
                                     }
                                 }
@@ -221,7 +219,7 @@ void Server::receiver()
 
                                     if (!packet)
                                     {
-                                        std::cerr << "Could not read playerAction, packet too short" << std::endl;
+                                        log(ERROR, "Could not read playerAction, packet too short\n");
                                         break;
                                     }
                                 }
@@ -243,19 +241,18 @@ void Server::receiver()
                         break;
 
                         default:
-                            std::cerr << "Packet has unknown code" << std::endl;
+                            log(ERROR, "Packet has unknown code\n");
                             break;
                     }
                 }
                 else
-                    std::cerr << "Packet is too small to be read" << std::endl;
+                    log(ERROR, "Packet is too small to be read\n");
                 break;
 
             case sf::Socket::Disconnected: break;
 
             default:
-                std::cerr << "Packet has status " << utils::statusToString(status) << std::endl;
-                //std::clog << "Received a " << packet.getDataSize() << " bytes packet from " << address.toString() << ':' << port << std::endl;
+                log(ERROR, "Packet has status {}\n", utils::statusToString(status));
                 break;
         }
     }
@@ -278,14 +275,14 @@ void Server::processPacketQueue()
 #ifdef SOLO
             if (rq->iandp.address == owner.address && rq->iandp.port == owner.port)
             {
-                std::cout << "Received disconnect message from owner, server will stop." << std::endl;
+                log(INFO, "Received disconnect message from owner, server will stop.\n");
                 running = false;
                 break;
             }
             else
 #endif // SOLO
             {
-                std::cout << "Disconnecting player." << std::endl;
+                log(INFO, "Disconnecting player.\n");
 
                 if (!clients_manager.isConnected(rq->iandp))
                     continue;
@@ -298,21 +295,21 @@ void Server::processPacketQueue()
                 }
 
                 clients_manager.removeClient(rq->iandp);
-                std::cout << "Player disconnected." << std::endl;
+                log(INFO, "Player disconnected.\n");
             }
         }
         else if (auto rq = request_queue.tryPop<ConnectionRequest>())
         {
             clients_manager.resetClientTimer(rq->iandp);
 
-            std::clog << "Connection requested" << std::endl;
+            log(INFO, "Connection requested\n");
 
             if (!connection_open)
                 continue;
             if (clients_manager.isConnected(rq->iandp))
                 continue;
 
-            std::clog << "Connection accepted" << std::endl;
+            log(INFO, "Connection accepted\n");
             {
                 unsigned int player_id = world.getEntityManager().getNextEntityId();
 
@@ -325,7 +322,7 @@ void Server::processPacketQueue()
 
                 world.getEntityManager().newEntity(new_player);
             }
-            std::clog << "New player added!" << std::endl;
+            log(INFO, "New player added!\n");
         }
         else if (auto rq = request_queue.tryPop<ChunkRequest>())
         {
@@ -333,8 +330,6 @@ void Server::processPacketQueue()
 
             if (!clients_manager.isConnected(rq->iandp))
                 continue;
-
-            //std::clog << "Adding chunk request" << std::endl;
 
             ECCPacket p = world.getChunk(rq->pos).getPacket();
             server_socket.send(p, rq->iandp.address, rq->iandp.port);
@@ -365,7 +360,7 @@ void Server::processPacketQueue()
         }
         else
         {
-            std::cerr << "Uknkown CtoS packet request type; ignoring\n";
+            log(ERROR, "Unknown CtoS packet request type; ignoring\n");
             request_queue.skip();
         }
     }

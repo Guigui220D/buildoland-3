@@ -1,11 +1,9 @@
 #include "SettingsManager.h"
 
 #include <fstream>
-#include <iostream>
-
-
 
 #include "../../common-source/Utils/UsernameCheck.h"
+#include "../../common-source/Utils/Log.h"
 
 const std::string SettingsManager::SETTINGS_FILE_PATH = "Resources/Settings/settings.json";
 
@@ -52,7 +50,7 @@ void SettingsManager::load()
     std::ifstream is(SETTINGS_FILE_PATH);
     if (!is.is_open())
     {
-        std::cerr << "Could not load settings file!" << std::endl;
+        log(ERROR, "Could not load settings file!\n");
         json = "{}"_json;
     }
     else
@@ -60,7 +58,7 @@ void SettingsManager::load()
 
     sf::Clock clk;
 
-    std::cout << "Started loading settings..." << std::endl;
+    log(INFO, "Started loading settings...\n");
 
     loadStringSetting({}, "language", "game_language", "eng");
 
@@ -76,7 +74,7 @@ void SettingsManager::load()
     loadIntSetting({ "player" }, "shirt_color", "player_shirt_color", 0xFFFFFFFF);
     loadIntSetting({ "player" }, "pants_color", "player_pants_color", 0xFF0000FF);
 
-    std::cout << "Loaded all settings in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
+    log(INFO, "Loaded all settings in {}s.\n", clk.getElapsedTime().asSeconds());
 }
 
 bool SettingsManager::loadIntSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, int default_value)
@@ -93,10 +91,10 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
         js = js[p];
         if (!js.is_structured())
         {
-            std::cerr << "Could not get json setting \"" << setting_name << "\" of type int at \"";
+            log(ERROR, "Could not get json setting \"{}\" of type int at \"", setting_name);
             for (const std::string& pp : path)
-                std::cerr << pp << '/';
-            std::cerr << name << "\", could not get structure \"" << p << "\"." << std::endl;
+                log(ERROR, "{}/", pp);
+            log(ERROR, "{}\", could not get structure \"{}\'.\n", name, p);
 
             int_settings.emplace(std::pair<std::string, int>(setting_name, value));
             return false;
@@ -108,16 +106,16 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
     }
     catch (std::exception& e)
     {
-        std::cerr << "Could not get json setting \"" << setting_name << "\" of type int at \"";
+        log(ERROR, "Could not get json setting \"{}\" of type int at \"", setting_name);
         for (const std::string& pp : path)
-            std::cerr << pp << '/';
-        std::cerr << name << "\", could not get int \"" << name << "\"." << std::endl;
+            log(ERROR, "{}/", pp);
+        log(ERROR, "{}\", could not get int \"{}\'.\n", name, name);
 
         int_settings.emplace(std::pair<std::string, int>(setting_name, value));
         return false;
     }
 
-    std::clog << "Successfully loaded int setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
+    log(INFO, "Successfully loaded int setting \"{}\" with value {}.\n", setting_name, value);
 
     int_settings.emplace(std::pair<std::string, int>(setting_name, value));
 
@@ -138,10 +136,10 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
         js = js[p];
         if (!js.is_structured())
         {
-            std::cerr << "Could not get json setting \"" << setting_name << "\" of type bool at \"";
+            log(ERROR, "Could not get json setting \"{}\" of type bool at \"", setting_name);
             for (const std::string& pp : path)
-                std::cerr << pp << '/';
-            std::cerr << name << "\", could not get structure \"" << p << "\"." << std::endl;
+                log(ERROR, "{}/", pp);
+            log(ERROR, "{}\", could not get structure \"{}\'.\n", name, p);
 
             bool_settings.emplace(std::pair<std::string, bool>(setting_name, value));
             return false;
@@ -153,16 +151,16 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
     }
     catch (std::exception& e)
     {
-        std::cerr << "Could not get json setting \"" << setting_name << "\" of type bool at \"";
+        log(ERROR, "Could not get json setting \"{}\" of type int at \"", setting_name);
         for (const std::string& pp : path)
-            std::cerr << pp << '/';
-        std::cerr << name << "\", could not get bool \"" << name << "\"." << std::endl;
+            log(ERROR, "{}/", pp);
+        log(ERROR, "{}\", could not get bool \"{}\'.\n", name, name);
 
         bool_settings.emplace(std::pair<std::string, bool>(setting_name, value));
         return false;
     }
 
-    std::clog << "Successfully loaded bool setting \"" << setting_name << "\" with value " << std::boolalpha << value << '.' << std::endl;
+    log(INFO, "Successfully loaded bool setting \"{}\" with value {}.\n", setting_name, value);
 
     bool_settings.emplace(std::pair<std::string, bool>(setting_name, value));
 
@@ -183,10 +181,10 @@ bool SettingsManager::loadStringSetting(const std::initializer_list<const std::s
         js = js[p];
         if (!js.is_structured())
         {
-            std::cerr << "Could not get json setting \"" << setting_name << "\" of type string at \"";
+            log(ERROR, "Could not get json setting \"{}\" of type string at \"", setting_name);
             for (const std::string& pp : path)
-                std::cerr << pp << '/';
-            std::cerr << name << "\", could not get structure \"" << p << "\"." << std::endl;
+                log(ERROR, "{}/", pp);
+            log(ERROR, "{}\", could not get structure \"{}\'.\n", name, p);
 
             string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
             return false;
@@ -198,16 +196,16 @@ bool SettingsManager::loadStringSetting(const std::initializer_list<const std::s
     }
     catch (std::exception& e)
     {
-        std::cerr << "Could not get json setting \"" << setting_name << "\" of type string at \"";
+        log(ERROR, "Could not get json setting \"{}\" of type int at \"", setting_name);
         for (const std::string& pp : path)
-            std::cerr << pp << '/';
-        std::cerr << name << "\", could not get string \"" << name << "\"." << std::endl;
+            log(ERROR, "{}/", pp);
+        log(ERROR, "{}\", could not get string \"{}\'.\n", name, name);
 
         string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
         return false;
     }
 
-    std::clog << "Successfully loaded string setting \"" << setting_name << "\" with value " << value << '.' << std::endl;
+    log(INFO, "Successfully loaded string setting \"{}\" with value {}.\n", setting_name, value);
 
     string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
 

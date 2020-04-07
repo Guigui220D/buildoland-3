@@ -8,7 +8,8 @@
     #include "../../server-source/Packets/ForgetEntityPacket.h"
 #endif // CLIENT_SIDE
 
-#include <iostream>
+#include "../../common-source/Utils/Log.h"
+
 
 Entity::Entity(World& world, unsigned int id) :
     position(0.f, 0.f),
@@ -63,7 +64,7 @@ void Entity::onChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
     }
     {
         ECCPacket enter;
-        //std::cout << "New entity spawn packet, for " << getId() << " (chunkchange)" << std::endl;
+        //log(INFO, "New entity spawn packet, for {} (chunkchange)\n", getId());
         makeNewEntityPacket(enter);
 
         getWorld().sendToSubscribersWithException(enter, new_chunk, old_chunk);

@@ -1,7 +1,6 @@
 #include "Client.h"
 
 #include <assert.h>
-#include <iostream>
 
 #include "Server.h"
 

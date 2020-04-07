@@ -1,9 +1,10 @@
 #include "LanguageManager.h"
 
 #include <fstream>
-#include <iostream>
 
 #include <SFML/System.hpp>
+
+#include "../../common-source/Utils/Log.h"
 
 LanguageManager::LanguageManager()
 {
@@ -20,7 +21,7 @@ const sf::String& LanguageManager::getFmtString(const std::string& identifier)
     if (i == strings.end())
     {
         if (success)
-            std::clog << "Warning! (language) " << identifier << " isn't loaded." << std::endl;
+            log(WARN, "Warning! (language) {} isn't loaded.\n", identifier);
         strings.emplace(std::pair<std::string, const sf::String>(identifier, identifier));
         i = strings.find(identifier);
     }
@@ -35,19 +36,19 @@ void LanguageManager::load(const std::string& language)
     std::ifstream is("Resources/Languages/" + language + ".json");
     if (!is.is_open())
     {
-        std::cerr << "Language file " << language << "could not be opened! Trying eng" << std::endl;
+        log(ERROR, "Language file {} could not be opened! Trying eng\n", language);
 
         std::ifstream is_eng("Resources/Languages/eng.json");
 
         if (!is_eng.is_open())
         {
-            std::cerr << "Could not load language file! This is gonna be messy :/" << std::endl;
+            log(ERROR, "Could not load language file! This is gonna be messy :/\n");
             json = "{}"_json;
             return;
         }
         else
         {
-            std::clog << "Loaded eng as fallback language." << std::endl;
+            log(INFO, "Loaded eng as fallback language.\n");
             is_eng >> json;
         }
     }
@@ -58,7 +59,7 @@ void LanguageManager::load(const std::string& language)
 
     sf::Clock clk;
 
-    std::cout << "Started loading language... (language : " << language_setting << ")" << std::endl;
+    log(INFO, "Started loading language... (language : {})", language_setting);
 
     for (nlohmann::json::iterator i = json.begin(); i != json.end(); i++)
     {
@@ -66,14 +67,14 @@ void LanguageManager::load(const std::string& language)
         {
             std::string str = i.value();
             strings.emplace(std::pair<std::string, const std::string>(i.key(), sf::String::fromUtf8(str.begin(), str.end())));
-            std::clog << "Added \"" << i.key() << "\" : " << str << "." << std::endl;
+            log(INFO, "Added \"{}\" : {}.\n", i.key(), str);
         }
         catch (std::exception& e)
         {
-            std::cerr << "Could not read language entry : " << e.what() << std::endl;
+            log(ERROR, "Could not read language entry : {}\n", e.what());
         }
 
     }
 
-    std::cout << "Loaded language in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
+    log(INFO, "Loaded language in {}s.\n", clk.getElapsedTime().asSeconds());
 }

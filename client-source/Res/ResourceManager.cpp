@@ -1,5 +1,7 @@
 #include "ResourceManager.h"
 
+#include "../../common-source/Utils/Log.h"
+
 const std::string ResourceManager::AUDIO_REPERTORY_NAME = "Resources/";
 const std::string ResourceManager::TEXTURE_REPERTORY_NAME = "Resources/";
 const std::string ResourceManager::FONT_REPERTORY_NAME = "Resources/";
@@ -38,7 +40,7 @@ bool ResourceManager::addMusic(sf::Music* music, const std::string name)
 {
     bool success = musics.emplace(std::pair<std::string, sf::Music*>(name, music)).second;
     if (!success)
-        std::cerr << "Music \"" << name << "\" could not be added, an other music with the same name already exists." << std::endl;
+        log(ERROR, "Music \"{}\" could not be added, an other music with the same name already exists.\n", name);
     return success;
 }
 
@@ -46,7 +48,7 @@ bool ResourceManager::addSound(sf::SoundBuffer* sound, const std::string name)
 {
     bool success = sounds.emplace(std::pair<std::string, sf::SoundBuffer*>(name, sound)).second;
     if (!success)
-        std::cerr << "Sound \"" << name << "\" could not be added, an other sound with the same name already exists." << std::endl;
+        log(ERROR, "Sound \"{}\" could not be added, an other sound with the same name already exists.\n", name);
     return success;
 }
 
@@ -54,7 +56,7 @@ bool ResourceManager::addTexture(sf::Texture* texture, const std::string name)
 {
     bool success = textures.emplace(std::pair<std::string, sf::Texture*>(name, texture)).second;
     if (!success)
-        std::cerr << "Texture \"" << name << "\" could not be added, an other texture with the same name already exists." << std::endl;
+        log(ERROR, "Texture \"{}\" could not be added, an other texture with the same name already exists.\n", name);
     return success;
 }
 
@@ -62,7 +64,7 @@ bool ResourceManager::addFont(sf::Font* font, const std::string name)
 {
     bool success = fonts.emplace(std::pair<std::string, sf::Font*>(name, font)).second;
     if (!success)
-        std::cerr << "Font \"" << name << "\" could not be added, an other font with the same name already exists." << std::endl;
+        log(ERROR, "Font \"{}\" could not be added, an other font with the same name already exists.\n", name);
     return success;
 }
 
@@ -76,7 +78,7 @@ bool ResourceManager::loadMusicFromFile(const std::string path, const std::strin
     {
         return addMusic(music, name);
     }
-    std::cerr << "Music \"" << name << "\" could not be loaded." << std::endl;
+    log(ERROR, "Music \"{}\" could not be loaded.\n", name);
     return false;
 }
 
@@ -87,7 +89,7 @@ bool ResourceManager::loadSoundFromFile(const std::string path, const std::strin
     {
         return addSound(sound, name);
     }
-    std::cerr << "Sound \"" << name << "\" could not be loaded." << std::endl;
+    log(ERROR, "Sound \"{}\" could not be loaded.\n", name);
     return false;
 }
 
@@ -98,7 +100,7 @@ bool ResourceManager::loadTextureFromFile(const std::string path, const std::str
     {
         return addTexture(texture, name);
     }
-    std::cerr << "Texture \"" << name << "\" could not be loaded." << std::endl;
+    log(ERROR, "Texture \"{}\" could not be loaded.\n", name);
     return false;
 }
 
@@ -109,7 +111,7 @@ bool ResourceManager::loadFontFromFile(const std::string path, const std::string
     {
         return addFont(font, name);
     }
-    std::cerr << "Font \"" << name << "\" could not be loaded." << std::endl;
+    log(ERROR, "Font \"{}\" could not be loaded.\n", name);
     return false;
 }
 
@@ -121,7 +123,7 @@ sf::Music& ResourceManager::getMusic(const std::string name)
     auto i = musics.find(name);
     if (i == musics.end())
     {
-        std::cerr << "Music \"" << name << "\" could not be found." << std::endl;
+        log(ERROR, "Music \"{}\" could not be found.\n", name);
         return error_music;
     }
     return *(*i).second;
@@ -132,7 +134,7 @@ sf::SoundBuffer& ResourceManager::getSound(const std::string name)
     auto i = sounds.find(name);
     if (i == sounds.end())
     {
-        std::cerr << "Sound \"" << name << "\" could not be found." << std::endl;
+        log(ERROR, "Sound \"{}\" could not be found.\n", name);
         return error_sound;
     }
     return *(*i).second;
@@ -143,7 +145,7 @@ const sf::Texture& ResourceManager::getTexture(const std::string name) const
     auto i = textures.find(name);
     if (i == textures.end())
     {
-        std::cerr << "Texture \"" << name << "\" could not be found." << std::endl;
+        log(ERROR, "Texture \"{}\" could not be found.\n", name);
         return getErrorTexture();
     }
     return *(*i).second;
@@ -154,7 +156,7 @@ const sf::Font& ResourceManager::getFont(const std::string name) const
     auto i = fonts.find(name);
     if (i == fonts.end())
     {
-        std::cerr << "Font \"" << name << "\" could not be found." << std::endl;
+        log(ERROR, "Font \"{}\" could not be found.\n", name);
         return error_font;
     }
     return *(*i).second;

@@ -1,6 +1,5 @@
 #include "Game.h"
 
-#include <iostream>
 #include <assert.h>
 
 #include "States/TitleScreenState.h"
@@ -123,8 +122,8 @@ int Game::run()
 		{
 			float time = fps_clk.restart().asSeconds();
 			time /= count;
-			float fps = 1 / time;
-			std::cout << "FPS : " << fps << std::endl;
+            float fps = 1 / time;
+            log(INFO, "FPS : {}\n", fps);
 			count = 0;
 		}
     }

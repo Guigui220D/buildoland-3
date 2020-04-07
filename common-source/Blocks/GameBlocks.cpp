@@ -1,7 +1,8 @@
 #include "GameBlocks.h"
 
 #include <limits>
-#include <iostream>
+
+#include "../../common-source/Utils/Log.h"
 
 Block const * const GameBlocks::AIR             = new BlockAir();
 Block const * const GameBlocks::ERROR           = new BlockError();
@@ -61,7 +62,7 @@ void GameBlocks::addBlock(Block const * block)
     blocks.push_back(block);
     block->id = id;
 
-    std::cout << "Added block \"" << name << "\" with id " << id << std::endl;
+    log(INFO, "Added block \"{}\" with id {}\n", name, id);
 }
 
 Block const * GameBlocks::getBlockByID(uint16_t id) const

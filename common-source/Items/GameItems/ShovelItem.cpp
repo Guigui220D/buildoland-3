@@ -8,7 +8,6 @@
     #include "../../../server-source/World/World.h"
 #endif // CLIENT_SIDE
 
-#include <iostream>
 
 ShovelItem::ShovelItem() :
     Item("shovel", 2)

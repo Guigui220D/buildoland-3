@@ -25,6 +25,8 @@
 
 #include "../Packets/BreakBlockPacket.h"
 
+#include "../../common-source/Utils/Log.h"
+
 #define YEET break;
 
 GameState::GameState(Game& game, unsigned int id) :
@@ -93,11 +95,11 @@ void GameState::init()
     //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
     {
-        std::cerr << "Could not bind client to any port!" << std::endl;
+        log(ERROR, "Could not bind client to any port!\n");
         must_be_destroyed = true;
         return;
     }
-    std::cout << "\nBound client to " << client_socket.getLocalPort() << std::endl;
+    log(INFO, "\nBound client to {}\n", client_socket.getLocalPort());
 
     if (solo_mode)
     {
@@ -293,14 +295,14 @@ bool GameState::startAndConnectLocalServer()
         std::stringstream strs;
         strs << "bdl-server.exe " << client_socket.getLocalPort();
         strs.flush();
-        std::cout << "Starting server with command " << strs.str() << std::endl;
+        log(INFO, "Starting server with command {}\n", strs.str());
 
         solo_server_process = std::make_unique<TinyProcessLib::Process>(strs.str());
         std::this_thread::sleep_for(std::chrono::milliseconds(100)); // wait a little to make sure the server is correctly started
         int code;
         if (solo_server_process->try_get_exit_status(code))
         {
-            std::cerr << "Could not start server! Code " << code <<  std::endl;
+            log(ERROR, "Could not start server! Code {}\n");
             getGame().addStateOnTop(new ErrorState(getGame(), 0, "SERVER_DIDNT_START"));
             must_be_destroyed = true;
             return false;
@@ -328,7 +330,7 @@ bool GameState::handshakeRemoteServer()
 
 bool GameState::receiveServerHandshake(bool known_port)
 {
-    std::clog << "Waiting for handshake from server..." << std::endl;
+    log(INFO, "Waiting for handshake from server...\n");
 
     client_socket.setBlocking(false);
 
@@ -351,7 +353,7 @@ bool GameState::receiveServerHandshake(bool known_port)
 
             if (status == sf::Socket::Disconnected)
             {
-                std::cerr << "Server unreachable" << std::endl;
+                log(ERROR, "Server unreachable\n");
                 getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
                 must_be_destroyed = true;
                 return false;
@@ -359,7 +361,7 @@ bool GameState::receiveServerHandshake(bool known_port)
 
             if (timeout_clock.getElapsedTime().asSeconds() >= 5.f)
             {
-                std::cerr << "Time out while waiting for server handshake" << std::endl;
+                log(ERROR, "Time out while waiting for server handshake\n");
                 getGame().addStateOnTop(new ErrorState(getGame(), 0, "TIMEOUT_HANDSHAKE", timeout_clock.getElapsedTime().asSeconds()));
                 must_be_destroyed = true;
                 return false;
@@ -368,7 +370,7 @@ bool GameState::receiveServerHandshake(bool known_port)
 
         if (address != remote_ip || (known_port && port != remote_port))
         {
-            std::cerr << "Received packet from wrong address." << std::endl;
+            log(ERROR, "Received packet from wrong address.\n");
         } //Wrong address
         else
         {
@@ -387,7 +389,7 @@ bool GameState::receiveServerHandshake(bool known_port)
 
                 if (!packet)
                 {
-                    std::cerr << "Malformed handshake packet." << std::endl;
+                    log(ERROR, "Malformed handshake packet.\n");
                     getGame().addStateOnTop(new ErrorState(getGame(), 0, "MALFORMED_HANDSHAKE"));
                     must_be_destroyed = true;
                     return false;
@@ -396,7 +398,7 @@ bool GameState::receiveServerHandshake(bool known_port)
                     break; //Exit the waiting for handshake loop, we got a handshake!
             }
             else
-                std::cerr << "Received wrong packet! Expected handshake code " << Networking::StoC::FinalHandshake << "." << std::endl;
+                log(ERROR, "Received wrong packet! Expected handshake code {}.\n", Networking::StoC::FinalHandshake);
             //Not a handshake
         }
     }
@@ -404,7 +406,7 @@ bool GameState::receiveServerHandshake(bool known_port)
 
     if (std::strcmp(Version::VERSION_SHORT, vers) != 0)
     {
-        std::cerr << "Local server has wrong version! Expected " << Version::VERSION_SHORT << " but got " << vers << '.' << std::endl;
+        log(ERROR, "Local server has wrong version! Expected {} but got {}.\n", Version::VERSION_SHORT, vers);
         getGame().addStateOnTop(new ErrorState(getGame(), 0, "WRONG_VERSION"));
         must_be_destroyed = true;
         return false;
@@ -413,7 +415,7 @@ bool GameState::receiveServerHandshake(bool known_port)
     test_world.setSeed(seed);
 
     Player::this_player_id = player_id;
-    std::clog << "Received handshake from local server! Its version is " << vers << ". Our player has id " << player_id << '.' << std::endl;
+    log(INFO, "Received handshake from local server! Its version is {}. Our player has id {}.\n", vers, player_id);
 
     return true; //Yay
 }
@@ -437,7 +439,7 @@ void GameState::receiverLoop()
 
                         if (packet.isCorrupted())
                     {
-                        std::cerr << "Received a corrupted packet from the server, ignoring it." << std::endl;
+                        log(ERROR, "Received a corrupted packet from the server, ignoring it.\n");
                         YEET
                     }
 
@@ -463,7 +465,7 @@ void GameState::receiverLoop()
 
                             if (packet.getDataSize() < expected_packet_size)
                             {
-                                std::cerr << "Chunk packet is too small! Expected " << expected_packet_size << " bytes, got " << packet.getDataSize() << " bytes." << std::endl;
+                                log(ERROR, "Chunk packet is too small! Expected {} bytes, got {} bytes.\n", expected_packet_size, packet.getDataSize());
                                 break;
                             }
 
@@ -495,7 +497,7 @@ void GameState::receiverLoop()
 
                             if (!packet)
                             {
-                                std::cerr << "Could not read blockUpdate, packet too short" << std::endl;
+                                log(ERROR, "Could not read blockUpdate, packet too short\n");
                                 break;
                             }
 
@@ -513,7 +515,7 @@ void GameState::receiverLoop()
 
                             if (!packet)
                             {
-                                std::cerr << "Could not read groundUpdate, packet too short" << std::endl;
+                                log(ERROR, "Could not read groundUpdate, packet too short\n");
                                 break;
                             }
 
@@ -540,7 +542,7 @@ void GameState::receiverLoop()
 
                             if (!packet)
                             {
-                                std::cerr << "Could not read inventory update, packet too short to get type." << std::endl;
+                                log(ERROR, "Could not read inventory update, packet too short to get type.\n");
                                 break;
                             }
 
@@ -570,7 +572,7 @@ void GameState::receiverLoop()
                         break;
 
                         default:
-                            std::cerr << "Unknown packet code" << std::endl;
+                            log(ERROR, "Unknown packet code\n");
                             break;
                     }
                 }
@@ -578,18 +580,17 @@ void GameState::receiverLoop()
                     ;
                 break;
             case sf::Socket::NotReady:
-                //std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was NOT READY." << std::endl;
+                //log(INFO, "Received a packet from {} : {}, status was NOT READY.\n", address.toString(), port);
                 break;
             case sf::Socket::Partial:
-                std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was PARTIAL." << std::endl;
+                log(INFO, "Received a packet from {} : {}, status was PARTIAL.\n", address.toString(), port);
                 break;
             case sf::Socket::Disconnected:
-                std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was DISCONNECTED. Stopping." << std::endl;
-                getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
+                log(INFO, "Received a packet from {} : {}, status was DISCONNECTED. Stopping.\n", address.toString(), port); getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
                 must_be_destroyed = true;
                 break;
             case sf::Socket::Error:
-                std::clog << "Received a packet from " << address.toString() << ':' << port << ", status was ERROR." << std::endl;
+                log(INFO, "Received a packet from {} : {}, status was ERROR.\n", address.toString(), port);
                 break;
         }
     }
@@ -603,7 +604,7 @@ void GameState::processPacketQueue()
     {
         if (auto rq = request_queue.tryPop<DisconnectRequest>())
         {
-            std::clog << "Received disconnect code from server." << std::endl;
+            log(INFO, "Received disconnect code from server.\n");
             getGame().addStateOnTop(new ErrorState(getGame(), 0, "DISCONNECTED_BY_SERVER"));
             must_be_destroyed = true;
         }
@@ -614,7 +615,7 @@ void GameState::processPacketQueue()
         else if (auto rq = request_queue.tryPop<EntityActionRequest>())
         {
             if (!entities.readEntityPacket(rq->data_packet))
-                std::cerr << "Entity packet could not be read." << std::endl;
+                log(ERROR, "Entity packet could not be read.\n");
         }
         else if (auto rq = request_queue.tryPop<BlockUpdateRequest>())
         {
@@ -644,7 +645,7 @@ void GameState::processPacketQueue()
         }
         else
         {
-            std::cerr << "Uknkown StoC packet request type; ignoring\n";
+            log(ERROR, "Uknkown StoC packet request type; ignoring\n");
             request_queue.skip();
         }
     }

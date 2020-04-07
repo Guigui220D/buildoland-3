@@ -2,8 +2,9 @@
 
 #include <SFML/System/Clock.hpp>
 
-#include <iostream>
 #include <fstream>
+
+#include "../../common-source/Utils/Log.h"
 
 const std::string BindingsManager::BINDINGS_FILE_PATH = "Resources/Settings/bindings.json";
 
@@ -82,7 +83,7 @@ void BindingsManager::load()
     std::ifstream is(BINDINGS_FILE_PATH);
     if (!is.is_open())
     {
-        std::cerr << "Could not load bindings file!" << std::endl;
+        log(ERROR, "Could not load bindings file!\n");
         json = "{}"_json;
     }
     else
@@ -90,7 +91,7 @@ void BindingsManager::load()
 
     sf::Clock clk;
 
-    std::cout << "Started loading bindings..." << std::endl;
+    log(INFO, "Started loading bindings...\n");
 
     for (const auto& node : json.items())
     {
@@ -105,7 +106,7 @@ void BindingsManager::load()
         }
     }
 
-    std::cout << "Loaded all bindings in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
+    log(INFO, "Loaded all bindings in {}s.\n", clk.getElapsedTime().asSeconds());
 }
 
 void BindingsManager::addBinding(const std::string &key, const std::string &val)
@@ -143,7 +144,7 @@ void BindingsManager::addBinding(const std::string &key, const std::string &val)
     }
     else
     {
-        std::cerr << "Unknown input '" << value << "'" <<  std::endl;
+        log(ERROR, "Unknown input : '{}'\n", value);
     }
 }
 

@@ -1,5 +1,7 @@
 #include "TitleScreenState.h"
 
+#include "../../common-source/Utils/Log.h"
+
 TitleScreenState::TitleScreenState(Game& game, unsigned int id) :
     LoadingScreenState<MainMenuState>(false, true, game, id),
     title(game),
@@ -43,7 +45,7 @@ void TitleScreenState::beforeInitTask()
 
 void TitleScreenState::afterInitTask()
 {
-    std::cout << "Title screen state finished in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
+    log(INFO, "Title screen state finished in {}s.\n", clk.getElapsedTime().asSeconds());
     while (clk.getElapsedTime().asSeconds() < 2.f); //Because we want to see the title
 }
 

@@ -3,10 +3,10 @@
 #include "../Utils/Utils.h"
 #include "../Server/Server.h"
 
-#include <iostream>
-
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../Packets/SetTilePacket.h"
+
+#include "../../common-source/Utils/Log.h"
 
 #include "Generators/NaturalGenerator.h"
 
@@ -93,7 +93,7 @@ Chunk& World::getChunk(sf::Vector2i pos)
 
     if (chunk_ptr == chunks.end())
     {
-        std::cout << "New chunk generated : " << pos.x << "; " << pos.y << std::endl;
+        log(INFO, "New chunk generated : {},{}\n", pos.x, pos.y);
         Chunk* new_chunk = new Chunk(*this, pos);
         chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
         return *new_chunk;

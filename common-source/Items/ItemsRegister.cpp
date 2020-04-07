@@ -1,7 +1,6 @@
 #include "ItemsRegister.h"
 
 #include <limits>
-#include <iostream>
 
 #include "GameItems/GroundItem.h"
 #include "GameItems/BlockItem.h"
@@ -9,6 +8,8 @@
 #include "GameItems/NullItem.h"
 #include "GameItems/BallItem.h"
 #include "GameItems/ShovelItem.h"
+
+#include "../../common-source/Utils/Log.h"
 
 Item const * const ItemsRegister::NULL_ITEM = new NullItem();
 Item const * const ItemsRegister::BALL      = new BallItem();
@@ -78,7 +79,7 @@ void ItemsRegister::addItem(Item const * item)
     item->display_name = language.getString(name);
     #endif // CLIENT_SIDE
 
-    std::cout << "Added item \"" << name << "\" with id " << id << std::endl;
+    log(INFO, "Added item \"{}\" with id {}\n", name, id);
 }
 
 Item const * ItemsRegister::getItemByID(uint16_t id) const

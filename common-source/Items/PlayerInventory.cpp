@@ -1,7 +1,5 @@
 #include "PlayerInventory.h"
 
-#include <iostream>
-
 #include "../Entities/GameEntities/Player.h"
 #include "../Networking/NetworkingCodes.h"
 
@@ -14,6 +12,8 @@
 
     #include "../../client-source/Packets/InventorySwapPacket.h"
 #endif
+
+#include "../../common-source/Utils/Log.h"
 
 #ifdef CLIENT_SIDE
 PlayerInventory::PlayerInventory(const Player& owner, GameState& game) :
@@ -41,13 +41,13 @@ PlayerInventory::~PlayerInventory()
 void PlayerInventory::describe() const
 {
     //TEMP
-    std::cout << "=== INVENTORY ===\n";
+    log(INFO, "=== INVENTORY ===\n");
     for (const ItemStack& stack : contents)
     {
         if (stack)
-            std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
+            log(INFO, "{} x {}\n", stack.getItem()->getName(),(int)stack.getAmount());
     }
-    std::cout <<  std::endl;
+    log(INFO, "\n");
 }
 
 bool PlayerInventory::insertItemStack(ItemStack& stack)
@@ -98,7 +98,6 @@ bool PlayerInventory::handleInventoryUpdateRequest(const Networking::StoC::Inven
     case InventoryUpdates::StoC::AddStack:
         {
             ItemStack stack(rq.stack_add, game.getGame().getItemsRegister());
-            //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
             insertItemStack(stack);
         }
         //describe();
@@ -109,7 +108,6 @@ bool PlayerInventory::handleInventoryUpdateRequest(const Networking::StoC::Inven
                 return false;
 
             ItemStack stack(rq.stack_set, game.getGame().getItemsRegister());
-            //std::cout << stack.getItem()->getName() << " x" << (int)stack.getAmount() << '\n';
 
             contents.at(rq.pos).swap(stack);
         }
@@ -128,7 +126,7 @@ bool PlayerInventory::handleInventoryUpdateRequest(const Networking::StoC::Inven
         return true;
 
     default:
-        std::cerr << "Could not read inventory update, unknown type." << std::endl;
+        log(ERROR, "Could not read inventory update, unknown type.\n");
         return false;
     }
 }

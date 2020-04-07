@@ -2,7 +2,7 @@
 
 #include "Server.h"
 
-#include <iostream>
+#include "../../common-source/Utils/Log.h"
 
 ClientsManager::ClientsManager(Server& server) :
     server(server)
@@ -71,7 +71,7 @@ int ClientsManager::doTimeOuts(float timeout_s)
                 break;
             }
             #endif // SOLO
-            std::cout << "Disconnecting client " << i->first.address << ':' << i->first.port << " (timeout)." << std::endl;
+            log(INFO, "Disconnecting client {}:{} (timeout).\n", i->first.address, i->first.port);
 
             Client& client = *(i->second);
 
@@ -84,7 +84,7 @@ int ClientsManager::doTimeOuts(float timeout_s)
             i = clients.erase(i);
             yeet_count++;
 
-            std::cout << "Client disconnected." << std::endl;
+            log(INFO, "Client disconnected.\n");
         }
         else
             i++;

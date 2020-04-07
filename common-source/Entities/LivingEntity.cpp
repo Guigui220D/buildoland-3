@@ -1,7 +1,8 @@
 #include "LivingEntity.h"
 
 #include <cmath>
-#include <iostream>
+
+#include "../../common-source/Utils/Log.h"
 
 #ifdef CLIENT_SIDE
 
@@ -48,7 +49,7 @@ bool LivingEntity::takePacket(ECCPacket& packet)
 
     if (!packet)
     {
-        std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
+        log(ERROR, "Entity packet was too short (reading entity action code).\n");
         return false;
     }
 
@@ -68,7 +69,7 @@ bool LivingEntity::takePacket(ECCPacket& packet)
         }
         return true;
     default:
-        std::cerr << "Living entity action code unknown." << std::endl;
+        log(ERROR, "Living entity action code unknown.\n");
         return false;
     }
 }

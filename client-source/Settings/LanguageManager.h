@@ -3,10 +3,11 @@
 #include <string>
 #include <initializer_list>
 #include <unordered_map>
-#include <iostream>
 
 #include "../../external/json/Json.hpp"
 #include "../../external/fmt/include/fmt/format.h"
+
+#include "../../common-source/Utils/Log.h"
 
 #include <SFML/System.hpp>
 
@@ -25,8 +26,7 @@ class LanguageManager
             }
             catch (const fmt::format_error& err)
             {
-                std::cerr << "Invalid language format for '" << identifier << "' : ";
-                std::cerr << err.what() << "\n";
+                log(ERROR, "Invalid language format for '{}' : {}\n", identifier, err.what());
             }
 
             sf::String sf_str;

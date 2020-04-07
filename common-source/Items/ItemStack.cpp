@@ -1,7 +1,6 @@
 #include "ItemStack.h"
 
 #include <limits>
-#include <iostream>
 
 #include "ItemsRegister.h"
 
@@ -59,7 +58,6 @@ bool ItemStack::add(ItemStack& other)
         swap(other);
         return true;
     }
-    //std::cout << (int)other.amount << "x " << other.item->getName() << " added to " << (int)amount << "x " << item->getName() << std::endl;
 
     if (item != other.item)
         return false;

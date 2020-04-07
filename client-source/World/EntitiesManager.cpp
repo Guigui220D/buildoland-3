@@ -1,7 +1,6 @@
 #include "EntitiesManager.h"
 
 #include <algorithm>
-#include <iostream>
 #include <assert.h>
 
 #include <SFML/Network.hpp>
@@ -18,6 +17,8 @@
 
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
 #include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
+
+#include "../../common-source/Utils/Log.h"
 
 #include "../States/GameState.h"
 
@@ -85,7 +86,7 @@ bool EntitiesManager::readEntityPacket(ECCPacket& packet)
 
     if (!packet)
     {
-        std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
+        log(ERROR, "Entity packet was too short (reading entity action code).\n");
         return false;
     }
 
@@ -102,7 +103,7 @@ bool EntitiesManager::readEntityPacket(ECCPacket& packet)
         return doEntityAction(packet);
 
     default:
-        std::cerr << "Entity action code unknown." << std::endl;
+        log(ERROR, "Entity action code unknown.\n");
         return false;
     }
 }
@@ -114,7 +115,7 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
     if (!packet)
     {
-        std::cerr << "Entity packet was too short (reading type code and id)." << std::endl;
+        log(ERROR, "Entity packet was too short (reading type code and id).\n");
         return false;
     }
 
@@ -142,7 +143,7 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
             if (!packet)
             {
-                std::cerr << "Tile entity packet was too short." << std::endl;
+                log(ERROR, "Tile entity packet was too short.\n");
                 return false;
             }
 
@@ -154,7 +155,7 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
             case TileEntities::TreeTopEntity: new_entity = new TreeTopEntity(world, entity_id, tile_pos); break;
 
-            default: std::cerr << "Tile entity type code unknown." << std::endl; return false;
+            default: log(ERROR, "Tile entity type code unknown.\n"); return false;
             }
         }
         break;
@@ -163,7 +164,7 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
     case Entities::TestEntity: new_entity = new TestEntity(world, entity_id); break;
 
-    default: std::cerr << "Entity type code unknown." << std::endl; return false;
+    default: log(ERROR, "Entity type code unknown.\n"); return false;
     }
 
     assert(new_entity);
@@ -181,7 +182,7 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
     if (ent_i != entities_map.cend())
     {
-        std::cerr << "Another entity with the same ID exists, deleting it." << std::endl;
+        log(ERROR, "Another entity with the same ID exists, deleting it.\n");
 
         entities_vector.erase(std::remove(entities_vector.begin(), entities_vector.end(), ent_i->second), entities_vector.end());
         delete ent_i->second;
@@ -199,7 +200,7 @@ void EntitiesManager::removeEntity(ECCPacket& packet)
     unsigned int entity_id;
     if (!(packet >> entity_id))
     {
-        std::cerr << "Entity packet was too short (reading entity id)." << std::endl;
+        log(ERROR, "Entity packet was too short (reading entity id).\n");
         return;
     }
 
@@ -230,12 +231,12 @@ bool EntitiesManager::doEntityAction(ECCPacket& packet)
     unsigned int id;
     if (!(packet >> id))
     {
-        std::cerr << "Entity packet was too short (reading entity action code)." << std::endl;
+        log(ERROR, "Entity packet was too short (reading entity action code).\n");
         return false;
     }
     if (id == Player::this_player_id)
     {
-        //std::cout << "YEAH BOIII IT'S ME!" << std::endl;
+        //log(INFO, "YEAH BOIII IT'S ME!\n");
         return true;
     }
 
@@ -243,7 +244,7 @@ bool EntitiesManager::doEntityAction(ECCPacket& packet)
 
     if (!en)
     {
-        std::cerr << "The entity with that code couldn't be found (doEntityAction). Sending a request." << std::endl;
+        log(ERROR, "The entity with that code couldn't be found (doEntityAction). Sending a request.\n");
 
         //We ask the server to tell us about that entity because we don't have it
         RequestEntityInfoPacket request(id);

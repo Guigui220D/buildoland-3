@@ -1,7 +1,8 @@
 #include "../Game.h"
 
-#include <iostream>
 #include <SFML/System.hpp>
+
+#include "../../common-source/Utils/Log.h"
 
 void Game::loadResources()
 {
@@ -9,7 +10,7 @@ void Game::loadResources()
 
     uint32_t fail_count = 0;
 
-    std::cout << "Loading all resources..." << std::endl;
+    log(INFO, "Loading all resources...\n");
 
     //TEXTURES
     //Terrain
@@ -38,7 +39,7 @@ void Game::loadResources()
     fail_count +=
         !resource_manager.loadFontFromFile("Fonts/MONOFONT.TTF", "GUI_FONT");
 
-    std::cout << "Resources loaded in " << clk.getElapsedTime().asSeconds() << "s." << std::endl;
+    log(INFO, "Resources loaded in {}s.\n", clk.getElapsedTime().asSeconds());
     if (fail_count)
-        std::cout << fail_count << " resources could not be loaded." << std::endl;
+        log(INFO, "{} resources could not be loaded.\n", fail_count);
 }

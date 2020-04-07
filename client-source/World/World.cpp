@@ -6,10 +6,9 @@
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Constants.h"
 #include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../common-source/Utils/Log.h"
 
 #include "../Packets/ChunkRequestPacket.h"
-
-#include <iostream>
 
 int unsigned World::RENDER_DISTANCE = 3;
 
@@ -74,7 +73,7 @@ void World::updateLoadedChunk(float delta_time)
             }
 
             requestChunk(pos);
-            std::cerr << "Outdated request for chunk " << pos.x << "; " << pos.y << " !\n";
+            log(ERROR, "Outdated request for chunk {},{} !\n", pos.x, pos.y);
         }
         i++;
     }
@@ -110,7 +109,7 @@ void World::updateLoadedChunk(float delta_time)
 
 bool World::addChunk(sf::Vector2i pos, const char* chunk_data, unsigned chunk_size)
 {
-    //std::cout << "New chunk has position " << pos.x << ", " << pos.y << std::endl;
+    //log(INFO, "New chunk has position {}, {}\n", pos.x, pos.y);
 
     sf::Vector2i diff = pos - player_chunk_pos;
     int distance_squared = diff.x * diff.x + diff.y * diff.y;
@@ -124,7 +123,7 @@ bool World::addChunk(sf::Vector2i pos, const char* chunk_data, unsigned chunk_si
 
     if (!success)
     {
-        std::cerr << "A new chunk packet couldn't be parsed" << std::endl;
+        log(ERROR, "A new chunk packet couldn't be parsed\n");
         delete new_chunk;
         return false;
     }

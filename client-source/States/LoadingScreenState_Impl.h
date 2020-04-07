@@ -1,6 +1,5 @@
 #include "../Game.h"
 
-#include <iostream>
 
 template <class T>
 template <typename... Args>
@@ -59,7 +58,7 @@ void LoadingScreenState<T>::update(float delta_time)
     {
         if (working)
         {
-            //std::cout << "Loading took " << working_time.getElapsedTime().asSeconds() << " seconds." << std::endl;
+            //log(INFO,"Loading took {} seconds.\n", working_time.getElapsedTime().asSeconds());
             working = false;
             fade_clock.restart();
             getGame().addStateUnderTop(state_being_loaded, false);

@@ -1,7 +1,5 @@
 #include "TestTileEntity.h"
 
-#include <iostream>
-
 TestTileEntity::TestTileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :
     TileEntity(world, id, tile_pos)
 {

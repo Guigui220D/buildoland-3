@@ -1,7 +1,5 @@
 #include "TreeTopEntity.h"
 
-#include <iostream>
-
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"

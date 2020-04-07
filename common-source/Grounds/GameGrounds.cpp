@@ -1,7 +1,8 @@
 #include "GameGrounds.h"
 
 #include <limits>
-#include <iostream>
+
+#include "../../common-source/Utils/Log.h"
 
 Ground const * const GameGrounds::ERROR = new GroundError();
 Ground const * const GameGrounds::DIRT =  new GroundDirt();
@@ -51,7 +52,7 @@ void GameGrounds::addGround(Ground const * ground)
     grounds.push_back(ground);
     ground->id = id;
 
-    std::cout << "Added ground \"" << name << "\" with id " << id << std::endl;
+    log(INFO, "Added ground \"{}\" with id {}\n", name, id);
 }
 
 Ground const * GameGrounds::getGroundByID(uint16_t id) const

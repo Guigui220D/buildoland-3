@@ -4,6 +4,7 @@
 
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
+#include "../../common-source/Utils/Log.h"
 #include "World.h"
 
 #include <assert.h>
@@ -131,7 +132,7 @@ void Chunk::generateVertices() const
     generateBlockSideVertices();
     generateBlockTopVertices();
     vertices_ready = true;
-    //std::cout << "Chunk vertex array render took " << clk.getElapsedTime().asSeconds() << "s" << std::endl;
+    //log(INFO, "Chunk vertex array render took {}s.\n", clk.getElapsedTime().asSeconds());
 }
 
 void Chunk::generateGroundVertices() const

@@ -9,7 +9,6 @@
     #include "../../server-source/World/Chunk.h"
     #include "../../server-source/World/World.h"
 
-    #include <iostream>
 #endif // CLIENT_SIDE
 
 TileEntity::TileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :

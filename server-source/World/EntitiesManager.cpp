@@ -7,8 +7,6 @@
 #include "../../common-source/Entities/EntityCodes.h"
 #include "../Packets/ForgetEntityPacket.h"
 
-#include <iostream>
-
 EntitiesManager::EntitiesManager(Server& server) :
     server(server),
     next_entity_id(0)
@@ -55,7 +53,6 @@ bool EntitiesManager::newEntity(Entity* entity, bool declare)
     if (declare)
     {
         ECCPacket packet;
-        //std::cout << "New entity spawn packet, for " << entity->getId() << " (newEntity)" << std::endl;
         entity->makeNewEntityPacket(packet);
 
         server.getClientsManager().sendToAll(packet);
@@ -81,7 +78,6 @@ void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos
         Entity* entity = i->second;
         if (entity->getChunkOn() == chunk_pos)
         {
-            //std::cout << "New entity spawn packet, for " << entity->getId() << " (allentities)" << std::endl;
             entity->makeNewEntityPacket(packet);
             client.send(packet);
         }

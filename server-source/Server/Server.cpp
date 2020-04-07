@@ -269,7 +269,13 @@ void Server::processPacketQueue()
     {
         if (auto rq = request_queue.tryPop<KeepAliveRequest>())
         {
-            clients_manager.resetClientTimer(rq->iandp);
+            if (!clients_manager.isConnected(rq->iandp))
+            {
+                ECCPacket disconnect(Networking::StoC::Disconnect);
+                server_socket.send(disconnect, rq->iandp.address, rq->iandp.port);
+            }
+            else
+                clients_manager.resetClientTimer(rq->iandp);
         }
         else if (auto rq = request_queue.tryPop<DisconnectRequest>())
         {
@@ -285,10 +291,10 @@ void Server::processPacketQueue()
             else
 #endif // SOLO
             {
-                std::cout << "Disconnecting player." << std::endl;
-
                 if (!clients_manager.isConnected(rq->iandp))
                     continue;
+
+                std::cout << "Disconnecting player." << std::endl;
 
                 Client& client = clients_manager.getClient(rq->iandp);
                 if (client.hasPlayer())

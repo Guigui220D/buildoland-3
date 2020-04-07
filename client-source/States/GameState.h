@@ -8,6 +8,11 @@
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Networking/ServerToClientRequests.h"
 
+namespace TinyProcessLib
+{
+class Process;
+}
+
 class GameState : public State
 {
     friend class World;
@@ -39,6 +44,8 @@ class GameState : public State
         sf::IpAddress remote_ip;
         uint16_t remote_port;
         sf::Clock heartbeat_clock;
+
+        std::unique_ptr<TinyProcessLib::Process> solo_server_process;
 
         Networking::StoC::StoCRequestQueue request_queue;
         sf::Thread receiver_thread;

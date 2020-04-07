@@ -52,7 +52,13 @@ if (NOT BUILD_SERVER)
         external/xxhash/XXHash.cc
         external/fmt/src/os.cc
         external/fmt/src/format.cc
+        external/tiny-process-library/process.cpp
     )
+    if (WIN32)
+        set (SRCS ${SRCS} external/tiny-process-library/process_win.cpp)
+    elseif(UNIX)
+        set (SRCS ${SRCS} external/tiny-process-library/process_unix.cpp)
+    endif()
     add_definitions(-DCLIENT_SIDE)
 else()
     set (SRCS

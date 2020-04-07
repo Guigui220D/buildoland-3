@@ -18,6 +18,8 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
+#include "../../external/tiny-process-library/process.hpp"
+
 #include "ErrorScreen.h"
 #include "InventoryMenuState.h"
 
@@ -65,6 +67,10 @@ GameState::~GameState()
         //TEMP
         ECCPacket quit(Networking::CtoS::Disconnect);
         sendToServer(quit);
+    }
+    if (solo_server_process)
+    {
+        solo_server_process->kill(true);
     }
 }
 
@@ -273,23 +279,34 @@ void GameState::updateView()
     }
 }
 
+void executeProgram(std::string programName) {
+    system(programName.c_str());
+}
+
+void execute(const std::string& command_line) {
+    std::thread worker (executeProgram, command_line);
+    worker.detach(); //wait for the worker to complete
+}
+
 bool GameState::startAndConnectLocalServer()
 {
     assert(solo_mode);
 
-    //TODO : Adapt this to other platforms
     //Start the server
     {
         std::stringstream strs;
-        strs << "start \"\" \"bdl-server.exe\" " << client_socket.getLocalPort();
+        strs << "bdl-server.exe " << client_socket.getLocalPort();
         if (!show_console)
             strs << " hide";
         strs.flush();
         std::cout << "Starting server with command " << strs.str() << std::endl;
-        int code = system(strs.str().c_str());
-        if (code)
+
+        solo_server_process = std::make_unique<TinyProcessLib::Process>(strs.str());
+        std::this_thread::sleep_for(std::chrono::milliseconds(100)); // wait a little to make sure the server is correctly started
+        int code;
+        if (solo_server_process->try_get_exit_status(code))
         {
-            std::cerr << "Could not start server!" << std::endl;
+            std::cerr << "Could not start server! Code " << code <<  std::endl;
             getGame().addStateOnTop(new ErrorState(getGame(), 0, "SERVER_DIDNT_START"));
             must_be_destroyed = true;
             return false;
@@ -297,10 +314,6 @@ bool GameState::startAndConnectLocalServer()
     }
 
     bool handshake = receiveServerHandshake(false);
-
-    //EWWWWWWWWWWWWWWW
-    //Temporary
-    SetForegroundWindow(getGame().getWindow().getSystemHandle());
 
     return handshake;
 }

@@ -49,10 +49,8 @@ Client& ClientsManager::getClient(IpAndPort& client) const
 
 void ClientsManager::resetClientTimer(IpAndPort& client)
 {
-    if (clients.find(client) == clients.end())
-        return;
-
-    getClient(client).last_packet_received.restart();
+    if (clients.find(client) != clients.end())
+        getClient(client).last_packet_received.restart();
 }
 
 int ClientsManager::doTimeOuts(float timeout_s)

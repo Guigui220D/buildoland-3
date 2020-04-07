@@ -21,6 +21,8 @@ int main(int argc, char** argv)
     uint16_t server_port = 0;
 
 #ifdef SOLO
+    log_prefix_format = "[Server] " + log_prefix_format; // to differentiate output when using solo mode
+
     log(INFO, "This is a local server for solo mode.\n");
     log(INFO, "This version is made for Buildoland {} ({})\n", Version::VERSION, Version::VERSION_SHORT);
 

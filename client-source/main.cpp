@@ -15,6 +15,7 @@ int main()
     log_streams_by_level[WARN].push_back(&std::cerr);
     log_streams_by_level[ERROR].push_back(&std::cerr);
     min_log_level = INFO;
+    log_prefix_format = ""; /* "[{date}] " */
 
     log(INFO, "Running Buildoland 3 version {} (short: {})\n",  Version::VERSION, Version::VERSION_SHORT);
 

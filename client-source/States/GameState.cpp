@@ -5,6 +5,7 @@
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <iostream>
 
 #include <thread>
 #include <chrono>
@@ -302,12 +303,14 @@ bool GameState::startAndConnectLocalServer()
         int code;
         if (solo_server_process->try_get_exit_status(code))
         {
-            log(ERROR, "Could not start server! Code {}\n");
+            log(ERROR, "Could not start server! Code {}\n", code);
             getGame().addStateOnTop(new ErrorState(getGame(), 0, "SERVER_DIDNT_START"));
             must_be_destroyed = true;
             return false;
         }
     }
+
+    log_prefix_format = "[Client] " + log_prefix_format; // now do this, to help differenciate between the server's and the client's output
 
     bool handshake = receiveServerHandshake(false);
 

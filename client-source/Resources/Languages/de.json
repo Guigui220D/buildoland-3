@@ -1,0 +1,34 @@
+{
+	"TEST": "Dies ist ein Test. Bip bop",
+	
+	"SINGLEPLAYER_BUTTON": "Einzelspieler",
+	"MULTIPLAYER_BUTTON": "Mehrspieler",
+	"BACK_TO_MAIN_MENU_BUTTON": "Zurück zum Hauptmenü",
+	
+	"STATE_INTERRUPTED": "Status wurde durch Spieler unterbrochen (zum Testen)",
+	"SERVER_DIDNT_START": "Lokaler Server konnte nicht gestartet werden",
+	"SOCKET_DISCONNECTED": "Socket nicht erreichbar",
+	"TIMEOUT_HANDSHAKE": "Zeitüberschreitung während des Server-Handshakes ({}s)",
+	"WRONG_VERSION": "Server hat nicht diesselbe Version",
+	"DISCONNECTED_BY_SERVER": "Verbindung zum Server wurde unterbrochen",
+	
+	"INVENTORY_TITLE": "Inventar",
+	
+	"wood_block": "Holzblock",
+	"stone_block": "Steinblock",
+	"bricks_block": "Ziegelstein",
+	"iron_block": "Eisenblock",
+	"gold_block": "Goldblock",
+	"boulder_block": "Felsbrocken",
+	"wood_sticks_block": "Stock",
+	"stone_pebbles_block": "Kieselsteine",
+	
+	"wood_ground": "Parkett",
+	"stone_ground": "Steinboden",
+	"sand_ground": "Sand",
+	"grass_ground": "Gras",
+	"water_ground": "Flaches Wasser",
+	
+	"ball": "Pinker Ball",
+	"shovel": "Schaufel"
+}

@@ -6,7 +6,7 @@
 #include <ctime>
 #include <cstdlib>
 
-#include "../../common-source/Utils/Log.h"
+#include "../common-source/Utils/Log.h"
 
 int main(int argc, char** argv)
 {

@@ -5,7 +5,7 @@
 #include <iostream>
 
 #include "Version.h"
-#include "../../common-source/Utils/Log.h"
+#include "../common-source/Utils/Log.h"
 
 int main()
 {

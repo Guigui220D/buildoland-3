@@ -27,11 +27,10 @@
 
 #define YEET break;
 
-GameState::GameState(Game& game, unsigned int id, bool show_server_console) :
+GameState::GameState(Game& game, unsigned int id) :
       State(game, id),
       solo_mode(true),
       connected(false),
-      show_console(show_server_console),
       remote_ip(sf::IpAddress::LocalHost),
       remote_port(0),
       receiver_thread(&GameState::receiverLoop, this),
@@ -293,8 +292,6 @@ bool GameState::startAndConnectLocalServer()
     {
         std::stringstream strs;
         strs << "bdl-server.exe " << client_socket.getLocalPort();
-        if (!show_console)
-            strs << " hide";
         strs.flush();
         std::cout << "Starting server with command " << strs.str() << std::endl;
 

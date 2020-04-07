@@ -25,7 +25,6 @@ class MainMenuState : public State
 
         GuiButton* const test_button_1;
         GuiButton* const test_button_2;
-        GuiCheckBox* const serv_debug_checkbox;
         //GuiElement test_ge_2;
         //GuiElement test_ge_3;
 

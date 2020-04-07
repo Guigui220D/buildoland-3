@@ -7,14 +7,12 @@
 MainMenuState::MainMenuState(Game& game, unsigned int id) :
     State(game, id),
     test_button_1(new GuiButton(game, sf::FloatRect(.1f, .5f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::BottomOrRight, "SINGLEPLAYER_BUTTON")),
-    test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::TopOrLeft, "MULTIPLAYER_BUTTON")),
-    serv_debug_checkbox(new GuiCheckBox(game, sf::FloatRect(.85f, .5f, .1f, .1f), GuiAlign::Center, GuiAlign::BottomOrRight))
+    test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::TopOrLeft, "MULTIPLAYER_BUTTON"))
 {
     update_transparent = false;
 
     gui_manager.push_back(test_button_1);
     gui_manager.push_back(test_button_2);
-    gui_manager.push_back(serv_debug_checkbox);
 }
 
 MainMenuState::~MainMenuState()
@@ -50,7 +48,7 @@ void MainMenuState::update(float delta_time)
     gui_manager.updateEverything(delta_time);
 
     if (test_button_1->hasBeenClicked())
-        getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, serv_debug_checkbox->isChecked()));
+        getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));
 
     if (test_button_2->hasBeenClicked())
         getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress(getGame().getSettingsManager().getString("online_server_address")), 58888));

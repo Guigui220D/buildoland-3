@@ -30,9 +30,8 @@ void GameGrounds::initGrounds()
     //Add all grounds here
     addGround(ERROR);
 
-    addGround(DIRT);
-
     addGround(WATER);
+    addGround(DIRT);
     addGround(STONE);
     addGround(SAND);
     addGround(GRASS);

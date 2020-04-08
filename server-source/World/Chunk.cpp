@@ -36,7 +36,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 
 Chunk::~Chunk()
 {
-    for (int i = 0; i < tile_entities.size(); i++)
+    for (unsigned int i = 0; i < tile_entities.size(); i++)
     {
         tile_entities[i]->assignChunk(nullptr);
         //tile_entities.getData()[i]->to_be_destroyed = true;

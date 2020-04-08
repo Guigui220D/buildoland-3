@@ -8,11 +8,11 @@ class BlockAir : public Block
         BlockAir();
         virtual ~BlockAir();
 
-        inline bool isSolid(BlockInfo info) const override { return false; }
-        inline bool hasVolume(BlockInfo info) const override { return false; }
+        inline bool isSolid(TileReference info) const override { return false; }
+        inline bool hasVolume(TileReference info) const override { return false; }
 
         #ifdef CLIENT_SIDE
-        inline bool occults(BlockInfo info) const override { return false; }
+        inline bool occults(TileReference info) const override { return false; }
         #endif
 
     protected:

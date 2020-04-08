@@ -9,33 +9,26 @@
 
 TileReference::TileReference(sf::Vector2i position, World& world) :
     pos(position),
-    world(world)
+    world(world),
+    known_block(nullptr),
+    known_ground(nullptr)
 {}
 
 TileReference::~TileReference()
 {}
 
-TileReference::operator const Block*() const
-{
-    return world.getBlockPtr(pos);
-}
-void TileReference::operator=(const Block* block)
-{
-    #ifndef CLIENT_SIDE
-    world.setBlock(pos, block);
-    #else
-    throw new std::logic_error("Local world copy shall not be modified, do so through requests to the server.");
-    #endif
-}
-
 const Block* TileReference::getBlock() const
 {
-    return world.getBlockPtr(pos);
+    if (!known_block)
+        known_block = world.getBlockPtr(pos);
+
+    return known_block;
 }
 void TileReference::setBlock(const Block* block)
 {
     #ifndef CLIENT_SIDE
     world.setBlock(pos, block);
+    known_block = block;
     #else
     throw new std::logic_error("Local world copy shall not be modified, do so through requests to the server.");
     #endif
@@ -43,13 +36,26 @@ void TileReference::setBlock(const Block* block)
 
 const Ground* TileReference::getGround() const
 {
-    return world.getGroundPtr(pos);
+    if (!known_ground)
+        known_ground = world.getGroundPtr(pos);
+    return known_ground;
 }
 void TileReference::setGround(const Ground* ground)
 {
     #ifndef CLIENT_SIDE
     world.setGround(pos, ground);
+    known_ground = ground;
     #else
     throw new std::logic_error("Local world copy shall not be modified, do so through requests to the server.");
     #endif
+}
+
+const GameBlocks& TileReference::getBlocksManager() const
+{
+    return world.getBlocksManager();
+}
+
+const GameGrounds& TileReference::getGroundsManager() const
+{
+    return world.getGroundsManager();
 }

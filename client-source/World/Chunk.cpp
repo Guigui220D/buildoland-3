@@ -152,9 +152,9 @@ void Chunk::generateGroundVertices() const
     for (int x = 0; x < CHUNK_SIZE; x++)
         for (int y = 0; y < CHUNK_SIZE; y++)
         {
-            const Ground* ground = getGround(x, y);
+            TileReference tile(getBlockPosInWorld(x, y), world);
 
-            Quad tr = ground->getTextureVertices(GroundInfo(world, getBlockPosInWorld(x, y)));
+            Quad tr = tile.getGround()->getTextureVertices(tile);
 
             ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].texCoords = tr.verts[0];
             ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].texCoords = tr.verts[1];
@@ -171,17 +171,13 @@ void Chunk::generateGroundDetailVertices() const
         for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
             {
-                const Ground* ground = getGround(x, y);
-
                 sf::Vector2i tile_pos = getBlockPosInWorld(x, y);
+                TileReference tile(tile_pos, world);
 
-                GroundInfo gi(world, tile_pos);
-                BlockInfo bi(world, tile_pos);
-
-                if (!ground->hasSurfaceDetails(gi))
+                if (!tile.getGround()->hasSurfaceDetails(tile))
                     continue;
 
-                auto details = ground->getSurfaceDetails(gi, frame);
+                auto details = tile.getGround()->getSurfaceDetails(tile, frame);
 
                 for (size_t i = 0; i < details.getVertexCount(); i++)
                     ground_detail_vertices[frame].append(details[i]);
@@ -195,20 +191,14 @@ void Chunk::generateBlockSideVertices() const
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
-            sf::Vector2i block_pos = getBlockPosInWorld(x, y);
+            TileReference tile(getBlockPosInWorld(x, y), world);
 
-            const Block* block = getBlock(x, y);
-            const Block* block_down = world.getBlockPtr(block_pos + sf::Vector2i(0, 1));
-
-            BlockInfo bi(world, block_pos);
-            BlockInfo bi_down(world, block_pos + sf::Vector2i(0, 1));
-
-            if (block == GameBlocks::AIR)
+            if (tile.getBlock() == GameBlocks::AIR)
                 continue;
 
-            if (!block->hasVolume(bi))
+            if (!tile.getBlock()->hasVolume(tile))
             {
-                TextQuad plane = block->getTopVertices(bi);
+                TextQuad plane = tile.getBlock()->getTopVertices(tile);
 
                 for (size_t i = 0; i < 4; i++)
                     block_side_vertices.append(plane.verts[i]);
@@ -216,10 +206,13 @@ void Chunk::generateBlockSideVertices() const
                 continue;
             }
 
-            if (!block->alwaysVisible() && block_down->occults(bi_down))
+            TileReference tile_down = tile.getRelative(sf::Vector2i(0, 1));
+
+            if (!tile.getBlock()->alwaysVisible() &&
+                tile_down.getBlock()->occults(tile_down))
                 continue;
 
-            TextQuad side = block->getSideVertices(bi);
+            TextQuad side = tile.getBlock()->getSideVertices(tile);
 
             for (size_t i = 0; i < 4; i++)
                 block_side_vertices.append(side.verts[i]);
@@ -232,17 +225,15 @@ void Chunk::generateBlockTopVertices() const
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
-            const Block* block = getBlock(x, y);
+            TileReference tile(getBlockPosInWorld(x, y), world);
 
-            BlockInfo bi(world, getBlockPosInWorld(x, y));
-
-            if (block == GameBlocks::AIR)
+            if (tile.getBlock() == GameBlocks::AIR)
                 continue;
 
-            if (!block->hasVolume(bi))
+            if (!tile.getBlock()->hasVolume(tile))
                 continue;
 
-            TextQuad top = block->getTopVertices(bi);
+            TextQuad top = tile.getBlock()->getTopVertices(tile);
 
             for (size_t i = 0; i < 4; i++)
                 block_top_vertices.append(top.verts[i]);

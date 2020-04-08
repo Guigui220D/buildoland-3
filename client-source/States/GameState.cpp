@@ -207,7 +207,7 @@ void GameState::update(float delta_time)
 
         sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-        bp_volume = test_world.getBlockPtr(world_pos_i)->hasVolume(BlockInfo(test_world, world_pos_i));
+        bp_volume = test_world.getBlockPtr(world_pos_i)->hasVolume(TileReference(world_pos_i, test_world));
 
         block_pointer.setPosition(world_pos);
         block_pointer_icon.setPosition(world_pos);

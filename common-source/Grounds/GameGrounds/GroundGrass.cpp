@@ -12,7 +12,7 @@ GroundGrass::~GroundGrass()
 }
 
 #ifdef CLIENT_SIDE
-sf::VertexArray GroundGrass::getSurfaceDetails(GroundInfo info, int frame) const
+sf::VertexArray GroundGrass::getSurfaceDetails(TileReference info, int frame) const
 {
     sf::VertexArray va;
 

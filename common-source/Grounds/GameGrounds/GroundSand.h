@@ -10,7 +10,7 @@ class GroundSand : public Ground
 
         #ifdef CLIENT_SIDE
         inline bool hasTextureBleedings() const override { return true; }
-        inline uint32_t getBleedingForNeighborGrounds(GroundInfo info, int frame) const override { return 3; }
+        inline uint32_t getBleedingForNeighborGrounds(TileReference info, int frame) const override { return 3; }
         #endif
     protected:
 

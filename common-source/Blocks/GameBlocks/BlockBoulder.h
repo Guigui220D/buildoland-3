@@ -10,8 +10,8 @@ class BlockBoulder : public Block
 
     protected:
         #ifdef CLIENT_SIDE
-        inline bool occults(BlockInfo info) const override { return false; }
-        inline uint32_t getSideTextureNumber(BlockInfo info) const override { return side_texture; }
+        inline bool occults(TileReference info) const override { return false; }
+        inline uint32_t getSideTextureNumber(TileReference info) const override { return side_texture; }
         inline bool darkenSide() const override { return false; }
         #endif
 

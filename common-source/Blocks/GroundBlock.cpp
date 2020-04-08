@@ -13,7 +13,7 @@ GroundBlock::~GroundBlock()
 }
 
 #ifdef CLIENT_SIDE
-TextQuad GroundBlock::getTopVertices(BlockInfo info) const
+TextQuad GroundBlock::getTopVertices(TileReference info) const
 {
     TextQuad top = utils::getSquare(Block::tilesetHelper.getFourVertices(getTopTextureNumber(info), getRandomInt(info, 5678)), info.getPos());
     return top;

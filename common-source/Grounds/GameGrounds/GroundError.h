@@ -8,11 +8,11 @@ class GroundError : public Ground
         GroundError();
         ~GroundError();
 
-        inline bool isShovelable(GroundInfo info) const override { return false; }
+        inline bool isShovelable(TileReference info) const override { return false; }
 
         #ifdef CLIENT_SIDE
-        bool acceptsTextureBleedings(GroundInfo info, const Ground* other) const;
-        inline uint8_t getTextureRotation(GroundInfo info) const override { return 0; }
+        bool acceptsTextureBleedings(TileReference info, const Ground* other) const;
+        inline uint8_t getTextureRotation(TileReference info) const override { return 0; }
         #endif
     protected:
 

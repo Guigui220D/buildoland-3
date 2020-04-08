@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include "BlockInfo.h"
+#include "../Utils/TileReference.h"
 
 #include "../Entities/TileEntityCodes.h"
 
@@ -52,13 +52,13 @@ class Block
          * @param info : Info about the block
          * @return True if the block can be touched
          */
-        virtual inline bool isSolid(BlockInfo info) const { return true; }
+        virtual inline bool isSolid(TileReference info) const { return true; }
         /**
          * To know whether a block is just a flat plane on the ground or a full cube
          * @param info : Info about the block
          * @return True if the block is a cube
          */
-        virtual inline bool hasVolume(BlockInfo info) const { return true; }
+        virtual inline bool hasVolume(TileReference info) const { return true; }
 
         #ifdef CLIENT_SIDE
         /**
@@ -67,7 +67,7 @@ class Block
          * @param info : Info about the block
          * @return True if the block occults the block above
          */
-        virtual inline bool occults(BlockInfo info) const { return true; }
+        virtual inline bool occults(TileReference info) const { return true; }
         /**
          * To know whether the block side should be rendered even if the block below it occults
          * @return True if the block side is always visible
@@ -78,13 +78,13 @@ class Block
          * @param info : Info about the block
          * @return The 4 vertices describing the texture to use
          */
-        virtual TextQuad getTopVertices(BlockInfo info) const;
+        virtual TextQuad getTopVertices(TileReference info) const;
         /**
          * Get four vertices ready to add to the chunk block sides vertex array
          * @param info : Info about the block
          * @return The 4 vertices describing the texture to use
          */
-        virtual TextQuad getSideVertices(BlockInfo info) const;
+        virtual TextQuad getSideVertices(TileReference info) const;
         #else
         virtual std::vector<ItemStack> getDrops() const;
 
@@ -100,13 +100,13 @@ class Block
          * @param info : Info about the block
          * @return The id to use in the tileset
          */
-        virtual inline uint32_t getTopTextureNumber(BlockInfo info) const { return default_texture; }
+        virtual inline uint32_t getTopTextureNumber(TileReference info) const { return default_texture; }
         /**
          * Get the id of the texture to use for the side of the block, in the tileset
          * @param info : Info about the block
          * @return The id to use in the tileset
          */
-        virtual inline uint32_t getSideTextureNumber(BlockInfo info) const { return default_texture; }
+        virtual inline uint32_t getSideTextureNumber(TileReference info) const { return default_texture; }
         /**
          * To know whether the side should be darkened or not
          * @return True if the side should be darkened
@@ -117,7 +117,7 @@ class Block
          * @param info : Info about the block, for position and seed
          * @return The pseudo-random int
          */
-        static uint32_t getRandomInt(BlockInfo info, int add = 0);
+        static uint32_t getRandomInt(TileReference info, int add = 0);
 
         inline uint32_t getDefaultTexture() const { return default_texture; }
         #endif

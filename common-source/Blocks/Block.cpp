@@ -35,7 +35,7 @@ Block::~Block()
 }
 
 #ifdef CLIENT_SIDE
-TextQuad Block::getTopVertices(BlockInfo info) const
+TextQuad Block::getTopVertices(TileReference info) const
 {
     TextQuad top = utils::getSquare(Block::tilesetHelper.getFourVertices(getTopTextureNumber(info), 0), info.getPos());
     if (hasVolume(info))
@@ -44,7 +44,7 @@ TextQuad Block::getTopVertices(BlockInfo info) const
     return top;
 }
 
-TextQuad Block::getSideVertices(BlockInfo info) const
+TextQuad Block::getSideVertices(TileReference info) const
 {
     TextQuad side = utils::getSquare(Block::tilesetHelper.getFourVertices(getSideTextureNumber(info), 0), info.getPos());
     for (int i = 0; i < 2; i++)
@@ -55,7 +55,7 @@ TextQuad Block::getSideVertices(BlockInfo info) const
     return side;
 }
 
-uint32_t Block::getRandomInt(BlockInfo info, int add)
+uint32_t Block::getRandomInt(TileReference info, int add)
 {
     //Pseudo random from seed and ground position
     sf::Vector2i pos = info.getPos();

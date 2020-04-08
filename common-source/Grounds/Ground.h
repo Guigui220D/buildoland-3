@@ -11,7 +11,7 @@
     #include <vector>
 #endif // CLIENT_SIDE
 
-#include "GroundInfo.h"
+#include "../Utils/TileReference.h"
 
 class Ground
 {
@@ -43,7 +43,7 @@ class Ground
          */
         inline bool hasItem() const { return has_item; }
 
-        virtual inline bool isShovelable(GroundInfo info) const { return true; }
+        virtual inline bool isShovelable(TileReference info) const { return true; }
 
         #ifdef CLIENT_SIDE
         /**
@@ -51,21 +51,21 @@ class Ground
          * @param info : Info about the ground
          * @return The 4 vertices describing the texture to use
          */
-        inline Quad getTextureVertices(GroundInfo info) const { return tilesetHelper.getFourVertices(getTextureNumber(info), getTextureRotation(info)); }
+        inline Quad getTextureVertices(TileReference info) const { return tilesetHelper.getFourVertices(getTextureNumber(info), getTextureRotation(info)); }
 
         /**
          * Get wether or not that ground has surface details
          * @param info : Info about the ground
          * @return True if the ground has surface details
          */
-        virtual inline bool hasSurfaceDetails(GroundInfo info) const { return true; }
+        virtual inline bool hasSurfaceDetails(TileReference info) const { return true; }
         /**
          * Calculate and get this ground detail's vertices (including other block's bleedings)
          * @param info : Info about the ground
          * @param frame : The frame of the animation (0, 1, 2, 3) to make changing vertex arrays
          * @return A vertex array to add to the chunk vertex array
          */
-        virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const;
+        virtual sf::VertexArray getSurfaceDetails(TileReference info, int frame) const;
         #else
         virtual std::vector<ItemStack> getDrops() const;
 
@@ -78,14 +78,14 @@ class Ground
          * @param info : Info about the ground
          * @return The id to use in the tileset
          */
-        virtual inline uint32_t getTextureNumber(GroundInfo info) const { return default_texture; }
+        virtual inline uint32_t getTextureNumber(TileReference info) const { return default_texture; }
         /**
          * Get the rotation of the texture, often always 0 or a random value for natural grounds*
          * Should be 0, 1, 2 or 3
          * @param info : Info about the ground
          * @return The rotation
          */
-        virtual inline uint8_t getTextureRotation(GroundInfo info) const { return getRandomInt(info) % 4; }
+        virtual inline uint8_t getTextureRotation(TileReference info) const { return getRandomInt(info) % 4; }
 
         /**
          * To know if this texture makes bleedings for other ground's details
@@ -97,7 +97,7 @@ class Ground
          * @param info : Info about the ground
          * @return The id of the texture to use
          */
-        virtual inline uint32_t getBleedingForNeighborGrounds(GroundInfo info, int frame) const { return 0; }
+        virtual inline uint32_t getBleedingForNeighborGrounds(TileReference info, int frame) const { return 0; }
 
         /**
          * To know if this ground will get the bleedings of an other specific ground
@@ -105,20 +105,20 @@ class Ground
          * @param other : The other ground
          * @return True if the other ground's bleedings should be displayed
          */
-        virtual bool acceptsTextureBleedings(GroundInfo info, const Ground* other) const;
+        virtual bool acceptsTextureBleedings(TileReference info, const Ground* other) const;
         /**
          * Add the neighbor bleedings to a vertex array (for use in getSurfaceDetails)
          * @param info : Info about the ground
          * @param vertex_array : A reference to a vertex array to add the vertices on
          */
-        void addNeighborsBleeding(GroundInfo info, sf::VertexArray& vertex_array, int frame) const;
+        void addNeighborsBleeding(TileReference info, sf::VertexArray& vertex_array, int frame) const;
 
         /**
          * Get a random-looking int deterministically depending on the position of the ground and seed of the world
          * @param info : Info about the ground, for position and seed
          * @return The pseudo-random int
          */
-        static uint32_t getRandomInt(GroundInfo info, int add = 0);
+        static uint32_t getRandomInt(TileReference info, int add = 0);
         #endif
 
     private:

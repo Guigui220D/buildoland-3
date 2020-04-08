@@ -25,7 +25,7 @@ void ShovelItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Pla
     #ifndef CLIENT_SIDE
     TileReference tr = world.getTile(click_pos);
 
-    if (tr.getGround()->isShovelable(GroundInfo(world, click_pos))
+    if (tr.getGround()->isShovelable(tr)
         && tr.getBlock() == GameBlocks::AIR)
     {
         auto drops = tr.getGround()->getDrops();

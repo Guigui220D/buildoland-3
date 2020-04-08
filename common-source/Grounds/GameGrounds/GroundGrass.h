@@ -10,9 +10,9 @@ class GroundGrass : public Ground
 
         #ifdef CLIENT_SIDE
         inline bool hasTextureBleedings() const override { return true; }
-        inline uint32_t getBleedingForNeighborGrounds(GroundInfo info, int frame) const override { return 4; }
+        inline uint32_t getBleedingForNeighborGrounds(TileReference info, int frame) const override { return 4; }
 
-        virtual sf::VertexArray getSurfaceDetails(GroundInfo info, int frame) const override;
+        virtual sf::VertexArray getSurfaceDetails(TileReference info, int frame) const override;
         #endif
     protected:
 

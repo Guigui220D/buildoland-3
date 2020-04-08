@@ -12,7 +12,7 @@ GroundWater::~GroundWater()
 }
 
 #ifdef CLIENT_SIDE
-sf::VertexArray GroundWater::getSurfaceDetails(GroundInfo info, int frame) const
+sf::VertexArray GroundWater::getSurfaceDetails(TileReference info, int frame) const
 {
     sf::VertexArray va;
 

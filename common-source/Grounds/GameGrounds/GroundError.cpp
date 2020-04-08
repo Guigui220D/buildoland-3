@@ -12,7 +12,7 @@ GroundError::~GroundError()
 }
 
 #ifdef CLIENT_SIDE
-bool GroundError::acceptsTextureBleedings(GroundInfo info, const Ground* other) const
+bool GroundError::acceptsTextureBleedings(TileReference info, const Ground* other) const
 {
     return false;
 }

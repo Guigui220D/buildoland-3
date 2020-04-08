@@ -9,8 +9,8 @@ class StaticGround : public Ground
         virtual ~StaticGround();
 
         #ifdef CLIENT_SIDE
-        inline bool acceptsTextureBleedings(GroundInfo info, const Ground* other) const override { return false; }
-        inline uint8_t getTextureRotation(GroundInfo info) const override { return 0; }
+        inline bool acceptsTextureBleedings(TileReference info, const Ground* other) const override { return false; }
+        inline uint8_t getTextureRotation(TileReference info) const override { return 0; }
         #endif
 
     protected:

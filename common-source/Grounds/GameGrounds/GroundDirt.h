@@ -8,7 +8,7 @@ class GroundDirt : public Ground
         GroundDirt();
         ~GroundDirt();
 
-        inline bool isShovelable(GroundInfo info) const override { return false; }
+        inline bool isShovelable(TileReference info) const override { return false; }
 
     protected:
 

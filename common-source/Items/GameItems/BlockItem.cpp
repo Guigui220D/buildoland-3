@@ -40,7 +40,7 @@ void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Play
     if (tr.getBlock() == GameBlocks::AIR)
     {
         //EWWW
-        if (getBlock()->isSolid(BlockInfo(world, click_pos)))
+        if (getBlock()->isSolid(tr))
         {
             for (auto i = world.getServer().getClientsManager().getClientsBegin(); i != world.getServer().getClientsManager().getClientsEnd(); i++)
             {

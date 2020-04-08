@@ -3,6 +3,7 @@
 #include "Chunk.h"
 #include "EntitiesManager.h"
 #include "../Utils/Utils.h"
+#include "../../common-source/Utils/TileReference.h"
 
 #include <unordered_map>
 #include <memory>
@@ -106,13 +107,20 @@ class World
          * @param pos : the position of the block
          * @return The pointer to the block
          */
-        const Block* getBlock(sf::Vector2i pos);
+        const Block* getBlockPtr(sf::Vector2i pos);
         /**
          * Gets a ground from its position
          * @param pos : the position of the ground
          * @return The pointer to the ground
          */
-        const Ground* getGround(sf::Vector2i pos);
+        const Ground* getGroundPtr(sf::Vector2i pos);
+
+        /**
+         * Gets a tile reference from a position
+         * @param pos : the position of the tile
+         * @return A writable tile reference
+         */
+        inline TileReference getTile(sf::Vector2i pos) { return TileReference(pos, *this); }
 
         /**
          * Calculate the position of the chunk that the block is in

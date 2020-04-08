@@ -196,8 +196,9 @@ void Chunk::generateBlockSideVertices() const
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
             sf::Vector2i block_pos = getBlockPosInWorld(x, y);
+
             const Block* block = getBlock(x, y);
-            const Block* block_down = world.getBlock(block_pos + sf::Vector2i(0, 1));
+            const Block* block_down = world.getBlockPtr(block_pos + sf::Vector2i(0, 1));
 
             BlockInfo bi(world, block_pos);
             BlockInfo bi_down(world, block_pos + sf::Vector2i(0, 1));

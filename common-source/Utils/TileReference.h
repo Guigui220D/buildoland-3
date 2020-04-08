@@ -21,6 +21,8 @@ class TileReference
         const Ground* getGround() const;
         void setGround(const Ground* ground);
 
+        inline TileReference getRelative(sf::Vector2i rpos) const { return TileReference(pos + rpos, world); }
+
         inline sf::Vector2i getPos() { return pos; }
         inline World& getWorld() { return world; }
 

@@ -215,12 +215,12 @@ uint16_t World::getGroundId(sf::Vector2i pos)
     return getChunkConst(chunk_pos).getGroundId(bp.x, bp.y);
 }
 
-const Block* World::getBlock(sf::Vector2i pos)
+const Block* World::getBlockPtr(sf::Vector2i pos)
 {
     return game_blocks_manager.getBlockByID(getBlockId(pos));
 }
 
-const Ground* World::getGround(sf::Vector2i pos)
+const Ground* World::getGroundPtr(sf::Vector2i pos)
 {
     return game_grounds_manager.getGroundByID(getGroundId(pos));
 }

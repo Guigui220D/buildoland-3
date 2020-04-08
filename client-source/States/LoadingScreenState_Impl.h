@@ -6,10 +6,11 @@ template <typename... Args>
 LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game& game, unsigned int id, Args&&... args) :
     State(game, id),
     loading_thread(&LoadingScreenState::load, this),
+    done(false),
     fade_in(fade_in),
     fade_out(fade_out),
     view(sf::Vector2f(.5f, .5f), sf::Vector2f(1.f, 1.f)),
-      loading_icon(game), done(false)
+    loading_icon(game)
 {
     update_transparent = false;
     draw_transparent = true;

@@ -239,7 +239,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             if (!isSubscribedTo(World::getChunkPosFromBlockPos(rq.break_block_pos)))
                 break;
 
-            auto drops = getWorld().getBlock(rq.break_block_pos)->getDrops();
+            auto drops = getWorld().getBlockPtr(rq.break_block_pos)->getDrops();
 
             for (ItemStack& stack : drops)
                 inventory.insertItemStack(stack);

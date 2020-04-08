@@ -29,15 +29,17 @@ GroundItem::~GroundItem()
 
 void GroundItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
 {
-    if (world.getGround(click_pos) == GameGrounds::DIRT)
+    #ifndef CLIENT_SIDE
+    TileReference tr = world.getTile(click_pos);
+
+    if (tr.getGround() == GameGrounds::DIRT)
     {
-        #ifndef CLIENT_SIDE
         stack.takeSome(1);
 
-        world.setGround(click_pos, ground);
+        tr.setGround(ground);
 
         InventorySetPacket set(0, stack.getInt());
         player.getClient().send(set);
-        #endif
     }
+    #endif
 }

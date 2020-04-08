@@ -35,8 +35,11 @@ BlockItem::~BlockItem()
 void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
 {
     #ifndef CLIENT_SIDE
-    if (world.getBlock(click_pos) == GameBlocks::AIR)
+    TileReference tr = world.getTile(click_pos);
+
+    if (tr.getBlock() == GameBlocks::AIR)
     {
+        //EWWW
         if (getBlock()->isSolid(BlockInfo(world, click_pos)))
         {
             for (auto i = world.getServer().getClientsManager().getClientsBegin(); i != world.getServer().getClientsManager().getClientsEnd(); i++)
@@ -52,7 +55,7 @@ void BlockItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Play
 
         stack.takeSome(1);
 
-        world.setBlock(click_pos, block);
+        tr.setBlock(block);
 
         InventorySetPacket set(0, stack.getInt());
         player.getClient().send(set);

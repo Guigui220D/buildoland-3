@@ -5,6 +5,7 @@
 #include "../Utils/Utils.h"
 #include "EntitiesManager.h"
 #include "Generator.h"
+#include "../../common-source/Utils/TileReference.h"
 
 #include <unordered_map>
 #include <memory>
@@ -69,8 +70,10 @@ class World
         uint16_t getBlockId(sf::Vector2i pos);
         uint16_t getGroundId(sf::Vector2i pos);
 
-        const Block* getBlock(sf::Vector2i pos);
-        const Ground* getGround(sf::Vector2i pos);
+        const Block* getBlockPtr(sf::Vector2i pos);
+        const Ground* getGroundPtr(sf::Vector2i pos);
+
+        inline TileReference getTile(sf::Vector2i pos) { return TileReference(pos, *this); }
 
         void setBlock(sf::Vector2i pos, Block const * block);
         void setGround(sf::Vector2i pos, Ground const * ground);

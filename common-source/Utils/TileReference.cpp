@@ -16,7 +16,7 @@ TileReference::~TileReference()
 
 TileReference::operator const Block*() const
 {
-    return world.getBlock(pos);
+    return world.getBlockPtr(pos);
 }
 void TileReference::operator=(const Block* block)
 {
@@ -25,7 +25,7 @@ void TileReference::operator=(const Block* block)
 
 const Block* TileReference::getBlock() const
 {
-    return world.getBlock(pos);
+    return world.getBlockPtr(pos);
 }
 void TileReference::setBlock(const Block* block)
 {
@@ -34,7 +34,7 @@ void TileReference::setBlock(const Block* block)
 
 const Ground* TileReference::getGround() const
 {
-    return world.getGround(pos);
+    return world.getGroundPtr(pos);
 }
 void TileReference::setGround(const Ground* ground)
 {

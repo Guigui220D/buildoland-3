@@ -23,15 +23,17 @@ ShovelItem::~ShovelItem()
 void ShovelItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
 {
     #ifndef CLIENT_SIDE
-    if (world.getGround(click_pos)->isShovelable(GroundInfo(world, click_pos))
-        && world.getBlock(click_pos) == GameBlocks::AIR)
+    TileReference tr = world.getTile(click_pos);
+
+    if (tr.getGround()->isShovelable(GroundInfo(world, click_pos))
+        && tr.getBlock() == GameBlocks::AIR)
     {
-        auto drops = world.getGround(click_pos)->getDrops();
+        auto drops = tr.getGround()->getDrops();
 
         for (ItemStack& stack : drops)
             player.getInventory().insertItemStack(stack);
 
-        world.setGround(click_pos, GameGrounds::DIRT);
+        tr.setGround(GameGrounds::DIRT);
     }
     #endif // CLIENT_SIDE
 }

@@ -30,6 +30,8 @@
 
 #define YEET break;
 
+#define CHUNK_VERTICES_ASYNC 1
+
 GameState::GameState(Game& game, unsigned int id) :
       State(game, id),
       solo_mode(true),
@@ -38,7 +40,9 @@ GameState::GameState(Game& game, unsigned int id) :
       remote_port(0),
       receiver_thread(&GameState::receiverLoop, this),
       test_world(*this),
-      entities(test_world.getEntityManager())
+      entities(test_world.getEntityManager()),
+      init_frames_to_skip(20),
+      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
 {
     update_transparent = false;
     draw_transparent = false;
@@ -52,7 +56,9 @@ GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, 
       remote_port(server_port),
       receiver_thread(&GameState::receiverLoop, this),
       test_world(*this),
-      entities(test_world.getEntityManager())
+      entities(test_world.getEntityManager()),
+      init_frames_to_skip(20),
+      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
 {
     update_transparent = false;
     draw_transparent = false;
@@ -60,6 +66,9 @@ GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, 
 
 GameState::~GameState()
 {
+#ifdef CHUNK_VERTICES_ASYNC
+    chunk_vertices_thread.terminate();
+#endif
     receiver_thread.terminate();
     if (connected)
     {
@@ -114,6 +123,9 @@ void GameState::init()
     connected = true;
     client_socket.setBlocking(true);
     receiver_thread.launch();
+#if CHUNK_VERTICES_ASYNC
+    chunk_vertices_thread.launch();
+#endif
 
     test_world.updateChunks(sf::Vector2i());
 }
@@ -234,19 +246,41 @@ void GameState::draw(sf::RenderTarget& target) const
 {
     target.setView(my_view);
 
-    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+    if (init_frames_to_skip > 0)
     {
-        target.draw(i->second->getGroundVertexArray(), ground_textures);
-        target.draw(i->second->getGroundDetailsVertexArray(anim_frame), ground_details_textures);
+        --init_frames_to_skip;
+        return;
     }
 
-    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
-        target.draw(i->second->getBlockSidesVertexArray(), block_textures);
+    {
+#if CHUNK_VERTICES_ASYNC
+        sf::Lock lock(vertex_array_swap_mutex);
+#else
+        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        {
+            if (i->second->vertexArraysOutOfDate())
+            {
+                i->second->generateVertices();
+                i->second->swapVertexArrays();
+            }
+        }
+#endif
 
-    entities.drawAll(target);
+        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        {
+            target.draw(i->second->getGroundVertexArray(), ground_textures);
+            target.draw(i->second->getGroundDetailsVertexArray(anim_frame), ground_details_textures);
+        }
 
-    for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
-        target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+            target.draw(i->second->getBlockSidesVertexArray(), block_textures);
+
+        entities.drawAll(target);
+
+        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+            target.draw(i->second->getBlockTopsVertexArray(), block_textures);
+
+    }
 
     entities.drawAllAbove(target);
 
@@ -294,7 +328,11 @@ bool GameState::startAndConnectLocalServer()
     //Start the server
     {
         std::stringstream strs;
+#ifdef WIN32
         strs << "bdl-server.exe " << client_socket.getLocalPort();
+#else
+        strs << "./bdl-server " << client_socket.getLocalPort();
+#endif
         strs.flush();
         log(INFO, "Starting server with command {}\n", strs.str());
 
@@ -650,6 +688,34 @@ void GameState::processPacketQueue()
         {
             log(ERROR, "Uknkown StoC packet request type; ignoring\n");
             request_queue.skip();
+        }
+    }
+}
+
+void GameState::chunkVerticesGenerationLoop()
+{
+    // the shared_ptr is used so that if World removes a chunk, we can still access it until we clear the rendered_chunk_list
+    // shared_ptr reference counting is atomic, no need for locks around shared_ptr
+    std::vector<std::shared_ptr<Chunk>> rendered_chunk_list; // used to prevent race conditions if chunks are added during the async rendering loop
+    while (true)
+    {
+        rendered_chunk_list.resize(0); // don't deallocate
+
+        test_world.chunkDeletionLock();
+        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        {
+            rendered_chunk_list.push_back(i->second);
+        }
+        test_world.chunkDeletionUnlock();
+
+        for (const auto& chunk : rendered_chunk_list)
+        {
+            if (chunk->vertexArraysOutOfDate())
+            {
+                chunk->generateVertices();
+                sf::Lock lock_2(vertex_array_swap_mutex);
+                chunk->swapVertexArrays();
+            }
         }
     }
 }

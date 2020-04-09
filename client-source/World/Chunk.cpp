@@ -12,16 +12,24 @@
 const int Chunk::CHUNK_SIZE = 16;
 
 Chunk::Chunk(World& world, sf::Vector2i pos, const char* chunk_data, unsigned chunk_data_size, bool& success) :
-    blocks(CHUNK_SIZE*CHUNK_SIZE, 0),
-    grounds(CHUNK_SIZE*CHUNK_SIZE, 0),
-    tile_entities(CHUNK_SIZE*CHUNK_SIZE, nullptr),
-    pos(pos),
-    ground_vertices(sf::Quads, 4 * CHUNK_SIZE * CHUNK_SIZE),
-    block_side_vertices(sf::Quads),
-    block_top_vertices(sf::Quads),
-    game(world.getGame()),
-    world(world)
+      blocks(CHUNK_SIZE*CHUNK_SIZE, 0),
+      grounds(CHUNK_SIZE*CHUNK_SIZE, 0),
+      tile_entities(CHUNK_SIZE*CHUNK_SIZE, nullptr),
+      pos(pos),
+      vertices_ready(false),
+      game(world.getGame()),
+      world(world)
 {
+    for (int i = 0; i <= 1; ++i)
+    {
+        ground_vertices[i].setPrimitiveType(sf::Quads);
+        ground_vertices[i].resize(4 * CHUNK_SIZE * CHUNK_SIZE);
+        block_side_vertices[i].setPrimitiveType(sf::Quads);
+        block_side_vertices[i].clear();
+        block_top_vertices[i].setPrimitiveType(sf::Quads);
+        block_top_vertices[i].clear();
+    }
+
     size_t header_size = sizeof(int) * 3;
 
     if (chunk_data_size < getChunkDataSize() + header_size)
@@ -36,11 +44,12 @@ Chunk::Chunk(World& world, sf::Vector2i pos, const char* chunk_data, unsigned ch
 
 
     //Prepare vertices
-    for (int i = 0; i < 4; i++)
-    {
-        ground_detail_vertices.at(i).setPrimitiveType(sf::Quads);
-        ground_detail_vertices.at(i).clear();
-    }
+    for (int j = 0; j <= 1; ++j)
+        for (int i = 0; i < 4; i++)
+        {
+            ground_detail_vertices[j].at(i).setPrimitiveType(sf::Quads);
+            ground_detail_vertices[j].at(i).clear();
+        }
 
     for (int i = 0; i < 4; i++)
         notifyChunk(i);
@@ -59,7 +68,7 @@ void Chunk::notifyChunk(int direction) const
     assert(direction >= 0 && direction < 4);
     sf::Vector2i chunk = pos + utils::getRelativeBlock(direction);
     if (world.isChunkLoaded(chunk))
-        world.getChunkConst(chunk).mustRedoVertexArrays();
+        world.getChunkConst(chunk).invalidateVertexArrays();
 }
 
 const Block* Chunk::getBlock(int x, int y) const
@@ -98,7 +107,7 @@ void Chunk::setBlock(int x, int y, const Block* block)
     if (y == CHUNK_SIZE - 1)
         notifyChunk(2);
 
-    vertices_ready = false;
+    invalidateVertexArrays();
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
@@ -119,7 +128,7 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     if (y == CHUNK_SIZE - 1)
         notifyChunk(2);
 
-    vertices_ready = false;
+    invalidateVertexArrays();
 }
 
 void Chunk::generateVertices() const
@@ -131,22 +140,26 @@ void Chunk::generateVertices() const
     generateGroundDetailVertices();
     generateBlockSideVertices();
     generateBlockTopVertices();
+    assert(ground_vertices[gen_vx_id()].getVertexCount() != 0);
     vertices_ready = true;
     //log(INFO, "Chunk vertex array render took {}s.\n", clk.getElapsedTime().asSeconds());
 }
 
 void Chunk::generateGroundVertices() const
 {
+    auto& vertices = ground_vertices[gen_vx_id()];
+
     if (!ground_vertices_pos_ready)
     {
-        for (int x = 0; x < CHUNK_SIZE; x++)
-            for (int y = 0; y < CHUNK_SIZE; y++)
-            {
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + -.5f, pos.y * CHUNK_SIZE + y + -.5f);
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + 0.5f, pos.y * CHUNK_SIZE + y + -.5f);
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + 0.5f, pos.y * CHUNK_SIZE + y + 0.5f);
-                ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + -.5f, pos.y * CHUNK_SIZE + y + 0.5f);
-            }
+        for (int i = 0; i <= 1; ++i)
+            for (int x = 0; x < CHUNK_SIZE; x++)
+                for (int y = 0; y < CHUNK_SIZE; y++)
+                {
+                    ground_vertices[i][(x + y * CHUNK_SIZE) * 4 + 0].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + -.5f, pos.y * CHUNK_SIZE + y + -.5f);
+                    ground_vertices[i][(x + y * CHUNK_SIZE) * 4 + 1].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + 0.5f, pos.y * CHUNK_SIZE + y + -.5f);
+                    ground_vertices[i][(x + y * CHUNK_SIZE) * 4 + 2].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + 0.5f, pos.y * CHUNK_SIZE + y + 0.5f);
+                    ground_vertices[i][(x + y * CHUNK_SIZE) * 4 + 3].position = sf::Vector2f(pos.x * CHUNK_SIZE + x + -.5f, pos.y * CHUNK_SIZE + y + 0.5f);
+                }
         ground_vertices_pos_ready = true;
     }
     for (int x = 0; x < CHUNK_SIZE; x++)
@@ -156,18 +169,20 @@ void Chunk::generateGroundVertices() const
 
             Quad tr = tile.getGround()->getTextureVertices(tile);
 
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 0].texCoords = tr.verts[0];
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 1].texCoords = tr.verts[1];
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 2].texCoords = tr.verts[2];
-            ground_vertices[(x + y * CHUNK_SIZE) * 4 + 3].texCoords = tr.verts[3];
+            vertices[(x + y * CHUNK_SIZE) * 4 + 0].texCoords = tr.verts[0];
+            vertices[(x + y * CHUNK_SIZE) * 4 + 1].texCoords = tr.verts[1];
+            vertices[(x + y * CHUNK_SIZE) * 4 + 2].texCoords = tr.verts[2];
+            vertices[(x + y * CHUNK_SIZE) * 4 + 3].texCoords = tr.verts[3];
         }
 }
 
 void Chunk::generateGroundDetailVertices() const
-{
+{    
     for (int frame = 0; frame < 4; frame++)
     {
-        ground_detail_vertices[frame].clear();
+        auto& vertices = ground_detail_vertices[gen_vx_id()][frame];
+
+        vertices.clear();
         for (size_t x = 0; x < CHUNK_SIZE; x++)
             for (size_t y = 0; y < CHUNK_SIZE; y++)
             {
@@ -180,14 +195,15 @@ void Chunk::generateGroundDetailVertices() const
                 auto details = tile.getGround()->getSurfaceDetails(tile, frame);
 
                 for (size_t i = 0; i < details.getVertexCount(); i++)
-                    ground_detail_vertices[frame].append(details[i]);
+                    vertices.append(details[i]);
             }
     }
 }
 
 void Chunk::generateBlockSideVertices() const
 {
-    block_side_vertices.clear();
+    auto& vertices = block_side_vertices[gen_vx_id()];
+    vertices.clear();
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
@@ -201,7 +217,7 @@ void Chunk::generateBlockSideVertices() const
                 TextQuad plane = tile.getBlock()->getTopVertices(tile);
 
                 for (size_t i = 0; i < 4; i++)
-                    block_side_vertices.append(plane.verts[i]);
+                    vertices.append(plane.verts[i]);
 
                 continue;
             }
@@ -215,13 +231,14 @@ void Chunk::generateBlockSideVertices() const
             TextQuad side = tile.getBlock()->getSideVertices(tile);
 
             for (size_t i = 0; i < 4; i++)
-                block_side_vertices.append(side.verts[i]);
+                vertices.append(side.verts[i]);
         }
 }
 
 void Chunk::generateBlockTopVertices() const
 {
-    block_top_vertices.clear();
+    auto& vertices = block_top_vertices[gen_vx_id()];
+    vertices.clear();
     for (size_t x = 0; x < CHUNK_SIZE; x++)
         for (size_t y = 0; y < CHUNK_SIZE; y++)
         {
@@ -236,7 +253,7 @@ void Chunk::generateBlockTopVertices() const
             TextQuad top = tile.getBlock()->getTopVertices(tile);
 
             for (size_t i = 0; i < 4; i++)
-                block_top_vertices.append(top.verts[i]);
+                vertices.append(top.verts[i]);
         }
 }
 

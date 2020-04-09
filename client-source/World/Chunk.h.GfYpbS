@@ -65,28 +65,28 @@ public:
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundVertexArray() const
-    { ensureVerticesReady(); return ground_vertices[render_vx_id()]; }
+    { ensureVerticesReady(); return ground_vertices[current_vertex_array_index]; }
     /**
          * Gets the vertex array to draw the details on the ground
          * The texture to be used with that vertex array is "GROUND_DETAILS"
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundDetailsVertexArray(int frame) const
-    { ensureVerticesReady(); return ground_detail_vertices[render_vx_id()].at(frame); }
+    { ensureVerticesReady(); return ground_detail_vertices[current_vertex_array_index].at(frame); }
     /**
          * Gets the vertex array to draw the sides of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockSidesVertexArray() const
-    { ensureVerticesReady(); return block_side_vertices[render_vx_id()]; }
+    { ensureVerticesReady(); return block_side_vertices[current_vertex_array_index]; }
     /**
          * Gets the vertex array to draw the top of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockTopsVertexArray() const
-    { ensureVerticesReady(); return block_top_vertices[render_vx_id()]; }
+    { ensureVerticesReady(); return block_top_vertices[current_vertex_array_index]; }
 
 
     /**
@@ -100,10 +100,6 @@ public:
     inline bool vertexArraysOutOfDate() const
     {
         return !vertices_ready;
-    }
-    inline void swapVertexArrays()
-    {
-        current_vertex_array_index = 1 - current_vertex_array_index; // 1 => 0 OR 0 => 1
     }
 
     /**
@@ -134,11 +130,6 @@ public:
 
     bool to_be_removed = false;
 
-    inline int render_vx_id() const
-    { return current_vertex_array_index; }
-    inline int gen_vx_id() const
-    { return 1-current_vertex_array_index; }
-
 private:
     bool ready = false;
 
@@ -150,14 +141,13 @@ private:
     // some sort of double-swapping technique is used to
     mutable sf::VertexArray ground_vertices[2], block_side_vertices[2], block_top_vertices[2];
     mutable std::array<sf::VertexArray, 4> ground_detail_vertices[2];
-    mutable int current_vertex_array_index = 0; // only modified by the async rendered thread; use a mutex in the draw() part so the async renderer doesn't do a swap when drawing
+    mutable int current_vertex_array_index; // only modified by the async rendered thread; use a mutex in the draw() part so the async renderer doesn't do a swap when drawing
 
-    mutable std::atomic<bool> vertices_ready;
-    mutable bool ground_vertices_pos_ready = false;
+    mutable bool vertices_ready = false, ground_vertices_pos_ready = false;
 
     inline void ensureVerticesReady() const
     {
-        //assert(vertices_ready);
+        assert(vertices_ready);
     }
 
     void generateGroundVertices() const;

@@ -8,6 +8,40 @@
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Networking/ServerToClientRequests.h"
 
+#include <mutex>
+#include <condition_variable>
+
+class semaphore
+{
+private:
+    std::mutex mutex_;
+    std::condition_variable condition_;
+    unsigned long count_ = 0; // Initialized as locked.
+
+public:
+    void notify() {
+        std::lock_guard<decltype(mutex_)> lock(mutex_);
+        ++count_;
+        condition_.notify_one();
+    }
+
+    void wait() {
+        std::unique_lock<decltype(mutex_)> lock(mutex_);
+        while(!count_) // Handle spurious wake-ups.
+            condition_.wait(lock);
+        --count_;
+    }
+
+    bool try_wait() {
+        std::lock_guard<decltype(mutex_)> lock(mutex_);
+        if(count_) {
+            --count_;
+            return true;
+        }
+        return false;
+    }
+};
+
 namespace TinyProcessLib
 {
 class Process;
@@ -56,8 +90,12 @@ class GameState : public State
         EntitiesManager& entities;
 
         //Rendering stuff
+        mutable int init_frames_to_skip;
         sf::View my_view;
         float zoom = 10.f;
+        sf::Thread chunk_vertices_thread;
+        mutable sf::Mutex vertex_array_swap_mutex;
+        void chunkVerticesGenerationLoop();
 
         sf::Clock anim_clock;
         int anim_frame = 0;

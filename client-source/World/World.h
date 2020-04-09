@@ -5,6 +5,8 @@
 #include "../Utils/Utils.h"
 #include "../../common-source/Utils/TileReference.h"
 
+#include <SFML/System/Mutex.hpp>
+
 #include <unordered_map>
 #include <memory>
 
@@ -178,12 +180,17 @@ class World
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
         inline size_t getChunksCount() const { return chunks.size(); };
-        inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::unordered_map<uint64_t, std::shared_ptr<Chunk>>::const_iterator
             getChunksBegin() const { return chunks.cbegin(); }
-        inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
+        inline std::unordered_map<uint64_t, std::shared_ptr<Chunk>>::const_iterator
             getChunksEnd() const { return chunks.cend(); }
 
         inline void setSeed(int new_seed) { seed = new_seed; }
+
+        inline void chunkDeletionLock()
+        { chunk_deletion_mutex.lock(); }
+        inline void chunkDeletionUnlock()
+        { chunk_deletion_mutex.unlock(); }
 
     protected:
         //Entities
@@ -196,7 +203,9 @@ class World
         const GameGrounds& game_grounds_manager;
         int seed;
 
-        std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
+        sf::Mutex chunk_deletion_mutex;
+        // shared_pointer is used so that if a part of the code is still asynchronously temporarly processing a chunk when World deletes it, it won't access freed memory
+        std::unordered_map<uint64_t, std::shared_ptr<Chunk>> chunks;
         std::vector<Chunk*> chunks_to_add;
         std::unordered_map<uint64_t, sf::Clock> pending_chunk_requests;
         sf::Vector2i player_chunk_pos;

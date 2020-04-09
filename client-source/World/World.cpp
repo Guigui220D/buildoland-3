@@ -78,7 +78,9 @@ void World::updateLoadedChunk(float delta_time)
         i++;
     }
 
+
     //Unload all the chunks that need to be removed
+    chunk_deletion_mutex.lock();
     for (auto i = chunks.begin(); i != chunks.end();)
     {
         if (i->second->to_be_removed)
@@ -99,6 +101,7 @@ void World::updateLoadedChunk(float delta_time)
         else
             i++;
     }
+    chunk_deletion_mutex.unlock();
 
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
@@ -201,6 +204,9 @@ uint16_t World::getBlockId(sf::Vector2i pos)
 {
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
+
+    sf::Lock ensure_chunk_isnt_deleted(chunk_deletion_mutex);
+
     if (!isChunkLoaded(chunk_pos))
         return GameBlocks::AIR->getId();
     return getChunkConst(chunk_pos).getBlockId(bp.x, bp.y);
@@ -210,6 +216,9 @@ uint16_t World::getGroundId(sf::Vector2i pos)
 {
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
+
+    sf::Lock ensure_chunk_isnt_deleted(chunk_deletion_mutex);
+
     if (!isChunkLoaded(chunk_pos))
         return GameGrounds::ERROR->getId();
     return getChunkConst(chunk_pos).getGroundId(bp.x, bp.y);

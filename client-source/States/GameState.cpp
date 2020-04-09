@@ -328,7 +328,7 @@ bool GameState::startAndConnectLocalServer()
     //Start the server
     {
         std::stringstream strs;
-#ifdef WIN32
+#ifdef _WIN32
         strs << "bdl-server.exe " << client_socket.getLocalPort();
 #else
         strs << "./bdl-server " << client_socket.getLocalPort();

@@ -24,6 +24,10 @@ public:
     static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
 
     Chunk(World& world, sf::Vector2i pos, const char *chunk_data, unsigned chunk_data_size, bool& success);
+    /**
+        This is only for the dummy chunk
+    */
+    Chunk(World& world);
     ~Chunk();
 
     inline Game& getGame() const { return game; }
@@ -135,9 +139,9 @@ public:
     bool to_be_removed = false;
 
     inline int render_vx_id() const
-    { return current_vertex_array_index; }
+        { return current_vertex_array_index; }
     inline int gen_vx_id() const
-    { return 1-current_vertex_array_index; }
+        { return 1 - current_vertex_array_index; }
 
 private:
     bool ready = false;

@@ -6,18 +6,18 @@
 #include "../../Networking/NetworkingCodes.h"
 
 #ifdef CLIENT_SIDE
-#include "../../../client-source/Game.h"
-#include "../../../client-source/World/World.h"
-#include "../../../client-source/States/GameState.h"
-
-#include "../../../client-source/Packets/WalkPacket.h"
+    #include "../../../client-source/Game.h"
+    #include "../../../client-source/World/World.h"
+    #include "../../../client-source/States/GameState.h"
+    #include "../../../client-source/Packets/BreakBlockPacket.h"
+    #include "../../../client-source/Packets/WalkPacket.h"
 #else
-#include "../../../server-source/World/World.h"
-#include "../../../server-source/Server/Client.h"
-#include "../../../server-source/Packets/PlayerRectificationPacket.h"
-#include "../../../server-source/Packets/FullInventoryPacket.h"
-#include "../../../server-source/Server/Server.h"
-#include <cstdio>
+    #include "../../../server-source/World/World.h"
+    #include "../../../server-source/Server/Client.h"
+    #include "../../../server-source/Packets/PlayerRectificationPacket.h"
+    #include "../../../server-source/Packets/FullInventoryPacket.h"
+    #include "../../../server-source/Server/Server.h"
+    #include <cstdio>
 #endif
 
 #include "../../Blocks/GameBlocks.h"
@@ -68,6 +68,16 @@ Player::~Player()
 void Player::update(float delta)
 {
 #ifdef CLIENT_SIDE
+    if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
+        autowalk = true;
+
+    if (aw_break.getElapsedTime().asSeconds() >= .5f)
+    {
+        BreakBlockPacket bp(getBlockOn() + sf::Vector2i(1, 0));
+        getWorld().getState().sendToServer(bp);
+        aw_break.restart();
+    }
+
     if (getId() == Player::this_player_id)
     {
         sf::Vector2f dir;
@@ -80,7 +90,7 @@ void Player::update(float delta)
                 dir += sf::Vector2f(-1.f, 0);
             if (getWorld().getGame().getBindingsManager().held("move_down"))
                 dir += sf::Vector2f(0, 1.f);
-            if (getWorld().getGame().getBindingsManager().held("move_right"))
+            if (getWorld().getGame().getBindingsManager().held("move_right") || autowalk)
                 dir += sf::Vector2f(1.f, 0);
         }
 

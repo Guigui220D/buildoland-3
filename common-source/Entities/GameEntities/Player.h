@@ -67,6 +67,9 @@ class Player : public LivingEntity
 
         sf::Vector2f last_walking_direction;
         sf::Clock frequent_walk_update;
+
+        bool autowalk = false;
+        sf::Clock aw_break;
         #else
         const Client& client;
         #endif

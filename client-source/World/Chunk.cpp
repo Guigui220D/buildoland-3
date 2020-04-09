@@ -58,6 +58,18 @@ Chunk::Chunk(World& world, sf::Vector2i pos, const char* chunk_data, unsigned ch
     ready = true;
 }
 
+Chunk::Chunk(World& world)  :
+    blocks(CHUNK_SIZE*CHUNK_SIZE, 0),
+    grounds(CHUNK_SIZE*CHUNK_SIZE, 0),
+    tile_entities(CHUNK_SIZE*CHUNK_SIZE, nullptr),
+    pos(sf::Vector2i()),
+    vertices_ready(true),
+    game(world.getGame()),
+    world(world)
+{
+    ready = true;
+}
+
 Chunk::~Chunk()
 {
     //dtor
@@ -177,7 +189,7 @@ void Chunk::generateGroundVertices() const
 }
 
 void Chunk::generateGroundDetailVertices() const
-{    
+{
     for (int frame = 0; frame < 4; frame++)
     {
         auto& vertices = ground_detail_vertices[gen_vx_id()][frame];

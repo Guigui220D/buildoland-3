@@ -10,6 +10,8 @@
 
 #include "../Packets/ChunkRequestPacket.h"
 
+#include "../../common-source/Utils/Log.h"
+
 int unsigned World::RENDER_DISTANCE = 3;
 
 World::World(GameState& state_game) :
@@ -17,7 +19,8 @@ World::World(GameState& state_game) :
     state_game(state_game),
     game(state_game.getGame()),
     game_blocks_manager(state_game.getGame().getBlocksManager()),
-    game_grounds_manager(state_game.getGame().getGroundsManager())
+    game_grounds_manager(state_game.getGame().getGroundsManager()),
+    dummy(*this)
 {
     std::srand(time(0));
     seed = std::rand() << 16 | std::rand();
@@ -29,7 +32,8 @@ World::World(GameState& state_game, int seed) :
     game(state_game.getGame()),
     game_blocks_manager(state_game.getGame().getBlocksManager()),
     game_grounds_manager(state_game.getGame().getGroundsManager()),
-    seed(seed)
+    seed(seed),
+    dummy(*this)
 {
 }
 
@@ -46,8 +50,10 @@ void World::updateLoadedChunk(float delta_time)
     {
         uint64_t key = utils::combine(chunk->getPos().x, chunk->getPos().y);
 
+        chunk_deletion_mutex.lock();
         if (chunks.find(key) != chunks.end())
             chunks.erase(chunks.find(key));
+        chunk_deletion_mutex.unlock();
 
         chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
 
@@ -157,7 +163,11 @@ const Chunk& World::getChunkConst(sf::Vector2i pos) const
     auto chunk_ptr = chunks.find(key);
 
     if (chunk_ptr == chunks.end())
+    {
+        log(WARN, "A chunk that doesn't exists was accessed, returning dummy.\n");
         throw new std::out_of_range("World::getChunkConst : tried to access chunk that doesn't exist.");
+        return dummy;
+    }
 
     return *chunk_ptr->second;
 }

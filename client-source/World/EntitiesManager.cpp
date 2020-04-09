@@ -182,7 +182,7 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
 
     if (ent_i != entities_map.cend())
     {
-        log(ERROR, "Another entity with the same ID exists, deleting it.\n");
+        //log(ERROR, "Another entity with the same ID exists, deleting it.\n");
 
         entities_vector.erase(std::remove(entities_vector.begin(), entities_vector.end(), ent_i->second), entities_vector.end());
         delete ent_i->second;

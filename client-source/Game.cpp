@@ -80,7 +80,12 @@ int Game::run()
 
         }
 
-        update(clock.restart().asSeconds());
+        float s = clock.restart().asSeconds();
+
+        if (s >= .02f)
+            log(INFO, "Spikelag of : {}s\n", s);
+
+        update(s);
 
         //FPS VIEWER
         dt_viewer.setSize(sf::Vector2f(80.f, dt_clk.restart().asMilliseconds()));

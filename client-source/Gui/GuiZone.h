@@ -35,6 +35,7 @@ class GuiZone
         bool handleEvent(sf::Event& event);
         void update(float delta_time);
         void draw(sf::RenderTarget& target) const;
+        void setTransparency(uint8_t fade);
 
         inline void addElement(GuiElement* element) { elements.push_back(element); }
 

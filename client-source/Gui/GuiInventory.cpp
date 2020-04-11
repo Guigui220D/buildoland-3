@@ -2,6 +2,9 @@
 
 #include "../Game.h"
 
+float constexpr operator""_p(long double arg)
+    { return arg * (75.f / 11.f); } //Magic number. Because the image is 110 pixels wide but is fit on a 750 units area
+
 GuiInventory::GuiInventory(Game& game, PlayerInventory& inv) :
     GuiElement(game),
     inventory(inv)
@@ -21,8 +24,8 @@ bool GuiInventory::handleEvent(sf::Event& event)
     if (event.type == sf::Event::MouseButtonPressed)
     {
         sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y)/*, getView()*/);
-        pos -= sf::Vector2f(6.8181f, 47.7272f);
-        pos /= 122.7272f;
+        pos -= sf::Vector2f(1.0_p, 7.0_p);
+        pos /= 18.0_p;
 
         sf::Vector2i i_pos(pos.x, pos.y);
 
@@ -51,7 +54,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
         if (stack.getAmount() > 1)
         {
             number_draw.setString(std::to_string(stack.getAmount()));
-            number_draw.setPosition(sf::Vector2f(122.7272f * x + 20.4545f, 122.7272f * y + 54.5454f));
+            number_draw.setPosition(sf::Vector2f(18.0_p * x + 3.0_p, 18.0_p * y + 8.0_p));
             target.draw(number_draw);
         }
     }
@@ -60,13 +63,13 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     if (hand)
     {
         sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
-        number_draw.setPosition(pos + sf::Vector2f(-54.5454f, 54.5454f)/2.f);
+        number_draw.setPosition(pos + sf::Vector2f(-8.0_p, 8.0_p) / 2.f);
 
         sf::Vertex vertices[4];
-        vertices[0].position = pos - sf::Vector2f(54.5454f, 54.5454f)/2.f;
-        vertices[1].position = vertices[0].position + sf::Vector2f(54.5454f, 0);
-        vertices[2].position = vertices[0].position + sf::Vector2f(54.5454f, 54.5454f);
-        vertices[3].position = vertices[0].position + sf::Vector2f(0, 54.5454f);
+        vertices[0].position = pos - sf::Vector2f(8.0_p, 8.0_p) / 2.f;
+        vertices[1].position = vertices[0].position + sf::Vector2f(8.0_p, 0);
+        vertices[2].position = vertices[0].position + sf::Vector2f(8.0_p, 8.0_p);
+        vertices[3].position = vertices[0].position + sf::Vector2f(0, 8.0_p);
         hand.getItem()->addTexturedVertices(hand, vertices);
 
         for (int i = 0; i < 4; ++i)
@@ -97,15 +100,15 @@ void GuiInventory::draw(sf::RenderTarget& target) const
             if (stack.getAmount() > 1)
             {
                 number_draw.setString(std::to_string(stack.getAmount()));
-                number_draw.setPosition(sf::Vector2f(125.f * x + 20.4545f, 125.f * y + 54.5454f));
+                number_draw.setPosition(sf::Vector2f(18.0_p * x + 3.0_p, 18.0_p * y + 8.0_p));
                 target.draw(number_draw);
             }
         }
 
     {
         sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
-        pos -= sf::Vector2f(6.8181f, 47.7272f);
-        pos /= 54.5454f;
+        pos -= sf::Vector2f(1.0_p, 7.0_p);
+        pos /= 18.0_p;
 
         sf::Vector2i i_pos(pos.x, pos.y);
 
@@ -118,7 +121,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
             if (stack)
             {
                 hover_text.setString(stack.getItem()->getDisplayName());
-                hover_text.setPosition(getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow())) - sf::Vector2f(0, 4.f));
+                hover_text.setPosition(getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow())) + sf::Vector2f(0, 2.0_p));
                 target.draw(hover_text);
             }
         }
@@ -137,7 +140,7 @@ void GuiInventory::init()
 
     texture = &getGame().getResourceManager().getTexture("INVENTORY");
     rectangle.setTexture(texture);
-    rectangle.setSize(sf::Vector2f(750.f, 545.45f));
+    rectangle.setSize(sf::Vector2f(110.0_p, 80.0_p));
     rectangle.setFillColor(sf::Color(255, 255, 255, 200));
 
     block_textures = &getGame().getResourceManager().getTexture("BLOCK_TEXTURES");
@@ -173,10 +176,10 @@ void GuiInventory::update(float delta_time)
                 continue;
 
             sf::Vertex vertices[4];
-            vertices[0].position = sf::Vector2f(125.f * x + 13.6363f, 125.f * y + 54.5454f); //Don't question the magic numbers please
-            vertices[1].position = vertices[0].position + sf::Vector2f(109.0909f, 0);
-            vertices[2].position = vertices[0].position + sf::Vector2f(109.0909f, 109.0909f);
-            vertices[3].position = vertices[0].position + sf::Vector2f(0, 109.0909f);
+            vertices[0].position = sf::Vector2f(18.0_p * x + 2.0_p, 18.0_p * y + 8.0_p);
+            vertices[1].position = vertices[0].position + sf::Vector2f(16.0_p, 0);
+            vertices[2].position = vertices[0].position + sf::Vector2f(16.0_p, 16.0_p);
+            vertices[3].position = vertices[0].position + sf::Vector2f(0, 16.0_p);
             stack.getItem()->addTexturedVertices(stack, vertices);
 
             for (int i = 0; i < 4; ++i)

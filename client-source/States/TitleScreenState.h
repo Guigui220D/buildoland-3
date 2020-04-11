@@ -4,7 +4,6 @@
 #include "MainMenuState.h"
 
 #include "../Gui/GuiZone.h"
-#include "../Gui/GuiTitle.h"
 #include "../Gui/GuiImage.h"
 
 class TitleScreenState : public LoadingScreenState<MainMenuState>

@@ -14,6 +14,7 @@ class GuiElement
         virtual bool handleEvent(sf::Event& event);
         virtual void draw(sf::RenderTarget& target) const;
         virtual void update(float delta_time);
+        virtual void setTransparency(uint8_t fade);
 
         inline Game& getGame() const { return game; }
 

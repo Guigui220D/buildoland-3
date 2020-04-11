@@ -1,5 +1,14 @@
 #include "InventoryMenuState.h"
 
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+
+#include "../../client-source/Settings/BindingsManager.h"
+
+#include "../Gui/GuiInventory.h"
+#include "../../common-source/Items/playerInventory.h"
+
 #include "../../client-source/Game.h"
 
 InventoryMenuState::InventoryMenuState(Game& game, PlayerInventory& inv, unsigned int id) :

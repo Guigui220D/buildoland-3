@@ -1,12 +1,14 @@
 #pragma once
 
-#include <SFML/Network.hpp>
+#include <SFML/System/Clock.hpp>
+
 #include <vector>
 
-#include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../common-source/Networking/ECCPacket.h"
 #include "../../common-source/Networking/IpAndPort.h"
 
 class Server;
+class Player;
 
 class Client
 {

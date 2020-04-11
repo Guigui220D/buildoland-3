@@ -1,11 +1,8 @@
 #pragma once
 
-#include "Chunk.h"
-
 #include "../Utils/Utils.h"
-#include "EntitiesManager.h"
-#include "Generator.h"
 #include "../../common-source/Utils/TileReference.h"
+#include "../../common-source/Networking/ECCPacket.h"
 
 #include <unordered_map>
 #include <memory>
@@ -13,10 +10,13 @@
 class Server;
 class Block;
 class Ground;
+class Chunk;
 
 class GameBlocks;
 class GameGrounds;
 class ItemsRegister;
+class Generator;
+class EntitiesManager;
 
 class World
 {
@@ -42,7 +42,7 @@ class World
         */
         void sendToSubscribersWithException(ECCPacket& packet, sf::Vector2i chunk_a, sf::Vector2i chunk_b) const;
 
-        EntitiesManager& getEntityManager() { return entities; }
+        EntitiesManager& getEntityManager() { return *entities; }
 
         inline Server& getServer() const { return server; }
 
@@ -83,44 +83,13 @@ class World
          * @param block_pos : the position of the block
          * @return The position of the chunk
          */
-        static inline sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos)
-        {
-            if (block_pos.x < -1)
-                block_pos.x++;
-            if (block_pos.y < -1)
-                block_pos.y++;
-
-            sf::Vector2i result(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE);
-
-            if (block_pos.x < 0)
-                result.x--;
-            if (block_pos.y < 0)
-                result.y--;
-
-            return result;
-        }
+        static sf::Vector2i getChunkPosFromBlockPos(sf::Vector2i block_pos);
         /**
          * Calculate the position of the block inside the chunk it is in
          * @param block_pos : the position of the block
          * @return The position of the block inside its chunk
          */
-        static inline sf::Vector2i getBlockPosInChunk(sf::Vector2i block_pos)
-        {
-            //sf::Vector2i chunk_pos = getChunkPosFromBlockPos(block_pos);
-            sf::Vector2i result(block_pos.x % Chunk::CHUNK_SIZE, block_pos.y % Chunk::CHUNK_SIZE);
-
-            if (result.x < 0)
-                result.x += Chunk::CHUNK_SIZE;
-            if (result.y < 0)
-                result.y += Chunk::CHUNK_SIZE;
-
-            assert(result.x >= 0);
-            assert(result.y >= 0);
-            assert(result.x < Chunk::CHUNK_SIZE);
-            assert(result.y < Chunk::CHUNK_SIZE);
-
-            return result;
-        }
+        static sf::Vector2i getBlockPosInChunk(sf::Vector2i block_pos);
 
         inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
@@ -135,7 +104,7 @@ class World
 
     protected:
         //Entities
-        EntitiesManager entities;
+        std::unique_ptr<EntitiesManager> entities;
 
         Generator* generator;
 

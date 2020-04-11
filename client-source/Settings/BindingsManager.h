@@ -1,48 +1,24 @@
 #pragma once
 
 #include <string>
-#include <initializer_list>
 #include <unordered_map>
 
 #include <SFML/Window/Keyboard.hpp>
 #include <SFML/Window/Event.hpp>
 
-#include "../../external/json/Json.hpp"
+#include "../../external/json/JsonFwd.hpp"
 
 //This class can load and save bindings
 class BindingsManager
 {
+    friend class GameImpl;
     friend class Game;
 
 public:
     void update(const sf::Event& event);
 
-    bool pressed(const std::string& binding) const
-    {
-        auto i = bindings.find(binding);
-        if (i == bindings.end())
-            throw new std::out_of_range("Binding \"" + binding + "\" doesn't exist.");
-
-        for (const auto& binding : i->second)
-        {
-            if (binding.pressed)
-                return true;
-        }
-        return false;
-    }
-    bool held(const std::string& binding) const
-    {
-        auto i = bindings.find(binding);
-        if (i == bindings.end())
-            throw new std::out_of_range("Binding \"" + binding + "\" doesn't exist.");
-
-        for (const auto& binding : i->second)
-        {
-            if (binding.active)
-                return true;
-        }
-        return false;
-    }
+    bool pressed(const std::string& binding) const;
+    bool held(const std::string& binding) const;
 
 private:
     static const std::string BINDINGS_FILE_PATH;
@@ -90,5 +66,5 @@ private:
 
     std::unordered_map<std::string, BindingList> bindings;
 
-    nlohmann::json json;
+    std::unique_ptr<nlohmann::json> json;
 };

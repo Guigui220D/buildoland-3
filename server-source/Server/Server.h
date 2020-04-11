@@ -1,16 +1,18 @@
 #pragma once
 
-#include <SFML/Network.hpp>
 #include <vector>
 #include <atomic>
 
-#include "../World/World.h"
+#include <SFML/Network/UdpSocket.hpp>
+#include <SFML/System/Thread.hpp>
 
 #include "../../common-source/Networking/ClientToServerRequests.h"
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Items/ItemsRegister.h"
 
 #include "ClientsManager.h"
+
+class World;
 
 class Server
 {
@@ -45,7 +47,7 @@ class Server
 
         inline ClientsManager& getClientsManager() { return clients_manager; }
 
-        inline World& getWorld() { return world; }
+        inline World& getWorld() { return *world; }
 
     private:
         sf::UdpSocket server_socket;
@@ -75,5 +77,5 @@ class Server
         ItemsRegister items_register;
 
         //Theres only one world for the moment
-        World world;
+        std::unique_ptr<World> world;
 };

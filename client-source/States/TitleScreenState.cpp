@@ -1,5 +1,8 @@
 #include "TitleScreenState.h"
 
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+
 #include "../../common-source/Utils/Log.h"
 
 TitleScreenState::TitleScreenState(Game& game, unsigned int id) :
@@ -40,11 +43,7 @@ bool TitleScreenState::handleEvent(sf::Event& event)
 void TitleScreenState::beforeInitTask()
 {
     //We can access that because Game has TitleScreenState as a friend
-    this->getGame().language_manager.load(this->getGame().settings_manager.getString("game_language"));
-    this->getGame().loadResources();
-    this->getGame().game_blocks_manager.initBlocks();
-    this->getGame().game_grounds_manager.initGrounds();
-    this->getGame().game_items_register.initItems(this->getGame().game_blocks_manager, this->getGame().game_grounds_manager);
+    getGame().titleScreenInit();
 }
 
 void TitleScreenState::afterInitTask()

@@ -6,11 +6,18 @@
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Constants.h"
 #include "../../common-source/Entities/GameEntities/Player.h"
+#include" ../../common-source/Grounds/Ground.h"
+#include "../../common-source/Blocks/Block.h"
+#include "../../common-source/Blocks/GameBlocks.h"
+#include "../../common-source/Grounds/GameGrounds.h"
 #include "../../common-source/Utils/Log.h"
 
 #include "../Packets/ChunkRequestPacket.h"
 
 #include "../../common-source/Utils/Log.h"
+
+// for debug purposes
+#include <SFML/Window/Keyboard.hpp>
 
 int unsigned World::RENDER_DISTANCE = 3;
 

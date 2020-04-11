@@ -1,5 +1,7 @@
 #pragma once
 
+#include <SFML/Graphics/RectangleShape.hpp>
+
 #include "GuiElement.h"
 
 class GuiLoadingIcon : public GuiElement

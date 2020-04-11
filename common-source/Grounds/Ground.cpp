@@ -6,6 +6,7 @@
 
     #include "../../client-source/World/World.h"
     #include "../../client-source/Game.h"
+    #include "../../common-source/Grounds/GameGrounds.h"
 #else
     #include "../Items/ItemsRegister.h"
 #endif

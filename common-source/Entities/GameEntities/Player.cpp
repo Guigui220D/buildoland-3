@@ -1,25 +1,32 @@
 #include "Player.h"
 
+#include <algorithm>
+
 //TEST
 //#include <cmath>
 
 #include "../../Networking/NetworkingCodes.h"
 
 #ifdef CLIENT_SIDE
+    #include <SFML/Window/Keyboard.hpp>
+    #include <SFML/Graphics/RenderWindow.hpp>
+
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
     #include "../../../client-source/States/GameState.h"
     #include "../../../client-source/Packets/BreakBlockPacket.h"
     #include "../../../client-source/Packets/WalkPacket.h"
+    #include "../../../client-source/Res/ResourceManager.h"
+    #include "../../../client-source/Settings/BindingsManager.h"
 #else
     #include "../../../server-source/World/World.h"
-    #include "../../../server-source/Server/Client.h"
     #include "../../../server-source/Packets/PlayerRectificationPacket.h"
     #include "../../../server-source/Packets/FullInventoryPacket.h"
     #include "../../../server-source/Server/Server.h"
-    #include <cstdio>
+    #include "../../../server-source/World/Chunk.h"
 #endif
 
+#include "../../Blocks/Block.h"
 #include "../../Blocks/GameBlocks.h"
 
 #include "../../../common-source/Constants.h"
@@ -194,7 +201,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
                 for (int i = -1; i <= 1; i += 2)
                 for (int j = -1; j <= 1; j += 2)
                 {
-                    sf::Vector2i cpos = World::getChunkPosFromBlockPos(getBlockOn() + sf::Vector2i(i, j));
+                    const sf::Vector2i cpos = World::getChunkPosFromBlockPos(getBlockOn() + sf::Vector2i(i, j));
 
                     if (std::find(sent.begin(), sent.end(), cpos) == sent.end())
                     {

@@ -11,7 +11,7 @@
 #include "../Grounds/GameGrounds.h"
 
 #ifdef CLIENT_SIDE
-    #include "../../client-source/Settings/LanguageManager.h"
+class LanguageManager;
 #endif // CLIENT_SIDE
 
 class ItemsRegister

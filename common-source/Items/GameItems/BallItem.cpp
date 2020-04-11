@@ -1,11 +1,11 @@
 #include "BallItem.h"
 
 #include "../ItemStack.h"
-#include "../../Entities/GameEntities/Player.h"
 
 #ifndef CLIENT_SIDE
     #include "../../../server-source/Server/ClientsManager.h"
     #include "../../../server-source/Packets/InventorySetPacket.h"
+    #include "../../Entities/GameEntities/Player.h"
 #endif // CLIENT_SIDE
 
 BallItem::BallItem() :

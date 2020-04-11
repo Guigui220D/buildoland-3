@@ -1,15 +1,14 @@
 #include "Game.h"
 
-#include <assert.h>
+#include <cassert>
 
 #include "States/TitleScreenState.h"
 
-Game::Game() :
-    game_items_register(language_manager),
-    audio_manager(resource_manager),
-    bg_zone(*this, sf::Vector2f(1.f, 1.f), GuiZone::Center, GuiZone::Top),
-    bg_image(new GuiImage(*this, sf::Vector2f(), sf::Vector2f(1000.f, 666.66f /*please don't summon demons*/), "Resources/Temp/background.png", false))
+#include "GamePimpl.h"
+
+Game::Game()
 {
+    pimpl = std::make_unique<GameImpl>(*this);
 }
 
 Game::~Game()
@@ -19,29 +18,29 @@ Game::~Game()
 
 int Game::init()
 {
-    settings_manager.load();
-    bindings_manager.load();
+    pimpl->settings_manager.load();
+    pimpl->bindings_manager.load();
 
-    window.create(sf::VideoMode(settings_manager.getInt("window_size_x"), settings_manager.getInt("window_size_y")), "BuildOLand 3");
+    pimpl->window.create(sf::VideoMode(pimpl->settings_manager.getInt("window_size_x"), pimpl->settings_manager.getInt("window_size_y")), "BuildOLand 3");
 
-    bg_zone.calculateView(window.getSize());
+    pimpl->bg_zone.calculateView(pimpl->window.getSize());
 
-    bool vsync = settings_manager.getBool("vsync_enabled");
+    bool vsync = pimpl->settings_manager.getBool("vsync_enabled");
 
     if (!vsync)
     {
-        int fps_limit = settings_manager.getInt("fps_limit");
+        int fps_limit = pimpl->settings_manager.getInt("fps_limit");
         if (fps_limit < 0)
             fps_limit = 0;
-        window.setFramerateLimit(fps_limit);
+        pimpl->window.setFramerateLimit(fps_limit);
     }
     else
-        window.setVerticalSyncEnabled(true);
+        pimpl->window.setVerticalSyncEnabled(true);
 
     addStateOnTop(new TitleScreenState(*this, 0));
 
-    bg_image->init();
-    bg_zone.addElement(bg_image);
+    pimpl->bg_image->init();
+    pimpl->bg_zone.addElement(pimpl->bg_image);
     return 0;
 }
 
@@ -58,26 +57,26 @@ int Game::run()
 	dt_viewer.setFillColor(sf::Color::Red);
 	dt_limit.setFillColor(sf::Color::Green);
 
-    while (window.isOpen())
+    while (pimpl->window.isOpen())
     {
 
         sf::Event e;
-        while (window.pollEvent(e))
+        while (pimpl->window.pollEvent(e))
         {
-            bindings_manager.update(e);
+            pimpl->bindings_manager.update(e);
 
             switch (e.type)
             {
             case sf::Event::Closed:
-                window.close();
+                pimpl->window.close();
                 break;
             case sf::Event::Resized:
-                bg_zone.calculateView(sf::Vector2u(e.size.width, e.size.height));
+                pimpl->bg_zone.calculateView(sf::Vector2u(e.size.width, e.size.height));
             default:
                 {
-                    for (int i = states_stack.size() - 1; i >= 0; i--)
+                    for (int i = pimpl->states_stack.size() - 1; i >= 0; i--)
                     {
-                        std::unique_ptr<State>& state = states_stack.at(i);
+                        std::unique_ptr<State>& state = pimpl->states_stack.at(i);
                         bool caught = state->handleEvent(e);
                         if (caught)
                             break;
@@ -98,38 +97,38 @@ int Game::run()
         //FPS VIEWER
         dt_viewer.setSize(sf::Vector2f(80.f, dt_clk.restart().asMilliseconds()));
 
-        window.clear();
+        pimpl->window.clear();
 
         //bg_zone.draw(window);
         //FPS VIEWER //TEMP
         draw();
 
-        window.setView(window.getDefaultView());
-        window.draw(dt_limit);
-        window.draw(dt_viewer);
+        pimpl->window.setView(pimpl->window.getDefaultView());
+        pimpl->window.draw(dt_limit);
+        pimpl->window.draw(dt_viewer);
 
-        window.display();
+        pimpl->window.display();
 
         //Remove states
-        for (auto i = states_stack.begin(); i != states_stack.end(); )
+        for (auto i = pimpl->states_stack.begin(); i != pimpl->states_stack.end(); )
         {
             if ((*i)->must_be_destroyed)
             {
                 (*i).reset();
-                states_stack.erase(i);
+                pimpl->states_stack.erase(i);
             }
             else i++;
         }
         //Add states on top
-        for (State*& state : states_to_add_on_top)
-            states_stack.push_back(std::unique_ptr<State>(state));
-        states_to_add_on_top.clear();
+        for (State*& state : pimpl->states_to_add_on_top)
+            pimpl->states_stack.push_back(std::unique_ptr<State>(state));
+        pimpl->states_to_add_on_top.clear();
         //Add states under the top
-        if (state_to_add_under_the_top)
+        if (pimpl->state_to_add_under_the_top)
         {
-            assert(states_stack.size());
-            states_stack.insert(states_stack.end() - 1, std::unique_ptr<State>(state_to_add_under_the_top));
-            state_to_add_under_the_top = nullptr;
+            assert(pimpl->states_stack.size());
+            pimpl->states_stack.insert(pimpl->states_stack.end() - 1, std::unique_ptr<State>(pimpl->state_to_add_under_the_top));
+            pimpl->state_to_add_under_the_top = nullptr;
         }
 
         count++;
@@ -155,42 +154,64 @@ void Game::addStateOnTop(State* state, bool init)
 {
     if (init)
         state->init();
-    states_to_add_on_top.push_back(state);
+    pimpl->states_to_add_on_top.push_back(state);
 }
 
 void Game::addStateUnderTop(State* state, bool init)
 {
-    assert(!state_to_add_under_the_top);
+    assert(!pimpl->state_to_add_under_the_top);
     if (init)
         state->init();
-    state_to_add_under_the_top = state;
+    pimpl->state_to_add_under_the_top = state;
 }
+
+sf::RenderWindow &Game::getWindow() { return pimpl->window; }
+
+const GameBlocks &Game::getBlocksManager() const { return pimpl->game_blocks_manager; }
+
+const GameGrounds &Game::getGroundsManager() const { return pimpl->game_grounds_manager; }
+
+const ItemsRegister &Game::getItemsRegister() const { return pimpl->game_items_register; }
+
+const ResourceManager &Game::getResourceManager() const { return pimpl->resource_manager; }
+
+AudioManager &Game::getAudioManager() { return pimpl->audio_manager; }
+
+SettingsManager &Game::getSettingsManager() { return pimpl->settings_manager; }
+
+LanguageManager &Game::getLanguageManager() { return pimpl->language_manager; }
+
+BindingsManager &Game::getBindingsManager() { return pimpl->bindings_manager; }
+
+void Game::useDefaultView() { pimpl->window.setView(pimpl->default_view); }
+
+State *Game::getTopState() const { return pimpl->states_stack.back().get(); }
 
 
 void Game::draw()
 {
-    if (states_stack.empty())
+    if (pimpl->states_stack.empty())
         return;
 
     unsigned int i;
-    for (i = states_stack.size() - 1; i > 0; i--)
+    for (i = pimpl->states_stack.size() - 1; i > 0; i--)
     {
-        if (!states_stack.at(i)->isDrawTransparent())
+        if (!pimpl->states_stack.at(i)->isDrawTransparent())
             break;
     }
-    for (; i < states_stack.size(); i++)
-        states_stack.at(i)->draw(window);
+    for (; i < pimpl->states_stack.size(); i++)
+        pimpl->states_stack.at(i)->draw(pimpl->window);
 }
 
 void Game::update(float delta_time)
 {
-    for (int i = states_stack.size() - 1; i >= 0; i--)
+    for (int i = pimpl->states_stack.size() - 1; i >= 0; i--)
     {
-        std::unique_ptr<State>& state = states_stack.at(i);
+        std::unique_ptr<State>& state = pimpl->states_stack.at(i);
         state->update(delta_time);
         if (!state->isUpdateTransparent())
             break;
     }
 
-    audio_manager.update();
+    pimpl->audio_manager.update();
 }

@@ -1,7 +1,6 @@
 #pragma once
 
-#include "GameState.h"
-#include "LoadingScreenState.h"
+#include "State.h"
 
 #include "../Gui/GuiZone.h"
 #include "../Gui/GuiButton.h"

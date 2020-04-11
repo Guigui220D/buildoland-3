@@ -2,7 +2,7 @@
 
 #include "../Server/Server.h"
 
-#include <SFML/Network.hpp>
+#include "../../common-source/Entities/Entity.h"
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../../common-source/Entities/EntityCodes.h"
 #include "../Packets/ForgetEntityPacket.h"

@@ -2,6 +2,16 @@
 
 #include <limits>
 
+#include "Ground.h"
+
+#include "StaticGround.h"
+#include "GameGrounds/GroundError.h"
+#include "GameGrounds/GroundDirt.h"
+#include "GameGrounds/GroundStone.h"
+#include "GameGrounds/GroundSand.h"
+#include "GameGrounds/GroundGrass.h"
+#include "GameGrounds/GroundWater.h"
+
 #include "../../common-source/Utils/Log.h"
 
 Ground const * const GameGrounds::ERROR = new GroundError();

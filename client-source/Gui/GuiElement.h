@@ -1,6 +1,10 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+namespace sf
+{
+class Event;
+class RenderTarget;
+}
 
 class Game;
 

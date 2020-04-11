@@ -1,7 +1,9 @@
 #include "ClientsManager.h"
 
 #include "Server.h"
-
+#include "../../server-source/World/World.h"
+#include "../../server-source/World/EntitiesManager.h"
+#include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Utils/Log.h"
 
 ClientsManager::ClientsManager(Server& server) :

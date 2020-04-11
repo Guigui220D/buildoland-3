@@ -1,10 +1,11 @@
 #pragma once
 
-#include <SFML/Network.hpp>
-
 #include <cassert>
+#include <memory>
 
-#include "../../common-source/Entities/TileEntity.h"
+#include <SFML/System/Vector2.hpp>
+
+#include "../../common-source/Networking/ECCPacket.h"
 
 //#include "../Ground/GameGrounds.h"
 
@@ -12,6 +13,7 @@ class Server;
 class World;
 class Block;
 class Ground;
+class TileEntity;
 
 class Chunk
 {

@@ -2,14 +2,11 @@
 
 #include <string>
 
-#include <SFML/System.hpp>
-#include <SFML/Network.hpp>
+#include <SFML/System/Vector2.hpp>
 
 #ifdef CLIENT_SIDE
     #include "../../client-source/Utils/TilesetHelper.h"
 #endif // CLIENT_SIDE
-
-#include "../Networking/NetworkingCodes.h"
 
 class World;
 class ItemStack;
@@ -33,7 +30,7 @@ class Item
         };
 
 
-        Item(const std::string name, uint32_t default_texture); //Default texture ignored by server
+        Item(const std::string& name, uint32_t default_texture); //Default texture ignored by server
         virtual ~Item();
 
         /**

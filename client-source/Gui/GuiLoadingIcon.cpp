@@ -1,5 +1,7 @@
 #include "GuiLoadingIcon.h"
 
+#include <SFML/Graphics/RenderTarget.hpp>
+
 GuiLoadingIcon::GuiLoadingIcon(Game& game) :
     GuiElement(game)
 {

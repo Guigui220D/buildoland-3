@@ -5,6 +5,9 @@
 #include "../../../external/perlin/PerlinNoise.hpp"
 #include <vector>
 
+class Ground;
+class Block;
+
 class NaturalGenerator : public Generator
 {
     public:

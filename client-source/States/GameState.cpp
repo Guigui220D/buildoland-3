@@ -5,13 +5,16 @@
 #include <cstring>
 #include <string>
 #include <sstream>
-#include <iostream>
 
-#include <thread>
-#include <chrono>
 #include <cmath>
 
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+
 #include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../common-source/Blocks/Block.h"
+#include "../common-source/Blocks/GameBlocks.h"
+#include "../common-source/Grounds/GameGrounds.h"
 
 #include "../Version.h"
 
@@ -19,12 +22,18 @@
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 
+#include "../../client-source/Res/ResourceManager.h"
+#include "../../client-source/Settings/BindingsManager.h"
+
 #include "../../external/tiny-process-library/process.hpp"
 
 #include "ErrorScreen.h"
 #include "InventoryMenuState.h"
+#include "StoC_InventoryUpdateCodes.h"
 
 #include "../Packets/BreakBlockPacket.h"
+
+#include "../World/World.h"
 
 #include "../../common-source/Utils/Log.h"
 
@@ -39,8 +48,8 @@ GameState::GameState(Game& game, unsigned int id) :
       remote_ip(sf::IpAddress::LocalHost),
       remote_port(0),
       receiver_thread(&GameState::receiverLoop, this),
-      test_world(*this),
-      entities(test_world.getEntityManager()),
+      test_world(std::make_unique<World>(*this)),
+      entities(test_world->getEntityManager()),
       init_frames_to_skip(20),
       chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
 {
@@ -55,8 +64,8 @@ GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, 
       remote_ip(server_address),
       remote_port(server_port),
       receiver_thread(&GameState::receiverLoop, this),
-      test_world(*this),
-      entities(test_world.getEntityManager()),
+      test_world(std::make_unique<World>(*this)),
+      entities(test_world->getEntityManager()),
       init_frames_to_skip(20),
       chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
 {
@@ -127,7 +136,7 @@ void GameState::init()
     chunk_vertices_thread.launch();
 #endif
 
-    test_world.updateChunks(sf::Vector2i());
+    test_world->updateChunks(sf::Vector2i());
 }
 
 bool GameState::handleEvent(sf::Event& event)
@@ -207,7 +216,7 @@ void GameState::update(float delta_time)
 
     processPacketQueue();
 
-    test_world.updateLoadedChunk(delta_time);
+    test_world->updateLoadedChunk(delta_time);
 
     entities.updateAll(delta_time);
 
@@ -219,7 +228,7 @@ void GameState::update(float delta_time)
 
         sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
-        bp_volume = test_world.getBlockPtr(world_pos_i)->hasVolume(TileReference(world_pos_i, test_world));
+        bp_volume = test_world->getBlockPtr(world_pos_i)->hasVolume(TileReference(world_pos_i, *test_world));
 
         block_pointer.setPosition(world_pos);
         block_pointer_icon.setPosition(world_pos);
@@ -256,7 +265,7 @@ void GameState::draw(sf::RenderTarget& target) const
 #if CHUNK_VERTICES_ASYNC
         sf::Lock lock(vertex_array_swap_mutex);
 #else
-        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
         {
             if (i->second->vertexArraysOutOfDate())
             {
@@ -266,18 +275,18 @@ void GameState::draw(sf::RenderTarget& target) const
         }
 #endif
 
-        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
         {
             target.draw(i->second->getGroundVertexArray(), ground_textures);
             target.draw(i->second->getGroundDetailsVertexArray(anim_frame), ground_details_textures);
         }
 
-        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
             target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
         entities.drawAll(target);
 
-        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
             target.draw(i->second->getBlockTopsVertexArray(), block_textures);
 
     }
@@ -453,7 +462,7 @@ bool GameState::receiveServerHandshake(bool known_port)
         return false;
     }   //Wrong version
 
-    test_world.setSeed(seed);
+    test_world->setSeed(seed);
 
     Player::this_player_id = player_id;
     log(INFO, "Received handshake from local server! Its version is {}. Our player has id {}.\n", vers, player_id);
@@ -651,7 +660,7 @@ void GameState::processPacketQueue()
         }
         else if (auto rq = request_queue.tryPop<SendChunkRequest>())
         {
-            test_world.addChunk(rq->pos, (const char*)rq->chunk_data.data(), rq->chunk_data.size());
+            test_world->addChunk(rq->pos, (const char*)rq->chunk_data.data(), rq->chunk_data.size());
         }
         else if (auto rq = request_queue.tryPop<EntityActionRequest>())
         {
@@ -661,17 +670,17 @@ void GameState::processPacketQueue()
         else if (auto rq = request_queue.tryPop<BlockUpdateRequest>())
         {
             sf::Vector2i chunk = World::getChunkPosFromBlockPos(rq->pos);
-            if (test_world.isChunkLoaded(chunk))
+            if (test_world->isChunkLoaded(chunk))
             {
-                test_world.getChunk(chunk).setBlock(World::getBlockPosInChunk(rq->pos), getGame().getBlocksManager().getBlockByID(rq->id));
+                test_world->getChunk(chunk).setBlock(World::getBlockPosInChunk(rq->pos), getGame().getBlocksManager().getBlockByID(rq->id));
             }
         }
         else if (auto rq = request_queue.tryPop<GroundUpdateRequest>())
         {
             sf::Vector2i chunk = World::getChunkPosFromBlockPos(rq->pos);
-            if (test_world.isChunkLoaded(chunk))
+            if (test_world->isChunkLoaded(chunk))
             {
-                test_world.getChunk(chunk).setGround(World::getBlockPosInChunk(rq->pos), getGame().getGroundsManager().getGroundByID(rq->id));
+                test_world->getChunk(chunk).setGround(World::getBlockPosInChunk(rq->pos), getGame().getGroundsManager().getGroundByID(rq->id));
             }
         }
         else if (auto rq = request_queue.tryPop<PlayerRectificationRequest>())
@@ -701,12 +710,12 @@ void GameState::chunkVerticesGenerationLoop()
     {
         rendered_chunk_list.resize(0); // don't deallocate
 
-        test_world.chunkDeletionLock();
-        for (auto i = test_world.getChunksBegin(); i != test_world.getChunksEnd(); i++)
+        test_world->chunkDeletionLock();
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
         {
             rendered_chunk_list.push_back(i->second);
         }
-        test_world.chunkDeletionUnlock();
+        test_world->chunkDeletionUnlock();
 
         for (const auto& chunk : rendered_chunk_list)
         {

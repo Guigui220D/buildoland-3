@@ -1,18 +1,17 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 #include <array>
 #include <cassert>
 #include <atomic>
 
-#include "../../common-source/Entities/TileEntity.h"
 #include "../../common-source/Utils/Log.h"
 
 class Game;
 class Block;
 class Ground;
 class World;
+class TileEntity;
 
 class Chunk
 {
@@ -69,28 +68,28 @@ public:
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundVertexArray() const
-    { ensureVerticesReady(); return ground_vertices[render_vx_id()]; }
+    { return ground_vertices[render_vx_id()]; }
     /**
          * Gets the vertex array to draw the details on the ground
          * The texture to be used with that vertex array is "GROUND_DETAILS"
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundDetailsVertexArray(int frame) const
-    { ensureVerticesReady(); return ground_detail_vertices[render_vx_id()].at(frame); }
+    { return ground_detail_vertices[render_vx_id()].at(frame); }
     /**
          * Gets the vertex array to draw the sides of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockSidesVertexArray() const
-    { ensureVerticesReady(); return block_side_vertices[render_vx_id()]; }
+    { return block_side_vertices[render_vx_id()]; }
     /**
          * Gets the vertex array to draw the top of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockTopsVertexArray() const
-    { ensureVerticesReady(); return block_top_vertices[render_vx_id()]; }
+    { return block_top_vertices[render_vx_id()]; }
 
 
     /**
@@ -158,11 +157,6 @@ private:
 
     mutable std::atomic<bool> vertices_ready;
     mutable bool ground_vertices_pos_ready = false;
-
-    inline void ensureVerticesReady() const
-    {
-        //assert(vertices_ready);
-    }
 
     void generateGroundVertices() const;
     void generateGroundDetailVertices() const;

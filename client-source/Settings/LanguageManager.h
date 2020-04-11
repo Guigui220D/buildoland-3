@@ -3,16 +3,18 @@
 #include <string>
 #include <initializer_list>
 #include <unordered_map>
+#include <memory>
 
-#include "../../external/json/Json.hpp"
+#include <SFML/System/String.hpp>
+
+#include "../../external/json/JsonFwd.hpp"
 #include "../../external/fmt/include/fmt/format.h"
 
 #include "../../common-source/Utils/Log.h"
 
-#include <SFML/System.hpp>
-
 class LanguageManager
 {
+    friend class GameImpl;
     friend class Game;
 
     public:
@@ -48,5 +50,5 @@ class LanguageManager
 
         std::unordered_map<std::string, const sf::String> strings;
 
-        nlohmann::json json;
+        std::unique_ptr<nlohmann::json> json;
 };

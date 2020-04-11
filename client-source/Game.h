@@ -1,24 +1,24 @@
 #pragma once
 
-#include <vector>
 #include <memory>
 
-#include <SFML/Graphics.hpp>
+namespace sf
+{
+class RenderWindow;
+}
 
-#include "States/State.h"
+class GameBlocks;
+class GameGrounds;
+class ItemsRegister;
+class ResourceManager;
+class AudioManager;
+class SettingsManager;
+class LanguageManager;
+class BindingsManager;
 
-#include "Settings/SettingsManager.h"
-#include "Settings/LanguageManager.h"
-#include "Settings/BindingsManager.h"
-#include "Res/ResourceManager.h"
-#include "Res/AudioManager.h"
+class State;
 
-#include "../common-source/Blocks/GameBlocks.h"
-#include "../common-source/Grounds/GameGrounds.h"
-#include "../common-source/Items/ItemsRegister.h"
-
-#include "Gui/GuiZone.h"
-#include "Gui/GuiImage.h"
+struct GameImpl;
 
 class Game
 {
@@ -56,50 +56,27 @@ class Game
          */
         void addStateUnderTop(State* state, bool init = true);
 
-        inline sf::RenderWindow& getWindow() { return window; }
+        sf::RenderWindow &getWindow();
 
-        inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
-        inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
+        const GameBlocks& getBlocksManager() const;
+        const GameGrounds& getGroundsManager() const;
 
-        inline const ItemsRegister& getItemsRegister() const { return game_items_register; }
+        const ItemsRegister& getItemsRegister() const;
 
-        inline const ResourceManager& getResourceManager() const { return resource_manager; }
-        inline AudioManager& getAudioManager() { return audio_manager; }
+        const ResourceManager &getResourceManager() const;
+        AudioManager& getAudioManager();
 
-        inline SettingsManager& getSettingsManager() { return settings_manager; }
-        inline LanguageManager& getLanguageManager() { return language_manager; }
-        inline BindingsManager& getBindingsManager() { return bindings_manager; }
+        SettingsManager& getSettingsManager();
+        LanguageManager& getLanguageManager();
+        BindingsManager& getBindingsManager();
 
-        inline void useDefaultView() { window.setView(default_view); }
+        void useDefaultView();
 
-        inline State* getTopState() const { return states_stack.back().get(); }
+        State* getTopState() const;
 
 
     private:
         friend class TitleScreenState;
-
-        sf::RenderWindow window;
-        sf::View default_view;
-
-        SettingsManager settings_manager;
-        LanguageManager language_manager;
-        BindingsManager bindings_manager;
-
-        GameBlocks game_blocks_manager;
-        GameGrounds game_grounds_manager;
-        ItemsRegister game_items_register;
-
-        ResourceManager resource_manager;
-        AudioManager audio_manager;
-
-        void loadResources();
-
-        unsigned int framerate_target = 60;
-
-        //All the states currently loaded
-        std::vector<std::unique_ptr<State>> states_stack;
-        std::vector<State*> states_to_add_on_top;
-        State* state_to_add_under_the_top = nullptr; //Wow long name
 
         /**
          * Draws states that need to be on the window
@@ -111,6 +88,8 @@ class Game
          */
         void update(float delta_time);
 
-        GuiZone bg_zone;
-        GuiImage* bg_image;
+        void loadResources();
+        void titleScreenInit();
+
+        std::unique_ptr<GameImpl> pimpl;
 };

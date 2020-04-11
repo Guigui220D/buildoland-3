@@ -1,7 +1,7 @@
 #pragma once
 
 #include "ItemStack.h"
-#include "../Networking/ECCPacket.h"
+
 #ifdef CLIENT_SIDE
 #include "../Networking/ServerToClientRequests.h"
 #endif
@@ -11,7 +11,6 @@
 class Player;
 
 #ifdef CLIENT_SIDE
-    #include <SFML/Network.hpp>
 class GameState;
 #else
 class Server;

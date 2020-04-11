@@ -2,12 +2,15 @@
 
 #include <fstream>
 
-#include <SFML/System.hpp>
+#include <SFML/System/Clock.hpp>
+
+#include "../../external/json/Json.hpp"
 
 #include "../../common-source/Utils/Log.h"
 
 LanguageManager::LanguageManager()
 {
+    json = std::make_unique<nlohmann::json>();
 }
 
 LanguageManager::~LanguageManager()
@@ -43,17 +46,17 @@ void LanguageManager::load(const std::string& language)
         if (!is_eng.is_open())
         {
             log(ERROR, "Could not load language file! This is gonna be messy :/\n");
-            json = "{}"_json;
+            *json = "{}"_json;
             return;
         }
         else
         {
             log(INFO, "Loaded eng as fallback language.\n");
-            is_eng >> json;
+            is_eng >> *json;
         }
     }
     else
-        is >> json;
+        is >> *json;
 
     success = true;
 
@@ -61,7 +64,7 @@ void LanguageManager::load(const std::string& language)
 
     log(INFO, "Started loading language... (language : {})", language_setting);
 
-    for (nlohmann::json::iterator i = json.begin(); i != json.end(); i++)
+    for (nlohmann::json::iterator i = json->begin(); i != json->end(); i++)
     {
         try
         {

@@ -3,9 +3,11 @@
 #include "../LivingEntity.h"
 
 #ifdef CLIENT_SIDE
-    #include "../../../client-source/Utils/Animation.h"
+#include "../../../client-source/Utils/Animation.h"
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
 #else
-    class Client;
+class Client;
 #include "../../../common-source/Networking/ClientToServerRequests.h"
 #endif // CLIENT_SIDE
 
@@ -15,62 +17,62 @@ class Chunk;
 
 class Player : public LivingEntity
 {
-    public:
-        #ifdef CLIENT_SIDE
-        static unsigned int this_player_id;
-        static Player* this_player;
-        #endif // CLIENT_SIDE
+public:
+#ifdef CLIENT_SIDE
+    static unsigned int this_player_id;
+    static Player* this_player;
+#endif // CLIENT_SIDE
 
-        inline unsigned short getEntityCode() const override { return Entities::Player; };
+    inline unsigned short getEntityCode() const override { return Entities::Player; };
 
-        #ifdef CLIENT_SIDE
-            Player(World& world, unsigned int id);
-        #else
-            Player(World& world, unsigned int id, const Client& client);
-        #endif // CLIENT_SIDE
-        ~Player();
+#ifdef CLIENT_SIDE
+    Player(World& world, unsigned int id);
+#else
+    Player(World& world, unsigned int id, const Client& client);
+#endif // CLIENT_SIDE
+    ~Player();
 
-        void update(float delta);
-        #ifdef CLIENT_SIDE
-        void draw(sf::RenderTarget& target) const;
+    void update(float delta);
+#ifdef CLIENT_SIDE
+    void draw(sf::RenderTarget& target) const;
 
-        void useHand(sf::Vector2i pos);
+    void useHand(sf::Vector2i pos);
 
-        bool takeNewEntityPacket(ECCPacket& packet) override;
-        #else
-        void handlePlayerActionRequest(const Networking::CtoS::PlayerActionRequest& rq);
+    bool takeNewEntityPacket(ECCPacket& packet) override;
+#else
+    void handlePlayerActionRequest(const Networking::CtoS::PlayerActionRequest& rq);
 
-        inline const Client& getClient() const { return client; }
+    inline const Client& getClient() const { return client; }
 
-        void makeNewEntityPacket(ECCPacket& packet) const override;
-        #endif
+    void makeNewEntityPacket(ECCPacket& packet) const override;
+#endif
 
-        inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
+    inline void setPosition(sf::Vector2f new_pos) { position = new_pos; }
 
-        bool isSubscribedTo(sf::Vector2i chunk, bool twice = false) const;
+    bool isSubscribedTo(sf::Vector2i chunk, bool twice = false) const;
 
-        inline PlayerInventory& getInventory() { return inventory; }
+    inline PlayerInventory& getInventory() { return inventory; }
 
-    private:
-        PlayerInventory inventory;
+private:
+    PlayerInventory inventory;
 
-        std::array<uint32_t, 4> outfit_colors;
+    std::array<uint32_t, 4> outfit_colors;
 
-        #ifdef CLIENT_SIDE
-        void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;
+#ifdef CLIENT_SIDE
+    void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override;
 
-        sf::RectangleShape base;
-        sf::RectangleShape shoes;
-        sf::RectangleShape pants;
-        sf::RectangleShape shirt;
-        sf::CircleShape shadow;
+    sf::RectangleShape base;
+    sf::RectangleShape shoes;
+    sf::RectangleShape pants;
+    sf::RectangleShape shirt;
+    sf::CircleShape shadow;
 
-        sf::Vector2f last_walking_direction;
-        sf::Clock frequent_walk_update;
+    sf::Vector2f last_walking_direction;
+    sf::Clock frequent_walk_update;
 
-        bool autowalk = false;
-        sf::Clock aw_break;
-        #else
-        const Client& client;
-        #endif
+    bool autowalk = false;
+    sf::Clock aw_break;
+#else
+    const Client& client;
+#endif
 };

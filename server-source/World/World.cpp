@@ -1,17 +1,22 @@
 #include "World.h"
 
-#include "../Utils/Utils.h"
 #include "../Server/Server.h"
+
+#include "../../common-source/Blocks/Block.h"
+#include "../../common-source/Grounds/Ground.h"
+#include "../../common-source/Entities/GameEntities/Player.h"
+#include "../../server-source/World/Chunk.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../Packets/SetTilePacket.h"
 
 #include "../../common-source/Utils/Log.h"
 
+#include "EntitiesManager.h"
 #include "Generators/NaturalGenerator.h"
 
 World::World(Server& server) :
-    entities(server),
+      entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(std::rand())),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
@@ -20,7 +25,7 @@ World::World(Server& server) :
 }
 
 World::World(Server& server, int seed) :
-    entities(server),
+    entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(seed)),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
@@ -154,4 +159,39 @@ void World::setGround(sf::Vector2i pos, Ground const * ground)
 
     SetTilePacket ground_set(true, ground->getId(), pos);
     sendToSubscribers(ground_set, chunk);
+}
+
+sf::Vector2i World::getChunkPosFromBlockPos(sf::Vector2i block_pos)
+{
+    if (block_pos.x < -1)
+        block_pos.x++;
+    if (block_pos.y < -1)
+        block_pos.y++;
+
+    sf::Vector2i result(block_pos.x / Chunk::CHUNK_SIZE, block_pos.y / Chunk::CHUNK_SIZE);
+
+    if (block_pos.x < 0)
+        result.x--;
+    if (block_pos.y < 0)
+        result.y--;
+
+    return result;
+}
+
+sf::Vector2i World::getBlockPosInChunk(sf::Vector2i block_pos)
+{
+    //sf::Vector2i chunk_pos = getChunkPosFromBlockPos(block_pos);
+    sf::Vector2i result(block_pos.x % Chunk::CHUNK_SIZE, block_pos.y % Chunk::CHUNK_SIZE);
+
+    if (result.x < 0)
+        result.x += Chunk::CHUNK_SIZE;
+    if (result.y < 0)
+        result.y += Chunk::CHUNK_SIZE;
+
+    assert(result.x >= 0);
+    assert(result.y >= 0);
+    assert(result.x < Chunk::CHUNK_SIZE);
+    assert(result.y < Chunk::CHUNK_SIZE);
+
+    return result;
 }

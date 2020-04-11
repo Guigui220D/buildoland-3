@@ -2,7 +2,15 @@
 
 #include <vector>
 
-#include <SFML/Graphics.hpp>
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/View.hpp>
+
+namespace sf
+{
+    class Event;
+}
 
 class Game;
 class GuiElement;

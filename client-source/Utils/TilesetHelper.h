@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/Rect.hpp>
 #include "Quad.h"
 
 template<size_t TextureSize, size_t TilesetWidth, size_t MarginSize>

@@ -1,13 +1,14 @@
 #include "Server.h"
 
-#include <assert.h>
+#include <cassert>
 #include <cstdlib>
 
-#include <thread>
-#include <chrono>
+#include <SFML/System/Sleep.hpp>
 
 #include "../Version.h"
 #include "../Utils/Utils.h"
+
+#include "../World/World.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../Packets/HandshakePacket.h"
@@ -16,9 +17,12 @@
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
 
+#include "../../server-source/World/EntitiesManager.h"
+#include "../../server-source/World/Generator.h"
+#include "../../server-source/World/Chunk.h"
+
 #include "../../common-source/Utils/Log.h"
 
-#include <exception>
 
 Server::Server(uint16_t client_port) :
       clients_manager(*this),
@@ -27,7 +31,7 @@ Server::Server(uint16_t client_port) :
       connection_open(false),
       blocks_manager(),
       grounds_manager(),
-      world(*this)
+      world(std::make_unique<World>(*this))
 {
 #ifndef SOLO
     assert(!client_port);
@@ -46,7 +50,7 @@ bool Server::init(uint16_t port)
     blocks_manager.initBlocks();
     grounds_manager.initGrounds();
     items_register.initItems(blocks_manager, grounds_manager);
-    world.init();
+    world->init();
 
     log(INFO, "\n");
 
@@ -69,22 +73,22 @@ bool Server::init(uint16_t port)
     receiver_thread.launch();
 
 #ifdef SOLO
-    unsigned int player_id = world.getEntityManager().getNextEntityId();
+    unsigned int player_id = world->getEntityManager().getNextEntityId();
 
-    Player* owner_player = new Player(world, player_id, clients_manager.getClient(owner));
+    Player* owner_player = new Player(*world, player_id, clients_manager.getClient(owner));
     clients_manager.getClient(owner).setPlayer(owner_player);
 
     ECCPacket handshake;
     handshake << Networking::StoC::FinalHandshake << Version::VERSION_SHORT;
-    handshake << world.getGenerator()->getSeed();
+    handshake << world->getGenerator()->getSeed();
     handshake << player_id;
     server_socket.send(handshake, owner.address, owner.port);
 
-    world.getEntityManager().newEntity(owner_player);
+    world->getEntityManager().newEntity(owner_player);
 #endif // SOLO
 
     for (int i = 0; i < 10; i++)
-        world.getEntityManager().newEntity(new TestEntity(world, world.getEntityManager().getNextEntityId()));
+        world->getEntityManager().newEntity(new TestEntity(*world, world->getEntityManager().getNextEntityId()));
 
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
@@ -106,7 +110,7 @@ void Server::run()
             log(INFO, "Tick took too much time! Running {}ms behind.\n", (ms - 50));
         }
         else
-            std::this_thread::sleep_for(std::chrono::milliseconds(50 - ms));
+            sf::sleep(sf::milliseconds(50 - ms));
 
         delta = server_clock.restart().asSeconds();
 
@@ -119,7 +123,7 @@ void Server::run()
         processPacketQueue();
 
         //Update entities
-        world.getEntityManager().updateAll(delta);
+        world->getEntityManager().updateAll(delta);
         //Update all worlds
 
         /*
@@ -305,7 +309,7 @@ void Server::processPacketQueue()
                 Client& client = clients_manager.getClient(rq->iandp);
                 if (client.hasPlayer())
                 {
-                    world.getEntityManager().removeEntity(client.getPlayer()->getId());
+                    world->getEntityManager().removeEntity(client.getPlayer()->getId());
                     client.setPlayer(nullptr);
                 }
 
@@ -326,16 +330,16 @@ void Server::processPacketQueue()
 
             log(INFO, "Connection accepted\n");
             {
-                unsigned int player_id = world.getEntityManager().getNextEntityId();
+                unsigned int player_id = world->getEntityManager().getNextEntityId();
 
                 clients_manager.addClient(rq->iandp);
-                Player* new_player = new Player(world, player_id, clients_manager.getClient(rq->iandp));
+                Player* new_player = new Player(*world, player_id, clients_manager.getClient(rq->iandp));
                 clients_manager.getClient(rq->iandp).setPlayer(new_player);
 
-                HandshakePacket handshake(world.getGenerator()->getSeed(), player_id);
+                HandshakePacket handshake(world->getGenerator()->getSeed(), player_id);
                 server_socket.send(handshake, rq->iandp.address, rq->iandp.port);
 
-                world.getEntityManager().newEntity(new_player);
+                world->getEntityManager().newEntity(new_player);
             }
             log(INFO, "New player added!\n");
         }
@@ -346,9 +350,9 @@ void Server::processPacketQueue()
             if (!clients_manager.isConnected(rq->iandp))
                 continue;
 
-            ECCPacket p = world.getChunk(rq->pos).getPacket();
+            ECCPacket p = world->getChunk(rq->pos).getPacket();
             server_socket.send(p, rq->iandp.address, rq->iandp.port);
-            world.getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
+            world->getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
         }
         else if (auto rq = request_queue.tryPop<EntityRequest>())
         {
@@ -357,7 +361,7 @@ void Server::processPacketQueue()
             if (!clients_manager.isConnected(rq->iandp))
                 continue;
 
-            world.getEntityManager().sendAddEntityToClient(rq->id, clients_manager.getClient(rq->iandp));
+            world->getEntityManager().sendAddEntityToClient(rq->id, clients_manager.getClient(rq->iandp));
         }
         else if (auto rq = request_queue.tryPop<PlayerActionRequest>())
         {

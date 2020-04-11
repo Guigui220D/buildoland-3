@@ -2,12 +2,18 @@
 
 #include "../Game.h"
 
+#include "../../common-source/Entities/TileEntity.h"
+
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
+#include "../common-source/Blocks/GameBlocks.h"
+#include "../common-source/Grounds/GameGrounds.h"
+
 #include "../../common-source/Utils/Log.h"
+
 #include "World.h"
 
-#include <assert.h>
+#include <cassert>
 
 const int Chunk::CHUNK_SIZE = 16;
 

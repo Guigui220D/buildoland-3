@@ -1,8 +1,12 @@
 #pragma once
 
 #include <unordered_map>
+#include <memory>
 
-#include <SFML/Audio.hpp>
+namespace sf
+{
+class Sound;
+}
 
 class ResourceManager;
 
@@ -45,7 +49,7 @@ class AudioManager
     private:
         ResourceManager& resource_manager;
 
-        std::unordered_map<unsigned int, sf::Sound> playing_sounds;
+        std::unordered_map<unsigned int, std::unique_ptr<sf::Sound>> playing_sounds;
 
         unsigned int next_sound_id = 1;
 };

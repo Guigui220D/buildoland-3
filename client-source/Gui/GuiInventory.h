@@ -1,7 +1,17 @@
 #pragma once
 #include "GuiElement.h"
 
-#include "../../common-source/Items/PlayerInventory.h"
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+
+namespace sf
+{
+class Texture;
+}
+
+#include "../../common-source/Items/Item.h"
+
+class PlayerInventory;
 
 class GuiInventory : public GuiElement
 {

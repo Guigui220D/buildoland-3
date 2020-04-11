@@ -1,11 +1,11 @@
 #pragma once
 
 #include <string>
-#include <SFML/System.hpp>
 
 #ifdef CLIENT_SIDE
     #include "../../client-source/Utils/TilesetHelper.h"
     #include "../../client-source/Utils/Utils.h"
+#include <SFML/Graphics/VertexArray.hpp>
 #else
     #include "../Items/ItemStack.h"
     #include <vector>

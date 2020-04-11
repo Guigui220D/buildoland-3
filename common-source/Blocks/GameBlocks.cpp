@@ -1,5 +1,14 @@
 #include "GameBlocks.h"
 
+#include "Block.h"
+
+#include "GameBlocks/BlockAir.h"
+#include "GameBlocks/BlockError.h"
+#include "GameBlocks/BlockBoulder.h"
+#include "GameBlocks/BlockTree.h"
+
+#include "GroundBlock.h"
+
 #include <limits>
 
 #include "../../common-source/Utils/Log.h"

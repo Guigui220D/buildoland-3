@@ -4,7 +4,12 @@
 
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Utils/Animation.h"
-#endif // CLIENT_SIDE
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/CircleShape.hpp>
+#else
+#include <SFML/System/Clock.hpp>
+#endif
 
 class Chunk;
 

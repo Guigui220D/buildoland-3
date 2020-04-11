@@ -1,8 +1,17 @@
 #include "GuiButton.h"
 
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Window/Event.hpp>
+
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+
+#include "../../client-source/Settings/LanguageManager.h"
+#include "../../client-source/Res/ResourceManager.h"
+
 #include "../Game.h"
 
-GuiButton::GuiButton(Game& game, sf::Vector2f position, float width, sf::String text_string) :
+GuiButton::GuiButton(Game& game, sf::Vector2f position, float width, const sf::String& text_string) :
     GuiElement(game),
     string(text_string)
 {

@@ -1,5 +1,15 @@
 #include "GuiInventory.h"
 
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Window/Event.hpp>
+
+#include "../../client-source/Settings/LanguageManager.h"
+#include "../../client-source/Res/ResourceManager.h"
+
+#include "../../common-source/Items/PlayerInventory.h"
+
 #include "../Game.h"
 
 GuiInventory::GuiInventory(Game& game, PlayerInventory& inv) :

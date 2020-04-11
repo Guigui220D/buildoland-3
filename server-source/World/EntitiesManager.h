@@ -2,9 +2,10 @@
 
 #include <unordered_map>
 
-#include "../../common-source/Entities/Entity.h"
-#include "../Server/Client.h"
+#include <SFML/System/Vector2.hpp>
 
+class Client;
+class Entity;
 class Server;
 
 class EntitiesManager

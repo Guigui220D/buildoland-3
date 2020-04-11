@@ -3,7 +3,7 @@
 #include "../TileEntity.h"
 
 #ifdef CLIENT_SIDE
-    #include <SFML/Graphics.hpp>
+    #include <SFML/Graphics/RectangleShape.hpp>
 #endif // CLIENT_SIDE
 
 class TreeTopEntity : public TileEntity

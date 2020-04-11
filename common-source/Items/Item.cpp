@@ -2,25 +2,25 @@
 
 #include "ItemStack.h"
 
-#include "../../client-source/World/World.h"
+#include "../Networking/NetworkingCodes.h"
 
 #ifdef CLIENT_SIDE
     #include "../../client-source/States/GameState.h"
-
+    #include "../../client-source/World/World.h"
     #include "../../client-source/Packets/ItemUsePacket.h"
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
 const TilesetHelper<16, 16, 1> Item::tilesetHelper;
 
-Item::Item(const std::string name, uint32_t default_texture) :
+Item::Item(const std::string& name, uint32_t default_texture) :
     name(name),
     default_texture(default_texture)
 {
     //ctor
 }
 #else
-Item::Item(const std::string name, uint32_t default_texture) :
+Item::Item(const std::string &name, uint32_t default_texture) :
     name(name)
 {
     //ctor

@@ -3,9 +3,9 @@
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
+    #include "../../../client-source/Res/ResourceManager.h"
+    #include <SFML/Graphics/RenderTarget.hpp>
 #else
-    #include "../../../server-source/World/World.h"
-    #include <cstdio>
 #endif
 
 TestEntity::TestEntity(World& world, unsigned int id) :

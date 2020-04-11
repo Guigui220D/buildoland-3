@@ -1,6 +1,6 @@
 #pragma once
 
-#include <SFML/Network.hpp>
+#include <SFML/Network/IpAddress.hpp>
 
 struct IpAndPort
 {

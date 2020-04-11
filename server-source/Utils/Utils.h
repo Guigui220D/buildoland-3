@@ -2,7 +2,7 @@
 
 #include <string>
 
-#include <SFML/Network.hpp>
+#include <SFML/Network/Socket.hpp>
 
 class utils
 {

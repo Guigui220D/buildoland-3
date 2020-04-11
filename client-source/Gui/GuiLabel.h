@@ -4,11 +4,18 @@
 
 #include "../Game.h"
 
+#include <string>
+
+#include "../../client-source/Settings/LanguageManager.h"
+
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Text.hpp>
+
 class GuiLabel : public GuiElement
 {
     public:
         template <typename... FmtArgs>
-        GuiLabel(Game& game, sf::Vector2f position, const std::string message, FmtArgs&&... fmt_args) :
+        GuiLabel(Game& game, sf::Vector2f position, const std::string& message, FmtArgs&&... fmt_args) :
               GuiElement(game),
               message(message)
         {

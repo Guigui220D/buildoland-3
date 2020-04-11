@@ -3,11 +3,16 @@
 #include <unordered_map>
 #include <vector>
 
-#include <SFML/Graphics.hpp>
-#include <SFML/Network.hpp>
+#include "../../common-source/Networking/ECCPacket.h"
 
-#include "../../common-source/Entities/Entity.h"
-#include "../../common-source/Entities/TileEntity.h"
+class Entity;
+class World;
+class Chunk;
+
+namespace sf
+{
+class RenderTarget;
+}
 
 class EntitiesManager
 {
@@ -61,11 +66,7 @@ class EntitiesManager
         mutable std::vector<Entity*> entities_vector;   //One to easily iterate through entities, that we keep sorted for rendering
 
         //Used for sorting entities
-        inline static bool compareY(Entity* a, Entity* b)
-        {
-            return (a->getPosition().y == b->getPosition().y) ? a->getPosition().x < b->getPosition().x
-                                                              : a->getPosition().y < b->getPosition().y;
-        }
+        static bool compareY(Entity* a, Entity* b);
 
         /**
          * Adds an entity (in case of AddEntity code in readEntityPacket)

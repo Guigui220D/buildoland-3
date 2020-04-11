@@ -2,50 +2,30 @@
 
 #include "State.h"
 
-#include <SFML/Network.hpp>
+#include <memory>
 
-#include "../World/World.h"
+#include <SFML/Network/UdpSocket.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/System/Thread.hpp>
+
+#include <SFML/Graphics/View.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
+
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Networking/ServerToClientRequests.h"
-
-#include <mutex>
-#include <condition_variable>
-
-class semaphore
-{
-private:
-    std::mutex mutex_;
-    std::condition_variable condition_;
-    unsigned long count_ = 0; // Initialized as locked.
-
-public:
-    void notify() {
-        std::lock_guard<decltype(mutex_)> lock(mutex_);
-        ++count_;
-        condition_.notify_one();
-    }
-
-    void wait() {
-        std::unique_lock<decltype(mutex_)> lock(mutex_);
-        while(!count_) // Handle spurious wake-ups.
-            condition_.wait(lock);
-        --count_;
-    }
-
-    bool try_wait() {
-        std::lock_guard<decltype(mutex_)> lock(mutex_);
-        if(count_) {
-            --count_;
-            return true;
-        }
-        return false;
-    }
-};
 
 namespace TinyProcessLib
 {
 class Process;
 }
+
+namespace sf
+{
+class Texture;
+}
+
+class World;
+class EntitiesManager;
 
 class GameState : public State
 {
@@ -86,7 +66,7 @@ class GameState : public State
         void processPacketQueue();
 
         //World
-        World test_world;
+        std::unique_ptr<World> test_world;
         EntitiesManager& entities;
 
         //Rendering stuff

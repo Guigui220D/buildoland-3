@@ -1,5 +1,12 @@
 #include "GuiLabel.h"
 
+#include "../Game.h"
+
+#include <SFML/Graphics/RenderTarget.hpp>
+
+#include "../../client-source/Settings/LanguageManager.h"
+#include "../../client-source/Res/ResourceManager.h"
+
 GuiLabel::~GuiLabel()
 {
 

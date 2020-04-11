@@ -1,8 +1,10 @@
 #include "ErrorScreen.h"
 
 #include "../Game.h"
-#include "LoadingScreenState.h"
 #include "GameState.h"
+
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 ErrorState::~ErrorState()
 {

@@ -3,6 +3,10 @@
 #include "../Gui/GuiLoadingIcon.h"
 #include "State.h"
 
+#include <SFML/System/Thread.hpp>
+#include <SFML/System/Clock.hpp>
+#include <SFML/Graphics/View.hpp>
+
 template <class T>
 class LoadingScreenState : public State
 {

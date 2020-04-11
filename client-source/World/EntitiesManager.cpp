@@ -1,9 +1,7 @@
 #include "EntitiesManager.h"
 
 #include <algorithm>
-#include <assert.h>
-
-#include <SFML/Network.hpp>
+#include <cassert>
 
 #include "../../common-source/Networking/ServerToClientCodes.h"
 #include "../../common-source/Networking/ClientToServerCodes.h"
@@ -17,6 +15,8 @@
 
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
 #include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
+
+#include "../../client-source/World/World.h"
 
 #include "../../common-source/Utils/Log.h"
 
@@ -106,6 +106,12 @@ bool EntitiesManager::readEntityPacket(ECCPacket& packet)
         log(ERROR, "Entity action code unknown.\n");
         return false;
     }
+}
+
+bool EntitiesManager::compareY(Entity *a, Entity *b)
+{
+    return (a->getPosition().y == b->getPosition().y) ? a->getPosition().x < b->getPosition().x
+                                                      : a->getPosition().y < b->getPosition().y;
 }
 
 bool EntitiesManager::addEntity(ECCPacket& packet)

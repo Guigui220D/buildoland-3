@@ -3,9 +3,9 @@
 #include "State.h"
 
 #include "../Gui/GuiZone.h"
-#include "../Gui/GuiInventory.h"
 
-#include "../../common-source/Items/PlayerInventory.h"
+class PlayerInventory;
+class GuiInventory;
 
 class InventoryMenuState : public State
 {

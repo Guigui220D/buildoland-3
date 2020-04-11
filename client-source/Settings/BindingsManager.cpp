@@ -4,12 +4,15 @@
 
 #include <fstream>
 
+#include "../../external/json/Json.hpp"
+
 #include "../../common-source/Utils/Log.h"
 
 const std::string BindingsManager::BINDINGS_FILE_PATH = "Resources/Settings/bindings.json";
 
 BindingsManager::BindingsManager()
 {
+    json = std::make_unique<nlohmann::json>();
 }
 
 BindingsManager::~BindingsManager()
@@ -78,22 +81,50 @@ void BindingsManager::update(const sf::Event &event)
     }
 }
 
+bool BindingsManager::pressed(const std::string &binding) const
+{
+    auto i = bindings.find(binding);
+    if (i == bindings.end())
+        throw new std::out_of_range("Binding \"" + binding + "\" doesn't exist.");
+
+    for (const auto& binding : i->second)
+    {
+        if (binding.pressed)
+            return true;
+    }
+    return false;
+}
+
+bool BindingsManager::held(const std::string &binding) const
+{
+    auto i = bindings.find(binding);
+    if (i == bindings.end())
+        throw new std::out_of_range("Binding \"" + binding + "\" doesn't exist.");
+
+    for (const auto& binding : i->second)
+    {
+        if (binding.active)
+            return true;
+    }
+    return false;
+}
+
 void BindingsManager::load()
 {
     std::ifstream is(BINDINGS_FILE_PATH);
     if (!is.is_open())
     {
         log(ERROR, "Could not load bindings file!\n");
-        json = "{}"_json;
+        *json = "{}"_json;
     }
     else
-        is >> json;
+        is >> *json;
 
     sf::Clock clk;
 
     log(INFO, "Started loading bindings...\n");
 
-    for (const auto& node : json.items())
+    for (const auto& node : json->items())
     {
         if (node.value().is_array())
         {

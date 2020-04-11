@@ -2,6 +2,9 @@
 
 #include "GuiElement.h"
 
+#include <SFML/Graphics/RenderWindow.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+
 #include "../Game.h"
 
 GuiZone::GuiZone(Game& game, sf::Vector2f size_portion, HAlign horizontal_align, VAlign vertical_align) :
@@ -11,8 +14,6 @@ GuiZone::GuiZone(Game& game, sf::Vector2f size_portion, HAlign horizontal_align,
     size_portion(size_portion),
     usable_size(size_portion * 1000.f)
 {
-    calculateView(game.getWindow().getSize());
-
     test_rect.setSize(usable_size);
     //test_rect.setOrigin(usable_size / 2.f);
     test_rect.setFillColor(sf::Color(0, 255, 0, 127));
@@ -80,6 +81,8 @@ void GuiZone::debugDraw(sf::RenderTarget& target) const
 
 void GuiZone::init()
 {
+    calculateView(game.getWindow().getSize());
+
     for (GuiElement* ge : elements)
         ge->init();
 }

@@ -1,11 +1,12 @@
 #include "ShovelItem.h"
 
-#include "../ItemStack.h"
-#include "../../Entities/GameEntities/Player.h"
+#include "../../../common-source/Grounds/Ground.h"
 
 #ifndef CLIENT_SIDE
-    #include "../../../server-source/Server/ClientsManager.h"
     #include "../../../server-source/World/World.h"
+    #include "../../Entities/GameEntities/Player.h"
+    #include "../../Blocks/GameBlocks.h"
+    #include "../../Grounds/GameGrounds.h"
 #endif // CLIENT_SIDE
 
 
@@ -20,7 +21,7 @@ ShovelItem::~ShovelItem()
     //dtor
 }
 
-void ShovelItem::use(ItemStack& stack, World& world, sf::Vector2i click_pos, Player& player) const
+void ShovelItem::use(ItemStack& , World& world, sf::Vector2i click_pos, Player& player) const
 {
     #ifndef CLIENT_SIDE
     TileReference tr = world.getTile(click_pos);

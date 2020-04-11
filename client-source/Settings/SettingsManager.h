@@ -4,13 +4,12 @@
 #include <initializer_list>
 #include <unordered_map>
 
-#include <SFML/Graphics.hpp>
-
-#include "../../external/json/Json.hpp"
+#include "../../external/json/JsonFwd.hpp"
 
 //This class can load and save settings
 class SettingsManager
 {
+    friend class GameImpl;
     friend class Game;
 
     public:
@@ -34,5 +33,5 @@ class SettingsManager
         std::unordered_map<std::string, bool> bool_settings;
         std::unordered_map<std::string, std::string> string_settings;
 
-        nlohmann::json json;
+        std::unique_ptr<nlohmann::json> json;
 };

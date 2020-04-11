@@ -1,7 +1,9 @@
-#include "PlayerInventory.h"
+#include "playerInventory.h"
 
 #include "../Entities/GameEntities/Player.h"
 #include "../Networking/NetworkingCodes.h"
+
+#include "../../common-source/Items/ItemsRegister.h"
 
 #ifndef CLIENT_SIDE
     #include "../../server-source/Server/Server.h"

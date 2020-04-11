@@ -1,8 +1,13 @@
 #include "GuiImage.h"
 
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+
+#include "../../client-source/Res/ResourceManager.h"
+
 #include "../Game.h"
 
-GuiImage::GuiImage(Game& game, sf::Vector2f position, sf::Vector2f size, const std::string texture_path, bool use_resource_manager, bool smooth) :
+GuiImage::GuiImage(Game& game, sf::Vector2f position, sf::Vector2f size, const std::string& texture_path, bool use_resource_manager, bool smooth) :
     GuiElement(game),
     texture_path(texture_path),
     use_manager(use_resource_manager)

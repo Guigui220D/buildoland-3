@@ -1,7 +1,5 @@
 #include "Client.h"
 
-#include <assert.h>
-
 #include "Server.h"
 
 Client::Client(Server& server, IpAndPort ip_and_port, Player* player) :

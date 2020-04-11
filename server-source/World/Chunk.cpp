@@ -5,10 +5,10 @@
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
 #include "World.h"
+#include "Generator.h"
+#include "EntitiesManager.h"
 
-#include <assert.h>
-//TMP
-#include <cstdlib>
+#include <cassert>
 
 //TEST
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"

@@ -7,10 +7,7 @@
 #ifdef CLIENT_SIDE
 
 #else
-    #include <SFML/Network.hpp>
     #include "../Networking/NetworkingCodes.h"
-    #include "../../server-source/World/World.h"
-    #include "../../server-source/Server/Server.h"
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE

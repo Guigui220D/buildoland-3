@@ -6,7 +6,6 @@
 #include <queue>
 #include <cassert>
 #include <new>
-#include <experimental/optional>
 
 #if defined __has_include
 #  if __has_include (<optional>)

@@ -1,5 +1,6 @@
 #include "../Game.h"
 
+#include <SFML/Graphics/RenderTarget.hpp>
 
 template <class T>
 template <typename... Args>

@@ -11,6 +11,10 @@
 
 #include "../../common-source/Utils/Log.h"
 
+#ifdef CLIENT_SIDE
+#include "../../client-source/Settings/LanguageManager.h"
+#endif
+
 Item const * const ItemsRegister::NULL_ITEM = new NullItem();
 Item const * const ItemsRegister::BALL      = new BallItem();
 Item const * const ItemsRegister::SHOVEL    = new ShovelItem();

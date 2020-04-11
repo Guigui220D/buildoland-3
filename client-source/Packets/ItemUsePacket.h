@@ -2,6 +2,8 @@
 
 #include "../../common-source/Networking/ECCPacket.h"
 
+#include <SFML/System/Vector2.hpp>
+
 class ItemUsePacket : public ECCPacket
 {
     public:

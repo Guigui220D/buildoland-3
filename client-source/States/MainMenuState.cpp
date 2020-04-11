@@ -1,5 +1,10 @@
 #include "MainMenuState.h"
 
+#include <SFML/Window/Event.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
+
+#include "../../client-source/Settings/SettingsManager.h"
+
 #include "../Game.h"
 #include "LoadingScreenState.h"
 #include "GameState.h"

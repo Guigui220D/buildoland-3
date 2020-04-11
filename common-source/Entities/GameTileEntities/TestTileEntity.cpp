@@ -1,5 +1,9 @@
 #include "TestTileEntity.h"
 
+#ifdef CLIENT_SIDE
+#include <SFML/Graphics/RenderTarget.hpp>
+#endif
+
 TestTileEntity::TestTileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :
     TileEntity(world, id, tile_pos)
 {

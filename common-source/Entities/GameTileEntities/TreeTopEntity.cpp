@@ -3,6 +3,8 @@
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
+    #include "../../../client-source/Res/ResourceManager.h"
+    #include <SFML/Graphics/RenderTarget.hpp>
 #endif // CLIENT_SIDE
 
 TreeTopEntity::TreeTopEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :

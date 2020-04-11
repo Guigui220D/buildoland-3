@@ -1,19 +1,11 @@
 #pragma once
 
-#include "Ground.h"
-
-#include "StaticGround.h"
-#include "GameGrounds/GroundError.h"
-#include "GameGrounds/GroundDirt.h"
-#include "GameGrounds/GroundStone.h"
-#include "GameGrounds/GroundSand.h"
-#include "GameGrounds/GroundGrass.h"
-#include "GameGrounds/GroundWater.h"
-
 #include <vector>
 #include <unordered_map>
 #include <string>
 #include <assert.h>
+
+class Ground;
 
 class GameGrounds
 {

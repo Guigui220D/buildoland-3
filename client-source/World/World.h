@@ -6,6 +6,7 @@
 #include "../../common-source/Utils/TileReference.h"
 
 #include <SFML/System/Mutex.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include <unordered_map>
 #include <memory>

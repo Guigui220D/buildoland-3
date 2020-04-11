@@ -3,14 +3,17 @@
 #include "EntityCodes.h"
 
 #include <cmath>
-#include <SFML/Network.hpp>
 #include "../Networking/ECCPacket.h"
 
+#include <SFML/System/Vector2.hpp>
+
 #ifdef CLIENT_SIDE
-    #include <SFML/Graphics.hpp>
+namespace sf
+{
+class RenderTarget;
+}
 #else
     #include "../Networking/NetworkingCodes.h"
-    #include <SFML/System.hpp>
 #endif // CLIENT_SIDE
 
 class World;

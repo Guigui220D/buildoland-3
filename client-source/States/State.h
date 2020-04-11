@@ -1,7 +1,12 @@
 #pragma once
 
-#include <SFML/Graphics.hpp>
 #include <atomic>
+
+namespace sf
+{
+class Event;
+class RenderTarget;
+}
 
 class Game;
 

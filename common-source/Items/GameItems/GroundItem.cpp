@@ -5,11 +5,10 @@
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Packets/InventorySetPacket.h"
+    #include "../../Grounds/GameGrounds.h"
+    #include "../../common-source/Entities/GameEntities/Player.h"
+    #include "../../server-source/Server/Client.h"
 #endif // CLIENT_SIDE
-
-#include "../../Grounds/GameGrounds.h"
-
-#include "../ItemStack.h"
 
 GroundItem::GroundItem(Ground const * ground) :
     #ifdef CLIENT_SIDE

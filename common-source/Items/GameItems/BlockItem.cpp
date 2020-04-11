@@ -1,11 +1,5 @@
 #include "BlockItem.h"
 
-#include "../ItemStack.h"
-
-#include "../../Entities/GameEntities/Player.h"
-
-#include "../../Blocks/GameBlocks.h"
-
 #ifdef CLIENT_SIDE
     #include "../../../client-source/World/World.h"
 #else
@@ -14,6 +8,7 @@
     #include "../../../server-source/Packets/InventorySetPacket.h"
     #include "../../../server-source/Packets/SetTilePacket.h"
     #include "../../../server-source/Server/Server.h"
+    #include "../../Entities/GameEntities/Player.h"
 #endif // CLIENT_SIDE
 
 BlockItem::BlockItem(Block const * block) :

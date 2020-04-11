@@ -2,6 +2,10 @@
 
 #include <fstream>
 
+#include <SFML/System/Clock.hpp>
+
+#include "../../external/json/Json.hpp"
+
 #include "../../common-source/Utils/UsernameCheck.h"
 #include "../../common-source/Utils/Log.h"
 
@@ -9,6 +13,7 @@ const std::string SettingsManager::SETTINGS_FILE_PATH = "Resources/Settings/sett
 
 SettingsManager::SettingsManager()
 {
+    json = std::make_unique<nlohmann::json>();
 }
 
 SettingsManager::~SettingsManager()
@@ -54,7 +59,7 @@ void SettingsManager::load()
         json = "{}"_json;
     }
     else
-        is >> json;
+        is >> *json;
 
     sf::Clock clk;
 
@@ -85,7 +90,7 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
 
     int value = default_value;
 
-    nlohmann::json js = json;
+    nlohmann::json js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
@@ -130,7 +135,7 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
 
     bool value = default_value;
 
-    nlohmann::json js = json;
+    nlohmann::json js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
@@ -175,7 +180,7 @@ bool SettingsManager::loadStringSetting(const std::initializer_list<const std::s
 
     std::string value = default_value;
 
-    nlohmann::json js = json;
+    nlohmann::json js = *json;
     for (const std::string& p : path)
     {
         js = js[p];

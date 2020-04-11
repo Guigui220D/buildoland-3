@@ -1,18 +1,11 @@
 #pragma once
 
-#include "Block.h"
-
-#include "GameBlocks/BlockAir.h"
-#include "GameBlocks/BlockError.h"
-#include "GameBlocks/BlockBoulder.h"
-#include "GameBlocks/BlockTree.h"
-
-#include "GroundBlock.h"
-
 #include <vector>
 #include <unordered_map>
 #include <string>
 #include <assert.h>
+
+class Block;
 
 class GameBlocks
 {

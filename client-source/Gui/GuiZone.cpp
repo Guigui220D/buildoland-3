@@ -111,3 +111,9 @@ void GuiZone::draw(sf::RenderTarget& target) const
     for (GuiElement* ge : elements)
         ge->draw(target);
 }
+
+void GuiZone::setTransparency(uint8_t fade)
+{
+    for (GuiElement* ge : elements)
+        ge->setTransparency(fade);
+}

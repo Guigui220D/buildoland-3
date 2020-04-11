@@ -36,10 +36,12 @@ class GuiInventory : public GuiElement
 
         mutable sf::VertexArray vertex_arrays[Item::TextureSetEnd]; // a vertex array for each texture set
 
-
         sf::Texture const * block_textures;
         sf::Texture const * ground_textures;
         sf::Texture const * item_textures;
 
         PlayerInventory& inventory;
+
+
 };
+

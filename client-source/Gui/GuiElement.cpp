@@ -22,3 +22,5 @@ bool GuiElement::handleEvent(sf::Event& event)
 void GuiElement::draw(sf::RenderTarget& target) const {}
 
 void GuiElement::update(float delta_time) {}
+
+void GuiElement::setTransparency(uint8_t fade) {}

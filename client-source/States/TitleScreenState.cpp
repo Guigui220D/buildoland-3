@@ -64,6 +64,9 @@ void TitleScreenState::drawMore(sf::RenderTarget& target) const
 
 void TitleScreenState::updateMore(float delta_time)
 {
+    middle_gui_zone.setTransparency(getFade());
+    bottom_left_gui_zone.setTransparency(getFade());
+
     middle_gui_zone.update(delta_time);
     bottom_left_gui_zone.update(delta_time);
 }

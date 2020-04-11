@@ -21,7 +21,7 @@ class GuiImage : public GuiElement
         void draw(sf::RenderTarget& target) const override;
         void init() override;
 
-        inline void setTransparency(uint8_t fade) { rectangle.setFillColor(sf::Color(255, 255, 255, fade)); }
+        inline void setTransparency(uint8_t fade) override { rectangle.setFillColor(sf::Color(255, 255, 255, fade)); }
 
     private:
         sf::Texture* texture;

@@ -6,13 +6,11 @@
 
 MainMenuState::MainMenuState(Game& game, unsigned int id) :
     State(game, id),
-    test_button_1(new GuiButton(game, sf::FloatRect(.1f, .5f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::BottomOrRight, "SINGLEPLAYER_BUTTON")),
-    test_button_2(new GuiButton(game, sf::FloatRect(.1f, .7f, .8f, .1f), sf::Vector2f(8.f, 1.f), GuiAlign::Center, GuiAlign::TopOrLeft, "MULTIPLAYER_BUTTON"))
+    gui_zone(game, sf::Vector2f(.8f, .3f), GuiZone::Center, GuiZone::Middle),
+    test_button_1(new GuiButton(game, sf::Vector2f(), 800.f, "SINGLEPLAYER_BUTTON")),
+    test_button_2(new GuiButton(game, sf::Vector2f(0.f, 120.f), 800.f, "MULTIPLAYER_BUTTON"))
 {
     update_transparent = false;
-
-    gui_manager.push_back(test_button_1);
-    gui_manager.push_back(test_button_2);
 }
 
 MainMenuState::~MainMenuState()
@@ -22,12 +20,14 @@ MainMenuState::~MainMenuState()
 
 void MainMenuState::init()
 {
-    gui_manager.initEverything();
+    gui_zone.addElement(test_button_1);
+    gui_zone.addElement(test_button_2);
+    gui_zone.init();
 }
 
 bool MainMenuState::handleEvent(sf::Event& event)
 {
-    if (gui_manager.handleEvent(event))
+    if (gui_zone.handleEvent(event))
         return true;
 
     switch (event.type)
@@ -36,7 +36,7 @@ bool MainMenuState::handleEvent(sf::Event& event)
     case sf::Event::MouseButtonReleased:
         return true;
     case sf::Event::Resized:
-        gui_manager.updateWindowSize(sf::Vector2u(event.size.width, event.size.height));
+        gui_zone.calculateView(sf::Vector2u(event.size.width, event.size.height));
         return false;
     default:
         return false;
@@ -45,7 +45,7 @@ bool MainMenuState::handleEvent(sf::Event& event)
 
 void MainMenuState::update(float delta_time)
 {
-    gui_manager.updateEverything(delta_time);
+    gui_zone.update(delta_time);
 
     if (test_button_1->hasBeenClicked())
         getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));
@@ -56,10 +56,11 @@ void MainMenuState::update(float delta_time)
 
 void MainMenuState::draw(sf::RenderTarget& target) const
 {
-    gui_manager.drawEverything(target);
+    //gui_zone.debugDraw(target);
+    gui_zone.draw(target);
 }
 
 void MainMenuState::updateView()
 {
-    gui_manager.updateWindowSize(getGame().getWindow().getSize());
+    gui_zone.calculateView(getGame().getWindow().getSize());
 }

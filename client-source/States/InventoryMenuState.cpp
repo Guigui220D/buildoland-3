@@ -4,7 +4,8 @@
 
 InventoryMenuState::InventoryMenuState(Game& game, PlayerInventory& inv, unsigned int id) :
     State(game, id),
-    inventory(game, inv)
+    gui_zone(game, sf::Vector2f(.75f, .55f), GuiZone::Center, GuiZone::Middle),
+    inventory(new GuiInventory(game, inv))
 {
     update_transparent = true;
     draw_transparent = true;
@@ -18,23 +19,24 @@ InventoryMenuState::~InventoryMenuState()
 
 void InventoryMenuState::init()
 {
-    inventory.init();
+    gui_zone.addElement(inventory);
+    gui_zone.init();
 }
 
 bool InventoryMenuState::handleEvent(sf::Event& event)
 {
     if (event.type == sf::Event::Resized)
     {
-        inventory.calculateView(sf::Vector2u(event.size.width, event.size.height));
+        gui_zone.calculateView(sf::Vector2u(event.size.width, event.size.height));
         return false;
     }
-    inventory.handleEvent(event);
+    gui_zone.handleEvent(event);
     return true;
 }
 
 void InventoryMenuState::update(float delta_time)
 {
-    inventory.update(delta_time);
+    gui_zone.update(delta_time);
 
     if (!getGame().getBindingsManager().held("inventory"))
         must_be_destroyed = true;
@@ -42,10 +44,11 @@ void InventoryMenuState::update(float delta_time)
 
 void InventoryMenuState::draw(sf::RenderTarget& target) const
 {
-    inventory.draw(target);
+    //gui_zone.debugDraw(target);
+    gui_zone.draw(target);
 }
 
 void InventoryMenuState::updateView()
 {
-
+    gui_zone.calculateView(getGame().getWindow().getSize());
 }

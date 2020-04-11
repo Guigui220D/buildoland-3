@@ -21,7 +21,7 @@ class MainMenuState : public State
         void updateView() override;
 
     private:
-        GuiManager gui_manager;
+        GuiZone gui_zone;
 
         GuiButton* const test_button_1;
         GuiButton* const test_button_2;

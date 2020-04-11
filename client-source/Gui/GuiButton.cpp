@@ -2,12 +2,12 @@
 
 #include "../Game.h"
 
-GuiButton::GuiButton(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string) :
-    GuiElement(game, zone, size, horizontal_align, vertical_align),
+GuiButton::GuiButton(Game& game, sf::Vector2f position, float width, sf::String text_string) :
+    GuiElement(game),
     string(text_string)
 {
-    button.setSize(size);
-    button.setFillColor(sf::Color::White);
+    button.setSize(sf::Vector2f(width, 100.f));
+    button.setPosition(position);
 }
 
 GuiButton::~GuiButton()
@@ -17,14 +17,16 @@ GuiButton::~GuiButton()
 
 void GuiButton::init()
 {
+    button.setFillColor(sf::Color::White);
+
     text.setString(game.getLanguageManager().getString(string));
-    text.setCharacterSize(100);
-    text.scale(sf::Vector2f(1.f / 120.f, 1.f / 120.f));
+    text.setCharacterSize(200);
+    text.scale(sf::Vector2f(.4f, .4f));
     text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));
     text.setFillColor(sf::Color::Black);
 
     sf::Vector2f text_size = sf::Vector2f(text.getGlobalBounds().width, text.getGlobalBounds().height);
-    sf::Vector2f correction(0.f, -.3f);
+    sf::Vector2f correction(0.f, -30.f);
 
     text.setPosition(button.getPosition() + button.getSize() * .5f - text_size * .5f + correction);
 }
@@ -56,7 +58,6 @@ bool GuiButton::handleEvent(sf::Event& event)
 
 void GuiButton::draw(sf::RenderTarget& target) const
 {
-    useView(target);
     target.draw(button);
     target.draw(text);
 }
@@ -68,7 +69,10 @@ void GuiButton::update(float delta_time)
 
 bool GuiButton::isMouseInside() const
 {
-    sf::Vector2i mouse_pos = sf::Mouse::getPosition(getGame().getWindow());
-    sf::Vector2f coords = getGame().getWindow().mapPixelToCoords(mouse_pos, getView());
-    return (coords.x >= 0.f && coords.y >= 0.f && coords.x <= getAspectRatio() && coords.y <= 1.f);
+    sf::Vector2f coords = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
+
+    sf::Vector2f pos = button.getPosition();
+    sf::Vector2f corner = pos + button.getSize();
+
+    return (coords.x >= pos.x && coords.y >= pos.y && coords.x <= corner.x && coords.y <= corner.y);
 }

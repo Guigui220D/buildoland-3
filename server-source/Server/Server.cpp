@@ -18,6 +18,8 @@
 
 #include "../../common-source/Utils/Log.h"
 
+#include <exception>
+
 Server::Server(uint16_t client_port) :
       clients_manager(*this),
       receiver_thread(&Server::receiver, this),
@@ -93,6 +95,8 @@ void Server::run()
     server_clock.restart();
     float delta;
 
+    sf::Clock crash_clock;
+
     while (running)
     {
         int ms = server_clock.getElapsedTime().asMilliseconds();
@@ -117,6 +121,11 @@ void Server::run()
         //Update entities
         world.getEntityManager().updateAll(delta);
         //Update all worlds
+
+        /*
+        if (crash_clock.getElapsedTime().asSeconds() >= 5.f)
+            throw new std::logic_error("I AM A RETARDED SERVER");
+        */
     }
 }
 

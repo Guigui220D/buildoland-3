@@ -1,7 +1,7 @@
 #include "GuiCheckBox.h"
 
-GuiCheckBox::GuiCheckBox(Game& game, sf::FloatRect zone, GuiAlign horizontal_align, GuiAlign vertical_align) :
-    GuiButton(game, zone, sf::Vector2f(1.f, 1.f), horizontal_align, vertical_align, ""),
+GuiCheckBox::GuiCheckBox(Game& game) :
+    GuiButton(game, sf::Vector2f(), 100.f, ""),
     checked(false)
 {
     //ctor

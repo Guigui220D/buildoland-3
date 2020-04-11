@@ -11,13 +11,14 @@ ErrorState::~ErrorState()
 
 void ErrorState::init()
 {
-    go_back_button.init();
-    message.init();
+    gui_zone.addElement(go_back_button);
+    gui_zone.addElement(message);
+    gui_zone.init();
 }
 
 bool ErrorState::handleEvent(sf::Event& event)
 {
-    if (go_back_button.handleEvent(event))
+    if (gui_zone.handleEvent(event))
         return true;
 
     switch (event.type)
@@ -26,8 +27,7 @@ bool ErrorState::handleEvent(sf::Event& event)
     case sf::Event::MouseButtonReleased:
         return true;
     case sf::Event::Resized:
-        go_back_button.calculateView(sf::Vector2u(event.size.width, event.size.height));
-        message.calculateView(sf::Vector2u(event.size.width, event.size.height));
+        gui_zone.calculateView(sf::Vector2u(event.size.width, event.size.height));
         return false;
     default:
         return false;
@@ -36,20 +36,19 @@ bool ErrorState::handleEvent(sf::Event& event)
 
 void ErrorState::update(float delta_time)
 {
-    go_back_button.update(delta_time);
+    gui_zone.update(delta_time);
 
-    if (go_back_button.hasBeenClicked())
+    if (go_back_button->hasBeenClicked())
         must_be_destroyed = true;
 }
 
 void ErrorState::draw(sf::RenderTarget& target) const
 {
-    go_back_button.draw(target);
-    message.draw(target);
+    //gui_zone.debugDraw(target);
+    gui_zone.draw(target);
 }
 
 void ErrorState::updateView()
 {
-    go_back_button.calculateView(getGame().getWindow().getSize());
-    message.calculateView(getGame().getWindow().getSize());
+    gui_zone.calculateView(getGame().getWindow().getSize());
 }

@@ -2,6 +2,7 @@
 
 #include "State.h"
 
+#include "../Gui/GuiZone.h"
 #include "../Gui/GuiInventory.h"
 
 #include "../../common-source/Items/PlayerInventory.h"
@@ -19,5 +20,6 @@ class InventoryMenuState : public State
         void updateView() override;
 
     private:
-        GuiInventory inventory;
+        GuiZone gui_zone;
+        GuiInventory* inventory;
 };

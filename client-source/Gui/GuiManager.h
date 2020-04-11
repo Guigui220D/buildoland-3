@@ -3,13 +3,13 @@
 #include <vector>
 #include <memory>
 
-#include "GuiElement.h"
+#include "GuiZone.h"
 
-class GuiManager : public std::vector<GuiElement*>
+class GuiManager
 {
     public:
         GuiManager();
-        virtual ~GuiManager();
+        ~GuiManager();
 
         void updateWindowSize(sf::Vector2u window_size);
         void initEverything();
@@ -17,7 +17,6 @@ class GuiManager : public std::vector<GuiElement*>
         void updateEverything(float delta_time);
         void drawEverything(sf::RenderTarget& target) const;
 
-    protected:
-
     private:
+        std::vector<GuiZone> zones;
 };

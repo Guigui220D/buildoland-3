@@ -5,7 +5,7 @@
 class GuiButton : public GuiElement
 {
     public:
-        GuiButton(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, sf::String text_string);
+        GuiButton(Game& game, sf::Vector2f position, float width, sf::String text_string);
         virtual ~GuiButton();
 
         virtual bool handleEvent(sf::Event& event) override;

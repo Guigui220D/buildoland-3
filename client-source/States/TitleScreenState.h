@@ -3,6 +3,7 @@
 #include "LoadingScreenState.h"
 #include "MainMenuState.h"
 
+#include "../Gui/GuiZone.h"
 #include "../Gui/GuiTitle.h"
 #include "../Gui/GuiImage.h"
 
@@ -24,6 +25,8 @@ class TitleScreenState : public LoadingScreenState<MainMenuState>
 
         sf::Clock clk;
 
-        GuiTitle title;
-        GuiImage sfml;
+        GuiZone middle_gui_zone;
+        GuiZone bottom_left_gui_zone;
+        GuiImage* title;
+        GuiImage* sfml;
 };

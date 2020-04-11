@@ -8,11 +8,12 @@ class GuiLabel : public GuiElement
 {
     public:
         template <typename... FmtArgs>
-        GuiLabel(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, const std::string message, FmtArgs&&... fmt_args) :
-              GuiElement(game, zone, size, horizontal_align, vertical_align),
+        GuiLabel(Game& game, sf::Vector2f position, const std::string message, FmtArgs&&... fmt_args) :
+              GuiElement(game),
               message(message)
         {
             setMessage(std::forward<FmtArgs>(fmt_args)...);
+            text.setPosition(position);
         }
         ~GuiLabel();
 

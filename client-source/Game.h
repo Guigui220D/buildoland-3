@@ -17,6 +17,9 @@
 #include "../common-source/Grounds/GameGrounds.h"
 #include "../common-source/Items/ItemsRegister.h"
 
+#include "Gui/GuiZone.h"
+#include "Gui/GuiImage.h"
+
 class Game
 {
     public:
@@ -107,4 +110,7 @@ class Game
          * @param delta_time : the seconds that have passed since the last update
          */
         void update(float delta_time);
+
+        GuiZone bg_zone;
+        GuiImage* bg_image;
 };

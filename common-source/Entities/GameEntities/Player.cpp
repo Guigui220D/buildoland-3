@@ -71,7 +71,8 @@ void Player::update(float delta)
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F2))
         autowalk = true;
 
-    if (aw_break.getElapsedTime().asSeconds() >= .5f)
+
+    if (autowalk && aw_break.getElapsedTime().asSeconds() >= .5f)
     {
         BreakBlockPacket bp(getBlockOn() + sf::Vector2i(1, 0));
         getWorld().getState().sendToServer(bp);

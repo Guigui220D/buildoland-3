@@ -5,7 +5,7 @@
 class GuiImage : public GuiElement
 {
     public:
-        GuiImage(Game& game, sf::FloatRect zone, sf::Vector2f size, GuiAlign horizontal_align, GuiAlign vertical_align, const std::string texture_path, bool use_resource_manager = true);
+        GuiImage(Game& game, sf::Vector2f position, sf::Vector2f size, const std::string texture_path, bool use_resource_manager = true, bool smooth = false);
         ~GuiImage();
 
         void draw(sf::RenderTarget& target) const override;

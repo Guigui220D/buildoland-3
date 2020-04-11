@@ -6,9 +6,10 @@
 
 Game::Game() :
     game_items_register(language_manager),
-    audio_manager(resource_manager)
+    audio_manager(resource_manager),
+    bg_zone(*this, sf::Vector2f(1.f, 1.f), GuiZone::Center, GuiZone::Top),
+    bg_image(new GuiImage(*this, sf::Vector2f(), sf::Vector2f(1000.f, 666.66f /*please don't summon demons*/), "Resources/Temp/background.png", false))
 {
-
 }
 
 Game::~Game()
@@ -23,6 +24,8 @@ int Game::init()
 
     window.create(sf::VideoMode(settings_manager.getInt("window_size_x"), settings_manager.getInt("window_size_y")), "BuildOLand 3");
 
+    bg_zone.calculateView(window.getSize());
+
     bool vsync = settings_manager.getBool("vsync_enabled");
 
     if (!vsync)
@@ -36,6 +39,9 @@ int Game::init()
         window.setVerticalSyncEnabled(true);
 
     addStateOnTop(new TitleScreenState(*this, 0));
+
+    bg_image->init();
+    bg_zone.addElement(bg_image);
     return 0;
 }
 
@@ -65,6 +71,8 @@ int Game::run()
             case sf::Event::Closed:
                 window.close();
                 break;
+            case sf::Event::Resized:
+                bg_zone.calculateView(sf::Vector2u(e.size.width, e.size.height));
             default:
                 {
                     for (int i = states_stack.size() - 1; i >= 0; i--)
@@ -91,6 +99,8 @@ int Game::run()
         dt_viewer.setSize(sf::Vector2f(80.f, dt_clk.restart().asMilliseconds()));
 
         window.clear();
+
+        //bg_zone.draw(window);
         //FPS VIEWER //TEMP
         draw();
 

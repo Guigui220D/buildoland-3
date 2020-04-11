@@ -103,10 +103,9 @@ void LoadingScreenState<T>::draw(sf::RenderTarget& target) const
 {
     target.setView(view);
     target.draw(background);
-    if(working && working_time.getElapsedTime().asSeconds() > .3f)
-        loading_icon.draw(target);
+    //if(working && working_time.getElapsedTime().asSeconds() > .3f)
+    //    loading_icon.draw(target);
     drawMore(target);
-    //loading_icon.debugDraw(target);
 }
 
 template <class T>

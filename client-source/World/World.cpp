@@ -46,19 +46,19 @@ World::~World()
 void World::updateLoadedChunk(float delta_time)
 {
     //Add chunks waiting to be added
+    chunk_list_modification_mutex.lock();
     for (Chunk*& chunk : chunks_to_add)
     {
         uint64_t key = utils::combine(chunk->getPos().x, chunk->getPos().y);
 
-        chunk_deletion_mutex.lock();
         if (chunks.find(key) != chunks.end())
             chunks.erase(chunks.find(key));
-        chunk_deletion_mutex.unlock();
 
         chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
 
         entities.declareNewChunkForTileEntities(chunk);
     }
+    chunk_list_modification_mutex.unlock();
     chunks_to_add.clear();
 
     for (auto i = pending_chunk_requests.begin(); i != pending_chunk_requests.end();)
@@ -86,7 +86,7 @@ void World::updateLoadedChunk(float delta_time)
 
 
     //Unload all the chunks that need to be removed
-    chunk_deletion_mutex.lock();
+    chunk_list_modification_mutex.lock();
     for (auto i = chunks.begin(); i != chunks.end();)
     {
         if (i->second->to_be_removed)
@@ -107,13 +107,12 @@ void World::updateLoadedChunk(float delta_time)
         else
             i++;
     }
-    chunk_deletion_mutex.unlock();
+    chunk_list_modification_mutex.unlock();
 
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
         if (pending_chunk_requests.find(utils::combine(player_chunk_pos.x, player_chunk_pos.y)) == pending_chunk_requests.end())
             requestChunk(player_chunk_pos);
-
 }
 
 bool World::addChunk(sf::Vector2i pos, const char* chunk_data, unsigned chunk_size)
@@ -215,7 +214,7 @@ uint16_t World::getBlockId(sf::Vector2i pos)
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
 
-    sf::Lock ensure_chunk_isnt_deleted(chunk_deletion_mutex);
+    sf::Lock ensure_chunk_isnt_deleted(chunk_list_modification_mutex);
 
     if (!isChunkLoaded(chunk_pos))
         return GameBlocks::AIR->getId();
@@ -227,7 +226,7 @@ uint16_t World::getGroundId(sf::Vector2i pos)
     sf::Vector2i chunk_pos = getChunkPosFromBlockPos(pos);
     sf::Vector2i bp = getBlockPosInChunk(pos);
 
-    sf::Lock ensure_chunk_isnt_deleted(chunk_deletion_mutex);
+    sf::Lock ensure_chunk_isnt_deleted(chunk_list_modification_mutex);
 
     if (!isChunkLoaded(chunk_pos))
         return GameGrounds::ERROR->getId();

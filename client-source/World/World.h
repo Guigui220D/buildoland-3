@@ -188,9 +188,9 @@ class World
         inline void setSeed(int new_seed) { seed = new_seed; }
 
         inline void chunkDeletionLock()
-        { chunk_deletion_mutex.lock(); }
+        { chunk_list_modification_mutex.lock(); }
         inline void chunkDeletionUnlock()
-        { chunk_deletion_mutex.unlock(); }
+        { chunk_list_modification_mutex.unlock(); }
 
     protected:
         //Entities
@@ -203,7 +203,7 @@ class World
         const GameGrounds& game_grounds_manager;
         int seed;
 
-        sf::Mutex chunk_deletion_mutex;
+        sf::Mutex chunk_list_modification_mutex;
         // shared_pointer is used so that if a part of the code is still asynchronously temporarly processing a chunk when World deletes it, it won't access freed memory
         std::unordered_map<uint64_t, std::shared_ptr<Chunk>> chunks;
         std::vector<Chunk*> chunks_to_add;

@@ -8,6 +8,8 @@
 
 #include "../common-source/Utils/Log.h"
 
+#include "../../external/stacktrace/stacktrace.hpp"
+
 int main(int argc, char** argv)
 {
     std::srand(std::time(0));
@@ -16,6 +18,8 @@ int main(int argc, char** argv)
     log_streams_by_level[WARN].push_back(&std::cerr);
     log_streams_by_level[ERROR].push_back(&std::cerr);
     min_log_level = INFO;
+
+    init_stack_trace_handler(argc, argv);
 
     uint16_t client_port = 0;
     uint16_t server_port = 0;

@@ -53,6 +53,7 @@ if (NOT BUILD_SERVER)
         external/fmt/src/os.cc
         external/fmt/src/format.cc
         external/tiny-process-library/process.cpp
+        external/stacktrace/stacktrace.cpp
     )
     if (WIN32)
         set (SRCS ${SRCS} external/tiny-process-library/process_win.cpp)
@@ -67,6 +68,7 @@ else()
         external/xxhash/XXHash.cc
         external/fmt/src/os.cc
         external/fmt/src/format.cc
+        external/stacktrace/stacktrace.cpp
     )
 endif()
 
@@ -77,6 +79,10 @@ endif()
 add_executable(${CMAKE_PROJECT_NAME} ${SRCS})
 
 target_link_libraries(${CMAKE_PROJECT_NAME} sfml-graphics sfml-audio sfml-network)
+
+if (WIN32)
+    target_link_libraries(${CMAKE_PROJECT_NAME} dbghelp) # for stacktraces
+endif()
 
 if (NOT BUILD_SERVER)
     set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "bdl-client")

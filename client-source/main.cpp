@@ -7,7 +7,17 @@
 #include "Version.h"
 #include "../common-source/Utils/Log.h"
 
-int main()
+#include "../../external/stacktrace/stacktrace.hpp"
+
+__attribute__ ((noinline)) void func_c () {
+    asm volatile ("ud2");
+}
+
+__attribute__ ((noinline)) void func_b () {
+    func_c();
+}
+
+int main(int argc, char* argv[])
 {
     std::srand(std::time(nullptr));
 
@@ -16,6 +26,8 @@ int main()
     log_streams_by_level[ERROR].push_back(&std::cerr);
     min_log_level = INFO;
     log_prefix_format = ""; /* "[{date}] " */
+
+    init_stack_trace_handler(argc, argv);
 
     log(INFO, "Running Buildoland 3 version {} (short: {})\n",  Version::VERSION, Version::VERSION_SHORT);
 

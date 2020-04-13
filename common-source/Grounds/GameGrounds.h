@@ -39,6 +39,7 @@ class GameGrounds
         static Ground const * const STONE;
         static Ground const * const SAND;
         static Ground const * const GRASS;
+        static Ground const * const CARPET;
         static Ground const * const WOOD;
 
     private:

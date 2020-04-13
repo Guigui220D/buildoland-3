@@ -12,6 +12,7 @@
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../Packets/HandshakePacket.h"
+#include "../Packets/FullInventoryPacket.h"
 
 //TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
@@ -83,6 +84,9 @@ bool Server::init(uint16_t port)
     handshake << world->getGenerator()->getSeed();
     handshake << player_id;
     server_socket.send(handshake, owner.address, owner.port);
+
+    FullInventoryPacket fip(owner_player->getInventory());
+    server_socket.send(fip, owner.address, owner.port);
 
     world->getEntityManager().newEntity(owner_player);
 #endif // SOLO
@@ -336,8 +340,13 @@ void Server::processPacketQueue()
                 Player* new_player = new Player(*world, player_id, clients_manager.getClient(rq->iandp));
                 clients_manager.getClient(rq->iandp).setPlayer(new_player);
 
+                //Handshake
                 HandshakePacket handshake(world->getGenerator()->getSeed(), player_id);
                 server_socket.send(handshake, rq->iandp.address, rq->iandp.port);
+
+                //Send inventory packet
+                FullInventoryPacket fip(new_player->getInventory());
+                server_socket.send(fip, rq->iandp.address, rq->iandp.port);
 
                 world->getEntityManager().newEntity(new_player);
             }

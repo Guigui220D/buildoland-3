@@ -6,8 +6,8 @@
 
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
-#include "../common-source/Blocks/GameBlocks.h"
-#include "../common-source/Grounds/GameGrounds.h"
+#include "../../common-source/Blocks/GameBlocks.h"
+#include "../../common-source/Grounds/GameGrounds.h"
 
 #include "../../common-source/Utils/Log.h"
 

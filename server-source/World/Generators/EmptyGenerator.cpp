@@ -1,7 +1,8 @@
 #include "EmptyGenerator.h"
 
-#include "../../server-source/World/Chunk.h"
-#include "../../common-source/Grounds/GameGrounds.h"
+#include "../World.h"
+#include "../Chunk.h"
+#include "../../../common-source/Grounds/GameGrounds.h"
 
 EmptyGenerator::EmptyGenerator(int seed) :
     Generator(seed)

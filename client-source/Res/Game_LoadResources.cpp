@@ -4,7 +4,7 @@
 
 #include "../../common-source/Utils/Log.h"
 
-#include "GamePimpl.h"
+#include "../GamePimpl.h"
 
 void Game::loadResources()
 {

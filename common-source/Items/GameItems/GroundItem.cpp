@@ -6,8 +6,8 @@
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/Packets/InventorySetPacket.h"
     #include "../../Grounds/GameGrounds.h"
-    #include "../../common-source/Entities/GameEntities/Player.h"
-    #include "../../server-source/Server/Client.h"
+    #include "../../Entities/GameEntities/Player.h"
+    #include "../../../server-source/Server/Client.h"
 #endif // CLIENT_SIDE
 
 GroundItem::GroundItem(Ground const * ground) :

@@ -19,8 +19,8 @@
 #else
 #include <experimental/optional>
 namespace std {
-template <typename T>
-using optional = experimental::optional<T>;
+    template <typename T>
+    using optional = experimental::optional<T>;
 }
 #endif
 
@@ -29,32 +29,32 @@ using optional = experimental::optional<T>;
 
 namespace detail
 {
-template <size_t arg1, size_t... others>
-struct static_max;
+    template <size_t arg1, size_t... others>
+    struct static_max;
 
-template <size_t arg>
-struct static_max<arg>
-{
-    static const size_t value = arg;
-};
+    template <size_t arg>
+    struct static_max<arg>
+    {
+        static const size_t value = arg;
+    };
 
-template <size_t arg1, size_t arg2, size_t... others>
-struct static_max<arg1, arg2, others...>
-{
-    static const size_t value = arg1 >= arg2 ? static_max<arg1, others...>::value : static_max<arg2, others...>::value;
-};
+    template <size_t arg1, size_t arg2, size_t... others>
+    struct static_max<arg1, arg2, others...>
+    {
+        static const size_t value = arg1 >= arg2 ? static_max<arg1, others...>::value : static_max<arg2, others...>::value;
+    };
 
 
-template <typename...>
-struct is_one_of {
-    static constexpr bool value = false;
-};
+    template <typename...>
+    struct is_one_of {
+        static constexpr bool value = false;
+    };
 
-template <typename F, typename S, typename... T>
-struct is_one_of<F, S, T...> {
-    static constexpr bool value =
-        std::is_same<F, S>::value || is_one_of<F, T...>::value;
-};
+    template <typename F, typename S, typename... T>
+    struct is_one_of<F, S, T...> {
+        static constexpr bool value =
+            std::is_same<F, S>::value || is_one_of<F, T...>::value;
+    };
 }
 
 template <typename... RequestTypes>

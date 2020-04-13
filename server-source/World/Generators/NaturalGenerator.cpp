@@ -1,9 +1,9 @@
 #include "NaturalGenerator.h"
 
-#include "../../common-source/Grounds/GameGrounds.h"
-#include "../../common-source/Blocks/GameBlocks.h"
+#include "../../../common-source/Grounds/GameGrounds.h"
+#include "../../../common-source/Blocks/GameBlocks.h"
 
-#include "../../server-source/World/Chunk.h"
+#include "../Chunk.h"
 
 NaturalGenerator::NaturalGenerator(int seed) :
     Generator(seed),

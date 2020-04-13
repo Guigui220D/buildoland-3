@@ -21,10 +21,7 @@
 PlayerInventory::PlayerInventory(const Player& owner, GameState& game) :
     owner(owner),
     game(game)
-{
-    ItemStack a(ItemsRegister::SHOVEL, 1);
-    contents.at(0).swap(a);
-}
+{}
 #else
 PlayerInventory::PlayerInventory(const Player& owner, Server& server) :
     owner(owner),

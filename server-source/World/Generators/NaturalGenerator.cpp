@@ -46,6 +46,18 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
                 chunk->setBlock(x, y, random_blocks.at(std::rand() % random_blocks.size()));
         }
     }
+    // carpet version ?
+    else if (std::rand() % 10 == 0)
+    {
+        for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
+            for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
+            {
+                chunk->setGround(x, y, GameGrounds::CARPET);
+
+                if (std::rand() & 1)
+                    chunk->setBlock(x, y, random_blocks.at(std::rand() % random_blocks.size()));
+            }
+    }
     else
     {
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)

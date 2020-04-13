@@ -11,6 +11,7 @@
 #include "GameGrounds/GroundSand.h"
 #include "GameGrounds/GroundGrass.h"
 #include "GameGrounds/GroundWater.h"
+#include "GameGrounds/GroundCarpet.h"
 
 #include "../../common-source/Utils/Log.h"
 
@@ -21,6 +22,7 @@ Ground const * const GameGrounds::STONE = new GroundStone();
 Ground const * const GameGrounds::SAND  = new GroundSand();
 Ground const * const GameGrounds::GRASS = new GroundGrass();
 Ground const * const GameGrounds::WOOD =  new StaticGround("wood", true, 5);
+Ground const * const GameGrounds::CARPET = new GroundCarpet();
 
 
 GameGrounds::GameGrounds()
@@ -46,6 +48,7 @@ void GameGrounds::initGrounds()
     addGround(SAND);
     addGround(GRASS);
     addGround(WOOD);
+    addGround(CARPET);
 }
 
 void GameGrounds::addGround(Ground const * ground)

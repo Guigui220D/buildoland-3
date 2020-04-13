@@ -118,8 +118,11 @@ void World::updateLoadedChunk(float delta_time)
 
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
+    {
+        abort();
         if (pending_chunk_requests.find(utils::combine(player_chunk_pos.x, player_chunk_pos.y)) == pending_chunk_requests.end())
             requestChunk(player_chunk_pos);
+    }
 }
 
 bool World::addChunk(sf::Vector2i pos, const char* chunk_data, unsigned chunk_size)

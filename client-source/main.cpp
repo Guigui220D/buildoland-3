@@ -7,7 +7,7 @@
 #include "Version.h"
 #include "../common-source/Utils/Log.h"
 
-#include "../../external/stacktrace/stacktrace.hpp"
+#include "../external/stacktrace/stacktrace.hpp"
 
 __attribute__ ((noinline)) void func_c () {
     asm volatile ("ud2");

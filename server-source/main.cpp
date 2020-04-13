@@ -8,7 +8,7 @@
 
 #include "../common-source/Utils/Log.h"
 
-#include "../../external/stacktrace/stacktrace.hpp"
+#include "../external/stacktrace/stacktrace.hpp"
 
 int main(int argc, char** argv)
 {

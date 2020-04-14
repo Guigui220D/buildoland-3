@@ -18,6 +18,7 @@
 Item const * const ItemsRegister::NULL_ITEM = new NullItem();
 Item const * const ItemsRegister::BALL      = new BallItem();
 Item const * const ItemsRegister::SHOVEL    = new ShovelItem();
+Item const * const ItemsRegister::SPYGLASS  = new Item("spyglass", 3);
 
 #ifdef CLIENT_SIDE
 ItemsRegister::ItemsRegister(LanguageManager& language) :
@@ -65,6 +66,7 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
 
     addItem(BALL);
     addItem(SHOVEL);
+    addItem(SPYGLASS);
 }
 
 void ItemsRegister::addItem(Item const * item)

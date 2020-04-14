@@ -12,17 +12,18 @@
 #include "GameGrounds/GroundGrass.h"
 #include "GameGrounds/GroundWater.h"
 #include "GameGrounds/GroundCarpet.h"
+#include "GameGrounds/GroundParquet.h"
 
 #include "../../common-source/Utils/Log.h"
 
-Ground const * const GameGrounds::ERROR = new GroundError();
-Ground const * const GameGrounds::DIRT =  new GroundDirt();
-Ground const * const GameGrounds::WATER = new GroundWater();
-Ground const * const GameGrounds::STONE = new GroundStone();
-Ground const * const GameGrounds::SAND  = new GroundSand();
-Ground const * const GameGrounds::GRASS = new GroundGrass();
-Ground const * const GameGrounds::WOOD =  new StaticGround("wood", true, 5);
-Ground const * const GameGrounds::CARPET = new GroundCarpet();
+Ground const * const GameGrounds::ERROR =   new GroundError();
+Ground const * const GameGrounds::DIRT =    new GroundDirt();
+Ground const * const GameGrounds::WATER =   new GroundWater();
+Ground const * const GameGrounds::STONE =   new GroundStone();
+Ground const * const GameGrounds::SAND  =   new GroundSand();
+Ground const * const GameGrounds::GRASS =   new GroundGrass();
+Ground const * const GameGrounds::WOOD =    new GroundParquet();
+Ground const * const GameGrounds::CARPET =  new GroundCarpet();
 
 
 GameGrounds::GameGrounds()

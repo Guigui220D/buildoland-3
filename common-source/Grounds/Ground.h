@@ -66,6 +66,18 @@ class Ground
          * @return A vertex array to add to the chunk vertex array
          */
         virtual sf::VertexArray getSurfaceDetails(TileReference info, int frame) const;
+
+        /**
+         * To know if this texture makes bleedings for other ground's details
+         * @return True if this texture "bleeds"
+         */
+        virtual inline bool hasTextureBleedings() const { return false; }
+
+        /**
+         * Is this block a natural block
+         * @return true if this block is not man-made
+         */
+        virtual inline bool isNatural() const { return true; }
         #else
         virtual std::vector<ItemStack> getDrops() const;
 
@@ -87,11 +99,6 @@ class Ground
          */
         virtual inline uint8_t getTextureRotation(TileReference info) const { return getRandomInt(info) % 4; }
 
-        /**
-         * To know if this texture makes bleedings for other ground's details
-         * @return True if this texture "bleeds"
-         */
-        virtual inline bool hasTextureBleedings() const { return false; }
         /**
          * Get the id of the texture to use for bleeding in the tileset helper
          * @param info : Info about the ground

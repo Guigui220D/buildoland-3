@@ -28,7 +28,9 @@
 	"sand_ground": "Sand",
 	"grass_ground": "Grass",
 	"water_ground": "Shallow water",
+	"carpet_ground": "Red carpet",
 	
 	"ball": "Pink ball",
-	"shovel": "Shovel"
+	"shovel": "Shovel",
+	"spyglass": "Spyglass"
 }

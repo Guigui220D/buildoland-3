@@ -46,6 +46,7 @@ class GameBlocks
         static Block const * const GOLD_ORE;
         static Block const * const COPPER_ORE;
         static Block const * const TREE;
+        static Block const * const CHEST;
 
     private:
         std::vector<Block const *> blocks;

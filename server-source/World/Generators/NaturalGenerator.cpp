@@ -98,5 +98,8 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
         }
     }
     if (chunk->getPos() == sf::Vector2i())
+    {
         chunk->setBlock(0, 0, GameBlocks::AIR);
+        chunk->setBlock(15, 15, GameBlocks::CHEST);
+    }
 }

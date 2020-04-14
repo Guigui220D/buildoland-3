@@ -49,6 +49,7 @@ class ItemsRegister
         static Item const * const NULL_ITEM;
         static Item const * const BALL;
         static Item const * const SHOVEL;
+        static Item const * const SPYGLASS;
 
     private:
         std::vector<Item const *> items;

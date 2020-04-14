@@ -60,7 +60,7 @@ sf::VertexArray Ground::getSurfaceDetails(TileReference info, int frame) const
 
 bool Ground::acceptsTextureBleedings(TileReference info, const Ground* other) const
 {
-    return (other == GameGrounds::WATER && other->getId() != getId()) || (other->hasTextureBleedings() && (other->getId() > id));
+    return (other == GameGrounds::WATER && other->getId() != getId()) || (other->hasTextureBleedings() && (other->getId() > getId()));
 }
 
 void Ground::addNeighborsBleeding(TileReference info, sf::VertexArray& vertex_array, int frame) const

@@ -28,7 +28,9 @@
 	"sand_ground": "Sable",
 	"grass_ground": "Herbe",
 	"water_ground": "Eau peu profonde",
+	"carpet_ground": "Tapis rouge",
 	
 	"ball": "Balle rose",
-	"shovel": "Pelle"
+	"shovel": "Pelle",
+	"spyglass": "Longue-vue"
 }

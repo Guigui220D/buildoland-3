@@ -6,6 +6,7 @@
 #include "GameBlocks/BlockError.h"
 #include "GameBlocks/BlockBoulder.h"
 #include "GameBlocks/BlockTree.h"
+#include "GameBlocks/BlockChest.h"
 
 #include "GroundBlock.h"
 
@@ -26,6 +27,7 @@ Block const * const GameBlocks::BOULDER         = new BlockBoulder("boulder", 20
 Block const * const GameBlocks::GOLD_ORE        = new BlockBoulder("gold_ore", 21, 37);
 Block const * const GameBlocks::COPPER_ORE      = new BlockBoulder("copper_ore", 22, 38);
 Block const * const GameBlocks::TREE            = new BlockTree();
+Block const * const GameBlocks::CHEST           = new BlockChest();
 
 GameBlocks::GameBlocks()
 {
@@ -56,6 +58,7 @@ void GameBlocks::initBlocks()
     addBlock(GOLD_ORE);
     addBlock(COPPER_ORE);
     addBlock(TREE);
+    addBlock(CHEST);
 }
 
 void GameBlocks::addBlock(Block const * block)

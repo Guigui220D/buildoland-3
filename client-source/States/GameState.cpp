@@ -22,8 +22,9 @@
 #include "../../common-source/Networking/CtoS_PlayerActionCodes.h"
 #include "../../common-source/Networking/ServerToClientCodes.h"
 
-#include "../../client-source/Res/ResourceManager.h"
-#include "../../client-source/Settings/BindingsManager.h"
+#include "../Res/ResourceManager.h"
+#include "../Settings/BindingsManager.h"
+#include "../../common-source/Items/ItemsRegister.h"
 
 #include "../../external/tiny-process-library/process.hpp"
 
@@ -52,6 +53,9 @@ GameState::GameState(Game& game, unsigned int id) :
       init_frames_to_skip(20),
       chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
 {
+    Player::this_player = nullptr;
+    Player::this_player_id = 0;
+
     update_transparent = false;
     draw_transparent = false;
 }
@@ -68,6 +72,9 @@ GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, 
       init_frames_to_skip(20),
       chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
 {
+    Player::this_player = nullptr;
+    Player::this_player_id = 0;
+
     update_transparent = false;
     draw_transparent = false;
 }
@@ -253,6 +260,16 @@ void GameState::update(float delta_time)
 void GameState::draw(sf::RenderTarget& target) const
 {
     target.setView(my_view);
+
+    bool spyglass = Player::this_player && Player::this_player->getInventory().contents.at(0).getItem() == ItemsRegister::SPYGLASS;
+
+    if (spyglass)
+    {
+        sf::View bis = my_view;
+        bis.zoom(1.5f);
+        target.setView(bis);
+    }
+
 
     if (init_frames_to_skip > 0)
     {

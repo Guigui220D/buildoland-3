@@ -3,7 +3,7 @@
 #include "../../Items/ItemsRegister.h"
 
 BlockChest::BlockChest() :
-    Block("chest", false, 8)
+    Block("chest", true, 8)
 {
     //ctor
 }

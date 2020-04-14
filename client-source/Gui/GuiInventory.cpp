@@ -97,7 +97,8 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     states.texture = item_textures;
     target.draw(vertex_arrays[Item::ItemsTextureSet], states);
 
-    target.draw(number_draw);
+    if (hand)
+        target.draw(number_draw);
 
     // draw the amount numbers
     for (int x = 0; x < 6; x++)
@@ -131,7 +132,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
             if (stack)
             {
                 hover_text.setString(stack.getItem()->getDisplayName());
-                hover_text.setPosition(getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow())) + sf::Vector2f(0, 2.0_p));
+                hover_text.setPosition(18.0_p * i_pos.x + 1.0_p, 18.0_p * i_pos.y + 7.0_p);
                 target.draw(hover_text);
             }
         }
@@ -165,7 +166,7 @@ void GuiInventory::init()
     number_draw.setOutlineThickness(4.f);
 
     hover_text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));
-    hover_text.setString("foo");
+    hover_text.setString("bar");
     hover_text.setCharacterSize(100);
     hover_text.scale(sf::Vector2f(.4f, .4f));
     hover_text.setOutlineColor(sf::Color::Black);

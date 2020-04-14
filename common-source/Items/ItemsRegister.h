@@ -50,6 +50,8 @@ class ItemsRegister
         static Item const * const BALL;
         static Item const * const SHOVEL;
         static Item const * const SPYGLASS;
+        static Item const * const EMPTY_BUCKET;
+        static Item const * const WATER_BUCKET;
 
     private:
         std::vector<Item const *> items;

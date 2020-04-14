@@ -32,5 +32,7 @@
 	
 	"ball": "Balle rose",
 	"shovel": "Pelle",
-	"spyglass": "Longue-vue"
+	"spyglass": "Longue-vue",
+	"empty_bucket": "Seau vide",
+	"water_bucket": "Seau d'eau"
 }

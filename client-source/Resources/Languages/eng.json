@@ -32,5 +32,7 @@
 	
 	"ball": "Pink ball",
 	"shovel": "Shovel",
-	"spyglass": "Spyglass"
+	"spyglass": "Spyglass",
+	"empty_bucket": "Empty bucket",
+	"water_bucket": "Bucket of water"
 }

@@ -8,6 +8,7 @@
 #include "GameItems/NullItem.h"
 #include "GameItems/BallItem.h"
 #include "GameItems/ShovelItem.h"
+#include "GameItems/BucketItem.h"
 
 #include "../../common-source/Utils/Log.h"
 
@@ -15,10 +16,12 @@
 #include "../../client-source/Settings/LanguageManager.h"
 #endif
 
-Item const * const ItemsRegister::NULL_ITEM = new NullItem();
-Item const * const ItemsRegister::BALL      = new BallItem();
-Item const * const ItemsRegister::SHOVEL    = new ShovelItem();
-Item const * const ItemsRegister::SPYGLASS  = new Item("spyglass", 3);
+Item const * const ItemsRegister::NULL_ITEM =       new NullItem();
+Item const * const ItemsRegister::BALL      =       new BallItem();
+Item const * const ItemsRegister::SHOVEL    =       new ShovelItem();
+Item const * const ItemsRegister::SPYGLASS  =       new Item("spyglass", 3);
+Item const * const ItemsRegister::EMPTY_BUCKET =    new EmptyBucketItem();
+Item const * const ItemsRegister::WATER_BUCKET =    new WaterBucketItem();
 
 #ifdef CLIENT_SIDE
 ItemsRegister::ItemsRegister(LanguageManager& language) :
@@ -67,6 +70,8 @@ void ItemsRegister::initItems(GameBlocks& blocks, GameGrounds& grounds)
     addItem(BALL);
     addItem(SHOVEL);
     addItem(SPYGLASS);
+    addItem(EMPTY_BUCKET);
+    addItem(WATER_BUCKET);
 }
 
 void ItemsRegister::addItem(Item const * item)

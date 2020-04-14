@@ -32,5 +32,7 @@
 	
 	"ball": "Pinker Ball",
 	"shovel": "Schaufel",
-	"spyglass": "Spektiv"
+	"spyglass": "Spektiv",
+	"empty_bucket": "Eimer",
+	"water_bucket": "Eimer Wasser"
 }

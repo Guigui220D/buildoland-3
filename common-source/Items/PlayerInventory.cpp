@@ -27,8 +27,8 @@ PlayerInventory::PlayerInventory(const Player& owner, Server& server) :
     owner(owner),
     server(server)
 {
-    ItemStack a(ItemsRegister::SHOVEL, 1);
-    contents.at(0).swap(a);
+    { ItemStack a(ItemsRegister::SHOVEL, 1); contents.at(0).swap(a); }
+    { ItemStack a(ItemsRegister::EMPTY_BUCKET, 1); contents.at(1).swap(a); }
 }
 #endif // CLIENT_SIDE
 

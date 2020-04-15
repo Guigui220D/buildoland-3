@@ -35,6 +35,8 @@ class GameBlocks
         //Put blocks here
         static Block const * const AIR;
         static Block const * const ERROR;
+        static Block const * const STRUCTURE_VOID;
+
         static Block const * const STONE;
         static Block const * const STONE_BRICKS;
         static Block const * const IRON;
@@ -47,6 +49,8 @@ class GameBlocks
         static Block const * const COPPER_ORE;
         static Block const * const TREE;
         static Block const * const CHEST;
+
+
 
     private:
         std::vector<Block const *> blocks;

@@ -1,7 +1,7 @@
 #include "GroundError.h"
 
-GroundError::GroundError() :
-    Ground("error", false, 0)
+GroundError::GroundError(const std::string name) :
+    Ground(name, false, 0)
 {
     //ctor
 }

@@ -5,7 +5,7 @@
 class BlockError : public Block
 {
     public:
-        BlockError();
+        BlockError(const std::string name);
         virtual ~BlockError();
 
     protected:

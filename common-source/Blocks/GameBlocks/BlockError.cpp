@@ -1,7 +1,7 @@
 #include "BlockError.h"
 
-BlockError::BlockError() :
-    Block("error", false, 0)
+BlockError::BlockError(const std::string name) :
+    Block(name, false, 0)
 {
     //ctor
 }

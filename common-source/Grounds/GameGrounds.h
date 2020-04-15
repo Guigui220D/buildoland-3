@@ -34,6 +34,8 @@ class GameGrounds
 
         //Put grounds here
         static Ground const * const ERROR;
+        static Ground const * const STRUCTURE_VOID;
+
         static Ground const * const DIRT;
         static Ground const * const WATER;
         static Ground const * const STONE;

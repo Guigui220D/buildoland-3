@@ -5,7 +5,7 @@
 class GroundError : public Ground
 {
     public:
-        GroundError();
+        GroundError(const std::string name);
         ~GroundError();
 
         inline bool isShovelable(TileReference info) const override { return false; }

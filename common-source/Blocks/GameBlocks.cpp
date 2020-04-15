@@ -4,6 +4,7 @@
 
 #include "GameBlocks/BlockAir.h"
 #include "GameBlocks/BlockError.h"
+
 #include "GameBlocks/BlockBoulder.h"
 #include "GameBlocks/BlockTree.h"
 #include "GameBlocks/BlockChest.h"
@@ -15,7 +16,9 @@
 #include "../../common-source/Utils/Log.h"
 
 Block const * const GameBlocks::AIR             = new BlockAir();
-Block const * const GameBlocks::ERROR           = new BlockError();
+Block const * const GameBlocks::ERROR           = new BlockError("error");
+Block const * const GameBlocks::STRUCTURE_VOID  = new BlockError("structural_void");
+
 Block const * const GameBlocks::STONE           = new Block("stone", true, 2);
 Block const * const GameBlocks::STONE_BRICKS    = new Block("bricks", true, 3);
 Block const * const GameBlocks::IRON            = new Block("iron", true, 4);
@@ -46,6 +49,7 @@ void GameBlocks::initBlocks()
     //Add all blocks here
     addBlock(AIR);
     addBlock(ERROR);
+    addBlock(STRUCTURE_VOID);
 
     addBlock(STONE);
     addBlock(STONE_BRICKS);

@@ -16,14 +16,16 @@
 
 #include "../../common-source/Utils/Log.h"
 
-Ground const * const GameGrounds::ERROR =   new GroundError();
-Ground const * const GameGrounds::DIRT =    new GroundDirt();
-Ground const * const GameGrounds::WATER =   new GroundWater();
-Ground const * const GameGrounds::STONE =   new GroundStone();
-Ground const * const GameGrounds::SAND  =   new GroundSand();
-Ground const * const GameGrounds::GRASS =   new GroundGrass();
-Ground const * const GameGrounds::WOOD =    new GroundParquet();
-Ground const * const GameGrounds::CARPET =  new GroundCarpet();
+Ground const * const GameGrounds::ERROR =           new GroundError("error");
+Ground const * const GameGrounds::STRUCTURE_VOID =  new GroundError("structural_void");
+
+Ground const * const GameGrounds::DIRT =            new GroundDirt();
+Ground const * const GameGrounds::WATER =           new GroundWater();
+Ground const * const GameGrounds::STONE =           new GroundStone();
+Ground const * const GameGrounds::SAND  =           new GroundSand();
+Ground const * const GameGrounds::GRASS =           new GroundGrass();
+Ground const * const GameGrounds::WOOD =            new GroundParquet();
+Ground const * const GameGrounds::CARPET =          new GroundCarpet();
 
 
 GameGrounds::GameGrounds()
@@ -42,6 +44,7 @@ void GameGrounds::initGrounds()
     grounds.clear();
     //Add all grounds here
     addGround(ERROR);
+    addGround(STRUCTURE_VOID);
 
     addGround(WATER);
     addGround(DIRT);

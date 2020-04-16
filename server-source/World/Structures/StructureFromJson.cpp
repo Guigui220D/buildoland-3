@@ -34,6 +34,13 @@ const Block* StructureFromJson::getBlock(sf::Vector2i block_in_chunk) const
     sf::Vector2i diff = getRealBlockPos(chunk, block_in_chunk) - pos;
     diff += sf::Vector2i(origin_x, origin_y);
 
+    //Begin black magic
+    if (rota & 2)
+        diff = sf::Vector2i(-diff.x, -diff.y);
+
+    if (rota & 1)
+        diff = sf::Vector2i(diff.y, -diff.x);
+
     if (diff.x < 0 || diff.y < 0 || diff.x >= size_x || diff.y >= size_y)
         return GameBlocks::STRUCTURE_VOID;
 
@@ -44,6 +51,13 @@ const Ground* StructureFromJson::getGround(sf::Vector2i block_in_chunk) const
 {
     sf::Vector2i diff = getRealBlockPos(chunk, block_in_chunk) - pos;
     diff += sf::Vector2i(origin_x, origin_y);
+
+    //Begin black magic
+    if (rota & 2)
+        diff = sf::Vector2i(-diff.x, -diff.y);
+
+    if (rota & 1)
+        diff = sf::Vector2i(diff.y, -diff.x);
 
     if (diff.x < 0 || diff.y < 0 || diff.x >= size_x || diff.y >= size_y)
         return GameGrounds::STRUCTURE_VOID;
@@ -110,8 +124,8 @@ void StructureFromJson::load(std::string json_path, const GameBlocks& game_block
         int v_origin_x = j_origin_x->get<int>();
         int v_origin_y = j_origin_y->get<int>();
 
-        std::vector<const Block*> block_palette; block_palette.push_back(GameBlocks::STRUCTURE_VOID);
-        std::vector<const Ground*> ground_palette; ground_palette.push_back(GameGrounds::STRUCTURE_VOID);
+        std::vector<const Block*> block_palette;
+        std::vector<const Ground*> ground_palette;
 
         {
             std::vector<std::string> v_block_list = j_blocks->get<std::vector<std::string>>();
@@ -130,6 +144,12 @@ void StructureFromJson::load(std::string json_path, const GameBlocks& game_block
 
         for (char c : v_block_layer)
         {
+            if (c == ' ')
+            {
+                blocks.push_back(GameBlocks::STRUCTURE_VOID);
+                continue;
+            }
+
             if (c < '0' || c > '9')
                 continue;
 
@@ -146,6 +166,12 @@ void StructureFromJson::load(std::string json_path, const GameBlocks& game_block
 
         for (char c : v_ground_layer)
         {
+            if (c == ' ')
+            {
+                grounds.push_back(GameGrounds::STRUCTURE_VOID);
+                continue;
+            }
+
             if (c < '0' || c > '9')
                 continue;
 

@@ -21,7 +21,7 @@ NaturalGenerator::~NaturalGenerator()
 
 void NaturalGenerator::init(const GameBlocks& game_blocks, const GameGrounds& game_grounds)
 {
-    test_struct_2.load("Server-Resources/Structures/test_structure_2.json", game_blocks, game_grounds);
+    test_struct_2.load("Server-Resources/Structures/temple_1.json", game_blocks, game_grounds);
 
     ground_levels.push_back(GameGrounds::WATER);
     ground_levels.push_back(GameGrounds::WATER);
@@ -41,6 +41,8 @@ void NaturalGenerator::init(const GameBlocks& game_blocks, const GameGrounds& ga
 void NaturalGenerator::generateChunk(Chunk* chunk)
 {
     test_struct_2.setChunk(chunk->getPos());
+    test_struct_2.setCenter(sf::Vector2i(1, 0));
+    test_struct_2.setRotation(0);
 
     if (std::rand() % 10 == 0)
     {

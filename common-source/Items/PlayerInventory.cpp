@@ -8,6 +8,8 @@
 #ifndef CLIENT_SIDE
     #include "../../server-source/Server/Server.h"
     #include "../../server-source/Packets/InventoryAddPacket.h"
+
+    #include "../Blocks/Block.h"
 #else
     #include "../../client-source/States/GameState.h"
     #include "../../client-source/Game.h"

@@ -89,11 +89,11 @@ Block const * GameBlocks::getBlockByID(uint16_t id) const
     return blocks.at(id);
 }
 
-Block const * GameBlocks::getBlockByName(const std::string name) const
+Block const * GameBlocks::getBlockByName(std::string name) const
 {
     auto ptr = names.find(name);
 
-    if (ptr != names.end())
+    if (ptr == names.end())
         return ERROR;
 
     uint16_t id = ptr->second;

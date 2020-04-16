@@ -6,4 +6,4 @@ Generator::Generator(int seed) :
 
 Generator::~Generator() {}
 
-void Generator::init() {}
+void Generator::init(const GameBlocks& game_blocks, const GameGrounds& game_grounds) {}

@@ -43,6 +43,3 @@ const Ground* TestStructure::getGround(sf::Vector2i block_in_chunk) const
 
     return GameGrounds::STRUCTURE_VOID;
 }
-
-
-

@@ -1,0 +1,26 @@
+{
+	"size_x": 5,
+	"size_y": 5,
+	
+	"origin_x": 2,
+	"origin_y": 2,
+
+	"blocks": [
+		"gold",
+		"stone",
+		"iron",
+		"wood",
+		"chest"
+	],
+	
+	"grounds": [
+		"dirt",
+		"stone",
+		"sand",
+		"grass",
+		"carpet"
+	],
+	
+	"block_layer": "00000 00100 02530 00400 00000",
+	"ground_layer": "50005 01020 00500 03040 50005"
+}

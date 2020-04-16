@@ -7,9 +7,13 @@
 #include <SFML/System.hpp>
 
 #include "../Structures/TestStructure.h"
+#include "../Structures/StructureFromJson.h"
 
 class Ground;
 class Block;
+
+class GameBlocks;
+class GameGrounds;
 
 class NaturalGenerator : public Generator
 {
@@ -17,7 +21,7 @@ class NaturalGenerator : public Generator
         NaturalGenerator(int seed);
         ~NaturalGenerator();
 
-        void init() override;
+        void init(const GameBlocks& game_blocks, const GameGrounds& game_grounds) override;
 
         void generateChunk(Chunk* chunk) override;
 
@@ -31,4 +35,6 @@ class NaturalGenerator : public Generator
         //sf::Vector2i getStructurePos(sf::Vector2i chunk_pos) const;
 
         TestStructure test_struct;
+        StructureFromJson test_struct_2;
+
 };

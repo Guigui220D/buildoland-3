@@ -19,8 +19,10 @@ NaturalGenerator::~NaturalGenerator()
     //dtor
 }
 
-void NaturalGenerator::init()
+void NaturalGenerator::init(const GameBlocks& game_blocks, const GameGrounds& game_grounds)
 {
+    test_struct_2.load("Server-Resources/Structures/test_structure_2.json", game_blocks, game_grounds);
+
     ground_levels.push_back(GameGrounds::WATER);
     ground_levels.push_back(GameGrounds::WATER);
     ground_levels.push_back(GameGrounds::SAND);
@@ -38,6 +40,8 @@ void NaturalGenerator::init()
 
 void NaturalGenerator::generateChunk(Chunk* chunk)
 {
+    test_struct_2.setChunk(chunk->getPos());
+
     if (std::rand() % 10 == 0)
     {
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
@@ -63,8 +67,6 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
     }
     else
     {
-        test_struct.setChunk(chunk->getPos());
-
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
         for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
         {
@@ -100,38 +102,19 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
                 chunk->setBlock(x, y, GameBlocks::TREE);
 
             chunk->setGround(x, y, ground_levels.at(std::round(perlin_value)));
-
-            /*
-            for (int i = -2; i <= 2; i++)
-            for (int j = -2; j <= 2; j++)
-            {
-                sf::Vector2i chunk_pos = chunk->getPos() + sf::Vector2i(i, j);
-
-                if (hasStructure(chunk_pos))
-                {
-                    //TEST
-                    sf::Vector2i structure_pos = chunk_pos * Chunk::CHUNK_SIZE + getStructurePos(chunk_pos);
-
-                    sf::Vector2i block_pos = chunk->getBlockPosInWorld(x, y);
-
-                    sf::Vector2i diff = block_pos - structure_pos;
-
-                    int result = diff.x * diff.x + diff.y * diff.y;
-
-                    if (result > 342 && result < 400)
-                        chunk->setBlock(x, y, GameBlocks::BOULDER);
-                }
-            }
-            */
-
-            const Block* structure_block = test_struct.getBlock(sf::Vector2i(x, y));
-            if (structure_block != GameBlocks::STRUCTURE_VOID)
-                chunk->setBlock(x, y, structure_block);
-
-            const Ground* structure_ground = test_struct.getGround(sf::Vector2i(x, y));
-            if (structure_ground != GameGrounds::STRUCTURE_VOID)
-                chunk->setGround(x, y, structure_ground);
         }
+    }
+
+    for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
+    for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
+    {
+        const Block* structure_block = test_struct_2.getBlock(sf::Vector2i(x, y));
+        if (structure_block != GameBlocks::STRUCTURE_VOID)
+            chunk->setBlock(x, y, structure_block);
+
+        const Ground* structure_ground = test_struct_2.getGround(sf::Vector2i(x, y));
+        if (structure_ground != GameGrounds::STRUCTURE_VOID)
+            chunk->setGround(x, y, structure_ground);
     }
 
     if (chunk->getPos() == sf::Vector2i())

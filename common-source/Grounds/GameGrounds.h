@@ -30,7 +30,7 @@ class GameGrounds
          * @param name : the name of the ground
          * @return The pointer to the ground
          */
-        Ground const * getGroundByName(const std::string name) const;
+        Ground const * getGroundByName(std::string name) const;
 
         //Put grounds here
         static Ground const * const ERROR;

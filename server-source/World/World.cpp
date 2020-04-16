@@ -16,7 +16,7 @@
 #include "Generators/NaturalGenerator.h"
 
 World::World(Server& server) :
-      entities(std::make_unique<EntitiesManager>(server)),
+    entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(std::rand())),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
@@ -40,7 +40,7 @@ World::~World()
 
 void World::init()
 {
-    generator->init();
+    generator->init(game_blocks_manager, game_grounds_manager);
 }
 
 void World::sendToSubscribers(ECCPacket& packet, sf::Vector2i chunk) const

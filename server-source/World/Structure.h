@@ -17,7 +17,7 @@ class Structure
         inline void setRotation(int rotation) { rota = rotation; }
         inline void setChunk(sf::Vector2i position) { chunk = position; }
 
-        inline sf::Vector2i getRealBlockPos(sf::Vector2i chunk, sf::Vector2i tile) const { chunk * Chunk::CHUNK_SIZE + tile; }
+        inline sf::Vector2i getRealBlockPos(sf::Vector2i chunk, sf::Vector2i tile) const { return chunk * Chunk::CHUNK_SIZE + tile; }
 
         virtual const Block* getBlock(sf::Vector2i block_in_chunk) const = 0;
         virtual const Ground* getGround(sf::Vector2i block_in_chunk) const = 0;

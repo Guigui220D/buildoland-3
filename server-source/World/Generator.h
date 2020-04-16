@@ -1,5 +1,8 @@
 #pragma once
 
+class GameBlocks;
+class GameGrounds;
+
 class Chunk;
 
 class Generator
@@ -11,7 +14,7 @@ class Generator
         /**
         * The constructor is called before blocks and grounds are initialized but init after
         */
-        virtual void init();
+        virtual void init(const GameBlocks& game_blocks, const GameGrounds& game_grounds);
 
         /**
         * Generates a chunk

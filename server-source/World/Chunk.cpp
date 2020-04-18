@@ -36,13 +36,6 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 
 Chunk::~Chunk()
 {
-    for (unsigned int i = 0; i < tile_entities.size(); i++)
-    {
-        tile_entities[i]->assignChunk(nullptr);
-        //tile_entities.getData()[i]->to_be_destroyed = true;
-    }
-
-    //dtor
 }
 
 void Chunk::generatePacket()
@@ -93,36 +86,6 @@ void Chunk::setBlock(int x, int y, const Block* block)
     blocks[y*CHUNK_SIZE + x] = block->getId();
 
     packet_ready = false;
-
-    TileEntity* old = tile_entities[y*CHUNK_SIZE + x];
-
-    if (old)
-    {
-        tile_entities[y*CHUNK_SIZE + x] = nullptr;
-        old->assignChunk(nullptr);
-    }
-
-
-    TileEntity* te = nullptr;
-
-    switch (block->getTileEntityCode())
-    {
-    case TileEntities::None:
-        return;
-
-    case TileEntities::TestTileEntity:
-        te = new TestTileEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
-        break;
-
-    case TileEntities::TreeTopEntity:
-        te = new TreeTopEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
-        break;
-    }
-
-    assert(te);
-
-    te->assignChunk(this);
-    world.getEntityManager().newEntity(te, ready);
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)

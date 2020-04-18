@@ -1,5 +1,7 @@
 #pragma once
 
+/*
+
 #include "../TileEntity.h"
 
 #ifdef CLIENT_SIDE
@@ -23,3 +25,4 @@ class TestTileEntity : public TileEntity
         sf::RectangleShape rectangle;
         #endif // CLIENT_SIDE
 };
+*/

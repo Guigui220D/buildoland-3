@@ -62,8 +62,6 @@ void World::updateLoadedChunk(float delta_time)
             chunks.erase(chunks.find(key));
 
         chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
-
-        entities.declareNewChunkForTileEntities(chunk);
     }
     chunk_list_modification_mutex.unlock();
     chunks_to_add.clear();

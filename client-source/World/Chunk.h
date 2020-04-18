@@ -68,46 +68,40 @@ public:
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundVertexArray() const
-    { return ground_vertices[render_vx_id()]; }
+        { return ground_vertices[render_vx_id()]; }
     /**
          * Gets the vertex array to draw the details on the ground
          * The texture to be used with that vertex array is "GROUND_DETAILS"
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundDetailsVertexArray(int frame) const
-    { return ground_detail_vertices[render_vx_id()].at(frame); }
+        { return ground_detail_vertices[render_vx_id()].at(frame); }
     /**
          * Gets the vertex array to draw the sides of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockSidesVertexArray() const
-    { return block_side_vertices[render_vx_id()]; }
+        { return block_side_vertices[render_vx_id()]; }
     /**
          * Gets the vertex array to draw the top of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockTopsVertexArray() const
-    { return block_top_vertices[render_vx_id()]; }
+        { return block_top_vertices[render_vx_id()]; }
 
 
     /**
          * Tells the chunk that it should redo its vertex arrays
          */
     inline void invalidateVertexArrays() const
-    {
-        vertices_ready = false;
-    }
+        { vertices_ready = false; }
 
     inline bool vertexArraysOutOfDate() const
-    {
-        return !vertices_ready;
-    }
+        { return !vertices_ready; }
     inline void swapVertexArrays()
-    {
-        current_vertex_array_index = 1 - current_vertex_array_index; // 1 => 0 OR 0 => 1
-    }
+        { current_vertex_array_index = 1 - current_vertex_array_index; } // 1 => 0 OR 0 => 1
 
     /**
          * Generates all the related vertex arrays for chunk rendering

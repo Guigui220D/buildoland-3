@@ -1,5 +1,7 @@
 #include "TreeTopEntity.h"
 
+/*
+
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
     #include "../../../client-source/World/World.h"
@@ -33,3 +35,4 @@ void TreeTopEntity::drawAbove(sf::RenderTarget& target) const
     target.draw(rectangle);
 }
 #endif
+*/

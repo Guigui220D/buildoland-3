@@ -9,10 +9,7 @@ class Entity;
 class World;
 class Chunk;
 
-namespace sf
-{
-class RenderTarget;
-}
+namespace sf { class RenderTarget; }
 
 class EntitiesManager
 {
@@ -38,8 +35,6 @@ class EntitiesManager
          * @param target : the render target on which to draw on
          */
         void drawAllAbove(sf::RenderTarget& target) const;
-
-        void declareNewChunkForTileEntities(Chunk* new_chunk);
 
         /**
          * Get a pointer to an entity using its id

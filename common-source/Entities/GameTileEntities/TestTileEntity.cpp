@@ -1,5 +1,7 @@
 #include "TestTileEntity.h"
 
+/*
+
 #ifdef CLIENT_SIDE
 #include <SFML/Graphics/RenderTarget.hpp>
 #endif
@@ -28,3 +30,4 @@ void TestTileEntity::draw(sf::RenderTarget& target) const
     target.draw(rectangle);
 }
 #endif
+*/

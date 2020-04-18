@@ -5,6 +5,7 @@
 #include "GameBlocks/BlockAir.h"
 #include "GameBlocks/BlockError.h"
 
+#include "GameBlocks/BlockGlass.h"
 #include "GameBlocks/BlockBoulder.h"
 #include "GameBlocks/BlockTree.h"
 #include "GameBlocks/BlockChest.h"
@@ -24,6 +25,7 @@ Block const * const GameBlocks::STONE_BRICKS    = new Block("bricks", true, 3);
 Block const * const GameBlocks::IRON            = new Block("iron", true, 4);
 Block const * const GameBlocks::GOLD            = new Block("gold", true, 5);
 Block const * const GameBlocks::WOOD            = new Block("wood", true, 7);
+Block const * const GameBlocks::GLASS           = new BlockGlass();
 Block const * const GameBlocks::STICKS          = new GroundBlock("wood_sticks", true, 39, 3);
 Block const * const GameBlocks::STONE_PLATE     = new GroundBlock("stone_pebbles", true, 23, 3);
 Block const * const GameBlocks::BOULDER         = new BlockBoulder("boulder", 20, 36);
@@ -56,6 +58,7 @@ void GameBlocks::initBlocks()
     addBlock(IRON);
     addBlock(GOLD);
     addBlock(WOOD);
+    addBlock(GLASS);
     addBlock(STICKS);
     addBlock(STONE_PLATE);
     addBlock(BOULDER);

@@ -8,6 +8,7 @@
 #include "../Game.h"
 #include "LoadingScreenState.h"
 #include "GameState.h"
+#include "NicknameChoiceState.h"
 
 MainMenuState::MainMenuState(Game& game, unsigned int id) :
     State(game, id),
@@ -15,7 +16,7 @@ MainMenuState::MainMenuState(Game& game, unsigned int id) :
     test_button_1(new GuiButton(game, sf::Vector2f(), 800.f, "SINGLEPLAYER_BUTTON")),
     test_button_2(new GuiButton(game, sf::Vector2f(0.f, 120.f), 800.f, "MULTIPLAYER_BUTTON"))
 {
-    update_transparent = false;
+    draw_transparent = update_transparent = false;
 }
 
 MainMenuState::~MainMenuState()
@@ -55,8 +56,12 @@ void MainMenuState::update(float delta_time)
     if (test_button_1->hasBeenClicked())
         getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0));
 
+    /*
     if (test_button_2->hasBeenClicked())
         getGame().addStateOnTop(new LoadingScreenState<GameState>(true, true, getGame(), 0, sf::IpAddress(getGame().getSettingsManager().getString("online_server_address")), 58888));
+    */
+    if (test_button_2->hasBeenClicked())
+        getGame().addStateOnTop(new LoadingScreenState<NicknameChoiceState>(true, true, getGame(), 0));
 }
 
 void MainMenuState::draw(sf::RenderTarget& target) const

@@ -13,7 +13,7 @@ class Player;
 class Client
 {
     public:
-        Client(Server& server, IpAndPort ip_and_port, Player* player);
+        Client(Server& server, IpAndPort ip_and_port, const std::string& in_nickname, Player* player);
         virtual ~Client();
 
         inline const IpAndPort& getIpAndPort() const { return ip_and_port; }
@@ -21,6 +21,9 @@ class Client
         inline bool hasPlayer() const { return player; }
         inline Player* getPlayer() const { return player; }
         inline void setPlayer(Player* new_player) { player =  new_player; }
+
+        inline std::string getNickname() const
+        { return nickname; }
 
         void send(ECCPacket& packet) const;
 
@@ -33,6 +36,7 @@ class Client
 
     protected:
         IpAndPort ip_and_port;
+        std::string nickname;
 
         Player* player;
 

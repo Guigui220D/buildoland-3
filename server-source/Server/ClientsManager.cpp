@@ -17,12 +17,12 @@ ClientsManager::~ClientsManager()
     //dtor
 }
 
-bool ClientsManager::addClient(IpAndPort& client, Player* player)
+bool ClientsManager::addClient(IpAndPort& client, const std::string &nickname, Player* player)
 {
     if (clients.find(client) != clients.end())
         return false;
 
-    clients.emplace(std::pair<IpAndPort, std::unique_ptr<Client>>(client, std::make_unique<Client>(server, client, player)));
+    clients.emplace(std::pair<IpAndPort, std::unique_ptr<Client>>(client, std::make_unique<Client>(server, client, nickname, player)));
 
     return true;
 }

@@ -3,6 +3,11 @@
 	
 	"SINGLEPLAYER_BUTTON": "Mode solo",
 	"MULTIPLAYER_BUTTON": "Mode multi",
+	"START_GAME" : "Démarrer",
+	"NICKNAME" : "Pseudo",
+	"SERVER_ADDRESS" : "Adresse du serveur",
+	"INVALID_ADDRESS": "Adresse invalide",
+	"INVALID_NICKNAME":"Pseudo invalide",
 	"BACK_TO_MAIN_MENU_BUTTON": "Retourner au menu",
 	
 	"STATE_INTERRUPTED": "Jeu interrompu par le joueur (test)",

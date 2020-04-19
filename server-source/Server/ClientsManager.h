@@ -27,7 +27,7 @@ class ClientsManager
          * @param player : a pointer to a player to associate to this client (unlikely to be used)
          * @return True the client was added
          */
-        bool addClient(IpAndPort& client, Player* player = nullptr);
+        bool addClient(IpAndPort& client, const std::string& nickname, Player* player = nullptr);
         /**
          * Removes a client
          * The client must NOT have a player. If it does, it should be removed before.

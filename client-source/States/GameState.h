@@ -33,7 +33,7 @@ class GameState : public State
 
     public:
         GameState(Game& game, unsigned int id);
-        GameState(Game& game, unsigned int id, sf::IpAddress server_address, uint16_t server_port);
+        GameState(Game& game, unsigned int id, const std::string& in_nickname, sf::IpAddress server_address, uint16_t server_port);
         ~GameState();
 
         void init() override;
@@ -57,6 +57,8 @@ class GameState : public State
         sf::IpAddress remote_ip;
         uint16_t remote_port;
         sf::Clock heartbeat_clock;
+
+        std::string nickname;
 
         std::unique_ptr<TinyProcessLib::Process> solo_server_process;
 

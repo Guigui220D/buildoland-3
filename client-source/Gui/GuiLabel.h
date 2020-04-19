@@ -19,21 +19,33 @@ class GuiLabel : public GuiElement
               GuiElement(game),
               message(message)
         {
-            setMessage(std::forward<FmtArgs>(fmt_args)...);
+            setMessageArgs(std::forward<FmtArgs>(fmt_args)...);
             text.setPosition(position);
         }
         ~GuiLabel();
+
+        void setColor(sf::Color col)
+        {
+            text.setFillColor(col);
+        }
 
         void draw(sf::RenderTarget& target) const override;
         void init() override;
 
         template <typename... FmtArgs>
-        void setMessage(FmtArgs&&... args)
+        void resetMessage(const std::string& new_message, FmtArgs&&... args)
+        {
+            message = new_message;
+            text.setString(game.getLanguageManager().getString(new_message, std::forward<FmtArgs>(args)...));
+        }
+
+        template <typename... FmtArgs>
+        void setMessageArgs(FmtArgs&&... args)
         {
             text.setString(game.getLanguageManager().getString(message, std::forward<FmtArgs>(args)...));
         }
 
     private:
         sf::Text text;
-        const std::string message;
+        std::string message;
 };

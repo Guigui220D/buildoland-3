@@ -3,6 +3,11 @@
 	
 	"SINGLEPLAYER_BUTTON": "Singleplayer",
 	"MULTIPLAYER_BUTTON": "Multiplayer",
+	"START_GAME" : "Start",
+	"NICKNAME" : "Nickname",
+	"SERVER_ADDRESS" : "Server address",
+	"INVALID_ADDRESS": "Invalid address",
+	"INVALID_NICKNAME":"Invalid nickname",
 	"BACK_TO_MAIN_MENU_BUTTON": "Back to main menu",
 	
 	"STATE_INTERRUPTED": "State interrupted by player (for testing)",

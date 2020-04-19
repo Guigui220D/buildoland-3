@@ -98,7 +98,7 @@ public:
             return {};
         request_queue.pop();
 
-        return std::move(*reinterpret_cast<T*>(&entry.data));
+        return *reinterpret_cast<T*>(&entry.data);
     }
 
     void skip()

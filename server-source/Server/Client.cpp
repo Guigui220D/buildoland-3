@@ -2,8 +2,9 @@
 
 #include "Server.h"
 
-Client::Client(Server& server, IpAndPort ip_and_port, Player* player) :
+Client::Client(Server& server, IpAndPort ip_and_port, const std::string &in_nickname, Player* player) :
     ip_and_port(ip_and_port),
+      nickname(in_nickname),
     player(player),
     server(server)
 {

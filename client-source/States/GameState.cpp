@@ -47,6 +47,7 @@ GameState::GameState(Game& game, unsigned int id) :
       connected(false),
       remote_ip(sf::IpAddress::LocalHost),
       remote_port(0),
+      nickname("Me"),
       receiver_thread(&GameState::receiverLoop, this),
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
@@ -60,12 +61,13 @@ GameState::GameState(Game& game, unsigned int id) :
     draw_transparent = false;
 }
 
-GameState::GameState(Game& game, unsigned int id, sf::IpAddress server_address, uint16_t server_port) :
+GameState::GameState(Game& game, unsigned int id, const std::string& in_nickname, sf::IpAddress server_address, uint16_t server_port) :
       State(game, id),
       solo_mode(false),
       connected(false),
       remote_ip(server_address),
       remote_port(server_port),
+      nickname(in_nickname),
       receiver_thread(&GameState::receiverLoop, this),
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
@@ -428,6 +430,7 @@ bool GameState::handshakeRemoteServer()
     //TEMP
     //At the moment we send RequestConnection here but this will be done in the connecting to server state
     ECCPacket request(Networking::CtoS::RequestConnection);
+    request << nickname;
     sendToServer(request);
 
     bool handshake = receiveServerHandshake(true);

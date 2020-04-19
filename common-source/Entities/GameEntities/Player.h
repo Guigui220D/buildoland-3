@@ -6,6 +6,7 @@
 #include "../../../client-source/Utils/Animation.h"
 #include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/CircleShape.hpp>
+#include <SFML/Graphics/Text.hpp>
 #else
 class Client;
 #include "../../../common-source/Networking/ClientToServerRequests.h"
@@ -35,6 +36,9 @@ public:
     void update(float delta);
 #ifdef CLIENT_SIDE
     void draw(sf::RenderTarget& target) const;
+    void drawAbove(sf::RenderTarget& target) const;
+    int getZOrder() const override
+    { return 1; }
 
     void useHand(sf::Vector2i pos);
 
@@ -71,6 +75,8 @@ private:
     sf::RectangleShape pants;
     sf::RectangleShape shirt;
     sf::CircleShape shadow;
+
+    sf::Text nickname_text;
 
     sf::Vector2f last_walking_direction;
     sf::Clock frequent_walk_update;

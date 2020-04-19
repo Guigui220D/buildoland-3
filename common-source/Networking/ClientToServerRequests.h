@@ -25,6 +25,7 @@ struct DisconnectRequest
 struct ConnectionRequest
 {
     IpAndPort iandp;
+    std::string nickname;
 };
 
 struct ChunkRequest

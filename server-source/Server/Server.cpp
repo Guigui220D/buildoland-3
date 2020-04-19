@@ -25,6 +25,7 @@
 #include "../../server-source/World/Chunk.h"
 
 #include "../../common-source/Utils/Log.h"
+#include" ../../common-source/Utils/UsernameCheck.h"
 
 
 Server::Server(uint16_t client_port) :
@@ -67,7 +68,7 @@ bool Server::init(uint16_t port)
     server_socket.setBlocking(true);
 
 #ifdef SOLO
-    clients_manager.addClient(owner);
+    clients_manager.addClient(owner, "Me");
 #else
     connection_open = true;
 #endif // SOLO
@@ -184,8 +185,12 @@ void Server::receiver()
                             request_queue.pushRequest(Networking::CtoS::DisconnectRequest{iandp});
                             break;
                         case Networking::CtoS::RequestConnection:
-                            request_queue.pushRequest(Networking::CtoS::ConnectionRequest{iandp});
-                            break;
+                        {
+                            std::string nickname;
+                            packet >> nickname;
+                            request_queue.pushRequest(Networking::CtoS::ConnectionRequest{iandp, nickname});
+                        }
+                        break;
                         case Networking::CtoS::RequestChunk:
                         {
                             sf::Vector2i pos;
@@ -351,12 +356,26 @@ void Server::processPacketQueue()
                 continue;
             if (clients_manager.isConnected(rq->iandp))
                 continue;
+            if (!UsernameCheck::checkUsername(rq->nickname))
+            {
+                log(INFO, "Invalid username\n");
+                continue;
+            }
+            for (auto it = clients_manager.getClientsBegin(); it != clients_manager.getClientsEnd(); ++it)
+            {
+                if (rq->nickname == it->second->getNickname())
+                {
+                    // TODO : tell the client that the username is already taken
+                    log(INFO, "Username already taken\n");
+                    continue;
+                }
+            }
 
             log(INFO, "Connection accepted\n");
             {
                 unsigned int player_id = world->getEntityManager().getNextEntityId();
 
-                clients_manager.addClient(rq->iandp);
+                clients_manager.addClient(rq->iandp, rq->nickname);
                 Player* new_player = new Player(*world, player_id, clients_manager.getClient(rq->iandp));
                 clients_manager.getClient(rq->iandp).setPlayer(new_player);
 

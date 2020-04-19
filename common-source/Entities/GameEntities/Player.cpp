@@ -56,6 +56,13 @@ Player::Player(World& world, unsigned int id) :
     shadow.setRadius(.17f);
     shadow.setOrigin(sf::Vector2f(.17f, .17f));
     shadow.setFillColor(sf::Color(0, 0, 0, 64));
+
+    nickname_text.setFont(getWorld().getGame().getResourceManager().getFont("GUI_FONT"));
+    nickname_text.setString("Me");
+    nickname_text.setCharacterSize(100);
+    nickname_text.scale(sf::Vector2f(1.f/300, 1.f/300));
+    nickname_text.setOutlineColor(sf::Color::Black);
+    nickname_text.setOutlineThickness(4.f);
 }
 #else
 Player::Player(World& world, unsigned int id, const Client& client) :
@@ -131,6 +138,7 @@ void Player::update(float delta)
     shirt.setPosition(position);
     pants.setPosition(position);
     shoes.setPosition(position);
+    nickname_text.setPosition(position + sf::Vector2f(0.0f, -1.2f));
 
     base.setTextureRect(getCurrentTextureRect());
     shirt.setTextureRect(getCurrentTextureRect());
@@ -153,6 +161,13 @@ void Player::draw(sf::RenderTarget& target) const
     target.draw(shirt);
 }
 
+void Player::drawAbove(sf::RenderTarget &target) const
+{
+#ifndef SOLO
+    target.draw(nickname_text);
+#endif
+}
+
 void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 {
     if (getId() == Player::this_player_id)
@@ -166,6 +181,13 @@ void Player::useHand(sf::Vector2i pos)
 
 bool Player::takeNewEntityPacket(ECCPacket& packet)
 {
+    std::string nick;
+    packet >> nick;
+
+    log(INFO, "Player nickname : {}\n", nick);
+    nickname_text.setString(nick);
+    nickname_text.setOrigin(nickname_text.getLocalBounds().width/2.f, 0.f);
+
     for (uint32_t& color : outfit_colors)
         packet >> color;
 
@@ -335,6 +357,8 @@ void Player::makeNewEntityPacket(ECCPacket& packet) const
     packet << EntityActions::StoC::AddEntity;
     packet << getEntityCode();
     packet << getId();
+
+    packet << client.getNickname();
 
     for (uint32_t color : outfit_colors)
         packet << color;

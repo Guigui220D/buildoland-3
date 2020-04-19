@@ -1,7 +1,7 @@
 #include "Entity.h"
 
 #ifdef CLIENT_SIDE
-#include <SFML/Graphics/RenderTarget.hpp>
+    #include <SFML/Graphics/RenderTarget.hpp>
     #include "../../client-source/World/World.h"
 #else
     #include "../../server-source/World/World.h"

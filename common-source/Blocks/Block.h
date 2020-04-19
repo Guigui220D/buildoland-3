@@ -4,7 +4,7 @@
 
 #include "../Utils/TileReference.h"
 
-//#include "../Entities/TileEntityCodes.h"
+#include "../TileEntities/TileEntityCodes.h"
 
 #ifdef CLIENT_SIDE
     #include "../../client-source/Utils/TilesetHelper.h"
@@ -91,7 +91,9 @@ class Block
         inline Item const * getDefaultItem() const { return drop; };
         #endif
 
-        //virtual inline unsigned short getTileEntityCode() const { return TileEntities::None; }
+        virtual inline bool clientSideHasTE() const { return false; };
+        virtual inline bool serverSideHasTE() const { return false; };
+        virtual inline unsigned short getTileEntityCode() const { return TileEntities::None; }
 
     protected:
         #ifdef CLIENT_SIDE

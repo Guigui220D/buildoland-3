@@ -30,6 +30,7 @@ public:
     ~Chunk();
 
     inline Game& getGame() const { return game; }
+    inline World& getWorld() const { return world; }
 
     inline sf::Vector2i getPos() const { return pos; }
 

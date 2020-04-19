@@ -14,7 +14,8 @@ class BlockTree : public Block
         inline bool darkenSide() const override { return false; }
         #endif
 
-        //inline unsigned short getTileEntityCode() const override { return TileEntities::TreeTopEntity; }
+        virtual inline bool clientSideHasTE() const { return true; };
+        virtual inline unsigned short getTileEntityCode() const { return TileEntities::TreeTopEntity; }
 
     protected:
 

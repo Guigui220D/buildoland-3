@@ -2,7 +2,8 @@
 
 #include "../Game.h"
 
-//#include "../../common-source/Entities/TileEntity.h"
+#include "../../common-source/TileEntities/TileEntity.h"
+#include "../../common-source/TileEntities/GameTileEntities/TreeTopEntity.h"
 
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
@@ -14,6 +15,7 @@
 #include "World.h"
 
 #include <cassert>
+#include <exception>
 
 const int Chunk::CHUNK_SIZE = 16;
 
@@ -48,6 +50,26 @@ Chunk::Chunk(World& world, sf::Vector2i pos, const char* chunk_data, unsigned ch
     memcpy(blocks.data(), chunk_data + header_size, blocks.size()*sizeof(blocks[0]));
     memcpy(grounds.data(), chunk_data + header_size + blocks.size()*sizeof(blocks[0]), grounds.size()*sizeof(grounds[0]));
 
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        const Block* block = game.getBlocksManager().getBlockByID(blocks[y * CHUNK_SIZE + x]);
+
+        if (block->clientSideHasTE())
+        {
+            switch (block->getTileEntityCode())
+            {
+            case TileEntities::TreeTopEntity:
+                tile_entities[y * CHUNK_SIZE + x].reset(new TreeTopEntity(*this, getBlockPosInWorld(x, y)));
+                actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+                break;
+
+            default:
+            case TileEntities::None:
+                throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+            }
+        }
+    }
 
     //Prepare vertices
     for (int j = 0; j <= 1; ++j)
@@ -114,7 +136,7 @@ void Chunk::setBlock(int x, int y, const Block* block)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
-    blocks[y*CHUNK_SIZE + x] = block->getId();
+    blocks[y * CHUNK_SIZE + x] = block->getId();
 
     if (x == 0)
         notifyChunk(3);
@@ -126,6 +148,27 @@ void Chunk::setBlock(int x, int y, const Block* block)
         notifyChunk(2);
 
     invalidateVertexArrays();
+
+    if (tile_entities[y * CHUNK_SIZE + x])
+    {
+        tile_entities[y * CHUNK_SIZE + x].reset();
+        cleanupTEList();
+    }
+
+    if (block->clientSideHasTE())
+    {
+        switch (block->getTileEntityCode())
+        {
+        case TileEntities::TreeTopEntity:
+            tile_entities[y * CHUNK_SIZE + x].reset(new TreeTopEntity(*this, getBlockPosInWorld(x, y)));
+            actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+            break;
+
+        default:
+        case TileEntities::None:
+            throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+        }
+    }
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
@@ -275,3 +318,12 @@ void Chunk::generateBlockTopVertices() const
         }
 }
 
+void Chunk::cleanupTEList()
+{
+    #define v actual_tile_entities
+    v.erase(std::remove_if(v.begin(), v.end(),
+        [](std::shared_ptr<TileEntity>& te)
+            { return (bool)(te.use_count() <= 1); }
+        ), v.end());
+    #undef v
+}

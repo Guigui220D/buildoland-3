@@ -11,8 +11,10 @@
 #include <cassert>
 
 //TEST
+/*
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
 #include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
+*/
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 

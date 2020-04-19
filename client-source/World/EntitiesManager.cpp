@@ -12,9 +12,6 @@
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
 
-#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
-#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
-
 #include "../../client-source/World/World.h"
 
 #include "../../common-source/Utils/Log.h"

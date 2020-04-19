@@ -4,6 +4,7 @@
 #include <array>
 #include <cassert>
 #include <atomic>
+#include <memory>
 
 #include "../../common-source/Utils/Log.h"
 
@@ -137,12 +138,17 @@ public:
     inline int gen_vx_id() const
         { return 1 - current_vertex_array_index; }
 
+    std::vector<std::shared_ptr<TileEntity>> actual_tile_entities; //for faster TE iteration (no iterating over each block and checking if theres a TE)
+
 private:
     bool ready = false;
 
     std::vector<uint16_t> blocks;
     std::vector<uint16_t> grounds;
-    std::vector<TileEntity*> tile_entities;
+
+    std::vector<std::shared_ptr<TileEntity>> tile_entities;
+    void cleanupTEList();
+
     const sf::Vector2i pos;
 
     // some sort of double-swapping technique is used to

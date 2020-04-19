@@ -16,6 +16,8 @@
 #include "../../common-source/Blocks/GameBlocks.h"
 #include "../../common-source/Grounds/GameGrounds.h"
 
+#include "../../common-source/TileEntities/TileEntity.h"
+
 #include "../Version.h"
 
 #include "../../common-source/Networking/ClientToServerCodes.h"
@@ -301,6 +303,9 @@ void GameState::draw(sf::RenderTarget& target) const
             target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
         entities.drawAll(target);
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
+            for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
+                te->draw(target);
 
         for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
             target.draw(i->second->getBlockTopsVertexArray(), block_textures);
@@ -308,6 +313,9 @@ void GameState::draw(sf::RenderTarget& target) const
     }
 
     entities.drawAllAbove(target);
+    for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
+            for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
+                te->drawAbove(target);
 
     if (isTopState())
     {

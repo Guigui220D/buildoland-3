@@ -79,25 +79,6 @@ void GuiInventory::draw(sf::RenderTarget& target) const
         }
     }
 
-    ItemStack& hand = inventory.contents.at(0);
-    if (hand)
-    {
-        sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
-        number_draw.setPosition(pos + sf::Vector2f(-8.0_p, 8.0_p) / 2.f);
-
-        sf::Vertex vertices[4];
-        vertices[0].position = pos - sf::Vector2f(8.0_p, 8.0_p) / 2.f;
-        vertices[1].position = vertices[0].position + sf::Vector2f(8.0_p, 0);
-        vertices[2].position = vertices[0].position + sf::Vector2f(8.0_p, 8.0_p);
-        vertices[3].position = vertices[0].position + sf::Vector2f(0, 8.0_p);
-        hand.getItem()->addTexturedVertices(hand, vertices);
-
-        for (int i = 0; i < 4; ++i)
-            vertex_arrays[hand.getItem()->getTexturesSet()].append(vertices[i]);
-
-        number_draw.setString(std::to_string(hand.getAmount()));
-    }
-
     // render the vertex arrays once
     sf::RenderStates states = sf::RenderStates::Default;
     states.texture = block_textures;
@@ -107,8 +88,9 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     states.texture = item_textures;
     target.draw(vertex_arrays[Item::ItemsTextureSet], states);
 
-    if (hand)
-        target.draw(number_draw);
+    vertex_arrays[Item::BlocksTextureSet].clear();
+    vertex_arrays[Item::GroundsTextureSet].clear();
+    vertex_arrays[Item::ItemsTextureSet].clear();
 
     // draw the amount numbers
     for (int x = 0; x < 6; x++)
@@ -121,7 +103,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
             if (stack.getAmount() > 1)
             {
                 number_draw.setString(std::to_string(stack.getAmount()));
-                number_draw.setPosition(sf::Vector2f(18.0_p * x + 3.0_p, 18.0_p * y + 8.0_p));
+                number_draw.setPosition(sf::Vector2f(18.0_p * x + 3.0_p, 18.0_p * y + 8.0_p + 9.0_p));
                 target.draw(number_draw);
             }
         }
@@ -147,6 +129,36 @@ void GuiInventory::draw(sf::RenderTarget& target) const
             }
         }
     }
+
+    // draw the hand item on top of everything
+    ItemStack& hand = inventory.contents.at(0);
+    if (hand)
+    {
+        sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
+        number_draw.setPosition(pos + sf::Vector2f(-8.0_p, 8.0_p) / 2.f);
+
+        sf::Vertex vertices[4];
+        vertices[0].position = pos - sf::Vector2f(8.0_p, 8.0_p) / 2.f;
+        vertices[1].position = vertices[0].position + sf::Vector2f(8.0_p, 0);
+        vertices[2].position = vertices[0].position + sf::Vector2f(8.0_p, 8.0_p);
+        vertices[3].position = vertices[0].position + sf::Vector2f(0, 8.0_p);
+        hand.getItem()->addTexturedVertices(hand, vertices);
+
+        for (int i = 0; i < 4; ++i)
+            vertex_arrays[hand.getItem()->getTexturesSet()].append(vertices[i]);
+
+        number_draw.setString(std::to_string(hand.getAmount()));
+    }
+    states = sf::RenderStates::Default;
+    states.texture = block_textures;
+    target.draw(vertex_arrays[Item::BlocksTextureSet], states);
+    states.texture = ground_textures;
+    target.draw(vertex_arrays[Item::GroundsTextureSet], states);
+    states.texture = item_textures;
+    target.draw(vertex_arrays[Item::ItemsTextureSet], states);
+
+    if (hand)
+        target.draw(number_draw);
 }
 
 void GuiInventory::init()

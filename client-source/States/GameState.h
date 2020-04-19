@@ -71,11 +71,13 @@ class GameState : public State
 
         //Rendering stuff
         mutable int init_frames_to_skip;
-        sf::View my_view;
+        sf::View base_view;
+        bool spyglass_mode = false;
         float zoom = 10.f;
         sf::Thread chunk_vertices_thread;
         mutable sf::Mutex vertex_array_swap_mutex;
         void chunkVerticesGenerationLoop();
+        sf::View currentView() const;
 
         sf::Clock anim_clock;
         int anim_frame = 0;

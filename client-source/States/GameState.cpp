@@ -115,7 +115,7 @@ void GameState::init()
     block_pointer_side.setOrigin(sf::Vector2f(.5f, 0));
     block_pointer_side.setTexture(&getGame().getResourceManager().getTexture("BLOCK_POINTER"));
 
-    my_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
+    base_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
 
     //Bind to any port
     if (client_socket.bind(sf::Socket::AnyPort) != sf::Socket::Done)
@@ -172,7 +172,7 @@ bool GameState::handleEvent(sf::Event& event)
                 break;
             if (event.mouseButton.button == sf::Mouse::Left)
             {
-                sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+                sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), currentView());
 
                 sf::Vector2i world_pos_i(std::round(world_pos.x), std::round(world_pos.y));
 
@@ -197,7 +197,7 @@ bool GameState::handleEvent(sf::Event& event)
 
             if (event.mouseButton.button == sf::Mouse::Right)
             {
-                sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
+                sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), currentView());
 
                 sf::Vector2i world_pos_i(std::round(world_pos.x), std::round(world_pos.y));
 
@@ -237,7 +237,7 @@ bool GameState::handleEvent(sf::Event& event)
 void GameState::update(float delta_time)
 {
     if (Player::this_player)
-        my_view.setCenter(Player::this_player->getPosition());
+        base_view.setCenter(Player::this_player->getPosition());
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
@@ -251,12 +251,12 @@ void GameState::update(float delta_time)
 
     entities.updateAll(delta_time);
 
-
+    spyglass_mode = Player::this_player && Player::this_player->getInventory().contents.at(0).getItem() == ItemsRegister::SPYGLASS;
 
     {
         sf::Window& window = getGame().getWindow();
 
-        sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(window), my_view);
+        sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(window), currentView());
 
         for (auto& entity : entities.entities_map)
         {
@@ -292,17 +292,7 @@ void GameState::update(float delta_time)
 
 void GameState::draw(sf::RenderTarget& target) const
 {
-    target.setView(my_view);
-
-    bool spyglass = Player::this_player && Player::this_player->getInventory().contents.at(0).getItem() == ItemsRegister::SPYGLASS;
-
-    if (spyglass)
-    {
-        sf::View bis = my_view;
-        bis.zoom(1.5f);
-        target.setView(bis);
-    }
-
+    target.setView(currentView());
 
     if (init_frames_to_skip > 0)
     {
@@ -363,9 +353,9 @@ void GameState::draw(sf::RenderTarget& target) const
         shape.setOutlineColor(sf::Color::Black);
         shape.setFillColor(sf::Color::Transparent);
 
-        target.draw(shape);
-    }
-    */
+    target.draw(shape);
+}
+*/
 }
 
 void GameState::updateView()
@@ -376,13 +366,13 @@ void GameState::updateView()
     {
         float ratio = (float)window.getSize().y / window.getSize().x;
         float y_size = ratio * zoom;
-        my_view.setSize(sf::Vector2f(zoom, y_size));
+        base_view.setSize(sf::Vector2f(zoom, y_size));
     }
     else
     {
         float ratio = (float)window.getSize().x / window.getSize().y;
         float x_size = ratio * zoom;
-        my_view.setSize(sf::Vector2f(x_size, zoom));
+        base_view.setSize(sf::Vector2f(x_size, zoom));
     }
 }
 
@@ -653,6 +643,20 @@ void GameState::chunkVerticesGenerationLoop()
                 chunk->swapVertexArrays();
             }
         }
+    }
+}
+
+sf::View GameState::currentView() const
+{
+    if (spyglass_mode)
+    {
+        sf::View spyglass_view = base_view;
+        spyglass_view.zoom(1.5f);
+        return spyglass_view;
+    }
+    else
+    {
+        return base_view;
     }
 }
 

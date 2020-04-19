@@ -31,10 +31,11 @@ class PlayerInventory
 
         void describe() const;
 
-        bool insertItemStack(ItemStack& stack);
-        void insertNewItemStack(ItemStack stack);
+        bool insertItemStack(ItemStack& stack, bool drop_if_full = true);
+        void insertNewItemStack(ItemStack stack, bool drop_if_full = true);
 
         void swapHands(int pos);
+        void dropHand();
 
         #ifdef CLIENT_SIDE
         bool handleInventoryUpdateRequest(const Networking::StoC::InventoryUpdateRequest &rq);

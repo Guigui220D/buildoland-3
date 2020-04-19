@@ -173,22 +173,47 @@ bool GameState::handleEvent(sf::Event& event)
             if (event.mouseButton.button == sf::Mouse::Left)
             {
                 sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
-                world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
-                sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+                sf::Vector2i world_pos_i(std::round(world_pos.x), std::round(world_pos.y));
 
-                BreakBlockPacket packet(world_pos_i);
-                sendToServer(packet);
+                int on_entity = false;
+                for (auto& entity : entities.entities_map)
+                {
+                    sf::FloatRect world_hitbox(entity.second->getPosition() - entity.second->getVisualHitbox()/2.f, entity.second->getVisualHitbox());
+                    if (Player::this_player && world_hitbox.contains(world_pos))
+                    {
+                        //log(INFO, "left click on entity {}\n", entity.first);
+                        entity.second->onLeftClick(*Player::this_player);
+                        //on_entity = true;
+                    }
+                }
+
+                if (!on_entity)
+                {
+                    BreakBlockPacket packet(world_pos_i);
+                    sendToServer(packet);
+                }
             }
 
             if (event.mouseButton.button == sf::Mouse::Right)
             {
                 sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Vector2i(event.mouseButton.x, event.mouseButton.y), my_view);
-                world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
-                sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
+                sf::Vector2i world_pos_i(std::round(world_pos.x), std::round(world_pos.y));
 
-                if(Player::this_player)
+                int on_entity = false;
+                for (auto& entity : entities.entities_map)
+                {
+                    sf::FloatRect world_hitbox(entity.second->getPosition() - entity.second->getVisualHitbox()/2.f, entity.second->getVisualHitbox());
+                    if (Player::this_player && world_hitbox.contains(world_pos))
+                    {
+                        //log(INFO, "right click on entity {}\n", entity.first);
+                        entity.second->onRightClick(*Player::this_player);
+                        //on_entity = true;
+                    }
+                }
+
+                if(!on_entity && Player::this_player)
                     Player::this_player->useHand(world_pos_i);
 
             }
@@ -226,12 +251,20 @@ void GameState::update(float delta_time)
 
     entities.updateAll(delta_time);
 
+
+
     {
         sf::Window& window = getGame().getWindow();
 
         sf::Vector2f world_pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(window), my_view);
-        world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
 
+        for (auto& entity : entities.entities_map)
+        {
+            sf::FloatRect world_hitbox(entity.second->getPosition() - entity.second->getVisualHitbox()/2.f, entity.second->getVisualHitbox());
+            entity.second->highlighted = world_hitbox.contains(world_pos);
+        }
+
+        world_pos = sf::Vector2f(std::round(world_pos.x), std::round(world_pos.y));
         sf::Vector2i world_pos_i(world_pos.x, world_pos.y);
 
         bp_volume = test_world->getBlockPtr(world_pos_i)->hasVolume(TileReference(world_pos_i, *test_world));
@@ -317,6 +350,22 @@ void GameState::draw(sf::RenderTarget& target) const
         if (bp_volume)
             target.draw(block_pointer_side);
     }
+
+    // draw entities' bounding boxes
+
+    /*
+    for (auto& entity : entities.entities_map)
+    {
+        sf::RectangleShape shape;
+        shape.setSize(entity.second->getVisualHitbox());
+        shape.setPosition(entity.second->getPosition() - entity.second->getVisualHitbox()/2.f);
+        shape.setOutlineThickness(0.1f);
+        shape.setOutlineColor(sf::Color::Black);
+        shape.setFillColor(sf::Color::Transparent);
+
+        target.draw(shape);
+    }
+    */
 }
 
 void GameState::updateView()

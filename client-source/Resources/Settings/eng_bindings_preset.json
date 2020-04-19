@@ -3,5 +3,6 @@
 	"move_up" : ["w", "up"],
 	"move_down" : ["s", "down"],
 	"move_left" : ["a", "left"],
-	"move_right" : ["d", "right"]
+	"move_right" : ["d", "right"],
+	"throw_item" : "j"
 }

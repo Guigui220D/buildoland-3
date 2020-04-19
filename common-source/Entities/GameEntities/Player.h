@@ -53,6 +53,11 @@ public:
 
     inline PlayerInventory& getInventory() { return inventory; }
 
+    #ifdef CLIENT_SIDE
+    sf::Vector2f getVisualHitbox() const override
+    { return sf::Vector2f(.5f, 1.0f); }
+#endif
+
 private:
     PlayerInventory inventory;
 

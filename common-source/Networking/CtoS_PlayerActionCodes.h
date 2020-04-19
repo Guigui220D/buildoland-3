@@ -9,7 +9,10 @@ namespace EntityActions
             Walk,
             BreakBlock,
             UseItem,
-            SwapInventoryItem
+            SwapInventoryItem,
+            DropInventoryItem,
+            EntityLeftClick,
+            EntityRightClick
         };
     }
 }

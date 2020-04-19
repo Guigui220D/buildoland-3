@@ -8,6 +8,6 @@ namespace Entities
         TileEntity,
         Player,
         TestEntity,
-
+        DroppedItemEntity
     };
 }

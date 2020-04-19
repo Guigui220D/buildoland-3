@@ -70,6 +70,14 @@ void EntitiesManager::removeEntity(unsigned int id)
     server.getClientsManager().sendToAll(packet);
 }
 
+Entity *EntitiesManager::getEntity(unsigned int id)
+{
+    if (entities.find(id) != entities.cend())
+        return entities.find(id)->second;
+    else
+        return nullptr;
+}
+
 void EntitiesManager::sendAddEntityFromAllEntitiesInChunk(sf::Vector2i chunk_pos, const Client& client)
 {
     ECCPacket packet;

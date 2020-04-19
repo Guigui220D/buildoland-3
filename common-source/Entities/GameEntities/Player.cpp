@@ -24,6 +24,7 @@
     #include "../../../server-source/Packets/FullInventoryPacket.h"
     #include "../../../server-source/Server/Server.h"
     #include "../../../server-source/World/Chunk.h"
+    #include "../../../server-source/World/EntitiesManager.h"
 #endif
 
 #include "../../Blocks/Block.h"
@@ -282,6 +283,41 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             }
 
             inventory.swapHands(rq.item_swap_pos);
+        }
+        break;
+
+        case EntityActions::CtoS::DropInventoryItem:
+        {
+            ItemStack hand(rq.hand_item, getWorld().getServer().getItemsRegister());
+
+            if (hand && (inventory.contents.at(0).getItem() != hand.getItem()))
+            {
+                FullInventoryPacket fip(inventory);
+                getClient().send(fip);
+                break;
+            }
+
+            inventory.dropHand();
+        }
+        break;
+
+        case EntityActions::CtoS::EntityLeftClick:
+        case EntityActions::CtoS::EntityRightClick:
+        {
+            Entity* entity = getWorld().getEntityManager().getEntity(rq.entity_id);
+            if (!entity)
+                break;
+
+            if (!isSubscribedTo(entity->getChunkOn()))
+                break;
+
+            if (rq.type == EntityActions::CtoS::EntityLeftClick)
+                entity->onLeftClick(*this);
+            else
+            {
+                log(INFO," server right click {}\n", rq.entity_id);
+                entity->onRightClick(*this);
+            }
         }
         break;
 

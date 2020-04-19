@@ -11,7 +11,7 @@ namespace Networking
             RequestConnection,
 			RequestChunk,
 			RequestEntityInfo,
-			PlayerAction
+            PlayerAction
         };
     }
 }

@@ -1,9 +1,13 @@
 #include "TestEntity.h"
 
+#include "../../common-source/Utils/Log.h"
+
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"
+    #include "../../../client-source/States/GameState.h"
     #include "../../../client-source/World/World.h"
     #include "../../../client-source/Res/ResourceManager.h"
+    #include "../../../client-source/Packets/EntityClickPacket.h"
     #include <SFML/Graphics/RenderTarget.hpp>
 #else
 #endif
@@ -44,6 +48,17 @@ void TestEntity::update(float delta)
         test_clock.restart();
     }
     #endif // CLIENT_SIDE
+}
+
+void TestEntity::onRightClick(Player &player)
+{
+    (void)player;
+#ifdef CLIENT_SIDE
+    EntityClickPacket packet(getId(), EntityActions::CtoS::EntityRightClick);
+    getWorld().getState().sendToServer(packet);
+#else
+    log(INFO, "Zombie right click {}\n", getId());
+#endif
 }
 
 #ifdef CLIENT_SIDE

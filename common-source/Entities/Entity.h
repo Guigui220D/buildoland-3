@@ -17,9 +17,12 @@ class RenderTarget;
 #endif // CLIENT_SIDE
 
 class World;
+class Player;
 
 class Entity
 {
+    friend class GameState;
+
     public:
         virtual inline unsigned short getEntityCode() const { return Entities::None; };
 
@@ -32,6 +35,17 @@ class Entity
          * @param delta : the elapsed time
          */
         void updateBase(float delta);
+
+        /**
+         * Called when the client makes a right click on the entity / when the server receives a right click request
+         */
+        virtual void onLeftClick(Player& player)
+        {}
+        /**
+         * Called when the client makes a left click on the entity / when the server receives a left click requesty
+         */
+        virtual void onRightClick(Player& player)
+        {}
 
         #ifdef CLIENT_SIDE
         /**
@@ -57,6 +71,17 @@ class Entity
          * @return true if the packet was succesfully read and something was done
          */
         virtual bool takeNewEntityPacket(ECCPacket& packet);
+        /**
+         * Gets the physics bounding box of the entity
+         * @return the physcis bounding box of the entity
+         */
+        virtual sf::Vector2f getHitbox() const = 0;
+        /**
+         * Gets the visual bounding box of the entity
+         * @return the visual bounding box of the entity
+         */
+        virtual sf::Vector2f getVisualHitbox() const
+        { return getHitbox(); }
         #else
         /**
          * Makes a new entity packet
@@ -69,6 +94,9 @@ class Entity
         bool to_be_removed = false;
 
         inline unsigned int getId() const { return id; }
+
+        inline bool isHighlighted() const
+        { return highlighted; }
 
         inline sf::Vector2f getPosition() const { return position; }
         inline World& getWorld() const { return world; }
@@ -111,4 +139,5 @@ class Entity
 
         const unsigned int id;
         World& world;
+        bool highlighted = false;
 };

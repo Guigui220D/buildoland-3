@@ -62,6 +62,7 @@ struct PlayerActionRequest
             uint32_t hand_item;
             uint32_t slot_item;
         };
+        unsigned int entity_id;
     };
 };
 

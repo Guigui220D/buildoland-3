@@ -17,6 +17,7 @@ class RenderTarget;
 class EntitiesManager
 {
     friend class World;
+    friend class GameState;
 
     public:
         EntitiesManager(World& world);

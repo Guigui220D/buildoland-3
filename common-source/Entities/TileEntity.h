@@ -21,6 +21,9 @@ class TileEntity : public Entity
 
         #ifdef CLIENT_SIDE
         inline void moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk) override {}
+
+        sf::Vector2f getHitbox() const override
+        { return {1.f, 1.f}; }
         #else
         void makeNewEntityPacket(ECCPacket& packet) const override;
         #endif // CLIENT_SIDE

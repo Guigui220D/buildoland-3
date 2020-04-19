@@ -4,8 +4,10 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Mouse.hpp>
 
 #include "../../client-source/Settings/LanguageManager.h"
+#include "../../client-source/Settings/BindingsManager.h"
 #include "../../client-source/Res/ResourceManager.h"
 
 #include "../../common-source/Items/PlayerInventory.h"
@@ -46,6 +48,14 @@ bool GuiInventory::handleEvent(sf::Event& event)
 
         return true;
     }
+    else if (getGame().getBindingsManager().pressed("throw_item"))
+    {
+        log(INFO, "dropping da bomb\n");
+        inventory.dropHand();
+
+        return true;
+    }
+
     return false;
 }
 

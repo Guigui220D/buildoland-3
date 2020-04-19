@@ -12,6 +12,7 @@
 
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
+#include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
 
 #include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
 #include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
@@ -169,6 +170,9 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
     case Entities::Player: new_entity = new Player(world, entity_id); break;
 
     case Entities::TestEntity: new_entity = new TestEntity(world, entity_id); break;
+
+    case Entities::DroppedItemEntity: new_entity = new DroppedItemEntity(world, entity_id);
+    break;
 
     default: log(ERROR, "Entity type code unknown.\n"); return false;
     }

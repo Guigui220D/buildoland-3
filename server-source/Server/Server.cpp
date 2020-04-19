@@ -17,6 +17,8 @@
 //TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
+#include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
+#include "../../common-source/Items/GameItems/BallItem.h"
 
 #include "../../server-source/World/EntitiesManager.h"
 #include "../../server-source/World/Generator.h"
@@ -94,6 +96,9 @@ bool Server::init(uint16_t port)
     for (int i = 0; i < 10; i++)
         world->getEntityManager().newEntity(new TestEntity(*world, world->getEntityManager().getNextEntityId()));
 
+    DroppedItemEntity* dropped_entity = new DroppedItemEntity(*world, world->getEntityManager().getNextEntityId(), sf::Vector2f(0,0));
+    dropped_entity->setItemStack(ItemStack(getItemsRegister().BALL));
+    world->getEntityManager().newEntity(dropped_entity);
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }
@@ -247,6 +252,21 @@ void Server::receiver()
                                     packet >> rq.item_swap_pos;
                                     packet >> rq.hand_item;
                                     packet >> rq.slot_item;
+
+                                    if (!packet)
+                                        break;
+                                }
+                                case EntityActions::CtoS::DropInventoryItem:
+                                {
+                                    packet >> rq.hand_item;
+
+                                    if (!packet)
+                                        break;
+                                }
+                                case EntityActions::CtoS::EntityLeftClick:
+                                case EntityActions::CtoS::EntityRightClick:
+                                {
+                                    packet >> rq.entity_id;
 
                                     if (!packet)
                                         break;

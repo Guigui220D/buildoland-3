@@ -37,6 +37,8 @@ class EntitiesManager
          */
         void removeEntity(unsigned int id);
 
+        Entity* getEntity(unsigned int id);
+
         /**
          * Sends a addEntity from all entities in chunk to the client
          * @param chunk_pos : the chunk

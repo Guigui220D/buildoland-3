@@ -24,7 +24,12 @@ class TestEntity : public LivingEntity
         void update(float delta);
         #ifdef CLIENT_SIDE
         void draw(sf::RenderTarget& target) const;
+        sf::Vector2f getVisualHitbox() const override
+        { return sf::Vector2f(.5f, 1.0f); }
         #endif
+
+        virtual void onRightClick(Player& player);
+
     private:
         #ifdef CLIENT_SIDE
         sf::Texture texture;

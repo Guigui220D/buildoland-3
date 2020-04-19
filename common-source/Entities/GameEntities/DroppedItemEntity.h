@@ -29,6 +29,8 @@ public:
 #ifdef CLIENT_SIDE
     bool takeNewEntityPacket(ECCPacket& packet) override;
     sf::Vector2f getHitbox() const override { return {0.5f, 0.5f}; }
+    int getZOrder() const override
+    { return 1; } // draw the items on top of all entities
     void draw(sf::RenderTarget& target) const override ;
 #else
     void addInfoToNewEntityPacket(ECCPacket& packet) const override;

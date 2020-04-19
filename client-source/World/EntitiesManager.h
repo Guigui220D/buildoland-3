@@ -67,7 +67,7 @@ class EntitiesManager
         mutable std::vector<Entity*> entities_vector;   //One to easily iterate through entities, that we keep sorted for rendering
 
         //Used for sorting entities
-        static bool compareY(Entity* a, Entity* b);
+        static bool drawSortCompare(Entity* a, Entity* b);
 
         /**
          * Adds an entity (in case of AddEntity code in readEntityPacket)

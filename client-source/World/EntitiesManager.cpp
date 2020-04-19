@@ -61,7 +61,7 @@ void EntitiesManager::updateAll(float delta)
 void EntitiesManager::drawAll(sf::RenderTarget& target) const
 {
     //Sorting the entities by y position
-    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::compareY);
+    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::drawSortCompare);
 
     for (Entity*& entity : entities_vector)
         entity->draw(target);
@@ -69,7 +69,7 @@ void EntitiesManager::drawAll(sf::RenderTarget& target) const
 
 void EntitiesManager::drawAllAbove(sf::RenderTarget& target) const
 {
-    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::compareY);
+    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::drawSortCompare);
 
     for (Entity*& entity : entities_vector)
         entity->drawAbove(target);
@@ -109,10 +109,15 @@ bool EntitiesManager::readEntityPacket(ECCPacket& packet)
     }
 }
 
-bool EntitiesManager::compareY(Entity *a, Entity *b)
+bool EntitiesManager::drawSortCompare(Entity *a, Entity *b)
 {
-    return (a->getPosition().y == b->getPosition().y) ? a->getPosition().x < b->getPosition().x
-                                                      : a->getPosition().y < b->getPosition().y;
+    if (a->getZOrder() == b->getZOrder())
+    {
+        return (a->getPosition().y == b->getPosition().y) ? a->getPosition().x < b->getPosition().x
+                                                          : a->getPosition().y < b->getPosition().y;
+    }
+    else
+        return a->getZOrder() < b->getZOrder();
 }
 
 bool EntitiesManager::addEntity(ECCPacket& packet)

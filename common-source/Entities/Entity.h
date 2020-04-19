@@ -82,6 +82,14 @@ class Entity
          */
         virtual sf::Vector2f getVisualHitbox() const
         { return getHitbox(); }
+
+        /**
+         * Returns the drawing z-order of the entity
+         * Entities with a higher z-order will be drawn first
+         * @param zorder : the z-order
+         */
+        virtual int getZOrder() const
+        { return 0; }
         #else
         /**
          * Makes a new entity packet

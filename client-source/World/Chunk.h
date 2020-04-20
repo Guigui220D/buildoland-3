@@ -139,6 +139,7 @@ public:
         { return 1 - current_vertex_array_index; }
 
     std::vector<std::shared_ptr<TileEntity>> actual_tile_entities; //for faster TE iteration (no iterating over each block and checking if theres a TE)
+    void updateTileEntities(float delta_time);
 
 private:
     bool ready = false;

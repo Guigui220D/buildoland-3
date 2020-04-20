@@ -318,6 +318,7 @@ void Chunk::generateBlockTopVertices() const
         }
 }
 
+//Just trying out things
 void Chunk::cleanupTEList()
 {
     #define v actual_tile_entities
@@ -325,5 +326,14 @@ void Chunk::cleanupTEList()
         [](std::shared_ptr<TileEntity>& te)
             { return (bool)(te.use_count() <= 1); }
         ), v.end());
+    #undef v
+}
+
+void Chunk::updateTileEntities(float delta_time)
+{
+    #define v actual_tile_entities
+    std::for_each(v.begin(), v.end(),
+        [delta_time](std::shared_ptr<TileEntity>& te)
+            { te->update(delta_time); });
     #undef v
 }

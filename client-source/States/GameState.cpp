@@ -227,6 +227,7 @@ void GameState::update(float delta_time)
     test_world->updateLoadedChunk(delta_time);
 
     entities.updateAll(delta_time);
+    test_world->updateTileEntities(delta_time);
 
     {
         sf::Window& window = getGame().getWindow();

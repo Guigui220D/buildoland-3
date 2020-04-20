@@ -193,6 +193,8 @@ class World
         inline void chunkDeletionUnlock()
         { chunk_list_modification_mutex.unlock(); }
 
+        void updateTileEntities(float delta_time);
+
     protected:
         //Entities
         EntitiesManager entities;

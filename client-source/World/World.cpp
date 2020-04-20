@@ -114,7 +114,6 @@ void World::updateLoadedChunk(float delta_time)
     }
     chunk_list_modification_mutex.unlock();
 
-
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
     {
         abort();
@@ -249,4 +248,10 @@ const Block* World::getBlockPtr(sf::Vector2i pos)
 const Ground* World::getGroundPtr(sf::Vector2i pos)
 {
     return game_grounds_manager.getGroundByID(getGroundId(pos));
+}
+
+void World::updateTileEntities(float delta_time)
+{
+    for (auto& c : chunks)
+        c.second->updateTileEntities(delta_time);
 }

@@ -128,6 +128,7 @@ void Server::run()
 
         //Update entities
         world->getEntityManager().updateAll(delta);
+        world->updateTileEntities(delta);
         //Update all worlds
 
         /*

@@ -152,8 +152,14 @@ void GameState::init()
 bool GameState::handleEvent(sf::Event& event)
 {
     if (getGame().getBindingsManager().pressed("inventory"))
+    {
         if (Player::this_player)
             getGame().addStateOnTop(new InventoryMenuState(getGame(), Player::this_player->getInventory(), 0));
+    }
+    else if (getGame().getBindingsManager().pressed("throw_item"))
+    {
+        Player::this_player->getInventory().dropHand();
+    }
 
     switch (event.type)
     {

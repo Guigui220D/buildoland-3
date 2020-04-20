@@ -50,7 +50,6 @@ bool GuiInventory::handleEvent(sf::Event& event)
     }
     else if (getGame().getBindingsManager().pressed("throw_item"))
     {
-        log(INFO, "dropping da bomb\n");
         inventory.dropHand();
 
         return true;

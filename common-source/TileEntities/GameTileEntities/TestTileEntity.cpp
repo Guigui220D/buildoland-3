@@ -1,33 +1,25 @@
 #include "TestTileEntity.h"
 
-/*
+#include "../../Utils/Log.h"
 
-#ifdef CLIENT_SIDE
-#include <SFML/Graphics/RenderTarget.hpp>
-#endif
-
-TestTileEntity::TestTileEntity(World& world, unsigned int id, sf::Vector2i tile_pos) :
-    TileEntity(world, id, tile_pos)
+TestTileEntity::TestTileEntity(Chunk& chunk, sf::Vector2i pos) :
+    TileEntity(chunk, pos)
 {
-    #ifdef CLIENT_SIDE
-    rectangle.setPosition(getPosition());
-    rectangle.setSize(sf::Vector2f(1.f, 1.f));
-    rectangle.setFillColor(sf::Color::Yellow);
-    #endif // CLIENT_SIDE
+    log(INFO, "Test_te : Hello! from {}; {}.\n", getTilePos().x, getTilePos().y);
 }
 
 TestTileEntity::~TestTileEntity()
 {
-    //dtor
+    log(INFO, "Test_te : Goodbye. from {}; {}.\n", getTilePos().x, getTilePos().y);
 }
 
-#ifdef CLIENT_SIDE
-void TestTileEntity::draw(sf::RenderTarget& target) const
+void TestTileEntity::update(float delta)
 {
-    if (!isReady())
-        return;
-
-    target.draw(rectangle);
+    #ifndef CLIENT_SIDE
+    if (clk.getElapsedTime().asSeconds() > 1.f)
+    {
+        clk.restart();
+        log(INFO, "Test_te : I exist; from {}; {}.\n", getTilePos().x, getTilePos().y);
+    }
+    #endif
 }
-#endif
-*/

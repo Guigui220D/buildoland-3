@@ -4,7 +4,8 @@
     #include <SFML/Graphics/RenderTarget.hpp>
     #include "../../client-source/World/World.h"
 #else
-
+    #include "../../server-source/World/World.h"
+    #include "../../server-source/World/Chunk.h"
 #endif
 
 TileEntity::TileEntity(Chunk& chunk, sf::Vector2i pos) :
@@ -26,5 +27,8 @@ sf::Vector2i TileEntity::getPosInChunk() const
 }
 
 void TileEntity::update(float delta) {}
+
+#ifdef CLIENT_SIDE
 void TileEntity::draw(sf::RenderTarget& target) const {}
 void TileEntity::drawAbove(sf::RenderTarget& target) const {}
+#endif

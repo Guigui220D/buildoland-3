@@ -37,6 +37,8 @@ class GameBlocks
         static Block const * const ERROR;
         static Block const * const STRUCTURE_VOID;
 
+        static Block const * const TEST;
+
         static Block const * const STONE;
         static Block const * const STONE_BRICKS;
         static Block const * const IRON;

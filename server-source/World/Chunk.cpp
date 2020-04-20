@@ -8,15 +8,13 @@
 #include "Generator.h"
 #include "EntitiesManager.h"
 
-#include <cassert>
-
-//TEST
-/*
-#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
-#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
-*/
+#include "../../common-source/TileEntities/TileEntity.h"
+#include "../../common-source/TileEntities/GameTileEntities/TestTileEntity.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
+
+#include <exception>
+#include <algorithm>
 
 const int Chunk::CHUNK_SIZE = 16;
 
@@ -88,6 +86,26 @@ void Chunk::setBlock(int x, int y, const Block* block)
     blocks[y*CHUNK_SIZE + x] = block->getId();
 
     packet_ready = false;
+
+    if (tile_entities[y * CHUNK_SIZE + x])
+    {
+        tile_entities[y * CHUNK_SIZE + x].reset();
+        cleanupTEList();
+    }
+
+    if (block->serverSideHasTE())
+    {
+        switch (block->getTileEntityCode())
+        {
+        case TileEntities::TestTE:
+            tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
+            actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+            break;
+        default:
+        case TileEntities::None:
+            throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+        }
+    }
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
@@ -101,3 +119,14 @@ void Chunk::setGround(int x, int y, const Ground* ground)
 
     packet_ready = false;
 }
+
+void Chunk::cleanupTEList()
+{
+    #define v actual_tile_entities
+    v.erase(std::remove_if(v.begin(), v.end(),
+        [](std::shared_ptr<TileEntity>& te)
+            { return (bool)(te.use_count() <= 1); }
+        ), v.end());
+    #undef v
+}
+

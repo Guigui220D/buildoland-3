@@ -1,28 +1,20 @@
 #pragma once
 
-/*
-
 #include "../TileEntity.h"
 
-#ifdef CLIENT_SIDE
-    #include <SFML/Graphics/RectangleShape.hpp>
-#endif // CLIENT_SIDE
+#include <SFML/System/Clock.hpp>
 
 class TestTileEntity : public TileEntity
 {
     public:
-        inline unsigned short getTileEntityCode() const override { return TileEntities::TestTileEntity; };
+        inline unsigned short getTypeCode() const override { return TileEntities::TestTE; };
 
-        TestTileEntity(World& world, unsigned int id, sf::Vector2i tile_pos);
+        TestTileEntity(Chunk& chunk, sf::Vector2i pos);
         ~TestTileEntity();
 
-        #ifdef CLIENT_SIDE
-        void draw(sf::RenderTarget& target) const override;
-        #endif
+        void update(float delta) override;
 
     private:
-        #ifdef CLIENT_SIDE
-        sf::RectangleShape rectangle;
-        #endif // CLIENT_SIDE
+        sf::Clock clk;
+
 };
-*/

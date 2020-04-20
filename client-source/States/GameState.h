@@ -10,6 +10,7 @@
 
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
+#include <SFML/Graphics/Sprite.hpp>
 
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Networking/ServerToClientRequests.h"
@@ -86,10 +87,13 @@ class GameState : public State
 
         sf::Texture const * block_textures;
         sf::Texture const * ground_textures;
+        sf::Texture const * item_textures;
         sf::Texture const * ground_details_textures;
 
         sf::RectangleShape block_pointer;
         sf::RectangleShape block_pointer_side;
         sf::RectangleShape block_pointer_icon;
+        sf::RectangleShape hand_item_border;
+        sf::Sprite         hand_item_sprite;
         bool bp_volume;
 };

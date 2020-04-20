@@ -15,6 +15,7 @@
 #include "../../common-source/Blocks/Block.h"
 #include "../../common-source/Blocks/GameBlocks.h"
 #include "../../common-source/Grounds/GameGrounds.h"
+#include "../../common-source/Items/Item.h"
 
 #include "../Version.h"
 
@@ -103,6 +104,7 @@ void GameState::init()
 {
     block_textures = &getGame().getResourceManager().getTexture("BLOCK_TEXTURES");
     ground_textures = &getGame().getResourceManager().getTexture("GROUND_TEXTURES");
+    item_textures = &getGame().getResourceManager().getTexture("ITEM_TEXTURES");
     ground_details_textures = &getGame().getResourceManager().getTexture("GROUND_DETAILS");
 
     block_pointer.setSize(sf::Vector2f(1.f, 1.f));
@@ -239,7 +241,39 @@ bool GameState::handleEvent(sf::Event& event)
 void GameState::update(float delta_time)
 {
     if (Player::this_player)
+    {
         base_view.setCenter(Player::this_player->getPosition());
+
+        if (Player::this_player->getInventory().contents.at(0))
+        {
+            auto& item = *Player::this_player->getInventory().contents.at(0).getItem();
+            switch (item.getTexturesSet())
+            {
+                default:
+                case Item::ItemsTextureSet:
+                    hand_item_sprite.setTexture(*item_textures);
+                    break;
+                case Item::GroundsTextureSet:
+                    hand_item_sprite.setTexture(*ground_textures);
+                    break;
+                case Item::BlocksTextureSet:
+                    hand_item_sprite.setTexture(*block_textures);
+                    break;
+            }
+            hand_item_sprite.setTextureRect(item.getTexture(Player::this_player->getInventory().contents.at(0)));
+            hand_item_sprite.setScale(2.f, 2.f);
+            hand_item_sprite.setOrigin(hand_item_sprite.getLocalBounds().width/2.f, 0.f);
+            hand_item_sprite.setPosition(getGame().getWindow().getSize().x/2.f,
+                                         getGame().getWindow().getSize().y - hand_item_sprite.getLocalBounds().height*2.f - 10.f);
+
+            hand_item_border.setFillColor(sf::Color(200, 200, 200, 100));
+            hand_item_border.setOutlineColor(sf::Color(255, 255, 255, 240));
+            hand_item_border.setOutlineThickness(2.f);
+            hand_item_border.setSize(sf::Vector2f(18.f*2.f + 0.f, 18.f*2.f + 0.f));
+            hand_item_border.setPosition(hand_item_sprite.getPosition() + sf::Vector2f(2.f, -2.f));
+            hand_item_border.setOrigin(hand_item_border.getLocalBounds().width/2.f, 0.f);
+        }
+    }
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
@@ -341,6 +375,13 @@ void GameState::draw(sf::RenderTarget& target) const
 
         if (bp_volume)
             target.draw(block_pointer_side);
+    }
+
+    target.setView(getGame().getWindow().getDefaultView());
+    target.draw(hand_item_border);
+    if (Player::this_player->getInventory().contents.at(0))
+    {
+        target.draw(hand_item_sprite);
     }
 
     // draw entities' bounding boxes

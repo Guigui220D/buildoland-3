@@ -8,6 +8,7 @@
 	"SERVER_ADDRESS" : "Server address",
 	"INVALID_ADDRESS": "Invalid address",
 	"INVALID_NICKNAME":"Invalid nickname",
+	"NICKNAME_ALREADY_TAKEN":"Nickname already taken",
 	"BACK_TO_MAIN_MENU_BUTTON": "Back to main menu",
 	
 	"STATE_INTERRUPTED": "State interrupted by player (for testing)",

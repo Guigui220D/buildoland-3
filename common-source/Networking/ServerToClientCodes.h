@@ -1,5 +1,7 @@
 #pragma once
 
+#include <stdint.h>
+
 namespace Networking
 {
     namespace StoC
@@ -17,6 +19,12 @@ namespace Networking
             GroundUpdate,
             PlayerRectification,
             InventoryUpdate
+        };
+
+        enum ConnectionRefusalReason : uint8_t
+        {
+            InvalidNickname,
+            NicknameAlreadyChosen
         };
     }
 }

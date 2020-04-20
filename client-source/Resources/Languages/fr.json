@@ -8,6 +8,7 @@
 	"SERVER_ADDRESS" : "Adresse du serveur",
 	"INVALID_ADDRESS": "Adresse invalide",
 	"INVALID_NICKNAME":"Pseudo invalide",
+	"NICKNAME_ALREADY_TAKEN":"Pseudo déja choisi",
 	"BACK_TO_MAIN_MENU_BUTTON": "Retourner au menu",
 	
 	"STATE_INTERRUPTED": "Jeu interrompu par le joueur (test)",

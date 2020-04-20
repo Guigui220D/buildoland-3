@@ -358,6 +358,9 @@ void Server::processPacketQueue()
                 continue;
             if (!UsernameCheck::checkUsername(rq->nickname))
             {
+                ECCPacket packet(Networking::StoC::ConnectionRefused);
+                packet << (uint8_t)Networking::StoC::ConnectionRefusalReason::InvalidNickname;
+                server_socket.send(packet, rq->iandp.address, rq->iandp.port);
                 log(INFO, "Invalid username\n");
                 continue;
             }
@@ -365,9 +368,11 @@ void Server::processPacketQueue()
             {
                 if (rq->nickname == it->second->getNickname())
                 {
-                    // TODO : tell the client that the username is already taken
+                    ECCPacket packet(Networking::StoC::ConnectionRefused);
+                    packet << (uint8_t)Networking::StoC::ConnectionRefusalReason::NicknameAlreadyChosen;
+                    server_socket.send(packet, rq->iandp.address, rq->iandp.port);
                     log(INFO, "Username already taken\n");
-                    continue;
+                    goto loop;
                 }
             }
 
@@ -431,6 +436,9 @@ void Server::processPacketQueue()
             request_queue.skip();
         }
     }
+
+    loop:
+    ;
 }
 
 void Server::passReceiveOnce()

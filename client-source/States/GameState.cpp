@@ -385,7 +385,7 @@ void GameState::draw(sf::RenderTarget& target) const
 
     target.setView(getGame().getWindow().getDefaultView());
     target.draw(hand_item_border);
-    if (Player::this_player->getInventory().contents.at(0))
+    if (Player::this_player && Player::this_player->getInventory().contents.at(0))
     {
         target.draw(hand_item_sprite);
     }
@@ -539,7 +539,38 @@ bool GameState::receiveServerHandshake(bool known_port)
 
             if (packet)
             {
-                if (code == Networking::StoC::FinalHandshake)
+                if (code == Networking::StoC::ConnectionRefused)
+                {
+                    uint8_t reason; // Networking::StoC::ConnectionRefusalReason
+                    packet >> reason;
+
+                    if (!packet)
+                    {
+                        log(ERROR, "Received ill-formed packet! Couldn't get data.\n");
+                        getGame().addStateOnTop(new ErrorState(getGame(), 0, "MALFORMED_HANDSHAKE"));
+                        must_be_destroyed = true;
+                        return false;
+                    }   //Weird packet
+                    else
+                    {
+                        log(ERROR, "Failure, reason code {}\n", reason);
+                        switch (reason)
+                        {
+                            case Networking::StoC::InvalidNickname:
+                                getGame().addStateOnTop(new ErrorState(getGame(), 0, "INVALID_NICKNAME", timeout_clock.getElapsedTime().asSeconds()));
+                                break;
+                            case Networking::StoC::NicknameAlreadyChosen:
+                                getGame().addStateOnTop(new ErrorState(getGame(), 0, "NICKNAME_ALREADY_TAKEN", timeout_clock.getElapsedTime().asSeconds()));
+                                break;
+                            default:
+                                getGame().addStateOnTop(new ErrorState(getGame(), 0, "DISCONNECTED_BY_SERVER", timeout_clock.getElapsedTime().asSeconds()));
+                                break;
+                        }
+                        must_be_destroyed = true;
+                        return false;
+                    }
+                }
+                else if (code == Networking::StoC::FinalHandshake)
                 {
                     packet >> vers;
                     vers[5] = 0;

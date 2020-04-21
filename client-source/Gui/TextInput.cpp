@@ -6,6 +6,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderWindow.hpp>
 #include <SFML/Window/Event.hpp>
+#include <SFML/Window/Clipboard.hpp>
 
 TextInput::TextInput(Game &game, sf::Vector2f pos, float width, std::string placeHolder, unsigned maxSize, bool alphaNumeric)
     : GuiElement(game),
@@ -59,15 +60,29 @@ bool TextInput::handleEvent(sf::Event& e) {
         sf::Vector2f mousePos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
         active = background.getGlobalBounds().contains(mousePos);
     }
-    if (e.type == sf::Event::TextEntered && active)
+    else if (active && e.type == sf::Event::KeyPressed)
+    {
+        if (e.key.code == sf::Keyboard::Return)
+        {
+            enterPressed = true;
+            active = false;
+            return true;
+        }
+        else if (e.key.code == sf::Keyboard::V && e.key.control)
+        {
+            sf::String new_string = inputText + sf::Clipboard::getString();
+            setInputText(new_string);
+            return true;
+        }
+        else if (e.key.code == sf::Keyboard::C && e.key.control)
+        {
+            sf::Clipboard::setString(inputText);
+            return true;
+        }
+    }
+    else if (e.type == sf::Event::TextEntered && active)
     {
         eventInput(e.text.unicode);
-        return true;
-    }
-    if (active && e.type == sf::Event::KeyPressed && e.key.code == sf::Keyboard::Return)
-    {
-        enterPressed = true;
-        active = false;
         return true;
     }
     return false;
@@ -114,7 +129,10 @@ void TextInput::eventInput(sf::Uint32 unicode) {
                 || (unicode >= 65 && unicode <= 90)   //LETTERS
                 || (unicode >= 48 && unicode <= 57))
             {
-                //std::string input = unicodeConvert.to_bytes(unicode);
+                // if ASCII, check that it is a printable ascii character
+                if (unicode <= 127 && !isprint(unicode))
+                    return;
+
                 inputText += sf::String(unicode);
             }
         }

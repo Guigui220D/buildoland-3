@@ -47,6 +47,7 @@ void Entity::send(ECCPacket& packet)
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
+void Entity::drawBelow(sf::RenderTarget &target) const {}
 void Entity::draw(sf::RenderTarget& target) const {}
 void Entity::drawAbove(sf::RenderTarget& target) const {}
 #endif // CLIENT_SIDE

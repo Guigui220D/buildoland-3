@@ -54,19 +54,25 @@ void EntitiesManager::updateAll(float delta)
         entity->updateBase(delta);
 }
 
+void EntitiesManager::sortDrawOrder()
+{
+    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::drawSortCompare);
+}
+
 void EntitiesManager::drawAll(sf::RenderTarget& target) const
 {
-    //Sorting the entities by y position
-    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::drawSortCompare);
-
     for (Entity*& entity : entities_vector)
         entity->draw(target);
 }
 
+void EntitiesManager::drawAllBelow(sf::RenderTarget& target) const
+{
+    for (Entity*& entity : entities_vector)
+        entity->drawBelow(target);
+}
+
 void EntitiesManager::drawAllAbove(sf::RenderTarget& target) const
 {
-    std::sort(entities_vector.begin(), entities_vector.end(), EntitiesManager::drawSortCompare);
-
     for (Entity*& entity : entities_vector)
         entity->drawAbove(target);
 }

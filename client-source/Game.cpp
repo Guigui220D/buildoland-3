@@ -24,6 +24,8 @@ int Game::init()
     pimpl->window.create(sf::VideoMode(pimpl->settings_manager.getInt("window_size_x"), pimpl->settings_manager.getInt("window_size_y")), "BuildOLand 3");
 
     pimpl->bg_zone.calculateView(pimpl->window.getSize());
+    sf::FloatRect visibleArea(0, 0, pimpl->window.getSize().x, pimpl->window.getSize().y);
+    pimpl->default_view = sf::View(visibleArea);
 
     bool vsync = pimpl->settings_manager.getBool("vsync_enabled");
 
@@ -71,7 +73,13 @@ int Game::run()
                 pimpl->window.close();
                 break;
             case sf::Event::Resized:
+            {
                 pimpl->bg_zone.calculateView(sf::Vector2u(e.size.width, e.size.height));
+                // update the view to the new size of the window
+                sf::FloatRect visibleArea(0, 0, e.size.width, e.size.height);
+                pimpl->default_view = sf::View(visibleArea);
+                pimpl->window.setView(pimpl->default_view);
+            }
             default:
                 {
                     for (int i = pimpl->states_stack.size() - 1; i >= 0; i--)
@@ -103,7 +111,7 @@ int Game::run()
         //FPS VIEWER //TEMP
         draw();
 
-        pimpl->window.setView(pimpl->window.getDefaultView());
+        useDefaultView();
         pimpl->window.draw(dt_limit);
         pimpl->window.draw(dt_viewer);
 

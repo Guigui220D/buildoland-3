@@ -26,13 +26,23 @@ class EntitiesManager
          */
         void updateAll(float delta);
         /**
+         * Sort entities for rendering
+         */
+        void sortDrawOrder();
+        /**
          * Draw all entities
          * @param target : the render target on which to draw on
          */
         void drawAll(sf::RenderTarget& target) const;
 
         /**
-         * Draw parts of all entities taht are above everything
+         * Draw parts of all entities that are on a lower z layer
+         * @param target : the render target on which to draw on
+         */
+        void drawAllBelow(sf::RenderTarget& target) const;
+
+        /**
+         * Draw parts of all entities that are above everything
          * @param target : the render target on which to draw on
          */
         void drawAllAbove(sf::RenderTarget& target) const;

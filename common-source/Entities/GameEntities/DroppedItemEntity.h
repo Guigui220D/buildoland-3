@@ -31,6 +31,7 @@ public:
     sf::Vector2f getHitbox() const override { return {0.5f, 0.5f}; }
     int getZOrder() const override
     { return 2; } // draw the items on top of all entities
+    void drawBelow(sf::RenderTarget& target) const override ;
     void draw(sf::RenderTarget& target) const override ;
 #else
     void addInfoToNewEntityPacket(ECCPacket& packet) const override;
@@ -46,6 +47,7 @@ private:
 #ifdef CLIENT_SIDE
     sf::Sprite item_sprite;
     sf::CircleShape sprite_outline;
+    sf::CircleShape shadow;
     mutable sf::Text number_text;
     float floating_anim_progress = 0.f;
 #endif

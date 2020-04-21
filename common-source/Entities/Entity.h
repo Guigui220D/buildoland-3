@@ -49,6 +49,11 @@ class Entity
 
         #ifdef CLIENT_SIDE
         /**
+         * Draw this entity's lower layer
+         * @param target : the render target on which to draw
+         */
+        virtual void drawBelow(sf::RenderTarget& target) const;
+        /**
          * Draw this entity
          * @param target : the render target on which to draw
          */

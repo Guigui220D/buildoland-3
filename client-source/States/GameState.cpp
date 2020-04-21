@@ -368,6 +368,8 @@ void GameState::draw(sf::RenderTarget& target) const
         for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
             target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
+        entities.sortDrawOrder();
+        entities.drawAllBelow(target);
         entities.drawAll(target);
         for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
             for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
@@ -392,7 +394,7 @@ void GameState::draw(sf::RenderTarget& target) const
             target.draw(block_pointer_side);
     }
 
-    target.setView(getGame().getWindow().getDefaultView());
+    getGame().useDefaultView();
     target.draw(hand_item_border);
     if (Player::this_player && Player::this_player->getInventory().contents.at(0))
     {

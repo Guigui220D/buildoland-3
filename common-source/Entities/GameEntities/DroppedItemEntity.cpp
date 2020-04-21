@@ -32,6 +32,11 @@ DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id)
     number_text.scale(sf::Vector2f(1.f/350, 1.f/350));
     number_text.setOutlineColor(sf::Color::Black);
     number_text.setOutlineThickness(4.f);
+
+    shadow.setRadius(.20f);
+    shadow.setScale(1.1f, 1.0f);
+    shadow.setOrigin(shadow.getLocalBounds().width/2.f, shadow.getLocalBounds().height/2.f);
+    shadow.setFillColor(sf::Color(0, 0, 0, 90));
 }
 #endif
 
@@ -91,6 +96,7 @@ void DroppedItemEntity::update(float delta)
 
     item_sprite.setPosition(getPosition().x, getPosition().y + sinf(floating_anim_progress*4.f)/16.f);
     sprite_outline.setPosition(item_sprite.getPosition());
+    shadow.setPosition(getPosition() + sf::Vector2f(0.0f, 0.25f));
     number_text.setPosition(getPosition().x + 1.0f/item_sprite.getTextureRect().width*2.f,
                             getPosition().y + 1.0f/item_sprite.getTextureRect().height*2.0f + sinf(floating_anim_progress*4.f)/16.f);
 #endif
@@ -128,6 +134,11 @@ bool DroppedItemEntity::takeNewEntityPacket(ECCPacket &packet)
     setItemStack(ItemStack(stack_val, getWorld().getGame().getItemsRegister()));
 
     return true;
+}
+
+void DroppedItemEntity::drawBelow(sf::RenderTarget &target) const
+{
+    target.draw(shadow);
 }
 
 void DroppedItemEntity::draw(sf::RenderTarget &target) const

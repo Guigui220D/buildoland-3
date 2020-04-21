@@ -8,7 +8,7 @@ class TestBlock : public Block
         TestBlock();
         virtual ~TestBlock();
 
-        virtual inline bool clientSideHasTE() const { return false; };
+        virtual inline bool clientSideHasTE() const { return true; };
         virtual inline bool serverSideHasTE() const { return true; };
         virtual inline unsigned short getTileEntityCode() const { return TileEntities::TestTE; }
 

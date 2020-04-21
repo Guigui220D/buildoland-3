@@ -4,6 +4,7 @@
 
 #include "../../common-source/TileEntities/TileEntity.h"
 #include "../../common-source/TileEntities/GameTileEntities/TreeTopEntity.h"
+#include "../../common-source/TileEntities/GameTileEntities/TestTileEntity.h"
 
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
@@ -61,6 +62,11 @@ Chunk::Chunk(World& world, sf::Vector2i pos, const char* chunk_data, unsigned ch
             {
             case TileEntities::TreeTopEntity:
                 tile_entities[y * CHUNK_SIZE + x].reset(new TreeTopEntity(*this, getBlockPosInWorld(x, y)));
+                actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+                break;
+
+            case TileEntities::TestTE:
+                tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
                 actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
                 break;
 
@@ -164,9 +170,14 @@ void Chunk::setBlock(int x, int y, const Block* block)
             actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
             break;
 
+        case TileEntities::TestTE:
+            tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
+            actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+            break;
+
         default:
         case TileEntities::None:
-            throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+            throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or it is not meant to exist here.");
         }
     }
 }
@@ -190,6 +201,15 @@ void Chunk::setGround(int x, int y, const Ground* ground)
         notifyChunk(2);
 
     invalidateVertexArrays();
+}
+
+TileEntity* Chunk::getTileEntity(int x, int y) const
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    return tile_entities[y * CHUNK_SIZE + x].get();
 }
 
 void Chunk::generateVertices() const

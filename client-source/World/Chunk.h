@@ -64,6 +64,9 @@ public:
     inline void setBlock(sf::Vector2i pos, const Block* block) { setBlock(pos.x, pos.y, block); }
     inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
 
+    TileEntity* getTileEntity(int x, int y) const;
+    inline TileEntity* getTileEntity(sf::Vector2i pos) const { return getTileEntity(pos.x, pos.y); };
+
     /**
          * Gets the vertex array to draw the ground
          * The texture to be used with that vertex array is "GROUND_TEXTURES"

@@ -12,6 +12,7 @@ namespace sf { class RenderTarget; }
 
 class World;
 class Chunk;
+class ECCPacket;
 
 class TileEntity
 {
@@ -22,6 +23,7 @@ class TileEntity
         virtual inline unsigned short getTypeCode() const = 0;
 
         inline World& getWorld() const { return world; }
+        inline Chunk& getChunk() const { return chunk; }
 
         inline sf::Vector2i getTilePos() const { return tile_pos; }
         sf::Vector2i getPosInChunk() const;
@@ -44,6 +46,8 @@ class TileEntity
          * @param target : the render target on which to draw
          */
         virtual void drawAbove(sf::RenderTarget& target) const;
+
+        virtual bool readTileEntityPacket(ECCPacket& packet);
         #else
 
         #endif

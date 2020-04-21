@@ -5,6 +5,7 @@
 #include "../Game.h"
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Constants.h"
+#include "../../common-source/TileEntities/TileEntity.h"
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
@@ -254,4 +255,16 @@ void World::updateTileEntities(float delta_time)
 {
     for (auto& c : chunks)
         c.second->updateTileEntities(delta_time);
+}
+
+bool World::findTEandGivePacket(sf::Vector2i te_pos, ECCPacket& packet)
+{
+    TileReference te = getTile(te_pos);
+
+    TileEntity* tile_entity = te.getTileEntity();
+
+    if (!tile_entity)
+        return false;
+
+    return tile_entity->readTileEntityPacket(packet);
 }

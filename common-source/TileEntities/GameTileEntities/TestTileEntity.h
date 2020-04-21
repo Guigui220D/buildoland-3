@@ -4,6 +4,10 @@
 
 #include <SFML/System/Clock.hpp>
 
+#ifdef CLIENT_SIDE
+    #include <SFML/Graphics/CircleShape.hpp>
+#endif // CLIENT_SIDE
+
 class TestTileEntity : public TileEntity
 {
     public:
@@ -14,7 +18,15 @@ class TestTileEntity : public TileEntity
 
         void update(float delta) override;
 
+        #ifdef CLIENT_SIDE
+        virtual void draw(sf::RenderTarget& target) const;
+        virtual bool readTileEntityPacket(ECCPacket& packet);
+        #endif
+
     private:
         sf::Clock clk;
 
+        #ifdef CLIENT_SIDE
+        sf::CircleShape cs;
+        #endif // CLIENT_SIDE
 };

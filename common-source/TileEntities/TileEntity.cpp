@@ -31,4 +31,6 @@ void TileEntity::update(float delta) {}
 #ifdef CLIENT_SIDE
 void TileEntity::draw(sf::RenderTarget& target) const {}
 void TileEntity::drawAbove(sf::RenderTarget& target) const {}
+bool TileEntity::readTileEntityPacket(ECCPacket& packet) { return true; }
 #endif
+

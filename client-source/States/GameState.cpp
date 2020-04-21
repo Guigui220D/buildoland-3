@@ -552,6 +552,16 @@ void GameState::processPacketQueue()
             if (!entities.readEntityPacket(rq->data_packet))
                 log(ERROR, "Entity packet could not be read.\n");
         }
+        else if (auto rq = request_queue.tryPop<TileEntityUpdateRequest>())
+        {
+            sf::Vector2i pos;
+
+            rq->data_packet >> pos.x;
+            rq->data_packet >> pos.y;
+
+            if (!test_world->findTEandGivePacket(pos, rq->data_packet))
+                log(ERROR, "Tile entity packet couldn't be passed to TE.\n");
+        }
         else if (auto rq = request_queue.tryPop<BlockUpdateRequest>())
         {
             sf::Vector2i chunk = World::getChunkPosFromBlockPos(rq->pos);

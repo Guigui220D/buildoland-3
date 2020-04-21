@@ -63,21 +63,6 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     target.draw(rectangle);
     target.draw(title);
 
-    for (int x = 0; x < 6; x++)
-    for (int y = 0; y < 4; y++)
-    {
-        ItemStack& stack = inventory.contents.at(x + y * 6 + 1);
-        if (!stack)
-            continue;
-
-        if (stack.getAmount() > 1)
-        {
-            number_draw.setString(std::to_string(stack.getAmount()));
-            number_draw.setPosition(sf::Vector2f(18.0_p * x + 3.0_p, 18.0_p * y + 8.0_p));
-            target.draw(number_draw);
-        }
-    }
-
     // render the vertex arrays once
     sf::RenderStates states = sf::RenderStates::Default;
     states.texture = block_textures;

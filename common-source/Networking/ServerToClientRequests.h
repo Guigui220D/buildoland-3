@@ -28,6 +28,11 @@ struct EntityActionRequest
     ECCPacket data_packet;
 };
 
+struct TileEntityUpdateRequest
+{
+    ECCPacket data_packet;
+};
+
 struct BlockUpdateRequest
 {
     sf::Vector2i pos;
@@ -62,7 +67,7 @@ struct InventoryUpdateRequest
 };
 
 using StoCRequestQueue = NetworkRequestQueue<DisconnectRequest, SendChunkRequest,
-                                             EntityActionRequest, BlockUpdateRequest,
+                                             EntityActionRequest, TileEntityUpdateRequest, BlockUpdateRequest,
                                              GroundUpdateRequest, PlayerRectificationRequest,
                                              InventoryUpdateRequest>;
 

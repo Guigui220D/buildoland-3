@@ -37,11 +37,14 @@ class GameBlocks
         static Block const * const ERROR;
         static Block const * const STRUCTURE_VOID;
 
+        static Block const * const TEST;
+
         static Block const * const STONE;
         static Block const * const STONE_BRICKS;
         static Block const * const IRON;
         static Block const * const GOLD;
         static Block const * const WOOD;
+        static Block const * const GLASS;
         static Block const * const STICKS;
         static Block const * const STONE_PLATE;
         static Block const * const BOULDER;

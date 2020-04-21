@@ -5,6 +5,7 @@
 #include "../Game.h"
 #include "../../common-source/Networking/ClientToServerCodes.h"
 #include "../../common-source/Constants.h"
+#include "../../common-source/TileEntities/TileEntity.h"
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Grounds/Ground.h"
 #include "../../common-source/Blocks/Block.h"
@@ -62,8 +63,6 @@ void World::updateLoadedChunk(float delta_time)
             chunks.erase(chunks.find(key));
 
         chunks.emplace(std::pair<uint64_t, std::unique_ptr<Chunk>>(key, std::unique_ptr<Chunk>(chunk)));
-
-        entities.declareNewChunkForTileEntities(chunk);
     }
     chunk_list_modification_mutex.unlock();
     chunks_to_add.clear();
@@ -115,7 +114,6 @@ void World::updateLoadedChunk(float delta_time)
             i++;
     }
     chunk_list_modification_mutex.unlock();
-
 
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::F1))
     {
@@ -251,4 +249,22 @@ const Block* World::getBlockPtr(sf::Vector2i pos)
 const Ground* World::getGroundPtr(sf::Vector2i pos)
 {
     return game_grounds_manager.getGroundByID(getGroundId(pos));
+}
+
+void World::updateTileEntities(float delta_time)
+{
+    for (auto& c : chunks)
+        c.second->updateTileEntities(delta_time);
+}
+
+bool World::findTEandGivePacket(sf::Vector2i te_pos, ECCPacket& packet)
+{
+    TileReference te = getTile(te_pos);
+
+    TileEntity* tile_entity = te.getTileEntity();
+
+    if (!tile_entity)
+        return false;
+
+    return tile_entity->readTileEntityPacket(packet);
 }

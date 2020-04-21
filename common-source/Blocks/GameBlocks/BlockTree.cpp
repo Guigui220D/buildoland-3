@@ -1,7 +1,7 @@
 #include "BlockTree.h"
 
 BlockTree::BlockTree() :
-    Block("tree", false, 31)
+    Block("tree", true, 31)
 {
     //ctor
 }

@@ -8,13 +8,13 @@
 #include "Generator.h"
 #include "EntitiesManager.h"
 
-#include <cassert>
-
-//TEST
-#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
-#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
+#include "../../common-source/TileEntities/TileEntity.h"
+#include "../../common-source/TileEntities/GameTileEntities/TestTileEntity.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
+
+#include <exception>
+#include <algorithm>
 
 const int Chunk::CHUNK_SIZE = 16;
 
@@ -36,13 +36,6 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 
 Chunk::~Chunk()
 {
-    for (unsigned int i = 0; i < tile_entities.size(); i++)
-    {
-        tile_entities[i]->assignChunk(nullptr);
-        //tile_entities.getData()[i]->to_be_destroyed = true;
-    }
-
-    //dtor
 }
 
 void Chunk::generatePacket()
@@ -94,35 +87,25 @@ void Chunk::setBlock(int x, int y, const Block* block)
 
     packet_ready = false;
 
-    TileEntity* old = tile_entities[y*CHUNK_SIZE + x];
-
-    if (old)
+    if (tile_entities[y * CHUNK_SIZE + x])
     {
-        tile_entities[y*CHUNK_SIZE + x] = nullptr;
-        old->assignChunk(nullptr);
+        tile_entities[y * CHUNK_SIZE + x].reset();
+        cleanupTEList();
     }
 
-
-    TileEntity* te = nullptr;
-
-    switch (block->getTileEntityCode())
+    if (block->serverSideHasTE())
     {
-    case TileEntities::None:
-        return;
-
-    case TileEntities::TestTileEntity:
-        te = new TestTileEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
-        break;
-
-    case TileEntities::TreeTopEntity:
-        te = new TreeTopEntity(world, world.getEntityManager().getNextEntityId(), getBlockPosInWorld(x, y));
-        break;
+        switch (block->getTileEntityCode())
+        {
+        case TileEntities::TestTE:
+            tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
+            actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+            break;
+        default:
+        case TileEntities::None:
+            throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+        }
     }
-
-    assert(te);
-
-    te->assignChunk(this);
-    world.getEntityManager().newEntity(te, ready);
 }
 
 void Chunk::setGround(int x, int y, const Ground* ground)
@@ -135,4 +118,24 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     grounds[y*CHUNK_SIZE + x] = ground->getId();
 
     packet_ready = false;
+}
+
+//Just trying things here
+void Chunk::cleanupTEList()
+{
+    #define v actual_tile_entities
+    v.erase(std::remove_if(v.begin(), v.end(),
+        [](std::shared_ptr<TileEntity>& te)
+            { return (bool)(te.use_count() <= 1); }
+        ), v.end());
+    #undef v
+}
+
+void Chunk::updateTileEntities(float delta_time)
+{
+    #define v actual_tile_entities
+    std::for_each(v.begin(), v.end(),
+        [delta_time](std::shared_ptr<TileEntity>& te)
+            { te->update(delta_time); });
+    #undef v
 }

@@ -15,6 +15,7 @@ namespace Networking
             FinalHandshake,
             SendChunk,
             EntityAction,
+            TileEntityUpdate,
             BlockUpdate,
             GroundUpdate,
             PlayerRectification,

@@ -4,6 +4,7 @@
 #include <array>
 #include <cassert>
 #include <atomic>
+#include <memory>
 
 #include "../../common-source/Utils/Log.h"
 
@@ -30,6 +31,7 @@ public:
     ~Chunk();
 
     inline Game& getGame() const { return game; }
+    inline World& getWorld() const { return world; }
 
     inline sf::Vector2i getPos() const { return pos; }
 
@@ -62,52 +64,49 @@ public:
     inline void setBlock(sf::Vector2i pos, const Block* block) { setBlock(pos.x, pos.y, block); }
     inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
 
+    TileEntity* getTileEntity(int x, int y) const;
+    inline TileEntity* getTileEntity(sf::Vector2i pos) const { return getTileEntity(pos.x, pos.y); };
+
     /**
          * Gets the vertex array to draw the ground
          * The texture to be used with that vertex array is "GROUND_TEXTURES"
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundVertexArray() const
-    { return ground_vertices[render_vx_id()]; }
+        { return ground_vertices[render_vx_id()]; }
     /**
          * Gets the vertex array to draw the details on the ground
          * The texture to be used with that vertex array is "GROUND_DETAILS"
          * @return The vertex array
          */
     inline sf::VertexArray& getGroundDetailsVertexArray(int frame) const
-    { return ground_detail_vertices[render_vx_id()].at(frame); }
+        { return ground_detail_vertices[render_vx_id()].at(frame); }
     /**
          * Gets the vertex array to draw the sides of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockSidesVertexArray() const
-    { return block_side_vertices[render_vx_id()]; }
+        { return block_side_vertices[render_vx_id()]; }
     /**
          * Gets the vertex array to draw the top of the blocks
          * The texture to be used with that vertex array is "/=/=/=/=/=/=/"
          * @return The vertex array
          */
     inline sf::VertexArray& getBlockTopsVertexArray() const
-    { return block_top_vertices[render_vx_id()]; }
+        { return block_top_vertices[render_vx_id()]; }
 
 
     /**
          * Tells the chunk that it should redo its vertex arrays
          */
     inline void invalidateVertexArrays() const
-    {
-        vertices_ready = false;
-    }
+        { vertices_ready = false; }
 
     inline bool vertexArraysOutOfDate() const
-    {
-        return !vertices_ready;
-    }
+        { return !vertices_ready; }
     inline void swapVertexArrays()
-    {
-        current_vertex_array_index = 1 - current_vertex_array_index; // 1 => 0 OR 0 => 1
-    }
+        { current_vertex_array_index = 1 - current_vertex_array_index; } // 1 => 0 OR 0 => 1
 
     /**
          * Generates all the related vertex arrays for chunk rendering
@@ -142,12 +141,18 @@ public:
     inline int gen_vx_id() const
         { return 1 - current_vertex_array_index; }
 
+    std::vector<std::shared_ptr<TileEntity>> actual_tile_entities; //for faster TE iteration (no iterating over each block and checking if theres a TE)
+    void updateTileEntities(float delta_time);
+
 private:
     bool ready = false;
 
     std::vector<uint16_t> blocks;
     std::vector<uint16_t> grounds;
-    std::vector<TileEntity*> tile_entities;
+
+    std::vector<std::shared_ptr<TileEntity>> tile_entities;
+    void cleanupTEList();
+
     const sf::Vector2i pos;
 
     // some sort of double-swapping technique is used to

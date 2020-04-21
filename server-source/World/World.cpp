@@ -195,3 +195,9 @@ sf::Vector2i World::getBlockPosInChunk(sf::Vector2i block_pos)
 
     return result;
 }
+
+void World::updateTileEntities(float delta_time)
+{
+    for (auto& c : chunks)
+        c.second->updateTileEntities(delta_time);
+}

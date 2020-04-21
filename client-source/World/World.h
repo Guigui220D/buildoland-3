@@ -193,6 +193,9 @@ class World
         inline void chunkDeletionUnlock()
         { chunk_list_modification_mutex.unlock(); }
 
+        void updateTileEntities(float delta_time);
+        bool findTEandGivePacket(sf::Vector2i te_pos, ECCPacket& packet);
+
     protected:
         //Entities
         EntitiesManager entities;

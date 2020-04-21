@@ -7,6 +7,7 @@ class Block;
 class Ground;
 class GameBlocks;
 class GameGrounds;
+class TileEntity;
 
 class TileReference
 {
@@ -25,6 +26,8 @@ class TileReference
         */
         const Ground* getGround() const;
         void setGround(const Ground* ground);
+
+        TileEntity* getTileEntity() const;
 
         inline TileReference getRelative(sf::Vector2i rpos) const { return TileReference(pos + rpos, world); }
 

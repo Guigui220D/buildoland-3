@@ -25,7 +25,7 @@
 #include "../../server-source/World/Chunk.h"
 
 #include "../../common-source/Utils/Log.h"
-#include" ../../common-source/Utils/UsernameCheck.h"
+#include "../../common-source/Utils/UsernameCheck.h"
 
 
 Server::Server(uint16_t client_port) :
@@ -134,6 +134,7 @@ void Server::run()
 
         //Update entities
         world->getEntityManager().updateAll(delta);
+        world->updateTileEntities(delta);
         //Update all worlds
 
         /*

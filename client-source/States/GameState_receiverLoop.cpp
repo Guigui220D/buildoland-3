@@ -78,6 +78,10 @@ void GameState::receiverLoop()
                             request_queue.pushRequest(Networking::StoC::EntityActionRequest{packet});
                             break;
 
+                        case Networking::StoC::TileEntityUpdate:
+                            request_queue.pushRequest(Networking::StoC::TileEntityUpdateRequest{packet});
+                            break;
+
                         case Networking::StoC::BlockUpdate:
                         {   //TODO : movee that somewhere else
                             sf::Vector2i pos;

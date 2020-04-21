@@ -102,6 +102,8 @@ class World
         inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
             getChunksEnd() const { return chunks.cend(); }
 
+        void updateTileEntities(float delta_time);
+
     protected:
         //Entities
         std::unique_ptr<EntitiesManager> entities;

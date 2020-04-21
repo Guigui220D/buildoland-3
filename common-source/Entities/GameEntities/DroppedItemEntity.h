@@ -2,7 +2,7 @@
 
 #include "../Entity.h"
 
-#include "../../common-source/Items/ItemStack.h"
+#include "../../Items/ItemStack.h"
 
 #ifdef CLIENT_SIDE
 #include <SFML/Graphics/Sprite.hpp>

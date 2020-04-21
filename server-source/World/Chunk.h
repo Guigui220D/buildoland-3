@@ -28,6 +28,7 @@ class Chunk
         ~Chunk();
 
         inline Server& getServer() const { return server; }
+        inline World& getWorld() const { return world; }
 
         inline sf::Vector2i getPos() const { return pos; }
 
@@ -65,7 +66,6 @@ class Chunk
         inline void setBlock(sf::Vector2i pos, const Block* block) { setBlock(pos.x, pos.y, block); }
         inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
 
-
         inline sf::Vector2f getCenter() const { return sf::Vector2f(pos.x * CHUNK_SIZE + .5f * CHUNK_SIZE - .5f, pos.y * CHUNK_SIZE + .5f * CHUNK_SIZE - .5f); }
 
         /**
@@ -83,12 +83,17 @@ class Chunk
 
         bool to_be_removed = false;
 
+        std::vector<std::shared_ptr<TileEntity>> actual_tile_entities; //for faster TE iteration (no iterating over each block and checking if theres a TE)
+        void updateTileEntities(float delta_time);
+
     private:
         bool ready = false;
 
         std::vector<uint16_t> blocks;
         std::vector<uint16_t> grounds;
-        std::vector<TileEntity*> tile_entities;
+        std::vector<std::shared_ptr<TileEntity>> tile_entities;
+        void cleanupTEList();
+
         const sf::Vector2i pos;
 
         Server& server;

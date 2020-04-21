@@ -5,6 +5,9 @@
 #include "GameBlocks/BlockAir.h"
 #include "GameBlocks/BlockError.h"
 
+#include "GameBlocks/TestBlock.h"
+
+#include "GameBlocks/BlockGlass.h"
 #include "GameBlocks/BlockBoulder.h"
 #include "GameBlocks/BlockTree.h"
 #include "GameBlocks/BlockChest.h"
@@ -19,11 +22,14 @@ Block const * const GameBlocks::AIR             = new BlockAir();
 Block const * const GameBlocks::ERROR           = new BlockError("error");
 Block const * const GameBlocks::STRUCTURE_VOID  = new BlockError("structural_void");
 
+Block const * const GameBlocks::TEST            = new TestBlock();
+
 Block const * const GameBlocks::STONE           = new Block("stone", true, 2);
 Block const * const GameBlocks::STONE_BRICKS    = new Block("bricks", true, 3);
 Block const * const GameBlocks::IRON            = new Block("iron", true, 4);
 Block const * const GameBlocks::GOLD            = new Block("gold", true, 5);
 Block const * const GameBlocks::WOOD            = new Block("wood", true, 7);
+Block const * const GameBlocks::GLASS           = new BlockGlass();
 Block const * const GameBlocks::STICKS          = new GroundBlock("wood_sticks", true, 39, 3);
 Block const * const GameBlocks::STONE_PLATE     = new GroundBlock("stone_pebbles", true, 23, 3);
 Block const * const GameBlocks::BOULDER         = new BlockBoulder("boulder", 20, 36);
@@ -49,13 +55,16 @@ void GameBlocks::initBlocks()
     //Add all blocks here
     addBlock(AIR);
     addBlock(ERROR);
-    addBlock(STRUCTURE_VOID);
+    //addBlock(STRUCTURE_VOID); //This block is never going to be placed and doesn't need to be registered
+
+    addBlock(TEST);
 
     addBlock(STONE);
     addBlock(STONE_BRICKS);
     addBlock(IRON);
     addBlock(GOLD);
     addBlock(WOOD);
+    addBlock(GLASS);
     addBlock(STICKS);
     addBlock(STONE_PLATE);
     addBlock(BOULDER);

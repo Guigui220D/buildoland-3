@@ -9,9 +9,9 @@
 class TreeTopEntity : public TileEntity
 {
     public:
-        inline unsigned short getTileEntityCode() const override { return TileEntities::TreeTopEntity; };
+        inline unsigned short getTypeCode() const override { return TileEntities::TreeTopEntity; };
 
-        TreeTopEntity(World& world, unsigned int id, sf::Vector2i tile_pos);
+        TreeTopEntity(Chunk& chunk, sf::Vector2i pos);
         ~TreeTopEntity();
 
         #ifdef CLIENT_SIDE

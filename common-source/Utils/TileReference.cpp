@@ -50,6 +50,20 @@ void TileReference::setGround(const Ground* ground)
     #endif
 }
 
+TileEntity* TileReference::getTileEntity() const
+{
+    #ifndef CLIENT_SIDE
+    throw new std::logic_error("Server has no getTileEntity implemented for TileReference (i was lazy)");
+    #else
+    sf::Vector2i chunk = World::getChunkPosFromBlockPos(pos);
+
+    if (!world.isChunkLoaded(chunk))
+        return nullptr;
+
+    return world.getChunk(chunk).getTileEntity(World::getBlockPosInChunk(pos));
+    #endif // CLIENT_SIDE
+}
+
 const GameBlocks& TileReference::getBlocksManager() const
 {
     return world.getBlocksManager();

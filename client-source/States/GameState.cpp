@@ -17,6 +17,8 @@
 #include "../../common-source/Grounds/GameGrounds.h"
 #include "../../common-source/Items/Item.h"
 
+#include "../../common-source/TileEntities/TileEntity.h"
+
 #include "../Version.h"
 
 #include "../../common-source/Networking/ClientToServerCodes.h"
@@ -292,6 +294,7 @@ void GameState::update(float delta_time)
     test_world->updateLoadedChunk(delta_time);
 
     entities.updateAll(delta_time);
+    test_world->updateTileEntities(delta_time);
 
     spyglass_mode = Player::this_player && Player::this_player->getInventory().contents.at(0).getItem() == ItemsRegister::SPYGLASS;
 
@@ -366,6 +369,9 @@ void GameState::draw(sf::RenderTarget& target) const
             target.draw(i->second->getBlockSidesVertexArray(), block_textures);
 
         entities.drawAll(target);
+        for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
+            for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
+                te->draw(target);
 
         for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
             target.draw(i->second->getBlockTopsVertexArray(), block_textures);
@@ -373,6 +379,9 @@ void GameState::draw(sf::RenderTarget& target) const
     }
 
     entities.drawAllAbove(target);
+    for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
+            for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
+                te->drawAbove(target);
 
     if (isTopState())
     {
@@ -662,6 +671,16 @@ void GameState::processPacketQueue()
         {
             if (!entities.readEntityPacket(rq->data_packet))
                 log(ERROR, "Entity packet could not be read.\n");
+        }
+        else if (auto rq = request_queue.tryPop<TileEntityUpdateRequest>())
+        {
+            sf::Vector2i pos;
+
+            rq->data_packet >> pos.x;
+            rq->data_packet >> pos.y;
+
+            if (!test_world->findTEandGivePacket(pos, rq->data_packet))
+                log(ERROR, "Tile entity packet couldn't be passed to TE.\n");
         }
         else if (auto rq = request_queue.tryPop<BlockUpdateRequest>())
         {

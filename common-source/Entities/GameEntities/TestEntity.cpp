@@ -1,6 +1,6 @@
 #include "TestEntity.h"
 
-#include "../../common-source/Utils/Log.h"
+#include "../../Utils/Log.h"
 
 #ifdef CLIENT_SIDE
     #include "../../../client-source/Game.h"

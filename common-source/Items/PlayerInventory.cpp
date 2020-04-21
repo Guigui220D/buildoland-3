@@ -33,8 +33,10 @@ PlayerInventory::PlayerInventory(const Player& owner, Server& server) :
       owner(owner),
       server(server)
 {
-    { ItemStack a(ItemsRegister::SHOVEL, 1); contents.at(0).swap(a); }
-    { ItemStack a(ItemsRegister::EMPTY_BUCKET, 1); contents.at(1).swap(a); }
+    int i = 0;
+    { ItemStack a(ItemsRegister::SHOVEL, 1); contents.at(i++).swap(a); }
+    { ItemStack a(ItemsRegister::EMPTY_BUCKET, 1); contents.at(i++).swap(a); }
+    { ItemStack a(GameBlocks::TEST->getDefaultItem(), 10); contents.at(i++).swap(a);}
 }
 #endif // CLIENT_SIDE
 

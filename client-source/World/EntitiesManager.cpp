@@ -8,14 +8,10 @@
 #include "../../common-source/Networking/StoC_EntityActionCodes.h"
 
 #include "../../common-source/Entities/EntityCodes.h"
-#include "../../common-source/Entities/TileEntityCodes.h"
 
 #include "../../common-source/Entities/GameEntities/Player.h"
 #include "../../common-source/Entities/GameEntities/TestEntity.h"
 #include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
-
-#include "../../common-source/Entities/GameTileEntities/TestTileEntity.h"
-#include "../../common-source/Entities/GameTileEntities/TreeTopEntity.h"
 
 #include "../../client-source/World/World.h"
 
@@ -139,57 +135,22 @@ bool EntitiesManager::addEntity(ECCPacket& packet)
         gotPlayer = true;
     }
 
-
     Entity* new_entity = nullptr;
 
     switch (entity_code)
     {
-    case Entities::None: return true;
+        case Entities::None: return true;
 
-    case Entities::TileEntity:
-        {
-            unsigned short tile_entity_code; packet >> tile_entity_code;
+        case Entities::Player: new_entity = new Player(world, entity_id); break;
 
-            sf::Vector2i tile_pos;
-            packet >> tile_pos.x >> tile_pos.y;
+        case Entities::TestEntity: new_entity = new TestEntity(world, entity_id); break;
 
-            if (!packet)
-            {
-                log(ERROR, "Tile entity packet was too short.\n");
-                return false;
-            }
+        case Entities::DroppedItemEntity: new_entity = new DroppedItemEntity(world, entity_id); break;
 
-            switch (tile_entity_code)
-            {
-            case TileEntities::None: return true;
-
-            case TileEntities::TestTileEntity: new_entity = new TestTileEntity(world, entity_id, tile_pos); break;
-
-            case TileEntities::TreeTopEntity: new_entity = new TreeTopEntity(world, entity_id, tile_pos); break;
-
-            default: log(ERROR, "Tile entity type code unknown.\n"); return false;
-            }
-        }
-        break;
-
-    case Entities::Player: new_entity = new Player(world, entity_id); break;
-
-    case Entities::TestEntity: new_entity = new TestEntity(world, entity_id); break;
-
-    case Entities::DroppedItemEntity: new_entity = new DroppedItemEntity(world, entity_id);
-    break;
-
-    default: log(ERROR, "Entity type code unknown.\n"); return false;
+        default: log(ERROR, "Entity type code unknown.\n"); return false;
     }
 
     assert(new_entity);
-
-    if (new_entity->isTileEntity())
-        if (world.isChunkLoaded(new_entity->getChunkOn()))
-        {
-            TileEntity* te = (TileEntity*) new_entity;
-            te->assignChunk(&world.getChunk(new_entity->getChunkOn()));
-        }
 
     new_entity->takeNewEntityPacket(packet);
 
@@ -268,18 +229,4 @@ bool EntitiesManager::doEntityAction(ECCPacket& packet)
     }
 
     return en->takePacket(packet);
-}
-
-void EntitiesManager::declareNewChunkForTileEntities(Chunk* new_chunk)
-{
-    for (Entity*& entity : entities_vector)
-    {
-        if (entity->isTileEntity())
-        {
-            TileEntity* te = (TileEntity*) entity;
-
-            if (!te->isReady())
-                te->assignChunk(new_chunk);
-        }
-    }
 }

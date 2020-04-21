@@ -5,7 +5,8 @@ namespace TileEntities
     enum : unsigned short
     {
         None,
-        TestTileEntity,
+        TestTE,
         TreeTopEntity
     };
 }
+

@@ -72,7 +72,7 @@ void EntitiesManager::removeEntity(unsigned int id)
 
 Entity *EntitiesManager::getEntity(unsigned int id)
 {
-    if (entities.find(id) != entities.cend())
+    if (entities.find(id) != entities.cend() && !entities.find(id)->second->to_be_removed)
         return entities.find(id)->second;
     else
         return nullptr;

@@ -110,6 +110,7 @@ class World
         void updateTileEntities(float delta_time);
 
         void unloadOldChunks();
+        void saveAll();
 
     protected:
         //Entities

@@ -20,7 +20,7 @@ WorldSaver::~WorldSaver()
     saving_thread.wait();
 }
 
-void WorldSaver::addChunkToSave(Chunk* chunk_to_save)
+void WorldSaver::addChunkToSave(ChunkWithEntities chunk_to_save)
 {
     queue_mutex.lock();
     chunks_to_save.push(chunk_to_save);
@@ -31,21 +31,27 @@ void WorldSaver::saving_loop()
 {
     while (!stop_thread)
     {
-        //log(INFO, "Bou\n");
+
         if (chunks_to_save.empty())
         {
+
             std::this_thread::sleep_for(std::chrono::milliseconds(500));
         }
         else
         {
             queue_mutex.lock();
 
-            Chunk* chunk = chunks_to_save.front();
+            ChunkWithEntities chunk = chunks_to_save.front();
             chunks_to_save.pop();
 
-            log(INFO, "Saving chunk {}; {} (NOT IMPLEMENTED)\n", chunk->getPos().x, chunk->getPos().y);
+            log(INFO, "Saving chunk {}; {} (NOT IMPLEMENTED)\n", chunk.first.first.x, chunk.first.first.y);
 
-            delete chunk;
+            if(chunk.first.second)
+                delete chunk.first.second;
+
+            log(INFO, "    Saving {} entities with it.\n", chunk.second->size());
+
+            std::this_thread::sleep_for(std::chrono::milliseconds(600));
 
             queue_mutex.unlock();
         }

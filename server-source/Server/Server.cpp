@@ -146,6 +146,8 @@ void Server::run()
 
 void Server::close()
 {
+    world->saveAll();
+
     receiver_thread.wait();
 
     ECCPacket server_stopping(Networking::StoC::Disconnect);

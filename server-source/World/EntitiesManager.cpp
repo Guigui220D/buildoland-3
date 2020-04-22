@@ -102,3 +102,22 @@ void EntitiesManager::sendAddEntityToClient(unsigned int id, const Client& clien
     i->second->makeNewEntityPacket(packet);
     client.send(packet);
 }
+
+std::shared_ptr<std::vector<Entity*>> EntitiesManager::popEntitiesOfChunk(sf::Vector2i chunk_pos)
+{
+    std::shared_ptr<std::vector<Entity*>> vec(new std::vector<Entity*>());
+
+    for (auto i = entities.begin(); i != entities.end(); )
+    {
+        Entity* entity = i->second;
+
+        if (entity->getChunkOn() == chunk_pos)
+        {
+            i = entities.erase(i);
+            vec->emplace_back(entity);
+        }
+        else
+            i++;
+    }
+    return vec;
+}

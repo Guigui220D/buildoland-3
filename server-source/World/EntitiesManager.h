@@ -1,6 +1,8 @@
 #pragma once
 
 #include <unordered_map>
+#include <memory>
+#include <vector>
 
 #include <SFML/System/Vector2.hpp>
 
@@ -53,6 +55,8 @@ class EntitiesManager
         void sendAddEntityToClient(unsigned int id, const Client& client);
 
         inline unsigned int getNextEntityId() { return next_entity_id++; }
+
+        std::shared_ptr<std::vector<Entity*>> popEntitiesOfChunk(sf::Vector2i chunk_pos);
 
     private:
         std::unordered_map<unsigned int, Entity*> entities;

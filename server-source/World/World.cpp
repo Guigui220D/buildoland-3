@@ -15,6 +15,8 @@
 #include "EntitiesManager.h"
 #include "Generators/NaturalGenerator.h"
 
+#include "WorldSaver.h"
+
 World::World(Server& server, WorldSaver& saver) :
     entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(std::rand())),
@@ -206,7 +208,7 @@ void World::updateTileEntities(float delta_time)
 
 void World::unloadOldChunks()
 {
-    if (last_unload_iteration.getElapsedTime().asSeconds() >= 10.f)
+    if (last_unload_iteration.getElapsedTime().asSeconds() >= 3.f)
     {
         last_unload_iteration.restart();
 
@@ -215,7 +217,9 @@ void World::unloadOldChunks()
         for (auto i = chunks.begin(); i != chunks.end(); )
         {
             if (!i->second->isOld())
+            {
                 i++;
+            }
             else
             {
                 bool cancel = false;
@@ -236,10 +240,49 @@ void World::unloadOldChunks()
                 }
 
                 log(WARN, "Chunk {}; {} is being unloaded! Unloading chunks is not fully implemented yet, be careful.\n", i->second->getPos().x, i->second->getPos().y);
+
+                WorldSaver::ChunkWithEntities cwe;
+
+                auto popped_entities = entities->popEntitiesOfChunk(i->second->getPos());
+
+                cwe.first.first = i->second->getPos();
+                cwe.first.second = nullptr;
+                cwe.second = popped_entities;
+
                 if (i->second->hasBeenModified())
-                    world_saver.addChunkToSave(i->second.release());
+                {
+                    cwe.first.second = i->second.release();
+                }
+
+                world_saver.addChunkToSave(cwe);
+
                 i = chunks.erase(i);
             }
         }
     }
+}
+
+void World::saveAll()
+{
+    log(INFO, "Saving all chunks...");
+    for (auto i = chunks.begin(); i != chunks.end(); )
+    {
+        WorldSaver::ChunkWithEntities cwe;
+
+        auto popped_entities = entities->popEntitiesOfChunk(i->second->getPos());
+
+        cwe.first.first = i->second->getPos();
+        cwe.first.second = nullptr;
+        cwe.second = popped_entities;
+
+        if (i->second->hasBeenModified())
+        {
+            cwe.first.second = i->second.release();
+        }
+
+        world_saver.addChunkToSave(cwe);
+
+        i = chunks.erase(i);
+    }
+    log(INFO, "Chunks saved!");
 }

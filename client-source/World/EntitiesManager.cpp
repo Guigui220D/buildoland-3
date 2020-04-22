@@ -80,7 +80,9 @@ void EntitiesManager::drawAllAbove(sf::RenderTarget& target) const
 Entity* EntitiesManager::getEntity(unsigned int id)
 {
     auto i = entities_map.find(id);
-    return (i != entities_map.end() ? i->second : nullptr);
+	if (i == entities_map.end() || i->second->to_be_removed)
+		return nullptr;
+	return i->second;
 }
 
 bool EntitiesManager::readEntityPacket(ECCPacket& packet)

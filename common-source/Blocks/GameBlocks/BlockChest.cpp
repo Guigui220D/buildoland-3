@@ -16,6 +16,8 @@ BlockChest::~BlockChest()
 #ifndef CLIENT_SIDE
 std::vector<ItemStack> BlockChest::getDrops() const
 {
-    return { ItemStack(ItemsRegister::SPYGLASS) };
+    std::vector<ItemStack> vec;
+    vec.emplace_back(ItemsRegister::SPYGLASS);
+    return vec;
 }
 #endif // CLIENT_SIDE

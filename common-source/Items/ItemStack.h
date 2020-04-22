@@ -9,6 +9,8 @@ class ItemStack
     public:
         //Itemstack should be non copyable
         ItemStack& operator=(const ItemStack&) = delete;
+        ItemStack(const ItemStack&) = delete;
+        ItemStack(ItemStack&& stack) noexcept = default;
 
         ItemStack(Item const * item, uint8_t amount = 1);
         ItemStack();

@@ -29,7 +29,9 @@ std::vector<ItemStack> Ground::getDrops() const
 {
     if (!has_item)
         return {};
-    return { ItemStack(drop) };
+    std::vector<ItemStack> vec;
+    vec.emplace_back(drop);
+    return vec;
 }
 
 #else

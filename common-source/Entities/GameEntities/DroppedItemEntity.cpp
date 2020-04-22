@@ -45,9 +45,9 @@ DroppedItemEntity::~DroppedItemEntity()
 
 }
 
-void DroppedItemEntity::setItemStack(const ItemStack &input_stack)
+void DroppedItemEntity::setItemStack(ItemStack &input_stack)
 {
-    stack = std::make_unique<ItemStack>(input_stack);
+    stack.swap(input_stack);
 
 #ifdef CLIENT_SIDE
     sf::Texture const * block_textures;
@@ -58,7 +58,7 @@ void DroppedItemEntity::setItemStack(const ItemStack &input_stack)
     ground_textures = &getWorld().getGame().getResourceManager().getTexture("GROUND_TEXTURES");
     item_textures = &getWorld().getGame().getResourceManager().getTexture("ITEM_TEXTURES");
 
-    switch (stack->getItem()->getTexturesSet())
+    switch (stack.getItem()->getTexturesSet())
     {
         case Item::BlocksTextureSet:
             item_sprite.setTexture(*block_textures);
@@ -72,7 +72,7 @@ void DroppedItemEntity::setItemStack(const ItemStack &input_stack)
         default:;
     }
 
-    item_sprite.setTextureRect(stack->getItem()->getTexture(*stack));
+    item_sprite.setTextureRect(stack.getItem()->getTexture(stack));
     item_sprite.setScale(1.0f/item_sprite.getTextureRect().width / 2.f, 1.0f/item_sprite.getTextureRect().height / 2.f);
     item_sprite.setOrigin(item_sprite.getTextureRect().width / 2.f,
                           item_sprite.getTextureRect().height / 2.f);
@@ -85,7 +85,7 @@ void DroppedItemEntity::setItemStack(const ItemStack &input_stack)
     sprite_outline.setOrigin(0.6f/2.f,
                              0.6f/2.f);
 
-    number_text.setString(std::to_string(stack->getAmount()));
+    number_text.setString(std::to_string(stack.getAmount()));
 #endif
 }
 
@@ -110,7 +110,7 @@ void DroppedItemEntity::onLeftClick(Player& player)
 #else
     //log(INFO, "Stack left click {}\n", getId());
     assert(stack);
-    if (player.getInventory().insertItemStack(*stack, false))
+    if (player.getInventory().insertItemStack(stack, false))
         to_be_removed = true;
 #endif
 }
@@ -131,7 +131,9 @@ bool DroppedItemEntity::takeNewEntityPacket(ECCPacket &packet)
         return false;
     }
     position = new_pos;
-    setItemStack(ItemStack(stack_val, getWorld().getGame().getItemsRegister()));
+
+    ItemStack new_stack(stack_val, getWorld().getGame().getItemsRegister());
+    setItemStack(new_stack);
 
     return true;
 }
@@ -157,6 +159,6 @@ void DroppedItemEntity::addInfoToNewEntityPacket(ECCPacket& packet) const
 {
     packet << position.x;
     packet << position.y;
-    packet << stack->getInt();
+    packet << stack.getInt();
 }
 #endif

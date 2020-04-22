@@ -22,7 +22,7 @@ public:
 #endif
     ~DroppedItemEntity();
 
-    void setItemStack(const ItemStack& input_stack);
+    void setItemStack(ItemStack& input_stack);
 
     unsigned short getEntityCode() const override { return Entities::DroppedItemEntity; };
 
@@ -43,7 +43,7 @@ protected:
     void update(float delta) override;
 
 private:
-    std::unique_ptr<ItemStack> stack;
+    ItemStack stack;
 #ifdef CLIENT_SIDE
     sf::Sprite item_sprite;
     sf::CircleShape sprite_outline;

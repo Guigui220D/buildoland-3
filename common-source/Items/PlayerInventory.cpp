@@ -130,8 +130,8 @@ void PlayerInventory::dropHand()
     //    log(INFO, "Dropping stack {}\n", dropped_stack.getInt());
 #endif
 
-    ItemStack dropped_stack = contents.at(0);
-    contents.at(0).reset();
+    ItemStack dropped_stack;
+    contents.at(0).swap(dropped_stack);
 
 #ifndef CLIENT_SIDE
     DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId(), owner.getPosition());

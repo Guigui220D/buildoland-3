@@ -97,9 +97,6 @@ bool Server::init(uint16_t port)
     for (int i = 0; i < 10; i++)
         world->getEntityManager().newEntity(new TestEntity(*world, world->getEntityManager().getNextEntityId()));
 
-    DroppedItemEntity* dropped_entity = new DroppedItemEntity(*world, world->getEntityManager().getNextEntityId(), sf::Vector2f(0,0));
-    dropped_entity->setItemStack(ItemStack(getItemsRegister().BALL));
-    world->getEntityManager().newEntity(dropped_entity);
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }

@@ -35,7 +35,8 @@ Server::Server(uint16_t client_port) :
       connection_open(false),
       blocks_manager(),
       grounds_manager(),
-      world(std::make_unique<World>(*this))
+      world(std::make_unique<World>(*this, world_saver)),
+      world_saver("somewhere over the rainbow")
 {
 #ifndef SOLO
     assert(!client_port);

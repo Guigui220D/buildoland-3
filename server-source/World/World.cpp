@@ -15,21 +15,23 @@
 #include "EntitiesManager.h"
 #include "Generators/NaturalGenerator.h"
 
-World::World(Server& server) :
+World::World(Server& server, WorldSaver& saver) :
     entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(std::rand())),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
-    game_grounds_manager(server.getGroundsManager())
+    game_grounds_manager(server.getGroundsManager()),
+    world_saver(saver)
 {
 }
 
-World::World(Server& server, int seed) :
+World::World(Server& server, WorldSaver& saver, int seed) :
     entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(seed)),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
-    game_grounds_manager(server.getGroundsManager())
+    game_grounds_manager(server.getGroundsManager()),
+    world_saver(saver)
 {
 }
 
@@ -212,7 +214,7 @@ void World::unloadOldChunks()
 
         for (auto i = chunks.begin(); i != chunks.end(); )
         {
-            if (!i->second->isOld() || i->second->hasBeenModified())
+            if (!i->second->isOld())
                 i++;
             else
             {
@@ -234,6 +236,8 @@ void World::unloadOldChunks()
                 }
 
                 log(WARN, "Chunk {}; {} is being unloaded! Unloading chunks is not fully implemented yet, be careful.\n", i->second->getPos().x, i->second->getPos().y);
+                if (i->second->hasBeenModified())
+                    world_saver.addChunkToSave(i->second.release());
                 i = chunks.erase(i);
             }
         }

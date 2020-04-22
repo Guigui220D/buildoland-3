@@ -10,21 +10,24 @@
 #include <SFML/System/Clock.hpp>
 
 class Server;
+
 class Block;
 class Ground;
-class Chunk;
-
 class GameBlocks;
 class GameGrounds;
+
 class ItemsRegister;
-class Generator;
 class EntitiesManager;
+
+class Chunk;
+class Generator;
+class WorldSaver;
 
 class World
 {
     public:
-        World(Server& server);
-        World(Server& server, int seed);
+        World(Server& server, WorldSaver& saver);
+        World(Server& server, WorldSaver& saver, int seed);
         virtual ~World();
 
         void init();
@@ -122,4 +125,6 @@ class World
         std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
 
         sf::Clock last_unload_iteration;
+
+        WorldSaver& world_saver;
 };

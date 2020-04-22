@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <memory>
 
+#include <SFML/System/Clock.hpp>
+
 class Server;
 class Block;
 class Ground;
@@ -104,6 +106,8 @@ class World
 
         void updateTileEntities(float delta_time);
 
+        void unloadOldChunks();
+
     protected:
         //Entities
         std::unique_ptr<EntitiesManager> entities;
@@ -116,4 +120,6 @@ class World
         const GameGrounds& game_grounds_manager;
 
         std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
+
+        sf::Clock last_unload_iteration;
 };

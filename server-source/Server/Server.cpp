@@ -129,6 +129,8 @@ void Server::run()
 
         processPacketQueue();
 
+        world->unloadOldChunks();
+
         //Update entities
         world->getEntityManager().updateAll(delta);
         world->updateTileEntities(delta);

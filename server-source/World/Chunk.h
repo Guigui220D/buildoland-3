@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include "../../common-source/Networking/ECCPacket.h"
 
@@ -86,6 +87,9 @@ class Chunk
         std::vector<std::shared_ptr<TileEntity>> actual_tile_entities; //for faster TE iteration (no iterating over each block and checking if theres a TE)
         void updateTileEntities(float delta_time);
 
+        inline bool isOld() const { return last_request.getElapsedTime().asSeconds() >= 60.f; }
+        inline bool hasBeenModified() const { return modified; }
+
     private:
         bool ready = false;
 
@@ -103,4 +107,7 @@ class Chunk
         bool packet_ready;
 
         void generatePacket();
+
+        sf::Clock last_request;
+        bool modified = false;
 };

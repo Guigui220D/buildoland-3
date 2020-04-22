@@ -31,6 +31,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
 {
     world.getGenerator()->generateChunk(this);
 
+    modified = false;
     ready = true;
 }
 
@@ -54,6 +55,8 @@ ECCPacket& Chunk::getPacket()
 {
     if (!packet_ready)
         generatePacket();
+
+    last_request.restart();
 
     return (*packet);
 }
@@ -82,6 +85,8 @@ void Chunk::setBlock(int x, int y, const Block* block)
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
+
+    modified = true;
 
     blocks[y*CHUNK_SIZE + x] = block->getId();
 
@@ -114,6 +119,8 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     assert(y >= 0);
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
+
+    modified = true;
 
     grounds[y*CHUNK_SIZE + x] = ground->getId();
 

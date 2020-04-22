@@ -201,3 +201,41 @@ void World::updateTileEntities(float delta_time)
     for (auto& c : chunks)
         c.second->updateTileEntities(delta_time);
 }
+
+void World::unloadOldChunks()
+{
+    if (last_unload_iteration.getElapsedTime().asSeconds() >= 10.f)
+    {
+        last_unload_iteration.restart();
+
+        log(WARN, "Doing chunk unload iteration.\n");
+
+        for (auto i = chunks.begin(); i != chunks.end(); )
+        {
+            if (!i->second->isOld() || i->second->hasBeenModified())
+                i++;
+            else
+            {
+                bool cancel = false;
+                for (auto j = server.getClientsManager().getClientsBegin(); j != server.getClientsManager().getClientsEnd(); j++)
+                {
+                    if (j->second->hasPlayer())
+                        if (j->second->getPlayer()->isSubscribedTo(i->second->getPos()))
+                        {
+                            cancel = true;
+                            break;
+                        }
+                }
+                if (cancel)
+                {
+                    i->second->getPacket();
+                    i++;
+                    continue;
+                }
+
+                log(WARN, "Chunk {}; {} is being unloaded! Unloading chunks is not fully implemented yet, be careful.\n", i->second->getPos().x, i->second->getPos().y);
+                i = chunks.erase(i);
+            }
+        }
+    }
+}

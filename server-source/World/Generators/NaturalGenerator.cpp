@@ -44,27 +44,27 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
     test_struct_2.setCenter(sf::Vector2i(1, 0));
     test_struct_2.setRotation(0);
 
-    if (std::rand() % 10 == 0)
+    if (getRandomInt(chunk->getPos(), -98) % 10 == 0)
     {
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
         for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
         {
             chunk->setGround(x, y, GameGrounds::WOOD);
 
-            if (std::rand() & 1)
-                chunk->setBlock(x, y, random_blocks.at(std::rand() % random_blocks.size()));
+            if (getRandomInt(chunk->getBlockPosInWorld(x, y), -22) & 1)
+                chunk->setBlock(x, y, random_blocks.at(getRandomInt(chunk->getBlockPosInWorld(x, y), -23) % random_blocks.size()));
         }
     }
     // carpet version ?
-    else if (std::rand() % 10 == 0)
+    else if (getRandomInt(chunk->getPos(), -99) % 10 == 0)
     {
         for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
             for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
             {
                 chunk->setGround(x, y, GameGrounds::CARPET);
 
-                if (std::rand() & 1)
-                    chunk->setBlock(x, y, random_blocks.at(std::rand() % random_blocks.size()));
+                if (getRandomInt(chunk->getBlockPosInWorld(x, y), -20) & 1)
+                    chunk->setBlock(x, y, random_blocks.at(getRandomInt(chunk->getBlockPosInWorld(x, y), -21) % random_blocks.size()));
             }
     }
     else
@@ -78,13 +78,13 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
             if (perlin_value < 0.)
                 perlin_value = 0.;
 
-            if (std::round(perlin_value) >= 5 && std::rand() % 22 == 0)
+            if (std::round(perlin_value) >= 5 && getRandomInt(chunk->getBlockPosInWorld(x, y), -6) % 22 == 0)
                 chunk->setBlock(x, y, GameBlocks::STONE_PLATE);
 
-            if (std::round(perlin_value) >= 3 && std::round(perlin_value) <= 4 && std::rand() % 18 == 0)
+            if (std::round(perlin_value) >= 3 && std::round(perlin_value) <= 4 && getRandomInt(chunk->getBlockPosInWorld(x, y), 3) % 18 == 0)
                 chunk->setBlock(x, y, GameBlocks::STICKS);
 
-            if (std::round(perlin_value) >= 6 && std::rand() % 3 == 0)
+            if (std::round(perlin_value) >= 6 && getRandomInt(chunk->getBlockPosInWorld(x, y), 50) % 3 == 0)
             {
                 switch (std::rand() % 4)
                 {
@@ -100,7 +100,7 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
                 }
             }
 
-            if (std::round(perlin_value) >= 3 && std::round(perlin_value) <= 4 && std::rand() % 40 == 0)
+            if (std::round(perlin_value) >= 3 && std::round(perlin_value) <= 4 && getRandomInt(chunk->getBlockPosInWorld(x, y), 52) % 40 == 0)
                 chunk->setBlock(x, y, GameBlocks::TREE);
 
             chunk->setGround(x, y, ground_levels.at(std::round(perlin_value)));
@@ -124,6 +124,11 @@ void NaturalGenerator::generateChunk(Chunk* chunk)
         chunk->setBlock(0, 0, GameBlocks::AIR);
         chunk->setBlock(15, 15, GameBlocks::CHEST);
     }
+}
+
+uint32_t NaturalGenerator::getRandomInt(sf::Vector2i pos, int modifier)
+{
+    return XXH32(&pos, sizeof(pos), getSeed() + modifier);
 }
 
 /*

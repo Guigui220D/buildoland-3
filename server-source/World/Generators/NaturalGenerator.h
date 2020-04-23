@@ -34,6 +34,8 @@ class NaturalGenerator : public Generator
         //bool hasStructure(sf::Vector2i chunk_pos) const;
         //sf::Vector2i getStructurePos(sf::Vector2i chunk_pos) const;
 
+        uint32_t getRandomInt(sf::Vector2i pos, int modifier = 0);
+
         TestStructure test_struct;
         StructureFromJson test_struct_2;
 

@@ -241,17 +241,15 @@ void World::unloadOldChunks()
 
                 log(WARN, "Chunk {}; {} is being unloaded! Unloading chunks is not fully implemented yet, be careful.\n", i->second->getPos().x, i->second->getPos().y);
 
-                WorldSaver::ChunkWithEntities cwe;
+                ChunkWithEntities* cwe = new ChunkWithEntities();
 
-                auto popped_entities = entities->popEntitiesOfChunk(i->second->getPos());
-
-                cwe.first.first = i->second->getPos();
-                cwe.first.second = nullptr;
-                cwe.second = popped_entities;
+                cwe->chunk_pos = i->second->getPos();
+                cwe->chunk = nullptr;
+                entities->popEntitiesOfChunk(i->second->getPos(), cwe->entities);
 
                 if (i->second->hasBeenModified())
                 {
-                    cwe.first.second = i->second.release();
+                    cwe->chunk = i->second.release();
                 }
 
                 world_saver.addChunkToSave(cwe);
@@ -264,25 +262,22 @@ void World::unloadOldChunks()
 
 void World::saveAll()
 {
-    log(INFO, "Saving all chunks...");
+    log(INFO, "Sending all chunks to world saver...\n");
     for (auto i = chunks.begin(); i != chunks.end(); )
     {
-        WorldSaver::ChunkWithEntities cwe;
+        ChunkWithEntities* cwe = new ChunkWithEntities();
 
-        auto popped_entities = entities->popEntitiesOfChunk(i->second->getPos());
-
-        cwe.first.first = i->second->getPos();
-        cwe.first.second = nullptr;
-        cwe.second = popped_entities;
+        cwe->chunk_pos = i->second->getPos();
+        cwe->chunk = nullptr;
+        entities->popEntitiesOfChunk(i->second->getPos(), cwe->entities);
 
         if (i->second->hasBeenModified())
         {
-            cwe.first.second = i->second.release();
+            cwe->chunk = i->second.release();
         }
 
         world_saver.addChunkToSave(cwe);
 
         i = chunks.erase(i);
     }
-    log(INFO, "Chunks saved!");
 }

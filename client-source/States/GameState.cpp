@@ -98,8 +98,10 @@ GameState::~GameState()
     }
     if (solo_server_process)
     {
-        solo_server_process->kill(true);
+        solo_server_process->get_exit_status();
     }
+
+    log_prefix_format = "";
 }
 
 void GameState::init()
@@ -474,7 +476,7 @@ bool GameState::startAndConnectLocalServer()
         }
     }
 
-    log_prefix_format = "[Client] " + log_prefix_format; // now do this, to help differenciate between the server's and the client's output
+    log_prefix_format = "[Client] "; // now do this, to help differenciate between the server's and the client's output
 
     bool handshake = receiveServerHandshake(false);
 

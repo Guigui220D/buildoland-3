@@ -45,7 +45,7 @@ Server::Server(uint16_t client_port) :
 
 Server::~Server()
 {
-    //dtor
+    log(INFO, "Destructing server! Bye bye :)\n");
 }
 
 bool Server::init(uint16_t port)
@@ -148,6 +148,8 @@ void Server::close()
 {
     world->saveAll();
 
+    running = false;
+    passReceiveOnce();
     receiver_thread.wait();
 
     ECCPacket server_stopping(Networking::StoC::Disconnect);

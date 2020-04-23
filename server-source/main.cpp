@@ -25,7 +25,7 @@ int main(int argc, char** argv)
     uint16_t server_port = 0;
 
 #ifdef SOLO
-    log_prefix_format = "[Server] " + log_prefix_format; // to differentiate output when using solo mode
+    log_prefix_format = "[Server] "; // to differentiate output when using solo mode
 
     log(INFO, "This is a local server for solo mode.\n");
     log(INFO, "This version is made for Buildoland {} ({})\n", Version::VERSION, Version::VERSION_SHORT);
@@ -69,11 +69,11 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        log(INFO, "\nServer started!\n\n");
+        log(INFO, "Server started!\n\n");
 
         server.run();
 
-        log(INFO, "\nEnding server\n");
+        log(INFO, "Ending server\n");
 
         server.close();
     }

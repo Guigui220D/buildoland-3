@@ -56,7 +56,7 @@ class EntitiesManager
 
         inline unsigned int getNextEntityId() { return next_entity_id++; }
 
-        std::shared_ptr<std::vector<Entity*>> popEntitiesOfChunk(sf::Vector2i chunk_pos);
+        void popEntitiesOfChunk(sf::Vector2i chunk_pos, std::vector<Entity*>& vec);
 
     private:
         std::unordered_map<unsigned int, Entity*> entities;

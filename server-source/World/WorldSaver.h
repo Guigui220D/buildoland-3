@@ -14,19 +14,23 @@
 class Chunk;
 class Entity;
 
+struct ChunkWithEntities
+{
+    sf::Vector2i chunk_pos;
+    Chunk* chunk;
+    std::vector<Entity*> entities;
+};
+
 class WorldSaver
 {
     public:
-        using EntitiesGroup = std::shared_ptr<std::vector<Entity*>>;
-        using ChunkWithEntities = std::pair<std::pair<sf::Vector2i, Chunk*>, EntitiesGroup>;
-
         WorldSaver(std::string where_to_save);
         ~WorldSaver();
 
-        void addChunkToSave(ChunkWithEntities chunk_to_save);
+        void addChunkToSave(ChunkWithEntities* chunk_to_save);
 
     private:
-        std::queue<ChunkWithEntities> chunks_to_save;
+        std::queue<ChunkWithEntities*> chunks_to_save;
 
         sf::Thread saving_thread;
         sf::Mutex queue_mutex;

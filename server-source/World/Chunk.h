@@ -18,10 +18,11 @@ class TileEntity;
 
 class Chunk
 {
-    friend class TileEntity;
+    friend class WorldSaver;
 
     public:
         static const int CHUNK_SIZE;
+        static const int REGION_SIZE;
 
         static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
 

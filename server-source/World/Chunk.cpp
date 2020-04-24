@@ -17,6 +17,7 @@
 #include <algorithm>
 
 const int Chunk::CHUNK_SIZE = 16;
+const int Chunk::REGION_SIZE = 8;
 
 Chunk::Chunk(World& world, sf::Vector2i pos) :
     ready(false),

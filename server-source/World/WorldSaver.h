@@ -24,10 +24,14 @@ struct ChunkWithEntities
 class WorldSaver
 {
     public:
+        static const size_t LAYER_SIZE;
+
         WorldSaver(std::string where_to_save);
         ~WorldSaver();
 
         void addChunkToSave(ChunkWithEntities* chunk_to_save);
+
+        sf::Vector2i getRegionFromChunk(sf::Vector2i chunk) const;
 
     private:
         std::queue<ChunkWithEntities*> chunks_to_save;

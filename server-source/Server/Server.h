@@ -9,7 +9,7 @@
 #include "../../common-source/Networking/ClientToServerRequests.h"
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Items/ItemsRegister.h"
-#include "../World/WorldSaver.h"
+#include "../World/WorldSaveManager.h"
 
 #include "ClientsManager.h"
 
@@ -79,5 +79,5 @@ class Server
 
         //Theres only one world for the moment
         std::unique_ptr<World> world;
-        WorldSaver world_saver;
+        WorldSaveManager world_saver;
 };

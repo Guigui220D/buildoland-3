@@ -15,9 +15,9 @@
 #include "EntitiesManager.h"
 #include "Generators/NaturalGenerator.h"
 
-#include "WorldSaver.h"
+#include "WorldSaveManager.h"
 
-World::World(Server& server, WorldSaver& saver) :
+World::World(Server& server, WorldSaveManager& saver) :
     entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(std::rand())),
     server(server),
@@ -27,7 +27,7 @@ World::World(Server& server, WorldSaver& saver) :
 {
 }
 
-World::World(Server& server, WorldSaver& saver, int seed) :
+World::World(Server& server, WorldSaveManager& saver, int seed) :
     entities(std::make_unique<EntitiesManager>(server)),
     generator(new NaturalGenerator(seed)),
     server(server),
@@ -102,7 +102,7 @@ Chunk& World::getChunk(sf::Vector2i pos)
 
     if (chunk_ptr == chunks.end())
     {
-        log(INFO, "New chunk generated : {},{}\n", pos.x, pos.y);
+        //log(INFO, "New chunk generated : {},{}\n", pos.x, pos.y);
         Chunk* new_chunk = new Chunk(*this, pos);
         chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
         return *new_chunk;

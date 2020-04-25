@@ -21,13 +21,13 @@ class EntitiesManager;
 
 class Chunk;
 class Generator;
-class WorldSaver;
+class WorldSaveManager;
 
 class World
 {
     public:
-        World(Server& server, WorldSaver& saver);
-        World(Server& server, WorldSaver& saver, int seed);
+        World(Server& server, WorldSaveManager& saver);
+        World(Server& server, WorldSaveManager& saver, int seed);
         virtual ~World();
 
         void init();
@@ -60,7 +60,7 @@ class World
         const Chunk& getChunkConst(sf::Vector2i pos) const;
         /**
          * Gets a reference to a chunk with its position
-         * The chunk will be generated if needed
+         * The chunk will be loaded/generated if needed
          * @param pos : the position of the chunk
          * @return The reference to the chunk
          */
@@ -127,5 +127,5 @@ class World
 
         sf::Clock last_unload_iteration;
 
-        WorldSaver& world_saver;
+        WorldSaveManager& world_saver;
 };

@@ -69,8 +69,7 @@ struct PlayerActionRequest
 
 
 using CtoSRequestQueue = NetworkRequestQueue<DisconnectRequest, ConnectionRequest,
-                                             ChunkRequest, EntityRequest,
+                                             EntityRequest, ChunkRequest,
                                              KeepAliveRequest, PlayerActionRequest>;
-
 }
 }

@@ -18,7 +18,7 @@ class TileEntity;
 
 class Chunk
 {
-    friend class WorldSaver;
+    friend class WorldSaveManager;
 
     public:
         static const int CHUNK_SIZE;

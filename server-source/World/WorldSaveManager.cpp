@@ -56,18 +56,29 @@ sf::Vector2i WorldSaveManager::getRegionFromChunk(sf::Vector2i chunk) const
 void WorldSaveManager::requestChunk(sf::Vector2i chunk)
 {
     load_queue_mutex.lock();
-    chunks_to_load.push(chunk);
+        log(INFO, "Requesting chunk ({}; {})!\n", chunk.x, chunk.y);
+        chunks_to_load.push(chunk);
     load_queue_mutex.unlock();
 }
 
 ChunkWithEntities* WorldSaveManager::popLoadedChunk()
 {
+    sf::Lock lock(loaded_queue_mutex);
 
+    if (loaded_chunks.empty())
+        return nullptr;
+
+    ChunkWithEntities* cwe = loaded_chunks.front();
+    loaded_chunks.pop();
+
+    log(INFO, "Popped loaded chunk ({}; {})!\n", cwe->chunk_pos.x, cwe->chunk_pos.y);
+
+    return cwe;
 }
 
 void WorldSaveManager::thread_loop()
 {
-    while (1) //TODO : Need to mutex that
+    while (1)
     {
         save_queue_mutex.lock();
             bool cts = !chunks_to_save.empty();
@@ -86,7 +97,7 @@ void WorldSaveManager::thread_loop()
             continue;
         }
 
-        if (cts);
+        if (cts)
         {
             save_queue_mutex.lock();
                 ChunkWithEntities* chunk = chunks_to_save.front();
@@ -97,7 +108,35 @@ void WorldSaveManager::thread_loop()
         }
         if (ctl)
         {
+            load_queue_mutex.lock();
+                sf::Vector2i pos = chunks_to_load.front();
+                chunks_to_load.pop();
+            load_queue_mutex.unlock();
 
+            ChunkWithEntities* new_chunk = new ChunkWithEntities();
+
+            new_chunk->chunk = nullptr;
+            new_chunk->chunk_pos = pos;
+            new_chunk->generate_entities = true;
+
+            sf::Vector2i region = getRegionFromChunk(pos);
+            std::string filename = fmt::format("{}/region_{}_{}.json", save_dir_path, region.x, region.y);
+
+            std::ifstream i(filename);
+
+            if (!i.is_open())
+                goto push;
+
+            log(INFO, "Loaded chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.x, filename);
+
+            i.close();
+
+            log(INFO, "Loaded chunk ({}; {}).\n", pos.x, pos.x);
+
+        push:
+            loaded_queue_mutex.lock();
+                loaded_chunks.push(new_chunk);
+            loaded_queue_mutex.unlock();
         }
     }
 }

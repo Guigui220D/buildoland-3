@@ -60,7 +60,7 @@ class World
         const Chunk& getChunkConst(sf::Vector2i pos) const;
         /**
          * Gets a reference to a chunk with its position
-         * The chunk will be loaded/generated if needed
+         * An exception will be thrown if the chunk doesn't exist
          * @param pos : the position of the chunk
          * @return The reference to the chunk
          */
@@ -109,7 +109,8 @@ class World
 
         void updateTileEntities(float delta_time);
 
-        void unloadOldChunks();
+        void updateChunks();
+
         void saveAll();
 
     protected:

@@ -181,7 +181,9 @@ void GameState::receiverLoop()
                 log(INFO, "Received a packet from {} : {}, status was PARTIAL.\n", address.toString(), port);
                 break;
             case sf::Socket::Disconnected:
-                log(INFO, "Received a packet from {} : {}, status was DISCONNECTED. Stopping.\n", address.toString(), port); getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
+                log(INFO, "Received a packet from {} : {}, status was DISCONNECTED. Stopping.\n", address.toString(), port);
+                if (!must_be_destroyed)
+                    getGame().addStateOnTop(new ErrorState(getGame(), 0, "SOCKET_DISCONNECTED"));
                 must_be_destroyed = true;
                 break;
             case sf::Socket::Error:

@@ -130,7 +130,7 @@ void Server::run()
 
         processPacketQueue();
 
-        world->unloadOldChunks();
+        world->updateChunks();
 
         //Update entities
         world->getEntityManager().updateAll(delta);
@@ -408,9 +408,14 @@ void Server::processPacketQueue()
             if (!clients_manager.isConnected(rq->iandp))
                 continue;
 
-            ECCPacket p = world->getChunk(rq->pos).getPacket();
-            server_socket.send(p, rq->iandp.address, rq->iandp.port);
-            world->getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
+            if (world->isChunkLoaded(rq->pos))
+            {
+                ECCPacket p = world->getChunk(rq->pos).getPacket();
+                server_socket.send(p, rq->iandp.address, rq->iandp.port);
+                world->getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
+            }
+            else
+                world_saver.requestChunk(rq->pos);
         }
         else if (auto rq = request_queue.tryPop<EntityRequest>())
         {

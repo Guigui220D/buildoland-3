@@ -102,7 +102,6 @@ Chunk& World::getChunk(sf::Vector2i pos)
 
     if (chunk_ptr == chunks.end())
     {
-        //log(INFO, "New chunk generated : {},{}\n", pos.x, pos.y);
         Chunk* new_chunk = new Chunk(*this, pos);
         chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
         return *new_chunk;
@@ -206,8 +205,48 @@ void World::updateTileEntities(float delta_time)
         c.second->updateTileEntities(delta_time);
 }
 
-void World::unloadOldChunks()
+void World::updateChunks()
 {
+    {
+        ChunkWithEntities* cwe = world_saver.popLoadedChunk();
+
+        if (cwe)
+        {
+            uint64_t key = utils::combine(cwe->chunk_pos.x, cwe->chunk_pos.y);
+            auto chunk_ptr = chunks.find(key);
+
+            if (chunk_ptr == chunks.end())
+            {
+                Chunk* new_chunk;
+
+                if (cwe->chunk)
+                    new_chunk = cwe->chunk;
+                else
+                    new_chunk = new Chunk(*this, cwe->chunk_pos);
+
+                //TODO : Handle entities
+                for (Entity* e : cwe->entities)
+                    delete e;
+
+                chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
+
+                sendToSubscribers(new_chunk->getPacket(), new_chunk->getPos());
+            }
+            else
+            {
+                log(WARN, "Didnt add popped loaded chunk ({}; {}) because this chunk was already in the world.\n", cwe->chunk_pos.x, cwe->chunk_pos.y);
+
+                if (cwe->chunk)
+                    delete cwe->chunk;
+
+                for (Entity* e : cwe->entities)
+                    delete e;
+            }
+
+            delete cwe;
+        }
+    }
+
     if (last_unload_iteration.getElapsedTime().asSeconds() >= 3.f)
     {
         last_unload_iteration.restart();

@@ -605,7 +605,7 @@ bool GameState::receiveServerHandshake(bool known_port)
                 {
                     if (code == Networking::StoC::InventoryUpdate)
                     {
-                        log(INFO, "TEST : got inventory packet before handshake.");
+                        log(INFO, "TEST : got inventory packet before handshake.\n");
                         inventory_placeholder = packet;
                     }
                     else

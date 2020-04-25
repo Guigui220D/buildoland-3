@@ -20,9 +20,34 @@ public:
     void setInputText(const sf::String& str);
     const sf::String &getInputText() const;
 
+    inline void setPosition(float x, float y)
+    {
+        position = {x, y};
+        background.setPosition(x, y);
+        text.setPosition(x + 5.f, y + 2.5f);
+        cursor.setPosition(x + text.getGlobalBounds().width + 6.5f, y + background.getSize().y/2.f);
+    }
+    inline void setSize(const sf::Vector2f& size)
+    {
+        background.setSize(size);
+        cursor.setSize(sf::Vector2f(2, size.y*0.65f));
+        cursor.setOrigin(cursor.getSize()/2.f);
+        cursor.setPosition(position.x + text.getGlobalBounds().width + 6.5f, position.y + size.y/2.f);
+    }
+    inline void setCharacterSize(unsigned size)
+    {
+        text.setCharacterSize(size);
+    }
+
+    void clear();
+
     inline void setValidator(const std::function<bool(const sf::String&)>& callback)
     {
         validator = callback;
+    }
+    inline void setEnterCallback(const std::function<void(const sf::String&)>& callback)
+    {
+        enter_callback = callback;
     }
     inline bool valid() const
     {
@@ -36,8 +61,6 @@ public:
     bool isActive() const { return active; }
     bool isStillPlaceHolder() const { return isPlaceHolder; }
 
-    bool onEnter();
-
 private:
     const float margin = 15.0f;
     float cursorTime = 0.0f;
@@ -48,6 +71,7 @@ private:
     sf::Vector2f position;
 
     std::function<bool(const sf::String&)> validator;
+    std::function<void(const sf::String&)> enter_callback;
 
     sf::RectangleShape background;
     sf::RectangleShape cursor;

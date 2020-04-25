@@ -22,6 +22,11 @@ struct IpAndPort
         return ((port == other.port) && (address == other.address));
     }
 
+    inline bool operator!=(const IpAndPort& other) const
+    {
+        return !(*this == other);
+    }
+
     inline bool operator<(const IpAndPort& other) const
     {
         //For using IpAndPort as a map key

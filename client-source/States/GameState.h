@@ -15,6 +15,9 @@
 #include "../../common-source/Networking/NetworkRequestQueue.h"
 #include "../../common-source/Networking/ServerToClientRequests.h"
 
+#include "../../client-source/Gui/GuiChatbox.h"
+#include "../../client-source/Gui/TextInput.h"
+
 namespace TinyProcessLib
 {
 class Process;
@@ -43,6 +46,9 @@ class GameState : public State
         void update(float delta_time) override;
         void draw(sf::RenderTarget& target) const override;
         void updateView() override;
+
+        bool typingInChat() const
+        { return chat_input.isActive(); }
 
         inline void sendToServer(ECCPacket& packet) { client_socket.send(packet, remote_ip, remote_port); }
 
@@ -90,6 +96,10 @@ class GameState : public State
         sf::Texture const * item_textures;
         sf::Texture const * ground_details_textures;
 
+        void sendMessage(const sf::String& str);
+
+        GuiChatbox chatbox;
+        TextInput chat_input;
         sf::RectangleShape block_pointer;
         sf::RectangleShape block_pointer_side;
         sf::RectangleShape block_pointer_icon;

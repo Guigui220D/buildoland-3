@@ -130,6 +130,17 @@ void GameState::receiverLoop()
                         }
                         break;
 
+                        case Networking::StoC::ReceivedMessage:
+                        {
+                            std::string nickname, message;
+                            packet >> nickname >> message;
+
+                            if (!packet)
+                                break;
+
+                            request_queue.pushRequest(Networking::StoC::ReceivedMessageRequest{nickname, message});
+                        }
+
                         case Networking::StoC::InventoryUpdate:
                         {
                             Networking::StoC::InventoryUpdateRequest rq;

@@ -55,7 +55,9 @@ GameState::GameState(Game& game, unsigned int id) :
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
       init_frames_to_skip(20),
-      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
+      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this),
+      chatbox(game, sf::Vector2f(0.0f, 0.0f), 100.f),
+      chat_input(game, sf::Vector2f(0.0f, 0.0f), 100.f)
 {
     Player::this_player = nullptr;
     Player::this_player_id = 0;
@@ -75,7 +77,9 @@ GameState::GameState(Game& game, unsigned int id, const std::string& in_nickname
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
       init_frames_to_skip(20),
-      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
+      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this),
+      chatbox(game, sf::Vector2f(0.0f, 0.0f), 100.f),
+      chat_input(game, sf::Vector2f(0.0f, 0.0f), 100.f)
 {
     Player::this_player = nullptr;
     Player::this_player_id = 0;
@@ -121,6 +125,12 @@ void GameState::init()
     block_pointer_side.setOrigin(sf::Vector2f(.5f, 0));
     block_pointer_side.setTexture(&getGame().getResourceManager().getTexture("BLOCK_POINTER"));
 
+    chat_input.setEnterCallback([this](const sf::String& str)
+    {
+        sendMessage(str);
+        chat_input.clear();
+    });
+
     base_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
 
     //Bind to any port
@@ -153,6 +163,11 @@ void GameState::init()
 
 bool GameState::handleEvent(sf::Event& event)
 {
+    if (chatbox.handleEvent(event))
+        return true;
+    if (chat_input.handleEvent(event) || chat_input.isActive())
+        return true;
+
     if (getGame().getBindingsManager().pressed("inventory"))
     {
         if (Player::this_player)
@@ -238,7 +253,6 @@ bool GameState::handleEvent(sf::Event& event)
                     getGame().addStateOnTop(new ErrorState(getGame(), 0, "STATE_INTERRUPTED"));
                     must_be_destroyed = true;
                 }
-            break;
 
         default:
             break;
@@ -282,6 +296,17 @@ void GameState::update(float delta_time)
             hand_item_border.setOrigin(hand_item_border.getLocalBounds().width/2.f, 0.f);
         }
     }
+
+    chatbox.setPosition(10.f, getGame().getWindow().getSize().y - getGame().getWindow().getSize().y/2.5f - getGame().getWindow().getSize().y/10.f);
+    chatbox.setSize({getGame().getWindow().getSize().x/3.f,
+                     getGame().getWindow().getSize().y/2.5f});
+    chatbox.update(delta_time);
+
+    chat_input.setPosition(10.f, chatbox.getPosition().y + getGame().getWindow().getSize().y/2.5f + 5.f);
+    chat_input.setSize({getGame().getWindow().getSize().x/3.f,
+                       getGame().getWindow().getSize().y/15.f});
+    chat_input.setCharacterSize(75);
+    chat_input.update(delta_time);
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
@@ -395,6 +420,8 @@ void GameState::draw(sf::RenderTarget& target) const
     }
 
     getGame().useDefaultView();
+    chatbox.draw(target);
+    chat_input.draw(target);
     target.draw(hand_item_border);
     if (Player::this_player && Player::this_player->getInventory().contents.at(0))
     {
@@ -712,6 +739,12 @@ void GameState::processPacketQueue()
             else
                 request_queue.pushRequest(std::move(rq.value()));
         }
+        else if (auto rq = request_queue.tryPop<ReceivedMessageRequest>())
+        {
+            //log(INFO, "<{}> : {}\n", rq->sender_nick, rq->message);
+            sf::String sf_str = sf::String::fromUtf8(rq->message.begin(), rq->message.end());
+            chatbox.addMessage(rq->sender_nick, sf_str);
+        }
         else
         {
             log(ERROR, "Uknkown StoC packet request type; ignoring\n");
@@ -760,6 +793,18 @@ sf::View GameState::currentView() const
     {
         return base_view;
     }
+}
+
+void GameState::sendMessage(const sf::String &str)
+{
+    ECCPacket msg_packet(Networking::CtoS::SendMessage);
+    std::string std_str;
+    for (auto c : str.toAnsiString())
+        std_str += c;
+    msg_packet << std_str;
+    sendToServer(msg_packet);
+
+    chatbox.addMessage(nickname, str);
 }
 
 

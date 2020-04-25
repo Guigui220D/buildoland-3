@@ -67,10 +67,16 @@ struct PlayerActionRequest
     };
 };
 
+struct SendMessageRequest
+{
+    IpAndPort iandp;
+    std::string message;
+};
 
 using CtoSRequestQueue = NetworkRequestQueue<DisconnectRequest, ConnectionRequest,
                                              ChunkRequest, EntityRequest,
-                                             KeepAliveRequest, PlayerActionRequest>;
+                                             KeepAliveRequest, PlayerActionRequest,
+                                             SendMessageRequest>;
 
 }
 }

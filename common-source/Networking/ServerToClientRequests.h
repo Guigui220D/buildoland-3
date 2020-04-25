@@ -66,10 +66,16 @@ struct InventoryUpdateRequest
     ECCPacket data_packet;
 };
 
+struct ReceivedMessageRequest
+{
+    std::string sender_nick;
+    std::string message;
+};
+
 using StoCRequestQueue = NetworkRequestQueue<DisconnectRequest, SendChunkRequest,
                                              EntityActionRequest, TileEntityUpdateRequest, BlockUpdateRequest,
                                              GroundUpdateRequest, PlayerRectificationRequest,
-                                             InventoryUpdateRequest>;
+                                             InventoryUpdateRequest, ReceivedMessageRequest>;
 
 }
 }

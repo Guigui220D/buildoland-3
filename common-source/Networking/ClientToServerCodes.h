@@ -10,8 +10,9 @@ namespace Networking
             Disconnect,
             RequestConnection,
 			RequestChunk,
-			RequestEntityInfo,
-            PlayerAction
+            RequestEntityInfo,
+            PlayerAction,
+            SendMessage
         };
     }
 }

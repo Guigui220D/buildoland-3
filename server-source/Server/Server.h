@@ -50,6 +50,8 @@ class Server
         inline World& getWorld() { return *world; }
 
     private:
+        void handleCommand(const std::string& command);
+
         sf::UdpSocket server_socket;
 
         ClientsManager clients_manager;

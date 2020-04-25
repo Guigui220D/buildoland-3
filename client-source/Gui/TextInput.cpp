@@ -64,7 +64,8 @@ bool TextInput::handleEvent(sf::Event& e) {
     {
         if (e.key.code == sf::Keyboard::Return)
         {
-            enterPressed = true;
+            if (enter_callback)
+                enter_callback(inputText);
             active = false;
             return true;
         }
@@ -93,7 +94,7 @@ void TextInput::setInputText(const sf::String &str)
     inputText = str;
 
     text.setString(inputText);
-    cursor.setPosition(position.x + text.getGlobalBounds().width + 6.5f, position.y + 50.f);
+    cursor.setPosition(position.x + text.getGlobalBounds().width + 6.5f, position.y + background.getSize().y/2.f);
 
     if (validator)
     {
@@ -146,10 +147,7 @@ const sf::String &TextInput::getInputText() const
     return inputText;
 }
 
-bool TextInput::onEnter()
+void TextInput::clear()
 {
-    if (!enterPressed)
-        return false;
-    enterPressed = false;
-    return true;
+    setInputText("");
 }

@@ -279,6 +279,13 @@ void Server::receiver()
                             request_queue.pushRequest(std::move(rq));
                         }
                         break;
+                        case Networking::CtoS::SendMessage:
+                        {
+                            std::string msg; packet >> msg;
+
+                            request_queue.pushRequest(Networking::CtoS::SendMessageRequest{iandp, msg});
+                        }
+                        break;
 
                         default:
                             log(ERROR, "Packet has unknown code\n");
@@ -427,6 +434,46 @@ void Server::processPacketQueue()
                 continue;
 
             client.getPlayer()->handlePlayerActionRequest(rq.value());
+        }
+        else if (auto rq = request_queue.tryPop<SendMessageRequest>())
+        {
+            clients_manager.resetClientTimer(rq->iandp);
+
+            if (!clients_manager.isConnected(rq->iandp))
+                continue;
+
+            if (rq->message.size() && rq->message[0] == '/')
+            {
+                // handle server command
+                std::string cmd;
+                unsigned i = 1;
+                while (i < rq->message.size() && !isspace(rq->message[i]))
+                {
+                    cmd += rq->message[i];
+                    ++i;
+                }
+
+                handleCommand(cmd);
+            }
+            else
+            {
+                std::string nickname = clients_manager.getClient(rq->iandp).getNickname();
+
+                log(INFO, "<{}>: {}\n", nickname, rq->message);
+
+                ECCPacket msg_packet(Networking::StoC::ReceivedMessage);
+                msg_packet << nickname;
+                msg_packet << rq->message;
+
+                for (auto it = clients_manager.getClientsBegin(); it != clients_manager.getClientsEnd(); ++it)
+                {
+                    // don't send it back to the sender!
+                    if (it->first != rq->iandp)
+                    {
+                        it->second->send(msg_packet);
+                    }
+                }
+            }
         }
         else
         {

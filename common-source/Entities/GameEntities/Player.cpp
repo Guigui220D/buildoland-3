@@ -98,7 +98,7 @@ void Player::update(float delta)
     {
         sf::Vector2f dir;
 
-        if (getWorld().getGame().getWindow().hasFocus())
+        if (getWorld().getGame().getWindow().hasFocus() && !getWorld().getState().typingInChat())
         {
             if (getWorld().getGame().getBindingsManager().held("move_up"))
                 dir += sf::Vector2f(0, -1.f);

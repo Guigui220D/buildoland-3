@@ -88,13 +88,13 @@ void GameState::receiverLoop()
                             uint16_t id;
 
                             packet >> pos.x >> pos.y;
-                            packet >> id;
-
                             if (!packet)
                             {
                                 log(ERROR, "Could not read blockUpdate, packet too short\n");
                                 break;
                             }
+                            packet >> id;
+
 
                             request_queue.pushRequest(Networking::StoC::BlockUpdateRequest{pos, id});
                         }
@@ -106,13 +106,13 @@ void GameState::receiverLoop()
                             uint16_t id;
 
                             packet >> pos.x >> pos.y;
-                            packet >> id;
-
                             if (!packet)
                             {
                                 log(ERROR, "Could not read groundUpdate, packet too short\n");
                                 break;
                             }
+
+                            packet >> id;
 
                             request_queue.pushRequest(Networking::StoC::GroundUpdateRequest{pos, id});
                         }
@@ -123,23 +123,35 @@ void GameState::receiverLoop()
                             sf::Vector2f pos;
                             packet >> pos.x >> pos.y;
 
-                            if (!packet)
-                                break;
-
                             request_queue.pushRequest(Networking::StoC::PlayerRectificationRequest{pos});
                         }
                         break;
 
                         case Networking::StoC::ReceivedMessage:
                         {
-                            std::string nickname, message;
+                            std::string nickname;
+                            sf::String message;
                             packet >> nickname >> message;
-
-                            if (!packet)
-                                break;
 
                             request_queue.pushRequest(Networking::StoC::ReceivedMessageRequest{nickname, message});
                         }
+                        break;
+                        case Networking::StoC::PlayerConnected:
+                        {
+                            std::string nickname;
+                            packet >> nickname;
+
+                            request_queue.pushRequest(Networking::StoC::PlayerConnectedRequest{nickname});
+                        }
+                        break;
+                        case Networking::StoC::PlayerDisconnected:
+                        {
+                            std::string nickname;
+                            packet >> nickname;
+
+                            request_queue.pushRequest(Networking::StoC::PlayerDisconnectedRequest{nickname});
+                        }
+                        break;
 
                         case Networking::StoC::InventoryUpdate:
                         {

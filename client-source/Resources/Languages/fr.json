@@ -10,6 +10,8 @@
 	"INVALID_NICKNAME":"Pseudo invalide",
 	"NICKNAME_ALREADY_TAKEN":"Pseudo déja choisi",
 	"BACK_TO_MAIN_MENU_BUTTON": "Retourner au menu",
+	"NEW_PLAYER_CONNECTED" : "Nouveau joueur : {}",
+	"PLAYER_DISCONNECTED" : "{} a quitté la partie.",
 	
 	"STATE_INTERRUPTED": "Jeu interrompu par le joueur (test)",
 	"SERVER_DIDNT_START": "Le serveur local n'a pas pu être démarré",

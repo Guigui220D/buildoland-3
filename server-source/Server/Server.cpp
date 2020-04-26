@@ -281,7 +281,7 @@ void Server::receiver()
                         break;
                         case Networking::CtoS::SendMessage:
                         {
-                            std::string msg; packet >> msg;
+                            sf::String msg; packet >> msg;
 
                             request_queue.pushRequest(Networking::CtoS::SendMessageRequest{iandp, msg});
                         }
@@ -341,6 +341,7 @@ void Server::processPacketQueue()
                 log(INFO, "Disconnecting player.\n");
 
                 Client& client = clients_manager.getClient(rq->iandp);
+                std::string nickname = client.getNickname();
                 if (client.hasPlayer())
                 {
                     world->getEntityManager().removeEntity(client.getPlayer()->getId());
@@ -349,6 +350,13 @@ void Server::processPacketQueue()
 
                 clients_manager.removeClient(rq->iandp);
                 log(INFO, "Player disconnected.\n");
+
+                ECCPacket player_left_packet(Networking::StoC::PlayerDisconnected);
+                player_left_packet << nickname;
+                for (auto it = clients_manager.getClientsBegin(); it != clients_manager.getClientsEnd(); ++it)
+                {
+                    it->second->send(player_left_packet);
+                }
             }
         }
         else if (auto rq = request_queue.tryPop<ConnectionRequest>())
@@ -384,6 +392,13 @@ void Server::processPacketQueue()
             log(INFO, "Connection accepted\n");
             {
                 unsigned int player_id = world->getEntityManager().getNextEntityId();
+
+                ECCPacket new_player_packet(Networking::StoC::PlayerConnected);
+                new_player_packet << rq->nickname;
+                for (auto it = clients_manager.getClientsBegin(); it != clients_manager.getClientsEnd(); ++it)
+                {
+                    it->second->send(new_player_packet);
+                }
 
                 clients_manager.addClient(rq->iandp, rq->nickname);
                 Player* new_player = new Player(*world, player_id, clients_manager.getClient(rq->iandp));
@@ -442,14 +457,16 @@ void Server::processPacketQueue()
             if (!clients_manager.isConnected(rq->iandp))
                 continue;
 
-            if (rq->message.size() && rq->message[0] == '/')
+            if (rq->message.getSize() && rq->message.toAnsiString()[0] == '/')
             {
+                std::string ansi_str = rq->message.toAnsiString();
                 // handle server command
                 std::string cmd;
                 unsigned i = 1;
-                while (i < rq->message.size() && !isspace(rq->message[i]))
+
+                while (i < ansi_str.size() && !isspace(ansi_str[i]))
                 {
-                    cmd += rq->message[i];
+                    cmd += ansi_str[i];
                     ++i;
                 }
 
@@ -458,8 +475,10 @@ void Server::processPacketQueue()
             else
             {
                 std::string nickname = clients_manager.getClient(rq->iandp).getNickname();
-
-                log(INFO, "<{}>: {}\n", nickname, rq->message);
+                std::string std_msg;
+                for (auto c : rq->message.toUtf8())
+                    std_msg += c;
+                log(INFO, "<{}>: {}\n", nickname, std_msg);
 
                 ECCPacket msg_packet(Networking::StoC::ReceivedMessage);
                 msg_packet << nickname;

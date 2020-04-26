@@ -46,7 +46,10 @@ void GuiChatbox::addMessage(const std::string &nickname, const sf::String &messa
     text.setFont(getGame().getResourceManager().getFont("GUI_FONT"));
     text.setFillColor(color);
     text.setCharacterSize(18);
-    text.setString(sf::String("<" + nickname + ">: ") + message);
+    if (nickname.empty()) // system message
+        text.setString(message);
+    else
+        text.setString(sf::String("<" + nickname + ">: ") + message);
 
     //text.setOutlineThickness(0.5f);
     text.setOutlineColor(sf::Color::Black);

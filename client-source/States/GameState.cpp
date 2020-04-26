@@ -741,9 +741,15 @@ void GameState::processPacketQueue()
         }
         else if (auto rq = request_queue.tryPop<ReceivedMessageRequest>())
         {
-            //log(INFO, "<{}> : {}\n", rq->sender_nick, rq->message);
-            sf::String sf_str = sf::String::fromUtf8(rq->message.begin(), rq->message.end());
-            chatbox.addMessage(rq->sender_nick, sf_str);
+            chatbox.addMessage(rq->sender_nick, rq->message);
+        }
+        else if (auto rq = request_queue.tryPop<PlayerConnectedRequest>())
+        {
+            chatbox.addInfoMessage("NEW_PLAYER_CONNECTED", rq->nickname);
+        }
+        else if (auto rq = request_queue.tryPop<PlayerDisconnectedRequest>())
+        {
+            chatbox.addInfoMessage("PLAYER_DISCONNECTED", rq->nickname);
         }
         else
         {
@@ -798,10 +804,7 @@ sf::View GameState::currentView() const
 void GameState::sendMessage(const sf::String &str)
 {
     ECCPacket msg_packet(Networking::CtoS::SendMessage);
-    std::string std_str;
-    for (auto c : str.toAnsiString())
-        std_str += c;
-    msg_packet << std_str;
+    msg_packet << str;
     sendToServer(msg_packet);
 
     chatbox.addMessage(nickname, str);

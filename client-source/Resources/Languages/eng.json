@@ -10,6 +10,8 @@
 	"INVALID_NICKNAME":"Invalid nickname",
 	"NICKNAME_ALREADY_TAKEN":"Nickname already taken",
 	"BACK_TO_MAIN_MENU_BUTTON": "Back to main menu",
+	"NEW_PLAYER_CONNECTED" : "New player connected: {}",
+	"PLAYER_DISCONNECTED" : "Player {} left the game.",
 	
 	"STATE_INTERRUPTED": "State interrupted by player (for testing)",
 	"SERVER_DIDNT_START": "Local server couldn't be started",

@@ -20,7 +20,9 @@ namespace Networking
             GroundUpdate,
             PlayerRectification,
             InventoryUpdate,
-            ReceivedMessage
+            ReceivedMessage,
+            PlayerConnected,
+            PlayerDisconnected
         };
 
         enum ConnectionRefusalReason : uint8_t

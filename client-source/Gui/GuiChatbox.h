@@ -8,6 +8,9 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Color.hpp>
 
+#include "../../client-source/Settings/LanguageManager.h"
+#include "../../client-source/Game.h"
+
 #include "GuiElement.h"
 
 class GuiChatbox : public GuiElement
@@ -31,6 +34,11 @@ public:
     sf::Vector2f getPosition() const
     { return position; }
 
+    template <typename... FmtArgs>
+    void addInfoMessage(const std::string& str, FmtArgs&&... args)
+    {
+        addMessage("", game.getLanguageManager().getString(str, std::forward<FmtArgs>(args)...));
+    }
     void addMessage(const std::string& nickname, const sf::String& message);
 private:
     void cleanOlderMessages();

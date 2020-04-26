@@ -3,6 +3,7 @@
 #include "ECCPacket.h"
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/System/String.hpp>
 
 template <typename... RequestTypes>
 class NetworkRequestQueue;
@@ -69,13 +70,23 @@ struct InventoryUpdateRequest
 struct ReceivedMessageRequest
 {
     std::string sender_nick;
-    std::string message;
+    sf::String message;
+};
+
+struct PlayerConnectedRequest
+{
+    std::string nickname;
+};
+struct PlayerDisconnectedRequest
+{
+    std::string nickname;
 };
 
 using StoCRequestQueue = NetworkRequestQueue<DisconnectRequest, SendChunkRequest,
                                              EntityActionRequest, TileEntityUpdateRequest, BlockUpdateRequest,
                                              GroundUpdateRequest, PlayerRectificationRequest,
-                                             InventoryUpdateRequest, ReceivedMessageRequest>;
+                                             InventoryUpdateRequest, ReceivedMessageRequest,
+                                             PlayerConnectedRequest, PlayerDisconnectedRequest>;
 
 }
 }

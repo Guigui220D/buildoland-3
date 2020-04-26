@@ -97,6 +97,8 @@ bool Server::init(uint16_t port)
     for (int i = 0; i < 10; i++)
         world->getEntityManager().newEntity(new TestEntity(*world, world->getEntityManager().getNextEntityId()));
 
+    initCommands();
+
     //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }
@@ -143,6 +145,8 @@ void Server::run()
 
 void Server::close()
 {
+    running = false;
+    passReceiveOnce();
     receiver_thread.wait();
 
     ECCPacket server_stopping(Networking::StoC::Disconnect);
@@ -470,7 +474,9 @@ void Server::processPacketQueue()
                     ++i;
                 }
 
-                handleCommand(cmd);
+                std::string args = ansi_str.substr(i);
+
+                handleCommand(clients_manager.getClient(rq->iandp), cmd, args);
             }
             else
             {

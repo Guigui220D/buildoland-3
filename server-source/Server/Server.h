@@ -2,6 +2,7 @@
 
 #include <vector>
 #include <atomic>
+#include <unordered_map>
 
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/System/Thread.hpp>
@@ -50,7 +51,14 @@ class Server
         inline World& getWorld() { return *world; }
 
     private:
-        void handleCommand(const std::string& command);
+        struct Command
+        {
+            std::function<void(Client& client, const std::string& arguments)> callback;
+            bool admin_command;
+        };
+        std::unordered_map<std::string, Command> commands;
+        void initCommands();
+        void handleCommand(Client &client, const std::string& command, const std::string &args);
 
         sf::UdpSocket server_socket;
 

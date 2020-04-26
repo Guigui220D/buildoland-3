@@ -33,6 +33,7 @@ class Client
         }
 
         sf::Clock last_packet_received;
+        bool admin = false;
 
     protected:
         IpAndPort ip_and_port;

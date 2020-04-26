@@ -24,6 +24,12 @@ bool ClientsManager::addClient(IpAndPort& client, const std::string &nickname, P
 
     clients.emplace(std::pair<IpAndPort, std::unique_ptr<Client>>(client, std::make_unique<Client>(server, client, nickname, player)));
 
+    // first connected client
+    if (clients.size() == 1)
+    {
+        clients[client]->admin = true;
+    }
+
     return true;
 }
 
@@ -67,7 +73,6 @@ int ClientsManager::doTimeOuts(float timeout_s)
             if (i->first == server.owner)
             {
                 server.running = false;
-                server.passReceiveOnce();
                 break;
             }
             #endif // SOLO

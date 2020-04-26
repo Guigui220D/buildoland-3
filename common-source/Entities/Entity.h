@@ -111,6 +111,7 @@ class Entity
         inline bool isHighlighted() const
         { return highlighted; }
 
+        inline void setPosition(sf::Vector2f pos) { position = pos; }
         inline sf::Vector2f getPosition() const { return position; }
         inline World& getWorld() const { return world; }
 

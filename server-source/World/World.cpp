@@ -209,7 +209,9 @@ void World::updateChunks()
             {
                 //TODO : Handle entities
                 for (Entity* e : cwe->entities)
-                    delete e;
+                {
+                    entities->newEntity(e);
+                }
 
                 chunks.emplace(key, std::unique_ptr<Chunk>(cwe->chunk));
 

@@ -5,6 +5,8 @@
 #include <vector>
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/System/Mutex.hpp>
+#include <SFML/System/Lock.hpp>
 
 class Client;
 class Entity;
@@ -54,7 +56,7 @@ class EntitiesManager
          */
         void sendAddEntityToClient(unsigned int id, const Client& client);
 
-        inline unsigned int getNextEntityId() { return next_entity_id++; }
+        inline unsigned int getNextEntityId() { sf::Lock l(entity_id_mutex); return next_entity_id++; }
 
         void popEntitiesOfChunk(sf::Vector2i chunk_pos, std::vector<Entity*>& vec);
 
@@ -63,5 +65,6 @@ class EntitiesManager
 
         Server& server;
 
+        sf::Mutex entity_id_mutex;
         unsigned int next_entity_id;
 };

@@ -23,7 +23,7 @@ class NaturalGenerator : public Generator
 
         void init(const GameBlocks& game_blocks, const GameGrounds& game_grounds) override;
 
-        void generateChunk(Chunk* chunk) override;
+        void generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities) override;
 
     private:
         siv::PerlinNoise perlin;

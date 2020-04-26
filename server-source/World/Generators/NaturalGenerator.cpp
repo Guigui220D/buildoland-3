@@ -7,6 +7,11 @@
 #include "../../../external/xxhash/XXHash_bis.hpp"
 
 #include "../Chunk.h"
+#include "../World.h"
+#include "../EntitiesManager.h"
+
+#include "../../../common-source/Entities/Entity.h"
+#include "../../../common-source/Entities/GameEntities/TestEntity.h"
 
 NaturalGenerator::NaturalGenerator(int seed) :
     Generator(seed),
@@ -38,8 +43,14 @@ void NaturalGenerator::init(const GameBlocks& game_blocks, const GameGrounds& ga
     random_blocks.push_back(GameBlocks::WOOD);
 }
 
-void NaturalGenerator::generateChunk(Chunk* chunk)
+void NaturalGenerator::generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities)
 {
+    {
+        Entity* e = new TestEntity(chunk->getWorld(), chunk->getWorld().getEntityManager().getNextEntityId());
+        e->setPosition(sf::Vector2f(chunk->getBlockPosInWorld(sf::Vector2i()).x, chunk->getBlockPosInWorld(sf::Vector2i()).y));
+        new_entities.push_back(e);
+    }
+
     test_struct_2.setChunk(chunk->getPos());
     test_struct_2.setCenter(sf::Vector2i(1, 0));
     test_struct_2.setRotation(0);

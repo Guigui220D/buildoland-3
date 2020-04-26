@@ -140,7 +140,7 @@ void WorldSaveManager::thread_loop()
             */
             new_chunk->chunk = new Chunk(world, pos);
 
-            generator.generateChunk(new_chunk->chunk);
+            generator.generateChunk(new_chunk->chunk, new_chunk->entities);
             new_chunk->chunk->modified = false;
             new_chunk->chunk->ready = true;
 

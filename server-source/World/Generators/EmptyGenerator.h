@@ -8,7 +8,7 @@ class EmptyGenerator : public Generator
         EmptyGenerator(int seed);
         ~EmptyGenerator();
 
-        void generateChunk(Chunk* chunk) override;
+        void generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities) override;
 
     protected:
 

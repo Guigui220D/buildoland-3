@@ -62,6 +62,7 @@ class GameState : public State
         std::string nickname;
 
         std::unique_ptr<TinyProcessLib::Process> solo_server_process;
+        bool valid_solo_server = false;
 
         Networking::StoC::StoCRequestQueue request_queue;
         sf::Thread receiver_thread;

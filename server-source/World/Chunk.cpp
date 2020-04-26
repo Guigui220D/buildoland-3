@@ -30,10 +30,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
     packet(new ECCPacket()),
     packet_ready(false)
 {
-    world.getGenerator()->generateChunk(this);
 
-    modified = false;
-    ready = true;
 }
 
 Chunk::~Chunk()

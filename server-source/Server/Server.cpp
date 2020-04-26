@@ -9,6 +9,9 @@
 #include "../Utils/Utils.h"
 
 #include "../World/World.h"
+#include "../World/EntitiesManager.h"
+#include "../World/Chunk.h"
+#include "../World/Generator.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../Packets/HandshakePacket.h"
@@ -20,13 +23,8 @@
 #include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
 #include "../../common-source/Items/GameItems/BallItem.h"
 
-#include "../../server-source/World/EntitiesManager.h"
-#include "../../server-source/World/Generator.h"
-#include "../../server-source/World/Chunk.h"
-
 #include "../../common-source/Utils/Log.h"
 #include "../../common-source/Utils/UsernameCheck.h"
-
 
 Server::Server(uint16_t client_port) :
       clients_manager(*this),
@@ -35,8 +33,7 @@ Server::Server(uint16_t client_port) :
       connection_open(false),
       blocks_manager(),
       grounds_manager(),
-      world(std::make_unique<World>(*this, world_saver)),
-      world_saver("somewhere over the rainbow")
+      world(std::make_unique<World>(*this))
 {
 #ifndef SOLO
     assert(!client_port);
@@ -94,11 +91,6 @@ bool Server::init(uint16_t port)
 
     world->getEntityManager().newEntity(owner_player);
 #endif // SOLO
-
-    for (int i = 0; i < 10; i++)
-        world->getEntityManager().newEntity(new TestEntity(*world, world->getEntityManager().getNextEntityId()));
-
-    //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }
 
@@ -146,8 +138,6 @@ void Server::run()
 
 void Server::close()
 {
-    world->saveAll();
-
     running = false;
     passReceiveOnce();
     receiver_thread.wait();
@@ -415,7 +405,7 @@ void Server::processPacketQueue()
                 world->getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
             }
             else
-                world_saver.requestChunk(rq->pos);
+                world->requestChunk(rq->pos);
         }
         else if (auto rq = request_queue.tryPop<EntityRequest>())
         {

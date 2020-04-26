@@ -26,8 +26,7 @@ class WorldSaveManager;
 class World
 {
     public:
-        World(Server& server, WorldSaveManager& saver);
-        World(Server& server, WorldSaveManager& saver, int seed);
+        World(Server& server);
         virtual ~World();
 
         void init();
@@ -99,7 +98,7 @@ class World
         inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
-        inline Generator* getGenerator() const { return generator; };
+        inline Generator* getGenerator() const { return generator.get(); };
 
         inline size_t getChunksCount() const { return chunks.size(); };
         inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
@@ -110,14 +109,11 @@ class World
         void updateTileEntities(float delta_time);
 
         void updateChunks();
-
-        void saveAll();
+        void requestChunk(sf::Vector2i chunk);
 
     protected:
         //Entities
         std::unique_ptr<EntitiesManager> entities;
-
-        Generator* generator;
 
     private:
         Server& server;
@@ -128,5 +124,8 @@ class World
 
         sf::Clock last_unload_iteration;
 
-        WorldSaveManager& world_saver;
+        void saveAll();
+
+        std::unique_ptr<Generator> generator;
+        std::unique_ptr<WorldSaveManager> save_manager;
 };

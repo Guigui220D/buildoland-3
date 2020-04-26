@@ -17,29 +17,19 @@
 
 #include "WorldSaveManager.h"
 
-World::World(Server& server, WorldSaveManager& saver) :
+World::World(Server& server) :
     entities(std::make_unique<EntitiesManager>(server)),
-    generator(new NaturalGenerator(std::rand())),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
     game_grounds_manager(server.getGroundsManager()),
-    world_saver(saver)
-{
-}
-
-World::World(Server& server, WorldSaveManager& saver, int seed) :
-    entities(std::make_unique<EntitiesManager>(server)),
-    generator(new NaturalGenerator(seed)),
-    server(server),
-    game_blocks_manager(server.getBlocksManager()),
-    game_grounds_manager(server.getGroundsManager()),
-    world_saver(saver)
+    generator(std::make_unique<NaturalGenerator>(std::rand())),
+    save_manager(std::make_unique<WorldSaveManager>("TestSave", *this, *generator.get()))
 {
 }
 
 World::~World()
 {
-
+    saveAll();
 }
 
 void World::init()
@@ -208,7 +198,7 @@ void World::updateTileEntities(float delta_time)
 void World::updateChunks()
 {
     {
-        ChunkWithEntities* cwe = world_saver.popLoadedChunk();
+        ChunkWithEntities* cwe = save_manager->popLoadedChunk();
 
         if (cwe)
         {
@@ -217,20 +207,14 @@ void World::updateChunks()
 
             if (chunk_ptr == chunks.end())
             {
-                Chunk* new_chunk;
-
-                if (cwe->chunk)
-                    new_chunk = cwe->chunk;
-                else
-                    new_chunk = new Chunk(*this, cwe->chunk_pos);
-
                 //TODO : Handle entities
                 for (Entity* e : cwe->entities)
                     delete e;
 
-                chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
+                chunks.emplace(key, std::unique_ptr<Chunk>(cwe->chunk));
 
-                sendToSubscribers(new_chunk->getPacket(), new_chunk->getPos());
+                sendToSubscribers(cwe->chunk->getPacket(), cwe->chunk->getPos());
+                //entities->sendAddEntityFromAllEntitiesInChunk(cwe->chunk->getPos(), clients_manager.getClient(rq->iandp));
             }
             else
             {
@@ -291,12 +275,17 @@ void World::updateChunks()
                     cwe->chunk = i->second.release();
                 }
 
-                world_saver.addChunkToSave(cwe);
+                save_manager->addChunkToSave(cwe);
 
                 i = chunks.erase(i);
             }
         }
     }
+}
+
+void World::requestChunk(sf::Vector2i chunk)
+{
+    save_manager->requestChunk(chunk);
 }
 
 void World::saveAll()
@@ -315,7 +304,7 @@ void World::saveAll()
             cwe->chunk = i->second.release();
         }
 
-        world_saver.addChunkToSave(cwe);
+        save_manager->addChunkToSave(cwe);
 
         i = chunks.erase(i);
     }

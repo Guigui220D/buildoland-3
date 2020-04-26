@@ -11,8 +11,10 @@
 #include <SFML/System/Thread.hpp>
 #include <SFML/System/Vector2.hpp>
 
+class World;
 class Chunk;
 class Entity;
+class Generator;
 
 struct ChunkWithEntities
 {
@@ -27,7 +29,7 @@ class WorldSaveManager
     public:
         static const size_t LAYER_SIZE;
 
-        WorldSaveManager(std::string where_to_save);
+        WorldSaveManager(std::string where_to_save, World& world, Generator& generator);
         ~WorldSaveManager();
 
         /**
@@ -52,9 +54,9 @@ class WorldSaveManager
 
         /**
         * Pops a loaded chunk with its entities
+        * The chunk will be generated if it doesn't exist in the save
         * Request a chunk load with requestChunk()
         * If the resulting struct pointer is nullptr, the queue is empty
-        * If the resulting chunk is nullptr, it has to be generated.
         * If the struct has generate_entities as true, they should be generated as well
         * The resulting struct needs to be destroyed
         * @return A pointer to a loaded chunk with entities popped (FIFO)
@@ -62,6 +64,7 @@ class WorldSaveManager
         ChunkWithEntities* popLoadedChunk();
 
     private:
+        World& world;
         std::queue<ChunkWithEntities*> chunks_to_save;
         sf::Mutex save_queue_mutex;
 
@@ -80,4 +83,6 @@ class WorldSaveManager
         void thread_loop();
 
         void saveChunk(ChunkWithEntities* cwe);
+
+        Generator& generator;
 };

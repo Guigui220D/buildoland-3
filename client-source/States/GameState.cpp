@@ -98,7 +98,10 @@ GameState::~GameState()
     }
     if (solo_server_process)
     {
-        solo_server_process->get_exit_status();
+        if (valid_solo_server)
+            solo_server_process->get_exit_status();
+        else
+            solo_server_process->kill(true);
     }
 
     log_prefix_format = "";
@@ -137,11 +140,20 @@ void GameState::init()
     if (solo_mode)
     {
         if (!startAndConnectLocalServer())
+        {
+            log(ERROR, "Could not connect to local server!\n");
+            must_be_destroyed = true;
             return;
+        }
+        valid_solo_server = true;
     }
     else
         if (!handshakeRemoteServer())
-        return;
+        {
+            log(ERROR, "Could handshake remote server!\n");
+            must_be_destroyed = true;
+            return;
+        }
 
     connected = true;
     client_socket.setBlocking(true);

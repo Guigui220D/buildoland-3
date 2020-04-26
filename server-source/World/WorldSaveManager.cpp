@@ -4,6 +4,7 @@
 #include "../Utils/Base64.h"
 
 #include "Chunk.h"
+#include "Generator.h"
 #include "../../common-source/Entities/Entity.h"
 
 #include "../../external/json/Json.hpp"
@@ -13,10 +14,12 @@
 
 const size_t WorldSaveManager::LAYER_SIZE = Chunk::CHUNK_SIZE * Chunk::CHUNK_SIZE * sizeof(uint16_t);
 
-WorldSaveManager::WorldSaveManager(std::string where_to_save) :
+WorldSaveManager::WorldSaveManager(std::string where_to_save, World& world, Generator& generator) :
+    world(world),
     saving_thread(&WorldSaveManager::thread_loop, this),
     save_dir_path(where_to_save),
-    stop_thread(false)
+    stop_thread(false),
+    generator(generator)
 {
     log(INFO, "Starting chunk saving thread\n");
     saving_thread.launch();
@@ -106,7 +109,7 @@ void WorldSaveManager::thread_loop()
 
             saveChunk(chunk);
         }
-        if (ctl)
+        if (ctl && !stop_thread)
         {
             load_queue_mutex.lock();
                 sf::Vector2i pos = chunks_to_load.front();
@@ -122,14 +125,24 @@ void WorldSaveManager::thread_loop()
             sf::Vector2i region = getRegionFromChunk(pos);
             std::string filename = fmt::format("{}/region_{}_{}.json", save_dir_path, region.x, region.y);
 
+            //TODO : try to load from file
+
+            /*
             std::ifstream i(filename);
 
             if (!i.is_open())
                 goto push;
 
+
             log(INFO, "Loaded chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.x, filename);
 
             i.close();
+            */
+            new_chunk->chunk = new Chunk(world, pos);
+
+            generator.generateChunk(new_chunk->chunk);
+            new_chunk->chunk->modified = false;
+            new_chunk->chunk->ready = true;
 
             log(INFO, "Loaded chunk ({}; {}).\n", pos.x, pos.x);
 

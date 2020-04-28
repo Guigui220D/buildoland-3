@@ -22,7 +22,7 @@ World::World(Server& server) :
     server(server),
     game_blocks_manager(server.getBlocksManager()),
     game_grounds_manager(server.getGroundsManager()),
-    generator(std::make_unique<NaturalGenerator>(std::rand())),
+    generator(std::make_unique<NaturalGenerator>()),
     save_manager(std::make_unique<WorldSaveManager>("TestSave", *this, *generator.get()))
 {
 }

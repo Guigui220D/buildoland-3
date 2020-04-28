@@ -4,8 +4,7 @@
 #include "../Chunk.h"
 #include "../../../common-source/Grounds/GameGrounds.h"
 
-EmptyGenerator::EmptyGenerator(int seed) :
-    Generator(seed)
+EmptyGenerator::EmptyGenerator()
 {
     //ctor
 }

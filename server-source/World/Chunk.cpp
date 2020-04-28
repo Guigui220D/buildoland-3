@@ -90,6 +90,9 @@ void Chunk::setBlock(int x, int y, const Block* block)
 
     packet_ready = false;
 
+    if (!ready)
+        return;
+
     if (tile_entities[y * CHUNK_SIZE + x])
     {
         tile_entities[y * CHUNK_SIZE + x].reset();
@@ -123,6 +126,29 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     grounds[y*CHUNK_SIZE + x] = ground->getId();
 
     packet_ready = false;
+}
+
+void Chunk::prepareTileEntities()
+{
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        const Block* block = server.getBlocksManager().getBlockByID(blocks[y * CHUNK_SIZE + x]);
+
+        if (block->serverSideHasTE())
+        {
+            switch (block->getTileEntityCode())
+            {
+            case TileEntities::TestTE:
+                tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
+                actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+                break;
+            default:
+            case TileEntities::None:
+                throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+            }
+        }
+    }
 }
 
 //Just trying things here

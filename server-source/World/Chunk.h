@@ -97,6 +97,7 @@ class Chunk
         std::vector<uint16_t> blocks;
         std::vector<uint16_t> grounds;
         std::vector<std::shared_ptr<TileEntity>> tile_entities;
+        void prepareTileEntities();
         void cleanupTEList();
 
         const sf::Vector2i pos;

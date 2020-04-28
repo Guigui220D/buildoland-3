@@ -18,7 +18,7 @@ class GameGrounds;
 class NaturalGenerator : public Generator
 {
     public:
-        NaturalGenerator(int seed);
+        NaturalGenerator();
         ~NaturalGenerator();
 
         void init(const GameBlocks& game_blocks, const GameGrounds& game_grounds) override;

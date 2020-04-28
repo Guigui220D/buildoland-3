@@ -11,8 +11,10 @@ class Entity;
 
 class Generator
 {
+    friend class WorldSaveManager;
+
     public:
-        Generator(int seed);
+        Generator();
         virtual ~Generator();
 
         /**
@@ -29,11 +31,8 @@ class Generator
 
         inline int getSeed() const { return seed; }
 
-
-
     protected:
-
-        const int seed;
+        int seed;
 
     private:
 };

@@ -11,6 +11,7 @@
 
 #include <fstream>
 #include <iomanip>
+#include <cstring>
 
 const size_t WorldSaveManager::LAYER_SIZE = Chunk::CHUNK_SIZE * Chunk::CHUNK_SIZE * sizeof(uint16_t);
 
@@ -21,6 +22,26 @@ WorldSaveManager::WorldSaveManager(std::string where_to_save, World& world, Gene
     stop_thread(false),
     generator(generator)
 {
+    std::ifstream world_info(fmt::format("{}/world_settings.json", where_to_save));
+
+    int seed = std::rand();
+
+    if (world_info.is_open())
+    {
+        nlohmann::json json;
+
+        world_info >> json;
+
+        if (json.is_object())
+        {
+            auto jseed = json["seed"];
+            if (jseed.is_number())
+                seed = jseed.get<int>();
+        }
+    }
+
+    generator.seed = seed;
+
     log(INFO, "Starting chunk saving thread\n");
     saving_thread.launch();
 }
@@ -29,6 +50,17 @@ WorldSaveManager::~WorldSaveManager()
 {
     stop_thread = true;
     log(INFO, "Stopping chunk saving thread\n");
+
+    nlohmann::json json;
+    json["seed"] = generator.seed;
+
+    std::ofstream o(fmt::format("{}/world_settings.json", save_dir_path));
+
+    if (o.is_open())
+        o << json;
+
+    o.close();
+
     saving_thread.wait();
 }
 
@@ -118,35 +150,83 @@ void WorldSaveManager::thread_loop()
 
             ChunkWithEntities* new_chunk = new ChunkWithEntities();
 
-            new_chunk->chunk = nullptr;
+            new_chunk->chunk = new Chunk(world, pos);
             new_chunk->chunk_pos = pos;
             new_chunk->generate_entities = true;
 
             sf::Vector2i region = getRegionFromChunk(pos);
             std::string filename = fmt::format("{}/region_{}_{}.json", save_dir_path, region.x, region.y);
 
+            bool generate_tiles = true;
+            bool generate_entities = true;
+
             //TODO : try to load from file
 
-            /*
             std::ifstream i(filename);
 
-            if (!i.is_open())
-                goto push;
+            if (i.is_open())
+            {
+                nlohmann::json json;
 
+                i >> json;
 
-            log(INFO, "Loaded chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.x, filename);
+                if (json.is_object())
+                {
+                    std::string chunk_json = fmt::format("chunk_{}_{}", pos.x, pos.y);
 
-            i.close();
-            */
-            new_chunk->chunk = new Chunk(world, pos);
+                    auto json_i = json[chunk_json];
 
-            generator.generateChunk(new_chunk->chunk, new_chunk->entities);
+                    if (json_i.is_object())
+                    {
+                        log(INFO, "Loading chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.y, filename);
+
+                        auto block_layer = json_i["block_layer"];
+                        auto ground_layer = json_i["ground_layer"];
+
+                        bool block_valid = block_layer.is_string() /*&& check size*/;
+                        bool ground_valid = ground_layer.is_string() /*&& check size*/;
+
+                        if (block_valid && ground_valid)
+                        {
+                            std::string block_bytes = base64_decode(block_layer.get<std::string>());
+                            std::string ground_bytes = base64_decode(ground_layer.get<std::string>());
+
+                            if (block_bytes.size() == LAYER_SIZE && ground_bytes.size() == LAYER_SIZE)
+                            {
+                                std::memcpy(new_chunk->chunk->blocks.data(), block_bytes.data(), block_bytes.size());
+                                std::memcpy(new_chunk->chunk->grounds.data(), ground_bytes.data(), ground_bytes.size());
+
+                                generate_tiles = false;
+                            }
+                        }
+                    }
+                }
+
+                i.close();
+            }
+
+            if (generate_tiles)
+            {
+                if (generate_entities)
+                {
+                    generator.generateChunk(new_chunk->chunk, new_chunk->entities);
+                }
+                else
+                {
+                    std::vector<Entity*> entity_trashcan;
+                    generator.generateChunk(new_chunk->chunk, entity_trashcan); //Litterally asking the generator to make entities and destroy them after
+                    for (Entity* e : entity_trashcan)
+                        delete e;
+                }
+            }
+
             new_chunk->chunk->modified = false;
             new_chunk->chunk->ready = true;
 
+            new_chunk->chunk->prepareTileEntities();
+
             log(INFO, "Loaded chunk ({}; {}).\n", pos.x, pos.x);
 
-        push:
             loaded_queue_mutex.lock();
                 loaded_chunks.push(new_chunk);
             loaded_queue_mutex.unlock();

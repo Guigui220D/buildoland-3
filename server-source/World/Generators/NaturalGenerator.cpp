@@ -13,9 +13,7 @@
 #include "../../../common-source/Entities/Entity.h"
 #include "../../../common-source/Entities/GameEntities/TestEntity.h"
 
-NaturalGenerator::NaturalGenerator(int seed) :
-    Generator(seed),
-    perlin((uint32_t)seed)
+NaturalGenerator::NaturalGenerator()
 {
 }
 
@@ -41,6 +39,8 @@ void NaturalGenerator::init(const GameBlocks& game_blocks, const GameGrounds& ga
     random_blocks.push_back(GameBlocks::STONE);
     random_blocks.push_back(GameBlocks::STONE_BRICKS);
     random_blocks.push_back(GameBlocks::WOOD);
+
+    perlin.reseed(getSeed());
 }
 
 void NaturalGenerator::generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities)

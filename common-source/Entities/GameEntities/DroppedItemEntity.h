@@ -35,6 +35,7 @@ public:
     void draw(sf::RenderTarget& target) const override ;
 #else
     void addInfoToNewEntityPacket(ECCPacket& packet) const override;
+    virtual nlohmann::json* serializeToJson() const;
 #endif
 
     void onLeftClick(Player &player) override;

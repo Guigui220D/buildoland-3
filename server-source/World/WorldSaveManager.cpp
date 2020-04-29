@@ -263,6 +263,8 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
         delete cwe->chunk;
     }
 
+    json[chunk_json].erase("entities");
+
     if (!cwe->entities.empty())
     {
         log(INFO, "    Chunk has {} entities.\n", cwe->entities.size());
@@ -271,8 +273,11 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
 
         while (!cwe->entities.empty())
         {
-            json[chunk_json]["entities"][i++] = "test";
-            delete *cwe->entities.begin();
+            Entity* e = cwe->entities.front();
+            nlohmann::json* serialized = e->serializeToJson();
+            json[chunk_json]["entities"][i++] = *serialized;
+            delete serialized;
+            delete e;
             cwe->entities.erase(cwe->entities.begin());
         }
     }

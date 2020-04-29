@@ -3,17 +3,17 @@
 #include "../../../common-source/Utils/Log.h"
 
 #ifdef CLIENT_SIDE
-#include <SFML/Graphics/RenderTarget.hpp>
+    #include <SFML/Graphics/RenderTarget.hpp>
 
-#include "../../../client-source/World/World.h"
-#include "../../../client-source/Game.h"
-#include "../../../client-source/Res/ResourceManager.h"
-#include "../../../client-source/Packets/EntityClickPacket.h"
-#include "../../../client-source/States/GameState.h"
+    #include "../../../client-source/World/World.h"
+    #include "../../../client-source/Game.h"
+    #include "../../../client-source/Res/ResourceManager.h"
+    #include "../../../client-source/Packets/EntityClickPacket.h"
+    #include "../../../client-source/States/GameState.h"
 #else
-#include "../../../common-source/Entities/GameEntities/Player.h"
-
-#include <cassert>
+    #include "../../../common-source/Entities/GameEntities/Player.h"
+    #include "../../../external/json/Json.hpp"
+    #include <cassert>
 #endif
 
 #ifndef CLIENT_SIDE
@@ -160,5 +160,19 @@ void DroppedItemEntity::addInfoToNewEntityPacket(ECCPacket& packet) const
     packet << position.x;
     packet << position.y;
     packet << stack.getInt();
+}
+
+nlohmann::json* DroppedItemEntity::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getEntityCode();
+    (*json)["pos_x"] = position.x;
+    (*json)["pos_y"] = position.y;
+
+    nlohmann::json* item_js = stack.serializeToJson();
+    (*json)["item"] = *item_js;
+    delete item_js;
+
+    return json;
 }
 #endif

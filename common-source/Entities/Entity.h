@@ -14,6 +14,7 @@ class RenderTarget;
 }
 #else
     #include "../Networking/NetworkingCodes.h"
+    #include "../../external/json/JsonFwd.hpp"
 #endif // CLIENT_SIDE
 
 class World;
@@ -119,6 +120,10 @@ class Entity
         sf::Vector2i getChunkOn() const;
 
         virtual inline bool isTileEntity() const { return false; }
+
+        #ifndef CLIENT_SIDE
+        virtual nlohmann::json* serializeToJson() const;
+        #endif // CLIENT_SIDE
 
     protected:
         /**

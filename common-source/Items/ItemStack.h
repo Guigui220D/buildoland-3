@@ -2,6 +2,10 @@
 
 #include "Item.h"
 
+#ifndef CLIENT_SIDE
+    #include "../../external/json/JsonFwd.hpp"
+#endif // CLIENT_SIDE
+
 class ItemsRegister;
 
 class ItemStack
@@ -54,6 +58,10 @@ class ItemStack
         inline Item const * getItem() const { return item; }
 
         inline uint32_t getInt() const { return item->getId() | amount << 16; }
+
+        #ifndef CLIENT_SIDE
+        virtual nlohmann::json* serializeToJson() const;
+        #endif // CLIENT_SIDE
 
     private:
         Item const * item;

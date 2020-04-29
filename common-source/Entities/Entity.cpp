@@ -7,6 +7,7 @@
     #include "../../server-source/World/World.h"
 
     #include "../../server-source/Packets/ForgetEntityPacket.h"
+    #include "../../external/json/Json.hpp"
 #endif // CLIENT_SIDE
 
 #include "../../common-source/Utils/Log.h"
@@ -96,4 +97,15 @@ void Entity::makeNewEntityPacket(ECCPacket& packet) const
 }
 
 void Entity::addInfoToNewEntityPacket(ECCPacket& packet) const {}
+#endif // CLIENT_SIDE
+
+#ifndef CLIENT_SIDE
+nlohmann::json* Entity::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getEntityCode();
+    (*json)["pos_x"] = position.x;
+    (*json)["pos_y"] = position.y;
+    return json;
+}
 #endif // CLIENT_SIDE

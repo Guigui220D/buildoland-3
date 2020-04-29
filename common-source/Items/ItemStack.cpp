@@ -4,6 +4,10 @@
 
 #include "ItemsRegister.h"
 
+#ifndef CLIENT_SIDE
+    #include "../../external/json/Json.hpp"
+#endif // CLIENT_SIDE
+
 ItemStack::ItemStack(Item const * item, uint8_t amount) :
     item(item),
     amount(amount)
@@ -88,3 +92,13 @@ ItemStack::operator bool() const
 {
     return (amount != 0 && item != ItemsRegister::NULL_ITEM);
 }
+
+#ifndef CLIENT_SIDE
+nlohmann::json* ItemStack::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["item"] = item->getName();
+    (*json)["amount"] = amount;
+    return json;
+}
+#endif // CLIENT_SIDE

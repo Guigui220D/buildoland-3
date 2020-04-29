@@ -25,6 +25,7 @@
     #include "../../../server-source/Server/Server.h"
     #include "../../../server-source/World/Chunk.h"
     #include "../../../server-source/World/EntitiesManager.h"
+    #include "../../../external/json/Json.hpp"
 #endif
 
 #include "../../Blocks/Block.h"
@@ -375,3 +376,15 @@ bool Player::isSubscribedTo(sf::Vector2i chunk, bool twice) const
     //TODO : Make render distance constant
     return distance_squared < (Constants::CHUNK_LOADING_DISTANCE + Constants::CHUNK_LOADING_DISTANCE * twice);
 }
+
+#ifndef CLIENT_SIDE
+nlohmann::json* Player::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getEntityCode();
+    (*json)["pos_x"] = position.x;
+    (*json)["pos_y"] = position.y;
+    (*json)["player"] = getClient().getNickname();
+    return json;
+}
+#endif // CLIENT_SIDE

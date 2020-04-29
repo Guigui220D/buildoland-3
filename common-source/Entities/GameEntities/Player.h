@@ -9,7 +9,8 @@
 #include <SFML/Graphics/Text.hpp>
 #else
 class Client;
-#include "../../../common-source/Networking/ClientToServerRequests.h"
+    #include "../../../common-source/Networking/ClientToServerRequests.h"
+    #include "../../../external/json/Json.hpp"
 #endif // CLIENT_SIDE
 
 #include "../../Items/playerInventory.h"
@@ -60,7 +61,11 @@ public:
     #ifdef CLIENT_SIDE
     sf::Vector2f getVisualHitbox() const override
     { return sf::Vector2f(.5f, 1.0f); }
-#endif
+    #endif
+
+    #ifndef CLIENT_SIDE
+    virtual nlohmann::json* serializeToJson() const;
+    #endif // CLIENT_SIDE
 
 private:
     PlayerInventory inventory;

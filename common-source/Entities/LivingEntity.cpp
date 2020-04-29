@@ -8,6 +8,7 @@
 
 #else
     #include "../Networking/NetworkingCodes.h"
+    #include "../../external/json/Json.hpp"
 #endif // CLIENT_SIDE
 
 #ifdef CLIENT_SIDE
@@ -182,3 +183,16 @@ void LivingEntity::walk(float delta)
         }
     }
 }
+
+#ifndef CLIENT_SIDE
+nlohmann::json* LivingEntity::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getEntityCode();
+    (*json)["pos_x"] = position.x;
+    (*json)["pos_y"] = position.y;
+    (*json)["dir_x"] = walking_direction.x;
+    (*json)["dir_y"] = walking_direction.y;
+    return json;
+}
+#endif // CLIENT_SIDE

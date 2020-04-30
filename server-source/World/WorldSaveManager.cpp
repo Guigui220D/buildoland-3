@@ -6,6 +6,7 @@
 #include "Chunk.h"
 #include "Generator.h"
 #include "../../common-source/Entities/Entity.h"
+#include "../../common-source/Entities/EntityCodes.h"
 
 #include "../../external/json/Json.hpp"
 
@@ -180,6 +181,8 @@ void WorldSaveManager::thread_loop()
                     {
                         log(INFO, "Loading chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.y, filename);
 
+                        generate_entities = false;
+
                         auto block_layer = json_i["block_layer"];
                         auto ground_layer = json_i["ground_layer"];
 
@@ -199,6 +202,18 @@ void WorldSaveManager::thread_loop()
                                 generate_tiles = false;
                             }
                         }
+
+                        if (json_i["entities"].is_array())
+                        {
+                            for (auto& ent : json["entities"].items())
+                            {
+                                Entity* e = deserializeEntity(ent);
+
+                                if (e)
+                                    new_chunk->entities.push_back(e);
+                            }
+                        }
+
                     }
                 }
 
@@ -263,7 +278,7 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
         delete cwe->chunk;
     }
 
-    json[chunk_json].erase("entities");
+    json[chunk_json]["entities"] = {};
 
     if (!cwe->entities.empty())
     {
@@ -290,4 +305,32 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
     }
 
     delete cwe;
+}
+
+Entity* WorldSaveManager::deserializeEntity(nlohmann::json json) const
+{
+    if (!json.is_object())
+        return nullptr;
+
+    if (!json["type"].is_number())
+        return nullptr;
+
+    unsigned short type_id = json["type"].get<unsigned short>();
+
+    switch (type_id)
+    {
+    case Entities::Player:
+
+        break;
+    case Entities::DroppedItemEntity:
+
+        break;
+    case Entities::TestEntity:
+
+        break;
+    default:
+        return nullptr;
+    }
+
+    return nullptr;
 }

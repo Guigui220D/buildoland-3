@@ -11,6 +11,8 @@
 #include <SFML/System/Thread.hpp>
 #include <SFML/System/Vector2.hpp>
 
+#include "../../external/json/JsonFwd.hpp"
+
 class World;
 class Chunk;
 class Entity;
@@ -83,6 +85,8 @@ class WorldSaveManager
         void thread_loop();
 
         void saveChunk(ChunkWithEntities* cwe);
+
+        Entity* deserializeEntity(nlohmann::json json) const;
 
         Generator& generator;
 };

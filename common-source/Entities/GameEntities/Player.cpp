@@ -381,7 +381,6 @@ bool Player::isSubscribedTo(sf::Vector2i chunk, bool twice) const
 nlohmann::json* Player::serializeToJson() const
 {
     nlohmann::json* json = new nlohmann::json();
-    (*json)["type"] = getEntityCode();
     (*json)["pos_x"] = position.x;
     (*json)["pos_y"] = position.y;
     (*json)["player"] = getClient().getNickname();

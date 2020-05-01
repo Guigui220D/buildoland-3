@@ -6,7 +6,6 @@ template <class T>
 template <typename... Args>
 LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game& game, unsigned int id, Args&&... args) :
     State(game, id),
-    loading_thread(&LoadingScreenState::load, this),
     done(false),
     fade_in(fade_in),
     fade_out(fade_out),
@@ -70,6 +69,8 @@ void LoadingScreenState<T>::update(float delta_time)
             fade -= fade_out ? fade_clock.restart().asMilliseconds() : 255;
         if (fade <= 0)
         {
+            if (loading_thread.joinable())
+                loading_thread.join();
             must_be_destroyed = true;
             fade = 0;
         }
@@ -85,7 +86,7 @@ void LoadingScreenState<T>::update(float delta_time)
             {
                 working = true;
                 working_time.restart();
-                loading_thread.launch();
+                loading_thread = std::thread(LoadingScreenState::load, this);
             }
         }
     }

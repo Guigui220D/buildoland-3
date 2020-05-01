@@ -13,7 +13,7 @@
 
 void GameState::receiverLoop()
 {
-    while (true)
+    while (!stop_receiver_thread)
     {
         ECCPacket packet;
         sf::IpAddress address;

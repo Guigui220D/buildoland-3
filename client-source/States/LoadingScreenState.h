@@ -3,9 +3,10 @@
 #include "../Gui/GuiLoadingIcon.h"
 #include "State.h"
 
-#include <SFML/System/Thread.hpp>
 #include <SFML/System/Clock.hpp>
 #include <SFML/Graphics/View.hpp>
+
+#include <thread>
 
 template <class T>
 class LoadingScreenState : public State
@@ -38,7 +39,7 @@ class LoadingScreenState : public State
          * Loads the state to be loaded, this function is supposed to be async
          */
         void load();
-        sf::Thread loading_thread;
+        std::thread loading_thread;
 
         std::atomic<bool> done = false;
         bool working = false;

@@ -18,7 +18,6 @@ const size_t WorldSaveManager::LAYER_SIZE = Chunk::CHUNK_SIZE * Chunk::CHUNK_SIZ
 
 WorldSaveManager::WorldSaveManager(std::string where_to_save, World& world, Generator& generator) :
     world(world),
-    saving_thread(&WorldSaveManager::thread_loop, this),
     save_dir_path(where_to_save),
     stop_thread(false),
     generator(generator)
@@ -44,7 +43,8 @@ WorldSaveManager::WorldSaveManager(std::string where_to_save, World& world, Gene
     generator.seed = seed;
 
     log(INFO, "Starting chunk saving thread\n");
-    saving_thread.launch();
+
+    saving_thread = std::thread(WorldSaveManager::thread_loop, this);
 }
 
 WorldSaveManager::~WorldSaveManager()
@@ -62,7 +62,8 @@ WorldSaveManager::~WorldSaveManager()
 
     o.close();
 
-    saving_thread.wait();
+    if (saving_thread.joinable())
+        saving_thread.join();
 }
 
 void WorldSaveManager::addChunkToSave(ChunkWithEntities* chunk_to_save)

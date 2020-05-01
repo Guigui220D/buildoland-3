@@ -51,11 +51,9 @@ GameState::GameState(Game& game, unsigned int id) :
       remote_ip(sf::IpAddress::LocalHost),
       remote_port(0),
       nickname("Me"),
-      receiver_thread(&GameState::receiverLoop, this),
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
-      init_frames_to_skip(20),
-      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
+      init_frames_to_skip(20)
 {
     Player::this_player = nullptr;
     Player::this_player_id = 0;
@@ -71,11 +69,9 @@ GameState::GameState(Game& game, unsigned int id, const std::string& in_nickname
       remote_ip(server_address),
       remote_port(server_port),
       nickname(in_nickname),
-      receiver_thread(&GameState::receiverLoop, this),
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
-      init_frames_to_skip(20),
-      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this)
+      init_frames_to_skip(20)
 {
     Player::this_player = nullptr;
     Player::this_player_id = 0;
@@ -87,9 +83,21 @@ GameState::GameState(Game& game, unsigned int id, const std::string& in_nickname
 GameState::~GameState()
 {
 #ifdef CHUNK_VERTICES_ASYNC
-    chunk_vertices_thread.terminate();
+    log(INFO, "Stopping chunk vertices thread.\n");
+    stop_cv_thread = true;
+    if (chunk_vertices_thread.joinable())
+        chunk_vertices_thread.join();
 #endif
-    receiver_thread.terminate();
+    log(INFO, "Stopping receiver thread.\n");
+    stop_receiver_thread = true;
+    if (receiver_thread.joinable())
+    {
+        sf::Packet p;   //Send packet to self to unlock blocking function socket.receive() in receiver thread
+        client_socket.send(p, sf::IpAddress::LocalHost, client_socket.getLocalPort());
+        receiver_thread.join();
+    }
+    log(INFO, "Done\n");
+
     if (connected)
     {
         //TEMP
@@ -157,9 +165,10 @@ void GameState::init()
 
     connected = true;
     client_socket.setBlocking(true);
-    receiver_thread.launch();
+
+    receiver_thread = std::thread(GameState::receiverLoop, this);
 #if CHUNK_VERTICES_ASYNC
-    chunk_vertices_thread.launch();
+    chunk_vertices_thread = std::thread(GameState::chunkVerticesGenerationLoop, this);
 #endif
 
     test_world->updateChunks(sf::Vector2i());
@@ -739,7 +748,7 @@ void GameState::chunkVerticesGenerationLoop()
     // the shared_ptr is used so that if World removes a chunk, we can still access it until we clear the rendered_chunk_list
     // shared_ptr reference counting is atomic, no need for locks around shared_ptr
     std::vector<std::shared_ptr<Chunk>> rendered_chunk_list; // used to prevent race conditions if chunks are added during the async rendering loop
-    while (true)
+    while (!stop_cv_thread)
     {
         rendered_chunk_list.resize(0); // don't deallocate
 

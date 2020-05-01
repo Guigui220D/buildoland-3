@@ -8,7 +8,6 @@
 #include <memory>
 
 #include <SFML/System/Mutex.hpp>
-#include <SFML/System/Thread.hpp>
 #include <SFML/System/Vector2.hpp>
 
 #include "../../external/json/JsonFwd.hpp"
@@ -76,7 +75,7 @@ class WorldSaveManager
         std::queue<ChunkWithEntities*> loaded_chunks;
         sf::Mutex loaded_queue_mutex;
 
-        sf::Thread saving_thread;
+        std::thread saving_thread;
 
         std::string save_dir_path;
 

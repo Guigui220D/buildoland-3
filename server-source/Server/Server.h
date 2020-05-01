@@ -2,9 +2,9 @@
 
 #include <vector>
 #include <atomic>
+#include <thread>
 
 #include <SFML/Network/UdpSocket.hpp>
-#include <SFML/System/Thread.hpp>
 
 #include "../../common-source/Networking/ClientToServerRequests.h"
 #include "../../common-source/Networking/NetworkRequestQueue.h"
@@ -59,7 +59,7 @@ class Server
 
         void receiver();
         void processPacketQueue();
-        sf::Thread receiver_thread;
+        std::thread receiver_thread;
         Networking::CtoS::CtoSRequestQueue request_queue;
 
         std::atomic<bool> running;

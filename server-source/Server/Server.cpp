@@ -28,7 +28,6 @@
 
 Server::Server(uint16_t client_port) :
       clients_manager(*this),
-      receiver_thread(&Server::receiver, this),
       owner(sf::IpAddress::LocalHost, client_port),
       connection_open(false),
       blocks_manager(),
@@ -72,7 +71,7 @@ bool Server::init(uint16_t port)
 #endif // SOLO
 
     running = true;
-    receiver_thread.launch();
+    receiver_thread = std::thread(Server::receiver, this);
 
 #ifdef SOLO
     unsigned int player_id = world->getEntityManager().getNextEntityId();
@@ -140,7 +139,8 @@ void Server::close()
 {
     running = false;
     passReceiveOnce();
-    receiver_thread.wait();
+    if (receiver_thread.joinable())
+        receiver_thread.join();
 
     ECCPacket server_stopping(Networking::StoC::Disconnect);
     clients_manager.sendToAll(server_stopping);

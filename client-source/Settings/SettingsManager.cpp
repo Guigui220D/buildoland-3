@@ -90,7 +90,7 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
 
     int value = default_value;
 
-    nlohmann::json js = *json;
+    nlohmann::json& js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
@@ -135,7 +135,7 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
 
     bool value = default_value;
 
-    nlohmann::json js = *json;
+    nlohmann::json& js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
@@ -180,7 +180,7 @@ bool SettingsManager::loadStringSetting(const std::initializer_list<const std::s
 
     std::string value = default_value;
 
-    nlohmann::json js = *json;
+    nlohmann::json& js = *json;
     for (const std::string& p : path)
     {
         js = js[p];

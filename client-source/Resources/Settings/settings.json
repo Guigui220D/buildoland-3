@@ -1,0 +1,25 @@
+
+{
+	"language": "eng",
+	
+	"window": {
+		"type": "bordered",
+		"size_x": 800,
+		"size_y": 600,
+		"fps_limit": 0,
+		"vsync_enabled": true
+	},
+	"audio": {
+		"sound_enabled": true,
+		"music_enabled": true,
+		"sound_volume": 100,
+		"music_volume": 100
+	},
+	"online": {
+		"address": "localhost"
+	},
+	"player": {
+		"uuid": "none",
+		"nick_name": "Guigui@"
+	}
+}

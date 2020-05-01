@@ -71,7 +71,7 @@ bool Server::init(uint16_t port)
 #endif // SOLO
 
     running = true;
-    receiver_thread = std::thread(Server::receiver, this);
+    receiver_thread = std::thread(&Server::receiver, this);
 
 #ifdef SOLO
     unsigned int player_id = world->getEntityManager().getNextEntityId();

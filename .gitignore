@@ -30,3 +30,5 @@ _deps
 
 TestSave/
 
+#Valgrind
+ValgrindOut.xml

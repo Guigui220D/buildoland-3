@@ -9,6 +9,8 @@
 
 #include "../external/stacktrace/stacktrace.hpp"
 
+#include <X11/Xlib.h>
+
 __attribute__ ((noinline)) void func_c () {
     asm volatile ("ud2");
 }
@@ -19,6 +21,10 @@ __attribute__ ((noinline)) void func_b () {
 
 int main(int argc, char* argv[])
 {
+    #ifdef __linux__
+    XInitThreads();
+    #endif // __linux__
+
     std::srand(std::time(nullptr));
 
     log_streams_by_level[INFO].push_back(&std::clog);

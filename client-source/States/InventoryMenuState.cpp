@@ -7,7 +7,7 @@
 #include "../../client-source/Settings/BindingsManager.h"
 
 #include "../Gui/GuiInventory.h"
-#include "../../common-source/Items/playerInventory.h"
+#include "../../common-source/Items/PlayerInventory.h"
 
 #include "../../client-source/Game.h"
 

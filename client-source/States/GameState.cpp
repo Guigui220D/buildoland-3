@@ -166,9 +166,9 @@ void GameState::init()
     connected = true;
     client_socket.setBlocking(true);
 
-    receiver_thread = std::thread(GameState::receiverLoop, this);
+    receiver_thread = std::thread(&GameState::receiverLoop, this);
 #if CHUNK_VERTICES_ASYNC
-    chunk_vertices_thread = std::thread(GameState::chunkVerticesGenerationLoop, this);
+    chunk_vertices_thread = std::thread(&GameState::chunkVerticesGenerationLoop, this);
 #endif
 
     test_world->updateChunks(sf::Vector2i());

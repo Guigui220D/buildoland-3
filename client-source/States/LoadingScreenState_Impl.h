@@ -86,7 +86,7 @@ void LoadingScreenState<T>::update(float delta_time)
             {
                 working = true;
                 working_time.restart();
-                loading_thread = std::thread(LoadingScreenState::load, this);
+                loading_thread = std::thread(&LoadingScreenState::load, this);
             }
         }
     }

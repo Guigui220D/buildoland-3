@@ -1,4 +1,4 @@
-#include "playerInventory.h"
+#include "PlayerInventory.h"
 
 #include "../Entities/GameEntities/Player.h"
 #include "../Networking/NetworkingCodes.h"

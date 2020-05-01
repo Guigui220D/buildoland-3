@@ -13,7 +13,7 @@ class Client;
     #include "../../../external/json/Json.hpp"
 #endif // CLIENT_SIDE
 
-#include "../../Items/playerInventory.h"
+#include "../../Items/PlayerInventory.h"
 
 class Chunk;
 

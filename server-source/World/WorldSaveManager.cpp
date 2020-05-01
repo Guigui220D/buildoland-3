@@ -1,6 +1,6 @@
 #include "WorldSaveManager.h"
 
-#include "../../common-source/Utils/log.h"
+#include "../../common-source/Utils/Log.h"
 #include "../Utils/Base64.h"
 
 #include "Chunk.h"
@@ -44,7 +44,7 @@ WorldSaveManager::WorldSaveManager(std::string where_to_save, World& world, Gene
 
     log(INFO, "Starting chunk saving thread\n");
 
-    saving_thread = std::thread(WorldSaveManager::thread_loop, this);
+    saving_thread = std::thread(&WorldSaveManager::thread_loop, this);
 }
 
 WorldSaveManager::~WorldSaveManager()

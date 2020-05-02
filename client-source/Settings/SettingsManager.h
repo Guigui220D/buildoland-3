@@ -13,9 +13,9 @@ class SettingsManager
     friend class Game;
 
     public:
-        int getInt(const std::string setting_name) const;
-        bool getBool(const std::string setting_name) const;
-        const std::string& getString(const std::string setting_name) const;
+        int getInt(const std::string& setting_name) const;
+        bool getBool(const std::string& setting_name) const;
+        const std::string& getString(const std::string& setting_name) const;
 
     private:
         static const std::string SETTINGS_FILE_PATH;
@@ -26,7 +26,7 @@ class SettingsManager
         void load();
 
         template <typename T>
-        bool tryLoadSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, T default_value);
+        bool tryLoadSetting(const std::initializer_list<const std::string> path, const std::string& name, const std::string& setting_name, T default_value);
 
         template<typename T>
         auto& getMap();
@@ -46,7 +46,7 @@ template<> inline auto& SettingsManager::getMap<std::string>()     { return stri
 #include "../../common-source/Utils/Log.h"
 
 template <typename T>
-bool SettingsManager::tryLoadSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, T default_value)
+bool SettingsManager::tryLoadSetting(const std::initializer_list<const std::string> path, const std::string& name, const std::string& setting_name, T default_value)
 {
     auto i = getMap<T>().find(setting_name);
     if (i != getMap<T>().end())

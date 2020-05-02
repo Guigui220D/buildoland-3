@@ -15,7 +15,7 @@ SettingsManager::~SettingsManager()
 {
 }
 
-int SettingsManager::getInt(const std::string setting_name) const
+int SettingsManager::getInt(const std::string& setting_name) const
 {
     auto i = int_settings.find(setting_name);
 
@@ -25,7 +25,7 @@ int SettingsManager::getInt(const std::string setting_name) const
     return i->second;
 }
 
-bool SettingsManager::getBool(const std::string setting_name) const
+bool SettingsManager::getBool(const std::string& setting_name) const
 {
     auto i = bool_settings.find(setting_name);
 
@@ -35,7 +35,7 @@ bool SettingsManager::getBool(const std::string setting_name) const
     return i->second;
 }
 
-const std::string& SettingsManager::getString(const std::string setting_name) const
+const std::string& SettingsManager::getString(const std::string& setting_name) const
 {
     auto i = string_settings.find(setting_name);
 

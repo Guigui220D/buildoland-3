@@ -101,7 +101,7 @@ Item const * ItemsRegister::getItemByID(uint16_t id) const
     return items.at(id);
 }
 
-Item const * ItemsRegister::getItemByName(const std::string name) const
+Item const * ItemsRegister::getItemByName(const std::string& name) const
 {
     auto ptr = names.find(name);
 

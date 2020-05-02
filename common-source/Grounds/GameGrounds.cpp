@@ -79,7 +79,7 @@ Ground const * GameGrounds::getGroundByID(uint16_t id) const
     return grounds.at(id);
 }
 
-Ground const * GameGrounds::getGroundByName(std::string name) const
+Ground const * GameGrounds::getGroundByName(const std::string& name) const
 {
     auto ptr = names.find(name);
 

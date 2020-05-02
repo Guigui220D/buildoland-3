@@ -19,6 +19,9 @@ class ItemStack
         ItemStack(Item const * item, uint8_t amount = 1);
         ItemStack();
         ItemStack(uint32_t integer, const ItemsRegister& reg);
+        #ifndef CLIENT_SIDE
+        ItemStack(nlohmann::json& json, const ItemsRegister& reg, bool& valid);
+        #endif // CLIENT_SIDE
 
         ~ItemStack();
 

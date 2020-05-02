@@ -25,6 +25,33 @@ ItemStack::ItemStack(uint32_t integer, const ItemsRegister& reg) :
 
 ItemStack::~ItemStack() {}
 
+#ifndef CLIENT_SIDE
+ItemStack::ItemStack(nlohmann::json& json, const ItemsRegister& reg, bool& valid)
+{
+    valid = false;
+
+    if (json.is_object())
+    {
+        valid = true;
+
+        if (json["item"].is_string())
+        {
+            item = reg.getItemByName(json["item"].get<std::string>());
+        }
+        else
+            valid = false;
+
+        if (json["amount"].is_number())
+            amount = json["amount"].get<uint8_t>();
+        else
+            valid = false;
+
+        if (valid)
+            valid = operator bool();
+    }
+}
+#endif // CLIENT_SIDE
+
 void ItemStack::swap(ItemStack& other)
 {
     Item const * tmpi = other.item;

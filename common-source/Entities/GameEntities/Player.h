@@ -64,7 +64,8 @@ public:
     #endif
 
     #ifndef CLIENT_SIDE
-    virtual nlohmann::json* serializeToJson() const;
+    virtual nlohmann::json* serializeToJson() const override;
+    virtual void deserialize(nlohmann::json& json) override;
     #endif // CLIENT_SIDE
 
 private:

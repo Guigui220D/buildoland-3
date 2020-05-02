@@ -16,7 +16,7 @@ class DroppedItemEntity : public Entity
 {
 public:
 #ifndef CLIENT_SIDE
-    DroppedItemEntity(World& world, unsigned int id, sf::Vector2f in_position);
+    DroppedItemEntity(World& world, unsigned int id);
 #else
     DroppedItemEntity(World& world, unsigned int id);
 #endif
@@ -35,7 +35,9 @@ public:
     void draw(sf::RenderTarget& target) const override ;
 #else
     void addInfoToNewEntityPacket(ECCPacket& packet) const override;
+
     virtual nlohmann::json* serializeToJson() const;
+    virtual void deserialize(nlohmann::json& json) override;
 #endif
 
     void onLeftClick(Player &player) override;

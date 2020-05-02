@@ -11,16 +11,17 @@
     #include "../../../client-source/Packets/EntityClickPacket.h"
     #include "../../../client-source/States/GameState.h"
 #else
-    #include "../../../common-source/Entities/GameEntities/Player.h"
+    #include "Player.h"
     #include "../../../external/json/Json.hpp"
+    #include "../../../server-source/World/World.h"
+    #include "../../../server-source/Server/Server.h"
     #include <cassert>
 #endif
 
 #ifndef CLIENT_SIDE
-DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id, sf::Vector2f in_position)
-    : Entity(world, id)
+DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id) :
+    Entity(world, id)
 {
-    position = in_position;
 }
 #else
 DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id)
@@ -174,5 +175,22 @@ nlohmann::json* DroppedItemEntity::serializeToJson() const
     delete item_js;
 
     return json;
+}
+
+void DroppedItemEntity::deserialize(nlohmann::json& json)
+{
+    if (json["pos_x"].is_number())
+        position.x = json["pos_x"].get<float>();
+
+    if (json["pos_y"].is_number())
+        position.y = json["pos_y"].get<float>();
+
+    bool valid_stack = false;
+    ItemStack loaded_stack(json["item"], getWorld().getServer().getItemsRegister(), valid_stack);
+
+    if (valid_stack)
+        stack.swap(loaded_stack);
+    else
+        to_be_removed = true;
 }
 #endif

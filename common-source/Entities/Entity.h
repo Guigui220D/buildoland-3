@@ -123,6 +123,7 @@ class Entity
 
         #ifndef CLIENT_SIDE
         virtual nlohmann::json* serializeToJson() const;
+        virtual void deserialize(nlohmann::json& json);
         #endif // CLIENT_SIDE
 
     protected:

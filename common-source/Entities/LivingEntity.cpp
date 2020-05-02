@@ -195,4 +195,19 @@ nlohmann::json* LivingEntity::serializeToJson() const
     (*json)["dir_y"] = walking_direction.y;
     return json;
 }
+
+void LivingEntity::deserialize(nlohmann::json& json)
+{
+    if (json["pos_x"].is_number())
+        position.x = json["pos_x"].get<float>();
+
+    if (json["pos_y"].is_number())
+        position.y = json["pos_y"].get<float>();
+
+    if (json["dir_x"].is_number())
+        walking_direction.x = json["dir_x"].get<float>();
+
+    if (json["dir_y"].is_number())
+        walking_direction.y = json["dir_y"].get<float>();
+}
 #endif // CLIENT_SIDE

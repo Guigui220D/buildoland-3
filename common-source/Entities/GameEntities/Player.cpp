@@ -1,9 +1,7 @@
 #include "Player.h"
 
 #include <algorithm>
-
-//TEST
-//#include <cmath>
+#include <exception>
 
 #include "../../Networking/NetworkingCodes.h"
 
@@ -384,6 +382,12 @@ nlohmann::json* Player::serializeToJson() const
     (*json)["pos_x"] = position.x;
     (*json)["pos_y"] = position.y;
     (*json)["player"] = getClient().getNickname();
+    //We intentionally don't serialize player with their entity type, won't don't actually care about saving them
     return json;
+}
+
+void Player::deserialize(nlohmann::json& json)
+{
+    throw std::logic_error("Player can't be deserialized! It is not meant to be loaded that way.");
 }
 #endif // CLIENT_SIDE

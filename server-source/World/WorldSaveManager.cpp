@@ -3,8 +3,10 @@
 #include "../../common-source/Utils/Log.h"
 #include "../Utils/Base64.h"
 
+#include "World.h"
 #include "Chunk.h"
 #include "Generator.h"
+#include "EntitiesManager.h"
 #include "../../common-source/Entities/Entity.h"
 #include "../../common-source/Entities/EntityCodes.h"
 
@@ -13,6 +15,8 @@
 #include <fstream>
 #include <iomanip>
 #include <cstring>
+
+#include <assert.h>
 
 const size_t WorldSaveManager::LAYER_SIZE = Chunk::CHUNK_SIZE * Chunk::CHUNK_SIZE * sizeof(uint16_t);
 
@@ -206,9 +210,9 @@ void WorldSaveManager::thread_loop()
 
                         if (json_i["entities"].is_array())
                         {
-                            for (auto& ent : json["entities"].items())
+                            for (auto it = json_i["entities"].begin(); it != json_i["entities"].end(); ++it)
                             {
-                                Entity* e = deserializeEntity(ent);
+                                Entity* e = deserializeEntity(it.value());
 
                                 if (e)
                                     new_chunk->entities.push_back(e);
@@ -308,6 +312,9 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
     delete cwe;
 }
 
+#include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
+#include "../../common-source/Entities/GameEntities/TestEntity.h"
+
 Entity* WorldSaveManager::deserializeEntity(nlohmann::json json) const
 {
     if (!json.is_object())
@@ -318,20 +325,29 @@ Entity* WorldSaveManager::deserializeEntity(nlohmann::json json) const
 
     unsigned short type_id = json["type"].get<unsigned short>();
 
+    log(INFO, "Deserializing entity of type {}...\n", type_id);
+
+    Entity* new_e = nullptr;
+
+    unsigned int id = world.getEntityManager().getNextEntityId();
+
     switch (type_id)
     {
-    case Entities::Player:
-
-        break;
     case Entities::DroppedItemEntity:
-
+        new_e = new DroppedItemEntity(world, id);
         break;
     case Entities::TestEntity:
-
+        new_e = new TestEntity(world, id);
         break;
     default:
         return nullptr;
     }
 
-    return nullptr;
+    assert(new_e);
+
+    new_e->deserialize(json);
+
+    log(INFO, "Deserialized.\n");
+
+    return new_e;
 }

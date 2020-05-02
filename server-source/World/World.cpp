@@ -207,16 +207,12 @@ void World::updateChunks()
 
             if (chunk_ptr == chunks.end())
             {
-                //TODO : Handle entities
                 for (Entity* e : cwe->entities)
-                {
                     entities->newEntity(e);
-                }
 
                 chunks.emplace(key, std::unique_ptr<Chunk>(cwe->chunk));
 
                 sendToSubscribers(cwe->chunk->getPacket(), cwe->chunk->getPos());
-                //entities->sendAddEntityFromAllEntitiesInChunk(cwe->chunk->getPos(), clients_manager.getClient(rq->iandp));
             }
             else
             {
@@ -236,8 +232,6 @@ void World::updateChunks()
     if (last_unload_iteration.getElapsedTime().asSeconds() >= 3.f)
     {
         last_unload_iteration.restart();
-
-        log(WARN, "Doing chunk unload iteration.\n");
 
         for (auto i = chunks.begin(); i != chunks.end(); )
         {

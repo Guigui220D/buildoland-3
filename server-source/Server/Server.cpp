@@ -129,9 +129,9 @@ void Server::run()
         //Update all worlds
 
         /*
-        if (crash_clock.getElapsedTime().asSeconds() >= 5.f)
-            throw new std::logic_error("I AM A RETARDED SERVER");
-        */
+        if (crash_clock.getElapsedTime().asSeconds() >= 120.f)
+            stop();
+            */
     }
 }
 
@@ -139,6 +139,7 @@ void Server::close()
 {
     running = false;
     passReceiveOnce();
+
     if (receiver_thread.joinable())
         receiver_thread.join();
 
@@ -319,7 +320,7 @@ void Server::processPacketQueue()
             if (rq->iandp.address == owner.address && rq->iandp.port == owner.port)
             {
                 log(INFO, "Received disconnect message from owner, server will stop.\n");
-                running = false;
+                stop();
                 break;
             }
             else

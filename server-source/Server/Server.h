@@ -40,6 +40,11 @@ class Server
          */
         void close();
 
+        /**
+         * Cause the server to stop running and then close
+         */
+        inline void stop() { running = false; }
+
         inline GameBlocks& getBlocksManager() { return blocks_manager; }
         inline GameGrounds& getGroundsManager() { return grounds_manager; }
 

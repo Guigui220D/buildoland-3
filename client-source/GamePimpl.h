@@ -18,10 +18,11 @@
 
 struct GameImpl
 {
-    GameImpl(Game& game) : game_items_register(language_manager),
-          audio_manager(resource_manager),
-          bg_zone(game, sf::Vector2f(1.f, 1.f), GuiZone::Center, GuiZone::Top),
-          bg_image(new GuiImage(game, sf::Vector2f(), sf::Vector2f(1000.f, 666.66f /*please don't summon demons*/), "Resources/Temp/background.png", false))
+    GameImpl(Game& game) :
+        game_items_register(language_manager),
+        audio_manager(resource_manager),
+        bg_zone(game, sf::Vector2f(1.f, 1.f), GuiZone::Center, GuiZone::Top),
+        bg_image(new GuiImage(game, sf::Vector2f(), sf::Vector2f(1000.f, 666.66f /*please don't summon demons*/), "Resources/Temp/background.png", false))
     {}
 
     sf::RenderWindow window;

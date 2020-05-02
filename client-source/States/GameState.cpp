@@ -171,6 +171,8 @@ void GameState::init()
     chunk_vertices_thread = std::thread(&GameState::chunkVerticesGenerationLoop, this);
 #endif
 
+    log(INFO, "Started receiver and chunk vertices thread (if needed)\n");
+
     test_world->updateChunks(sf::Vector2i());
 }
 
@@ -627,7 +629,7 @@ bool GameState::receiveServerHandshake(bool known_port)
                     if (code == Networking::StoC::InventoryUpdate)
                     {
                         log(INFO, "TEST : got inventory packet before handshake.\n");
-                        inventory_placeholder = packet;
+                        inventory_placeholder.append(packet.getData(), packet.getDataSize()); //Copying the packet
                     }
                     else
                         log(ERROR, "Received wrong packet! Expected handshake code {} (handshake) or {} (inventory initialization) but got {}.\n", Networking::StoC::FinalHandshake, Networking::StoC::InventoryUpdate, code);
@@ -652,19 +654,25 @@ bool GameState::receiveServerHandshake(bool known_port)
     if (inventory_placeholder && !inventory_placeholder.isCorrupted())
     {
         Networking::StoC::InventoryUpdateRequest rq;
+
         inventory_placeholder >> rq.type;
 
-        if (rq.type == InventoryUpdates::StoC::SetInventory)
-        {
-            for (int i = 0; i < 25; i++)
-            {
-                inventory_placeholder >> rq.stack_list[i];
-                if (!packet)
-                    break;
-            }
+        //TODO : Fix this : valgrind says rq.type is uninitialized
 
-            if (inventory_placeholder)
-                request_queue.pushRequest(std::move(rq));
+        if (inventory_placeholder)
+        {
+            if (rq.type == InventoryUpdates::StoC::SetInventory)
+            {
+                for (int i = 0; i < 25; i++)
+                {
+                    inventory_placeholder >> rq.stack_list[i];
+                    if (!packet)
+                        break;
+                }
+
+                if (inventory_placeholder)
+                    request_queue.pushRequest(std::move(rq));
+            }
         }
     }
 

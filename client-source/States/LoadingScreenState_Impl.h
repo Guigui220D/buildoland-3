@@ -2,6 +2,8 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#include "../../common-source/Utils/Log.h"
+
 template <class T>
 template <typename... Args>
 LoadingScreenState<T>::LoadingScreenState(bool fade_in, bool fade_out, Game& game, unsigned int id, Args&&... args) :
@@ -37,6 +39,7 @@ void LoadingScreenState<T>::load()
     state_being_loaded->updateView();
     //while (clk.getElapsedTime().asSeconds() < 2.f); //Lol, making fake loading time
     done = true;
+    //log(INFO,"Loading took {} seconds (still in thread).\n", clk.getElapsedTime().asSeconds());
     return;
 }
 
@@ -59,7 +62,7 @@ void LoadingScreenState<T>::update(float delta_time)
     {
         if (working)
         {
-            //log(INFO,"Loading took {} seconds.\n", working_time.getElapsedTime().asSeconds());
+            log(INFO,"Loading took {} seconds.\n", working_time.getElapsedTime().asSeconds());
             working = false;
             fade_clock.restart();
             getGame().addStateUnderTop(state_being_loaded, false);

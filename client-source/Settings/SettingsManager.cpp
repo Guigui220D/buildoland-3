@@ -11,9 +11,9 @@
 
 const std::string SettingsManager::SETTINGS_FILE_PATH = "Resources/Settings/settings.json";
 
-SettingsManager::SettingsManager()
+SettingsManager::SettingsManager() :
+    json(new nlohmann::json())
 {
-    json = std::make_unique<nlohmann::json>();
 }
 
 SettingsManager::~SettingsManager()
@@ -54,10 +54,7 @@ void SettingsManager::load()
 {
     std::ifstream is(SETTINGS_FILE_PATH);
     if (!is.is_open())
-    {
-        log(ERROR, "Could not load settings file!\n");
-        json = "{}"_json;
-    }
+        log(ERROR, "Could not load settings file! Defaults will be loaded.\n");
     else
         is >> *json;
 
@@ -90,11 +87,17 @@ bool SettingsManager::loadIntSetting(const std::initializer_list<const std::stri
 
     int value = default_value;
 
+    if (!json->is_object())
+    {
+        int_settings.emplace(std::pair<std::string, int>(setting_name, value));
+        return false;
+    }
+
     nlohmann::json& js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
-        if (!js.is_structured())
+        if (!js.is_object())
         {
             log(ERROR, "Could not get json setting \"{}\" of type int at \"", setting_name);
             for (const std::string& pp : path)
@@ -135,11 +138,17 @@ bool SettingsManager::loadBoolSetting(const std::initializer_list<const std::str
 
     bool value = default_value;
 
+    if (!json->is_object())
+    {
+        bool_settings.emplace(std::pair<std::string, bool>(setting_name, value));
+        return false;
+    }
+
     nlohmann::json& js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
-        if (!js.is_structured())
+        if (!js.is_object())
         {
             log(ERROR, "Could not get json setting \"{}\" of type bool at \"", setting_name);
             for (const std::string& pp : path)
@@ -180,11 +189,17 @@ bool SettingsManager::loadStringSetting(const std::initializer_list<const std::s
 
     std::string value = default_value;
 
+    if (!json->is_object())
+    {
+        string_settings.emplace(std::pair<std::string, std::string>(setting_name, value));
+        return false;
+    }
+
     nlohmann::json& js = *json;
     for (const std::string& p : path)
     {
         js = js[p];
-        if (!js.is_structured())
+        if (!js.is_object())
         {
             log(ERROR, "Could not get json setting \"{}\" of type string at \"", setting_name);
             for (const std::string& pp : path)

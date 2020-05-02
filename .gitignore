@@ -32,3 +32,5 @@ TestSave/
 
 #Valgrind
 ValgrindOut.xml
+
+settings.json

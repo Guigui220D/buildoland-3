@@ -46,7 +46,6 @@ void LanguageManager::load(const std::string& language)
         if (!is_eng.is_open())
         {
             log(ERROR, "Could not load language file! This is gonna be messy :/\n");
-            *json = "{}"_json;
             return;
         }
         else

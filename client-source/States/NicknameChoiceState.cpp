@@ -20,7 +20,7 @@ NicknameChoiceState::NicknameChoiceState(Game &game, unsigned int id) :
       main_menu_button(game, sf::Vector2f(0, 480.f), 800.f, "BACK_TO_MAIN_MENU_BUTTON"),
       error_label(game, sf::Vector2f(400.f, -260.f), "SERVER_ADDRESS"),
       ip_label(game, sf::Vector2f(400.f, -240.f), ""),
-      ip_input(game, sf::Vector2f(0, -120.f), 800.f, "192.168.1.1"),
+      ip_input(game, sf::Vector2f(0, -120.f), 800.f, "localhost"),
       nickname_label(game, sf::Vector2f(400.f, 40.f), "NICKNAME"),
       nickname_input(game, sf::Vector2f(0, 120.f), 800.f, "nickname")
 {
@@ -38,6 +38,7 @@ NicknameChoiceState::NicknameChoiceState(Game &game, unsigned int id) :
 
     // set to default address name
     ip_input.setInputText(getGame().getSettingsManager().getString("online_server_address"));
+    nickname_input.setInputText(getGame().getSettingsManager().getString("online_player_name"));
 }
 
 NicknameChoiceState::~NicknameChoiceState()

@@ -25,9 +25,11 @@ class SettingsManager
 
         void load();
 
-        bool loadIntSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, int default_value);
-        bool loadBoolSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, bool default_value);
-        bool loadStringSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, const std::string default_value);
+        template <typename T>
+        bool tryLoadSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, T default_value);
+
+        template<typename T>
+        auto& getMap();
 
         std::unordered_map<std::string, int> int_settings;
         std::unordered_map<std::string, bool> bool_settings;
@@ -35,3 +37,55 @@ class SettingsManager
 
         std::unique_ptr<nlohmann::json> json;
 };
+
+template<> inline auto& SettingsManager::getMap<int>()             { return int_settings; }
+template<> inline auto& SettingsManager::getMap<bool>()            { return bool_settings; }
+template<> inline auto& SettingsManager::getMap<std::string>()     { return string_settings; }
+
+#include "../../external/json/Json.hpp"
+#include "../../common-source/Utils/Log.h"
+
+template <typename T>
+bool SettingsManager::tryLoadSetting(const std::initializer_list<const std::string> path, const std::string name, const std::string setting_name, T default_value)
+{
+    auto i = getMap<T>().find(setting_name);
+    if (i != getMap<T>().end())
+        getMap<T>().erase(i);
+
+    T value = default_value;
+
+    if (!json->is_object())
+    {
+        getMap<T>().emplace(std::pair<std::string, T>(setting_name, value));
+        return false;
+    }
+
+    nlohmann::json js = *json;
+    for (const std::string& p : path)
+    {
+        js = js[p];
+        if (!js.is_object())
+        {
+            log(ERROR, "Could not get json setting \"{}\", could not get structure \"{}\".\n", setting_name, p);
+            getMap<T>().emplace(std::pair<std::string, T>(setting_name, value));
+            return false;
+        }
+    }
+    try
+    {
+        value = js[name].get<T>();
+    }
+    catch (std::exception& e)
+    {
+        log(ERROR, "Could not get json setting \"{}\", could not get value \"{}\".\n", setting_name, name);
+
+        getMap<T>().emplace(std::pair<std::string, T>(setting_name, value));
+        return false;
+    }
+
+    log(INFO, "Successfully loaded setting \"{}\" with value {}.\n", setting_name, value);
+
+    getMap<T>().emplace(std::pair<std::string, T>(setting_name, value));
+
+    return true;
+}

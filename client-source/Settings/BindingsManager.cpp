@@ -113,10 +113,7 @@ void BindingsManager::load()
 {
     std::ifstream is(BINDINGS_FILE_PATH);
     if (!is.is_open())
-    {
         log(ERROR, "Could not load bindings file!\n");
-        *json = "{}"_json;
-    }
     else
         is >> *json;
 

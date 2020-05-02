@@ -9,7 +9,9 @@
 
 #include "../external/stacktrace/stacktrace.hpp"
 
+#ifdef __linux__
 #include <X11/Xlib.h>
+#endif // __linux__
 
 __attribute__ ((noinline)) void func_c () {
     asm volatile ("ud2");

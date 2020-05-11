@@ -7,7 +7,7 @@
 #ifdef CLIENT_SIDE
 namespace sf { class RenderTarget; }
 #else
-
+    #include "../../external/json/JsonFwd.hpp"
 #endif // CLIENT_SIDE
 
 class World;
@@ -49,7 +49,8 @@ class TileEntity
 
         virtual bool readTileEntityPacket(ECCPacket& packet);
         #else
-
+        virtual nlohmann::json* serializeToJson() const;
+        virtual void deserialize(nlohmann::json& json);
         #endif
 
     protected:

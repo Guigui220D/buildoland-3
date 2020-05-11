@@ -30,7 +30,7 @@ class GameBlocks
          * @param name : the name of the block
          * @return The pointer to the block
          */
-        Block const * getBlockByName(std::string name) const;
+        Block const * getBlockByName(const std::string& name) const;
 
         //Put blocks here
         static Block const * const AIR;

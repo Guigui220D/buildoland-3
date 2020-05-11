@@ -4,6 +4,10 @@
 
 #include "ItemsRegister.h"
 
+#ifndef CLIENT_SIDE
+    #include "../../external/json/Json.hpp"
+#endif // CLIENT_SIDE
+
 ItemStack::ItemStack(Item const * item, uint8_t amount) :
     item(item),
     amount(amount)
@@ -20,6 +24,33 @@ ItemStack::ItemStack(uint32_t integer, const ItemsRegister& reg) :
 {}
 
 ItemStack::~ItemStack() {}
+
+#ifndef CLIENT_SIDE
+ItemStack::ItemStack(nlohmann::json& json, const ItemsRegister& reg, bool& valid)
+{
+    valid = false;
+
+    if (json.is_object())
+    {
+        valid = true;
+
+        if (json["item"].is_string())
+        {
+            item = reg.getItemByName(json["item"].get<std::string>());
+        }
+        else
+            valid = false;
+
+        if (json["amount"].is_number())
+            amount = json["amount"].get<uint8_t>();
+        else
+            valid = false;
+
+        if (valid)
+            valid = operator bool();
+    }
+}
+#endif // CLIENT_SIDE
 
 void ItemStack::swap(ItemStack& other)
 {
@@ -88,3 +119,13 @@ ItemStack::operator bool() const
 {
     return (amount != 0 && item != ItemsRegister::NULL_ITEM);
 }
+
+#ifndef CLIENT_SIDE
+nlohmann::json* ItemStack::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["item"] = item->getName();
+    (*json)["amount"] = amount;
+    return json;
+}
+#endif // CLIENT_SIDE

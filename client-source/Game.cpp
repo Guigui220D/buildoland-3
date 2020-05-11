@@ -6,6 +6,8 @@
 
 #include "GamePimpl.h"
 
+#include <SFML/Graphics/RenderTexture.hpp>
+
 Game::Game()
 {
     pimpl = std::make_unique<GameImpl>(*this);
@@ -74,14 +76,48 @@ int Game::run()
                 break;
             case sf::Event::Resized:
             {
-                pimpl->bg_zone.calculateView(sf::Vector2u(e.size.width, e.size.height));
+                //pimpl->bg_zone.calculateView(sf::Vector2u(e.size.width, e.size.height));
                 // update the view to the new size of the window
                 sf::FloatRect visibleArea(0, 0, e.size.width, e.size.height);
                 pimpl->default_view = sf::View(visibleArea);
                 pimpl->window.setView(pimpl->default_view);
+                goto def;
             }
+            case sf::Event::KeyPressed:
+            {
+                /*
+                if (e.key.code != sf::Keyboard::F12)
+                    goto def;
+
+                sf::RenderTexture tex;
+                tex.create(1980 * 2, 1080 * 2);
+
+                sf::FloatRect screenqsdsqdsq(0, 0, 1980 * 2, 1080 * 2);
+                tex.setView(sf::View(screenqsdsqdsq));
+
+                tex.clear();
+
+                if (pimpl->states_stack.empty())
+                    break;
+
+                unsigned int i;
+                for (i = pimpl->states_stack.size() - 1; i > 0; i--)
+                {
+                    if (!pimpl->states_stack.at(i)->isDrawTransparent())
+                        break;
+                }
+                for (; i < pimpl->states_stack.size(); i++)
+                    pimpl->states_stack.at(i)->draw(tex);
+
+                tex.display();
+
+                tex.getTexture().copyToImage().saveToFile("screenshot.png");
+                */
+            }
+
             default:
                 {
+                def:
                     for (int i = pimpl->states_stack.size() - 1; i >= 0; i--)
                     {
                         std::unique_ptr<State>& state = pimpl->states_stack.at(i);

@@ -9,28 +9,21 @@
 #include "../Utils/Utils.h"
 
 #include "../World/World.h"
+#include "../World/EntitiesManager.h"
+#include "../World/Chunk.h"
+#include "../World/Generator.h"
 
 #include "../../common-source/Networking/NetworkingCodes.h"
 #include "../Packets/HandshakePacket.h"
 #include "../Packets/FullInventoryPacket.h"
 
-//TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
-#include "../../common-source/Entities/GameEntities/TestEntity.h"
-#include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
-#include "../../common-source/Items/GameItems/BallItem.h"
-
-#include "../../server-source/World/EntitiesManager.h"
-#include "../../server-source/World/Generator.h"
-#include "../../server-source/World/Chunk.h"
 
 #include "../../common-source/Utils/Log.h"
 #include "../../common-source/Utils/UsernameCheck.h"
 
-
 Server::Server(uint16_t client_port) :
       clients_manager(*this),
-      receiver_thread(&Server::receiver, this),
       owner(sf::IpAddress::LocalHost, client_port),
       connection_open(false),
       blocks_manager(),
@@ -44,7 +37,7 @@ Server::Server(uint16_t client_port) :
 
 Server::~Server()
 {
-    //dtor
+    log(INFO, "Destructing server! Bye bye :)\n");
 }
 
 bool Server::init(uint16_t port)
@@ -74,7 +67,7 @@ bool Server::init(uint16_t port)
 #endif // SOLO
 
     running = true;
-    receiver_thread.launch();
+    receiver_thread = std::thread(&Server::receiver, this);
 
 #ifdef SOLO
     unsigned int player_id = world->getEntityManager().getNextEntityId();
@@ -94,12 +87,8 @@ bool Server::init(uint16_t port)
     world->getEntityManager().newEntity(owner_player);
 #endif // SOLO
 
-    for (int i = 0; i < 10; i++)
-        world->getEntityManager().newEntity(new TestEntity(*world, world->getEntityManager().getNextEntityId()));
-
     initCommands();
 
-    //world.getEntityManager().newEntity(new Player(&world, world.getEntityManager().getNextEntityId(), clients_manager.getClient(owner)));
     return true;
 }
 
@@ -131,15 +120,17 @@ void Server::run()
 
         processPacketQueue();
 
+        world->updateChunks();
+
         //Update entities
         world->getEntityManager().updateAll(delta);
         world->updateTileEntities(delta);
         //Update all worlds
 
         /*
-        if (crash_clock.getElapsedTime().asSeconds() >= 5.f)
-            throw new std::logic_error("I AM A RETARDED SERVER");
-        */
+        if (crash_clock.getElapsedTime().asSeconds() >= 120.f)
+            stop();
+            */
     }
 }
 
@@ -147,7 +138,9 @@ void Server::close()
 {
     running = false;
     passReceiveOnce();
-    receiver_thread.wait();
+
+    if (receiver_thread.joinable())
+        receiver_thread.join();
 
     ECCPacket server_stopping(Networking::StoC::Disconnect);
     clients_manager.sendToAll(server_stopping);
@@ -333,7 +326,7 @@ void Server::processPacketQueue()
             if (rq->iandp.address == owner.address && rq->iandp.port == owner.port)
             {
                 log(INFO, "Received disconnect message from owner, server will stop.\n");
-                running = false;
+                stop();
                 break;
             }
             else
@@ -427,9 +420,14 @@ void Server::processPacketQueue()
             if (!clients_manager.isConnected(rq->iandp))
                 continue;
 
-            ECCPacket p = world->getChunk(rq->pos).getPacket();
-            server_socket.send(p, rq->iandp.address, rq->iandp.port);
-            world->getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
+            if (world->isChunkLoaded(rq->pos))
+            {
+                ECCPacket p = world->getChunk(rq->pos).getPacket();
+                server_socket.send(p, rq->iandp.address, rq->iandp.port);
+                world->getEntityManager().sendAddEntityFromAllEntitiesInChunk(rq->pos, clients_manager.getClient(rq->iandp));
+            }
+            else
+                world->requestChunk(rq->pos);
         }
         else if (auto rq = request_queue.tryPop<EntityRequest>())
         {

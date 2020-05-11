@@ -33,6 +33,9 @@ class LivingEntity : public PhysicsEntity
         bool takeNewEntityPacket(ECCPacket& packet) override;
         #else
         void addInfoToNewEntityPacket(ECCPacket& packet) const override;
+
+        virtual nlohmann::json* serializeToJson() const override;
+        virtual void deserialize(nlohmann::json& json) override;
         #endif
     private:
         float walking_speed;

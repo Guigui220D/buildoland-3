@@ -43,7 +43,7 @@ class ItemsRegister
          * @param name : the name of the item
          * @return The pointer to the item
          */
-        Item const * getItemByName(const std::string name) const;
+        Item const * getItemByName(const std::string& name) const;
 
         //Put items here
         static Item const * const NULL_ITEM;

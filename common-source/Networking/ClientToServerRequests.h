@@ -78,6 +78,5 @@ using CtoSRequestQueue = NetworkRequestQueue<DisconnectRequest, ConnectionReques
                                              ChunkRequest, EntityRequest,
                                              KeepAliveRequest, PlayerActionRequest,
                                              SendMessageRequest>;
-
 }
 }

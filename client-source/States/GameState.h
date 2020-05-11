@@ -3,10 +3,10 @@
 #include "State.h"
 
 #include <memory>
+#include <thread>
 
 #include <SFML/Network/UdpSocket.hpp>
 #include <SFML/System/Clock.hpp>
-#include <SFML/System/Thread.hpp>
 
 #include <SFML/Graphics/View.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
@@ -68,9 +68,11 @@ class GameState : public State
         std::string nickname;
 
         std::unique_ptr<TinyProcessLib::Process> solo_server_process;
+        bool valid_solo_server = false;
 
         Networking::StoC::StoCRequestQueue request_queue;
-        sf::Thread receiver_thread;
+        std::thread receiver_thread;
+        std::atomic_bool stop_receiver_thread = false;
         void receiverLoop();
         void processPacketQueue();
 
@@ -83,7 +85,8 @@ class GameState : public State
         sf::View base_view;
         bool spyglass_mode = false;
         float zoom = 10.f;
-        sf::Thread chunk_vertices_thread;
+        std::thread chunk_vertices_thread;
+        std::atomic_bool stop_cv_thread = false;
         mutable sf::Mutex vertex_array_swap_mutex;
         void chunkVerticesGenerationLoop();
         sf::View currentView() const;

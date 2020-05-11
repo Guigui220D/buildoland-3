@@ -1,9 +1,7 @@
 #include "Player.h"
 
 #include <algorithm>
-
-//TEST
-//#include <cmath>
+#include <exception>
 
 #include "../../Networking/NetworkingCodes.h"
 
@@ -25,6 +23,7 @@
     #include "../../../server-source/Server/Server.h"
     #include "../../../server-source/World/Chunk.h"
     #include "../../../server-source/World/EntitiesManager.h"
+    #include "../../../external/json/Json.hpp"
 #endif
 
 #include "../../Blocks/Block.h"
@@ -375,3 +374,20 @@ bool Player::isSubscribedTo(sf::Vector2i chunk, bool twice) const
     //TODO : Make render distance constant
     return distance_squared < (Constants::CHUNK_LOADING_DISTANCE + Constants::CHUNK_LOADING_DISTANCE * twice);
 }
+
+#ifndef CLIENT_SIDE
+nlohmann::json* Player::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["pos_x"] = position.x;
+    (*json)["pos_y"] = position.y;
+    (*json)["player"] = getClient().getNickname();
+    //We intentionally don't serialize player with their entity type, won't don't actually care about saving them
+    return json;
+}
+
+void Player::deserialize(nlohmann::json& json)
+{
+    throw std::logic_error("Player can't be deserialized! It is not meant to be loaded that way.");
+}
+#endif // CLIENT_SIDE

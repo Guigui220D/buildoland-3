@@ -18,12 +18,12 @@ class GameGrounds;
 class NaturalGenerator : public Generator
 {
     public:
-        NaturalGenerator(int seed);
+        NaturalGenerator();
         ~NaturalGenerator();
 
         void init(const GameBlocks& game_blocks, const GameGrounds& game_grounds) override;
 
-        void generateChunk(Chunk* chunk) override;
+        void generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities) override;
 
     private:
         siv::PerlinNoise perlin;
@@ -33,6 +33,8 @@ class NaturalGenerator : public Generator
 
         //bool hasStructure(sf::Vector2i chunk_pos) const;
         //sf::Vector2i getStructurePos(sf::Vector2i chunk_pos) const;
+
+        uint32_t getRandomInt(sf::Vector2i pos, int modifier = 0);
 
         TestStructure test_struct;
         StructureFromJson test_struct_2;

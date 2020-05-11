@@ -15,27 +15,21 @@
 #include "EntitiesManager.h"
 #include "Generators/NaturalGenerator.h"
 
+#include "WorldSaveManager.h"
+
 World::World(Server& server) :
     entities(std::make_unique<EntitiesManager>(server)),
-    generator(new NaturalGenerator(std::rand())),
     server(server),
     game_blocks_manager(server.getBlocksManager()),
-    game_grounds_manager(server.getGroundsManager())
-{
-}
-
-World::World(Server& server, int seed) :
-    entities(std::make_unique<EntitiesManager>(server)),
-    generator(new NaturalGenerator(seed)),
-    server(server),
-    game_blocks_manager(server.getBlocksManager()),
-    game_grounds_manager(server.getGroundsManager())
+    game_grounds_manager(server.getGroundsManager()),
+    generator(std::make_unique<NaturalGenerator>()),
+    save_manager(std::make_unique<WorldSaveManager>("TestSave", *this, *generator.get()))
 {
 }
 
 World::~World()
 {
-
+    saveAll();
 }
 
 void World::init()
@@ -98,7 +92,6 @@ Chunk& World::getChunk(sf::Vector2i pos)
 
     if (chunk_ptr == chunks.end())
     {
-        log(INFO, "New chunk generated : {},{}\n", pos.x, pos.y);
         Chunk* new_chunk = new Chunk(*this, pos);
         chunks.emplace(key, std::unique_ptr<Chunk>(new_chunk));
         return *new_chunk;
@@ -200,4 +193,115 @@ void World::updateTileEntities(float delta_time)
 {
     for (auto& c : chunks)
         c.second->updateTileEntities(delta_time);
+}
+
+void World::updateChunks()
+{
+    {
+        ChunkWithEntities* cwe = save_manager->popLoadedChunk();
+
+        if (cwe)
+        {
+            uint64_t key = utils::combine(cwe->chunk_pos.x, cwe->chunk_pos.y);
+            auto chunk_ptr = chunks.find(key);
+
+            if (chunk_ptr == chunks.end())
+            {
+                for (Entity* e : cwe->entities)
+                    entities->newEntity(e);
+
+                chunks.emplace(key, std::unique_ptr<Chunk>(cwe->chunk));
+
+                sendToSubscribers(cwe->chunk->getPacket(), cwe->chunk->getPos());
+            }
+            else
+            {
+                log(WARN, "Didnt add popped loaded chunk ({}; {}) because this chunk was already in the world.\n", cwe->chunk_pos.x, cwe->chunk_pos.y);
+
+                if (cwe->chunk)
+                    delete cwe->chunk;
+
+                for (Entity* e : cwe->entities)
+                    delete e;
+            }
+
+            delete cwe;
+        }
+    }
+
+    if (last_unload_iteration.getElapsedTime().asSeconds() >= 3.f)
+    {
+        last_unload_iteration.restart();
+
+        for (auto i = chunks.begin(); i != chunks.end(); )
+        {
+            if (!i->second->isOld())
+            {
+                i++;
+            }
+            else
+            {
+                bool cancel = false;
+                for (auto j = server.getClientsManager().getClientsBegin(); j != server.getClientsManager().getClientsEnd(); j++)
+                {
+                    if (j->second->hasPlayer())
+                        if (j->second->getPlayer()->isSubscribedTo(i->second->getPos()))
+                        {
+                            cancel = true;
+                            break;
+                        }
+                }
+                if (cancel)
+                {
+                    i->second->getPacket();
+                    i++;
+                    continue;
+                }
+
+                log(WARN, "Chunk {}; {} is being unloaded! Unloading chunks is not fully implemented yet, be careful.\n", i->second->getPos().x, i->second->getPos().y);
+
+                ChunkWithEntities* cwe = new ChunkWithEntities();
+
+                cwe->chunk_pos = i->second->getPos();
+                cwe->chunk = nullptr;
+                entities->popEntitiesOfChunk(i->second->getPos(), cwe->entities);
+
+                if (i->second->hasBeenModified())
+                {
+                    cwe->chunk = i->second.release();
+                }
+
+                save_manager->addChunkToSave(cwe);
+
+                i = chunks.erase(i);
+            }
+        }
+    }
+}
+
+void World::requestChunk(sf::Vector2i chunk)
+{
+    save_manager->requestChunk(chunk);
+}
+
+void World::saveAll()
+{
+    log(INFO, "Sending all chunks to world saver...\n");
+    for (auto i = chunks.begin(); i != chunks.end(); )
+    {
+        ChunkWithEntities* cwe = new ChunkWithEntities();
+
+        cwe->chunk_pos = i->second->getPos();
+        cwe->chunk = nullptr;
+        entities->popEntitiesOfChunk(i->second->getPos(), cwe->entities);
+
+        if (i->second->hasBeenModified())
+        {
+            cwe->chunk = i->second.release();
+        }
+
+        save_manager->addChunkToSave(cwe);
+
+        i = chunks.erase(i);
+    }
 }

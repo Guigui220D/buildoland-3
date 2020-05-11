@@ -51,11 +51,9 @@ GameState::GameState(Game& game, unsigned int id) :
       remote_ip(sf::IpAddress::LocalHost),
       remote_port(0),
       nickname("Me"),
-      receiver_thread(&GameState::receiverLoop, this),
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
       init_frames_to_skip(20),
-      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this),
       chatbox(game, sf::Vector2f(0.0f, 0.0f), 100.f),
       chat_input(game, sf::Vector2f(0.0f, 0.0f), 100.f)
 {
@@ -73,11 +71,9 @@ GameState::GameState(Game& game, unsigned int id, const std::string& in_nickname
       remote_ip(server_address),
       remote_port(server_port),
       nickname(in_nickname),
-      receiver_thread(&GameState::receiverLoop, this),
       test_world(std::make_unique<World>(*this)),
       entities(test_world->getEntityManager()),
       init_frames_to_skip(20),
-      chunk_vertices_thread(&GameState::chunkVerticesGenerationLoop, this),
       chatbox(game, sf::Vector2f(0.0f, 0.0f), 100.f),
       chat_input(game, sf::Vector2f(0.0f, 0.0f), 100.f)
 {
@@ -91,9 +87,21 @@ GameState::GameState(Game& game, unsigned int id, const std::string& in_nickname
 GameState::~GameState()
 {
 #ifdef CHUNK_VERTICES_ASYNC
-    chunk_vertices_thread.terminate();
+    log(INFO, "Stopping chunk vertices thread.\n");
+    stop_cv_thread = true;
+    if (chunk_vertices_thread.joinable())
+        chunk_vertices_thread.join();
 #endif
-    receiver_thread.terminate();
+    log(INFO, "Stopping receiver thread.\n");
+    stop_receiver_thread = true;
+    if (receiver_thread.joinable())
+    {
+        sf::Packet p;   //Send packet to self to unlock blocking function socket.receive() in receiver thread
+        client_socket.send(p, sf::IpAddress::LocalHost, client_socket.getLocalPort());
+        receiver_thread.join();
+    }
+    log(INFO, "Done\n");
+
     if (connected)
     {
         //TEMP
@@ -102,8 +110,13 @@ GameState::~GameState()
     }
     if (solo_server_process)
     {
-        solo_server_process->kill(true);
+        if (valid_solo_server)
+            solo_server_process->get_exit_status();
+        else
+            solo_server_process->kill(true);
     }
+
+    log_prefix_format = "";
 }
 
 void GameState::init()
@@ -145,18 +158,30 @@ void GameState::init()
     if (solo_mode)
     {
         if (!startAndConnectLocalServer())
+        {
+            log(ERROR, "Could not connect to local server!\n");
+            must_be_destroyed = true;
             return;
+        }
+        valid_solo_server = true;
     }
     else
         if (!handshakeRemoteServer())
-        return;
+        {
+            log(ERROR, "Could handshake remote server!\n");
+            must_be_destroyed = true;
+            return;
+        }
 
     connected = true;
     client_socket.setBlocking(true);
-    receiver_thread.launch();
+
+    receiver_thread = std::thread(&GameState::receiverLoop, this);
 #if CHUNK_VERTICES_ASYNC
-    chunk_vertices_thread.launch();
+    chunk_vertices_thread = std::thread(&GameState::chunkVerticesGenerationLoop, this);
 #endif
+
+    log(INFO, "Started receiver and chunk vertices thread (if needed)\n");
 
     test_world->updateChunks(sf::Vector2i());
 }
@@ -501,7 +526,7 @@ bool GameState::startAndConnectLocalServer()
         }
     }
 
-    log_prefix_format = "[Client] " + log_prefix_format; // now do this, to help differenciate between the server's and the client's output
+    log_prefix_format = "[Client] "; // now do this, to help differenciate between the server's and the client's output
 
     bool handshake = receiveServerHandshake(false);
 
@@ -630,8 +655,8 @@ bool GameState::receiveServerHandshake(bool known_port)
                 {
                     if (code == Networking::StoC::InventoryUpdate)
                     {
-                        log(INFO, "TEST : got inventory packet before handshake.");
-                        inventory_placeholder = packet;
+                        log(INFO, "TEST : got inventory packet before handshake.\n");
+                        inventory_placeholder.append(packet.getData(), packet.getDataSize()); //Copying the packet
                     }
                     else
                         log(ERROR, "Received wrong packet! Expected handshake code {} (handshake) or {} (inventory initialization) but got {}.\n", Networking::StoC::FinalHandshake, Networking::StoC::InventoryUpdate, code);
@@ -656,19 +681,25 @@ bool GameState::receiveServerHandshake(bool known_port)
     if (inventory_placeholder && !inventory_placeholder.isCorrupted())
     {
         Networking::StoC::InventoryUpdateRequest rq;
+
         inventory_placeholder >> rq.type;
 
-        if (rq.type == InventoryUpdates::StoC::SetInventory)
-        {
-            for (int i = 0; i < 25; i++)
-            {
-                inventory_placeholder >> rq.stack_list[i];
-                if (!packet)
-                    break;
-            }
+        //TODO : Fix this : valgrind says rq.type is uninitialized
 
-            if (inventory_placeholder)
-                request_queue.pushRequest(std::move(rq));
+        if (inventory_placeholder)
+        {
+            if (rq.type == InventoryUpdates::StoC::SetInventory)
+            {
+                for (int i = 0; i < 25; i++)
+                {
+                    inventory_placeholder >> rq.stack_list[i];
+                    if (!packet)
+                        break;
+                }
+
+                if (inventory_placeholder)
+                    request_queue.pushRequest(std::move(rq));
+            }
         }
     }
 
@@ -764,7 +795,7 @@ void GameState::chunkVerticesGenerationLoop()
     // the shared_ptr is used so that if World removes a chunk, we can still access it until we clear the rendered_chunk_list
     // shared_ptr reference counting is atomic, no need for locks around shared_ptr
     std::vector<std::shared_ptr<Chunk>> rendered_chunk_list; // used to prevent race conditions if chunks are added during the async rendering loop
-    while (true)
+    while (!stop_cv_thread)
     {
         rendered_chunk_list.resize(0); // don't deallocate
 

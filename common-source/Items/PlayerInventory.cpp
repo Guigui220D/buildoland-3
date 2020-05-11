@@ -1,4 +1,4 @@
-#include "playerInventory.h"
+#include "PlayerInventory.h"
 
 #include "../Entities/GameEntities/Player.h"
 #include "../Networking/NetworkingCodes.h"
@@ -72,7 +72,8 @@ bool PlayerInventory::insertItemStack(ItemStack& stack, bool drop_if_full)
 #ifndef CLIENT_SIDE
     if (drop_if_full)
     {
-        DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId(), owner.getPosition());
+        DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId());
+        ent->setPosition(owner.getPosition());
         ent->setItemStack(stack);
         server.getWorld().getEntityManager().newEntity(ent);
     }
@@ -95,7 +96,8 @@ void PlayerInventory::insertNewItemStack(ItemStack stack, bool drop_if_full)
 #ifndef CLIENT_SIDE
     if (drop_if_full)
     {
-    DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId(), owner.getPosition());
+        DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId());
+        ent->setPosition(owner.getPosition());
         ent->setItemStack(stack);
         server.getWorld().getEntityManager().newEntity(ent);
     }
@@ -134,7 +136,8 @@ void PlayerInventory::dropHand()
     contents.at(0).swap(dropped_stack);
 
 #ifndef CLIENT_SIDE
-    DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId(), owner.getPosition());
+    DroppedItemEntity* ent = new DroppedItemEntity(server.getWorld(), server.getWorld().getEntityManager().getNextEntityId());
+    ent->setPosition(owner.getPosition());
     ent->setItemStack(dropped_stack);
     server.getWorld().getEntityManager().newEntity(ent);
 #endif

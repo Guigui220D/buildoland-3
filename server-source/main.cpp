@@ -6,12 +6,30 @@
 #include <ctime>
 #include <cstdlib>
 
+#ifdef __unix__
+    #include "signal.h"
+#endif // __unix__
+
 #include "../common-source/Utils/Log.h"
 
 #include "../external/stacktrace/stacktrace.hpp"
 
+Server* serv = nullptr;
+
+void sigint(int dummy)
+{
+    if (serv)
+        serv->stop();
+
+    signal(SIGINT, SIG_DFL);
+}
+
 int main(int argc, char** argv)
 {
+    #ifdef __unix__
+    signal(SIGINT, sigint);
+    #endif // __unix__
+
     std::srand(std::time(0));
 
     log_streams_by_level[INFO].push_back(&std::clog);
@@ -25,7 +43,7 @@ int main(int argc, char** argv)
     uint16_t server_port = 0;
 
 #ifdef SOLO
-    log_prefix_format = "[Server] " + log_prefix_format; // to differentiate output when using solo mode
+    log_prefix_format = "[Server] "; // to differentiate output when using solo mode
 
     log(INFO, "This is a local server for solo mode.\n");
     log(INFO, "This version is made for Buildoland {} ({})\n", Version::VERSION, Version::VERSION_SHORT);
@@ -56,6 +74,7 @@ int main(int argc, char** argv)
 
     {   //Scope to for
         Server server(client_port);
+        serv = &server;
 
 //In local/solo mode, the port is 0 which means the os gets to choose the port
 //In multiplayer mode, we prefer chosing a port
@@ -69,13 +88,15 @@ int main(int argc, char** argv)
             return 1;
         }
 
-        log(INFO, "\nServer started!\n\n");
+        log(INFO, "Server started!\n\n");
 
         server.run();
 
-        log(INFO, "\nEnding server\n");
+        log(INFO, "Ending server\n");
 
         server.close();
+
+        serv = nullptr;
     }
 
     log(INFO, "Server ended.\n");

@@ -3,24 +3,25 @@
 #include "../../../common-source/Utils/Log.h"
 
 #ifdef CLIENT_SIDE
-#include <SFML/Graphics/RenderTarget.hpp>
+    #include <SFML/Graphics/RenderTarget.hpp>
 
-#include "../../../client-source/World/World.h"
-#include "../../../client-source/Game.h"
-#include "../../../client-source/Res/ResourceManager.h"
-#include "../../../client-source/Packets/EntityClickPacket.h"
-#include "../../../client-source/States/GameState.h"
+    #include "../../../client-source/World/World.h"
+    #include "../../../client-source/Game.h"
+    #include "../../../client-source/Res/ResourceManager.h"
+    #include "../../../client-source/Packets/EntityClickPacket.h"
+    #include "../../../client-source/States/GameState.h"
 #else
-#include "../../../common-source/Entities/GameEntities/Player.h"
-
-#include <cassert>
+    #include "Player.h"
+    #include "../../../external/json/Json.hpp"
+    #include "../../../server-source/World/World.h"
+    #include "../../../server-source/Server/Server.h"
+    #include <cassert>
 #endif
 
 #ifndef CLIENT_SIDE
-DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id, sf::Vector2f in_position)
-    : Entity(world, id)
+DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id) :
+    Entity(world, id)
 {
-    position = in_position;
 }
 #else
 DroppedItemEntity::DroppedItemEntity(World &world, unsigned int id)
@@ -160,5 +161,36 @@ void DroppedItemEntity::addInfoToNewEntityPacket(ECCPacket& packet) const
     packet << position.x;
     packet << position.y;
     packet << stack.getInt();
+}
+
+nlohmann::json* DroppedItemEntity::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getEntityCode();
+    (*json)["pos_x"] = position.x;
+    (*json)["pos_y"] = position.y;
+
+    nlohmann::json* item_js = stack.serializeToJson();
+    (*json)["item"] = *item_js;
+    delete item_js;
+
+    return json;
+}
+
+void DroppedItemEntity::deserialize(nlohmann::json& json)
+{
+    if (json["pos_x"].is_number())
+        position.x = json["pos_x"].get<float>();
+
+    if (json["pos_y"].is_number())
+        position.y = json["pos_y"].get<float>();
+
+    bool valid_stack = false;
+    ItemStack loaded_stack(json["item"], getWorld().getServer().getItemsRegister(), valid_stack);
+
+    if (valid_stack)
+        stack.swap(loaded_stack);
+    else
+        to_be_removed = true;
 }
 #endif

@@ -21,10 +21,14 @@ class TestTileEntity : public TileEntity
         #ifdef CLIENT_SIDE
         virtual void draw(sf::RenderTarget& target) const;
         virtual bool readTileEntityPacket(ECCPacket& packet);
+        #else
+        virtual nlohmann::json* serializeToJson() const override;
+        virtual void deserialize(nlohmann::json& json) override;
         #endif
 
     private:
         sf::Clock clk;
+        int value = 1;
 
         #ifdef CLIENT_SIDE
         sf::CircleShape cs;

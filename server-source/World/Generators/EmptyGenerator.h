@@ -5,10 +5,10 @@
 class EmptyGenerator : public Generator
 {
     public:
-        EmptyGenerator(int seed);
+        EmptyGenerator();
         ~EmptyGenerator();
 
-        void generateChunk(Chunk* chunk) override;
+        void generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities) override;
 
     protected:
 

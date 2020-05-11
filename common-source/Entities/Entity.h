@@ -14,6 +14,7 @@ class RenderTarget;
 }
 #else
     #include "../Networking/NetworkingCodes.h"
+    #include "../../external/json/JsonFwd.hpp"
 #endif // CLIENT_SIDE
 
 class World;
@@ -111,6 +112,7 @@ class Entity
         inline bool isHighlighted() const
         { return highlighted; }
 
+        inline void setPosition(sf::Vector2f pos) { position = pos; }
         inline sf::Vector2f getPosition() const { return position; }
         inline World& getWorld() const { return world; }
 
@@ -118,6 +120,11 @@ class Entity
         sf::Vector2i getChunkOn() const;
 
         virtual inline bool isTileEntity() const { return false; }
+
+        #ifndef CLIENT_SIDE
+        virtual nlohmann::json* serializeToJson() const;
+        virtual void deserialize(nlohmann::json& json);
+        #endif // CLIENT_SIDE
 
     protected:
         /**

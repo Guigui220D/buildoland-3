@@ -17,6 +17,7 @@
 #include <algorithm>
 
 const int Chunk::CHUNK_SIZE = 16;
+const int Chunk::REGION_SIZE = 8;
 
 Chunk::Chunk(World& world, sf::Vector2i pos) :
     ready(false),
@@ -29,9 +30,7 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
     packet(new ECCPacket()),
     packet_ready(false)
 {
-    world.getGenerator()->generateChunk(this);
 
-    ready = true;
 }
 
 Chunk::~Chunk()
@@ -54,6 +53,8 @@ ECCPacket& Chunk::getPacket()
 {
     if (!packet_ready)
         generatePacket();
+
+    last_request.restart();
 
     return (*packet);
 }
@@ -83,9 +84,14 @@ void Chunk::setBlock(int x, int y, const Block* block)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
+    modified = true;
+
     blocks[y*CHUNK_SIZE + x] = block->getId();
 
     packet_ready = false;
+
+    if (!ready)
+        return;
 
     if (tile_entities[y * CHUNK_SIZE + x])
     {
@@ -115,9 +121,43 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     assert(x < CHUNK_SIZE);
     assert(y < CHUNK_SIZE);
 
+    modified = true;
+
     grounds[y*CHUNK_SIZE + x] = ground->getId();
 
     packet_ready = false;
+}
+
+TileEntity* Chunk::getTileEntity(int x, int y) const
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    return tile_entities[y * CHUNK_SIZE + x].get();
+}
+
+void Chunk::prepareTileEntities()
+{
+    for (int x = 0; x < CHUNK_SIZE; x++)
+    for (int y = 0; y < CHUNK_SIZE; y++)
+    {
+        const Block* block = server.getBlocksManager().getBlockByID(blocks[y * CHUNK_SIZE + x]);
+
+        if (block->serverSideHasTE())
+        {
+            switch (block->getTileEntityCode())
+            {
+            case TileEntities::TestTE:
+                tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
+                actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
+                break;
+            default:
+            case TileEntities::None:
+                throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
+            }
+        }
+    }
 }
 
 //Just trying things here

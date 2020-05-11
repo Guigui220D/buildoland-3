@@ -4,6 +4,7 @@
 #include <memory>
 
 #include <SFML/System/Vector2.hpp>
+#include <SFML/System/Clock.hpp>
 
 #include "../../common-source/Networking/ECCPacket.h"
 
@@ -17,10 +18,11 @@ class TileEntity;
 
 class Chunk
 {
-    friend class TileEntity;
+    friend class WorldSaveManager;
 
     public:
         static const int CHUNK_SIZE;
+        static const int REGION_SIZE;
 
         static inline size_t getChunkDataSize() { return CHUNK_SIZE * CHUNK_SIZE * 4; }
 
@@ -66,6 +68,9 @@ class Chunk
         inline void setBlock(sf::Vector2i pos, const Block* block) { setBlock(pos.x, pos.y, block); }
         inline void setGround(sf::Vector2i pos, const Ground* ground) { setGround(pos.x, pos.y, ground); }
 
+        TileEntity* getTileEntity(int x, int y) const;
+        inline TileEntity* getTileEntity(sf::Vector2i pos) const { return getTileEntity(pos.x, pos.y); };
+
         inline sf::Vector2f getCenter() const { return sf::Vector2f(pos.x * CHUNK_SIZE + .5f * CHUNK_SIZE - .5f, pos.y * CHUNK_SIZE + .5f * CHUNK_SIZE - .5f); }
 
         /**
@@ -86,12 +91,16 @@ class Chunk
         std::vector<std::shared_ptr<TileEntity>> actual_tile_entities; //for faster TE iteration (no iterating over each block and checking if theres a TE)
         void updateTileEntities(float delta_time);
 
+        inline bool isOld() const { return last_request.getElapsedTime().asSeconds() >= 60.f; }
+        inline bool hasBeenModified() const { return modified; }
+
     private:
         bool ready = false;
 
         std::vector<uint16_t> blocks;
         std::vector<uint16_t> grounds;
         std::vector<std::shared_ptr<TileEntity>> tile_entities;
+        void prepareTileEntities();
         void cleanupTEList();
 
         const sf::Vector2i pos;
@@ -103,4 +112,7 @@ class Chunk
         bool packet_ready;
 
         void generatePacket();
+
+        sf::Clock last_request;
+        bool modified = false;
 };

@@ -7,22 +7,26 @@
 #include <unordered_map>
 #include <memory>
 
+#include <SFML/System/Clock.hpp>
+
 class Server;
+
 class Block;
 class Ground;
-class Chunk;
-
 class GameBlocks;
 class GameGrounds;
+
 class ItemsRegister;
-class Generator;
 class EntitiesManager;
+
+class Chunk;
+class Generator;
+class WorldSaveManager;
 
 class World
 {
     public:
         World(Server& server);
-        World(Server& server, int seed);
         virtual ~World();
 
         void init();
@@ -55,7 +59,7 @@ class World
         const Chunk& getChunkConst(sf::Vector2i pos) const;
         /**
          * Gets a reference to a chunk with its position
-         * The chunk will be generated if needed
+         * An exception will be thrown if the chunk doesn't exist
          * @param pos : the position of the chunk
          * @return The reference to the chunk
          */
@@ -94,7 +98,7 @@ class World
         inline const GameBlocks& getBlocksManager() const { return game_blocks_manager; }
         inline const GameGrounds& getGroundsManager() const { return game_grounds_manager; }
 
-        inline Generator* getGenerator() const { return generator; };
+        inline Generator* getGenerator() const { return generator.get(); };
 
         inline size_t getChunksCount() const { return chunks.size(); };
         inline std::unordered_map<uint64_t, std::unique_ptr<Chunk>>::const_iterator
@@ -104,11 +108,12 @@ class World
 
         void updateTileEntities(float delta_time);
 
+        void updateChunks();
+        void requestChunk(sf::Vector2i chunk);
+
     protected:
         //Entities
         std::unique_ptr<EntitiesManager> entities;
-
-        Generator* generator;
 
     private:
         Server& server;
@@ -116,4 +121,11 @@ class World
         const GameGrounds& game_grounds_manager;
 
         std::unordered_map<uint64_t, std::unique_ptr<Chunk>> chunks;
+
+        sf::Clock last_unload_iteration;
+
+        void saveAll();
+
+        std::unique_ptr<Generator> generator;
+        std::unique_ptr<WorldSaveManager> save_manager;
 };

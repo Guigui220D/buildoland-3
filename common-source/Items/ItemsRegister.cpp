@@ -96,17 +96,17 @@ void ItemsRegister::addItem(Item const * item)
 Item const * ItemsRegister::getItemByID(uint16_t id) const
 {
     if (id >= items.size())
-        return /*ERROR*/nullptr;    //TEMP
+        return /*ERROR*/NULL_ITEM;    //TEMP
 
     return items.at(id);
 }
 
-Item const * ItemsRegister::getItemByName(const std::string name) const
+Item const * ItemsRegister::getItemByName(const std::string& name) const
 {
     auto ptr = names.find(name);
 
-    if (ptr != names.end())
-        return /*ERROR*/nullptr;    //TEMP
+    if (ptr == names.end())
+        return /*ERROR*/NULL_ITEM;    //TEMP
 
     uint16_t id = ptr->second;
     assert(id < items.size());

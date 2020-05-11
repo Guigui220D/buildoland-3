@@ -1,14 +1,20 @@
 #pragma once
 
+#include <vector>
+
 class GameBlocks;
 class GameGrounds;
 
 class Chunk;
 
+class Entity;
+
 class Generator
 {
+    friend class WorldSaveManager;
+
     public:
-        Generator(int seed);
+        Generator();
         virtual ~Generator();
 
         /**
@@ -21,13 +27,12 @@ class Generator
         * This function should only call setBlock and setGround on the chunk
         * @param chunk : a pointer to the chunk to populate
         */
-        virtual void generateChunk(Chunk* chunk) = 0;
+        virtual void generateChunk(Chunk* chunk, std::vector<Entity*>& new_entities) = 0;
 
         inline int getSeed() const { return seed; }
 
     protected:
-
-        const int seed;
+        int seed;
 
     private:
 };

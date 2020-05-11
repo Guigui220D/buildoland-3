@@ -9,6 +9,8 @@
 #include "EntitiesManager.h"
 #include "../../common-source/Entities/Entity.h"
 #include "../../common-source/Entities/EntityCodes.h"
+#include "../../common-source/TileEntities/TileEntity.h"
+#include "../../common-source/Blocks/Block.h"
 
 #include "../../external/json/Json.hpp"
 
@@ -166,8 +168,6 @@ void WorldSaveManager::thread_loop()
             bool generate_tiles = true;
             bool generate_entities = true;
 
-            //TODO : try to load from file
-
             std::ifstream i(filename);
 
             if (i.is_open())
@@ -279,6 +279,26 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
 
         json[chunk_json]["block_layer"] = base64_encode((unsigned char*)cwe->chunk->blocks.data(), LAYER_SIZE);
         json[chunk_json]["ground_layer"] = base64_encode((unsigned char*)cwe->chunk->grounds.data(), LAYER_SIZE);
+
+        log(INFO, "    Saving tile entities\n");
+
+        for (int x = 0; x < Chunk::CHUNK_SIZE; x++)
+        for (int y = 0; y < Chunk::CHUNK_SIZE; y++)
+        {
+            const Block* block = cwe->chunk->getBlock(x, y);
+
+            if (block->serverSideHasTE())
+            {
+                TileEntity* te = cwe->chunk->getTileEntity(x, y);
+
+                if (te)
+                {
+                    nlohmann::json* serialized = te->serializeToJson();
+                    json[chunk_json]["tile_entities"][fmt::format("{}_{}", x, y)] = *serialized;
+                    delete serialized;
+                }
+            }
+        }
 
         delete cwe->chunk;
     }

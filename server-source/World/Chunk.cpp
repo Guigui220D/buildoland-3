@@ -128,6 +128,15 @@ void Chunk::setGround(int x, int y, const Ground* ground)
     packet_ready = false;
 }
 
+TileEntity* Chunk::getTileEntity(int x, int y) const
+{
+    assert(x >= 0);
+    assert(y >= 0);
+    assert(x < CHUNK_SIZE);
+    assert(y < CHUNK_SIZE);
+    return tile_entities[y * CHUNK_SIZE + x].get();
+}
+
 void Chunk::prepareTileEntities()
 {
     for (int x = 0; x < CHUNK_SIZE; x++)

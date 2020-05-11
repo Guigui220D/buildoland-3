@@ -9,6 +9,8 @@
 #else
     #include "../../../server-source/World/World.h"
     #include "../../../server-source/World/Chunk.h"
+
+    #include "../../../external/json/Json.hpp"
 #endif // CLIENT_SIDE
 
 #include "../../Networking/ECCPacket.h"
@@ -46,7 +48,8 @@ void TestTileEntity::update(float delta)
         to_client << Networking::StoC::TileEntityUpdate;
         to_client << getTilePos().x << getTilePos().y;
 
-        to_client << (std::rand() % 5);
+        value = std::rand() % 5;
+        to_client << value;
 
         getWorld().sendToSubscribers(to_client, getChunk().getPos());
     }
@@ -69,5 +72,23 @@ bool TestTileEntity::readTileEntityPacket(ECCPacket& packet)
     cs.setOrigin(sf::Vector2f(cs.getRadius(), cs.getRadius()));
 
     return true;
+}
+#else
+nlohmann::json* TestTileEntity::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getTypeCode();
+    (*json)["clk"] = clk.getElapsedTime().asSeconds();
+    (*json)["value"] = value;
+    return json;
+}
+
+void TestTileEntity::deserialize(nlohmann::json& json)
+{
+    /*
+    if (json["clk"].is_number())
+        json["clk"].get<float>();
+        */
+
 }
 #endif

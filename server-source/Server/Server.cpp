@@ -17,11 +17,7 @@
 #include "../Packets/HandshakePacket.h"
 #include "../Packets/FullInventoryPacket.h"
 
-//TEMP
 #include "../../common-source/Entities/GameEntities/Player.h"
-#include "../../common-source/Entities/GameEntities/TestEntity.h"
-#include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
-#include "../../common-source/Items/GameItems/BallItem.h"
 
 #include "../../common-source/Utils/Log.h"
 #include "../../common-source/Utils/UsernameCheck.h"

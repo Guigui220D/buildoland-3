@@ -6,6 +6,9 @@
 #else
     #include "../../server-source/World/World.h"
     #include "../../server-source/World/Chunk.h"
+
+    #include "../../external/json/Json.hpp"
+    #include <assert.h>
 #endif
 
 TileEntity::TileEntity(Chunk& chunk, sf::Vector2i pos) :
@@ -32,5 +35,16 @@ void TileEntity::update(float delta) {}
 void TileEntity::draw(sf::RenderTarget& target) const {}
 void TileEntity::drawAbove(sf::RenderTarget& target) const {}
 bool TileEntity::readTileEntityPacket(ECCPacket& packet) { return true; }
+#else
+nlohmann::json* TileEntity::serializeToJson() const
+{
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["type"] = getTypeCode();
+    return json;
+}
+
+void TileEntity::deserialize(nlohmann::json& json)
+{
+}
 #endif
 

@@ -83,7 +83,7 @@ void GameState::receiverLoop()
                             break;
 
                         case Networking::StoC::BlockUpdate:
-                        {   //TODO : movee that somewhere else
+                        {
                             sf::Vector2i pos;
                             uint16_t id;
 

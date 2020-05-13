@@ -111,7 +111,7 @@ void DroppedItemEntity::onLeftClick(Player& player)
 #else
     //log(INFO, "Stack left click {}\n", getId());
     assert(stack);
-    if (player.getInventory().insertItemStack(stack, false))
+    if (player.getInventory().insertItemStack(stack, {}))
         to_be_removed = true;
 #endif
 }

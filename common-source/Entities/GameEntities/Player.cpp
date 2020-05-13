@@ -38,7 +38,7 @@ Player* Player::this_player = nullptr;
 
 Player::Player(World& world, unsigned int id) :
       LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-      inventory(*this, world.getState())
+      inventory(*this)
 {
     if (Player::this_player_id == id)
         Player::this_player = this;
@@ -66,7 +66,7 @@ Player::Player(World& world, unsigned int id) :
 #else
 Player::Player(World& world, unsigned int id, const Client& client) :
       LivingEntity(world, id, sf::Vector2f(.5f, .5f), 3.f),
-      inventory(*this, world.getServer()),
+      inventory(*this),
       client(client)
 {
     for (uint32_t& color : outfit_colors)
@@ -175,7 +175,7 @@ void Player::moreOnChunkChange(sf::Vector2i old_chunk, sf::Vector2i new_chunk)
 
 void Player::useHand(sf::Vector2i pos)
 {
-    inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), pos, *this);
+    inventory.getHand().getItem()->useItem(inventory.getHand(), getWorld(), pos, *this);
 }
 
 bool Player::takeNewEntityPacket(ECCPacket& packet)
@@ -244,12 +244,12 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             {
                 ItemStack hand(rq.item_in_hand, getWorld().getServer().getItemsRegister());
 
-                if (hand.getItem() != inventory.contents.at(0).getItem())
+                if (hand.getItem() != inventory.getHand().getItem())
                 {
                     bool has_item = false;
                     for (int i = 1; i < 25; i++)
                     {
-                        ItemStack& is = inventory.contents.at(i);
+                        ItemStack& is = inventory.getStack(i);
                         if (!is)
                             continue;
                         if (is.getItem() == hand.getItem())
@@ -270,7 +270,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             if (!isSubscribedTo(World::getChunkPosFromBlockPos(item_pos)))
                 break;
 
-            inventory.contents.at(0).getItem()->useItem(inventory.contents.at(0), getWorld(), item_pos, *this);
+            inventory.getHand().getItem()->useItem(inventory.getHand(), getWorld(), item_pos, *this);
         }
         break;
 
@@ -282,7 +282,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             auto drops = getWorld().getBlockPtr(rq.break_block_pos)->getDrops();
 
             for (ItemStack& stack : drops)
-                inventory.insertItemStack(stack);
+                inventory.insertItemStack(stack, sf::Vector2f(rq.break_block_pos.x, rq.break_block_pos.y));
 
             getWorld().setBlock(rq.break_block_pos, GameBlocks::AIR);
         }
@@ -293,9 +293,9 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
             ItemStack hand(rq.hand_item, getWorld().getServer().getItemsRegister());
             ItemStack slot(rq.slot_item, getWorld().getServer().getItemsRegister());
 
-            if (hand && slot && (inventory.contents.at(0).getItem() != hand.getItem() || inventory.contents.at(rq.item_swap_pos).getItem() != slot.getItem()))
+            if (hand && slot && (inventory.getHand().getItem() != hand.getItem() || inventory.getStack(rq.item_swap_pos).getItem() != slot.getItem()))
             {
-                if (inventory.contents.at(0).getItem() == slot.getItem() && inventory.contents.at(rq.item_swap_pos).getItem() == hand.getItem())
+                if (inventory.getHand().getItem() == slot.getItem() && inventory.getStack(rq.item_swap_pos).getItem() == hand.getItem())
                     break;
 
                 FullInventoryPacket fip(inventory);
@@ -311,7 +311,7 @@ void Player::handlePlayerActionRequest(const Networking::CtoS::PlayerActionReque
         {
             ItemStack hand(rq.hand_item, getWorld().getServer().getItemsRegister());
 
-            if (hand && (inventory.contents.at(0).getItem() != hand.getItem()))
+            if (hand && (inventory.getHand().getItem() != hand.getItem()))
             {
                 FullInventoryPacket fip(inventory);
                 getClient().send(fip);

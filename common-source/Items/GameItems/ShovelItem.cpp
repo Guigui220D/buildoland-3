@@ -32,7 +32,7 @@ void ShovelItem::use(ItemStack& , World& world, sf::Vector2i click_pos, Player& 
         auto drops = tr.getGround()->getDrops();
 
         for (ItemStack& stack : drops)
-            player.getInventory().insertItemStack(stack);
+            player.getInventory().insertItemStack(stack, player.getPosition());
 
         tr.setGround(GameGrounds::DIRT);
     }

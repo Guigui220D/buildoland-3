@@ -291,9 +291,9 @@ void GameState::update(float delta_time)
     {
         base_view.setCenter(Player::this_player->getPosition());
 
-        if (Player::this_player->getInventory().contents.at(0))
+        if (Player::this_player->getInventory().getHand())
         {
-            auto& item = *Player::this_player->getInventory().contents.at(0).getItem();
+            auto& item = *Player::this_player->getInventory().getHand().getItem();
             switch (item.getTexturesSet())
             {
                 default:
@@ -307,7 +307,7 @@ void GameState::update(float delta_time)
                     hand_item_sprite.setTexture(*block_textures);
                     break;
             }
-            hand_item_sprite.setTextureRect(item.getTexture(Player::this_player->getInventory().contents.at(0)));
+            hand_item_sprite.setTextureRect(item.getTexture(Player::this_player->getInventory().getHand()));
             hand_item_sprite.setScale(2.f, 2.f);
             hand_item_sprite.setOrigin(hand_item_sprite.getLocalBounds().width/2.f, 0.f);
             hand_item_sprite.setPosition(getGame().getWindow().getSize().x/2.f,
@@ -346,7 +346,7 @@ void GameState::update(float delta_time)
     entities.updateAll(delta_time);
     test_world->updateTileEntities(delta_time);
 
-    spyglass_mode = Player::this_player && Player::this_player->getInventory().contents.at(0).getItem() == ItemsRegister::SPYGLASS;
+    spyglass_mode = Player::this_player && Player::this_player->getInventory().getHand().getItem() == ItemsRegister::SPYGLASS;
 
     {
         sf::Window& window = getGame().getWindow();
@@ -448,7 +448,7 @@ void GameState::draw(sf::RenderTarget& target) const
     chatbox.draw(target);
     chat_input.draw(target);
     target.draw(hand_item_border);
-    if (Player::this_player && Player::this_player->getInventory().contents.at(0))
+    if (Player::this_player && Player::this_player->getInventory().getHand())
     {
         target.draw(hand_item_sprite);
     }

@@ -8,5 +8,5 @@ FullInventoryPacket::FullInventoryPacket(PlayerInventory& inv) :
     operator<<(InventoryUpdates::StoC::SetInventory);
 
     for (int i = 0; i < 25; i++)
-        operator<<(inv.contents.at(i).getInt());
+        operator<<(inv.getStack(i).getInt());
 }

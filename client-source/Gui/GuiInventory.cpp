@@ -80,7 +80,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     for (int x = 0; x < 6; x++)
         for (int y = 0; y < 4; y++)
         {
-            ItemStack& stack = inventory.contents.at(x + y * 6 + 1);
+            ItemStack& stack = inventory.getStack(x + y * 6 + 1);
             if (!stack)
                 continue;
 
@@ -103,7 +103,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
         {}
         else
         {
-            ItemStack& stack = inventory.contents.at(i_pos.x + i_pos.y * 6 + 1);
+            ItemStack& stack = inventory.getStack(i_pos.x + i_pos.y * 6 + 1);
 
             if (stack)
             {
@@ -115,7 +115,7 @@ void GuiInventory::draw(sf::RenderTarget& target) const
     }
 
     // draw the hand item on top of everything
-    ItemStack& hand = inventory.contents.at(0);
+    ItemStack& hand = inventory.getHand();
     if (hand)
     {
         sf::Vector2f pos = getGame().getWindow().mapPixelToCoords(sf::Mouse::getPosition(getGame().getWindow()));
@@ -187,7 +187,7 @@ void GuiInventory::update(float delta_time)
     for (int x = 0; x < 6; x++)
         for (int y = 0; y < 4; y++)
         {
-            ItemStack& stack = inventory.contents.at(x + y * 6 + 1);
+            ItemStack& stack = inventory.getStack(x + y * 6 + 1);
 
             if (!stack)
                 continue;

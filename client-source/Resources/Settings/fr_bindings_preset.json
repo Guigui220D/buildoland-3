@@ -4,5 +4,6 @@
 	"move_down" : ["s", "down"],
 	"move_left" : ["q", "left"],
 	"move_right" : ["d", "right"],
-	"throw_item" : "j"
+	"throw_item" : "j",
+	"show_chat" : "t"
 }

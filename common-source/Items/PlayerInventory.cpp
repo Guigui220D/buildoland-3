@@ -8,6 +8,8 @@
 
     #include "../Networking/StoC_InventoryUpdateCodes.h"
 #else
+    #include "../../server-source/Packets/InventoryAddPacket.h"
+
     #include "../../server-source/Server/Server.h"
     #include "../../server-source/World/World.h"
     #include "../../server-source/World/EntitiesManager.h"
@@ -31,6 +33,7 @@ PlayerInventory::PlayerInventory(const Player& owner) :
     { ItemStack a(ItemsRegister::EMPTY_BUCKET, 1);          insertItemStack(a, {}); }
     { ItemStack a(GameBlocks::TEST->getDefaultItem(), 10);  insertItemStack(a, {}); }
 #endif // CLIENT_SIDE
+    preparing = false;
 }
 
 /*
@@ -118,3 +121,12 @@ bool PlayerInventory::handleInventoryUpdateRequest(const Networking::StoC::Inven
     }
 }
 #endif // CLIENT_SIDE
+
+void PlayerInventory::onInsert(const ItemStack& stack)
+{
+#ifndef CLIENT_SIDE
+    InventoryAddPacket insert(stack.getInt());
+    if (!preparing)
+        owner.getClient().send(insert);
+#endif
+}

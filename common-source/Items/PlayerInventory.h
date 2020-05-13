@@ -22,8 +22,12 @@ class PlayerInventory : public Inventory<25u>
         bool handleInventoryUpdateRequest(const Networking::StoC::InventoryUpdateRequest &rq);
         #endif // CLIENT_SIDE
 
+        void onInsert(const ItemStack& stack) override;
+
     protected:
 
     private:
+        bool preparing = true;
+
         const Player& owner;
 };

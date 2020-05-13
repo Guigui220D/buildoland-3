@@ -29,6 +29,8 @@ class Inventory
     protected:
         std::array<ItemStack, INV_SIZE> contents;
 
+        virtual void onInsert(const ItemStack& stack);
+
     private:
         World& world;
 };
@@ -73,6 +75,7 @@ ItemStack& Inventory<INV_SIZE>::getStack(size_t position)
 template <size_t INV_SIZE>
 bool Inventory<INV_SIZE>::insertItemStack(ItemStack& stack, std::optional<sf::Vector2f> drop_place)
 {
+    onInsert(stack);
     //Try to fill slots that have the same item type
     for (ItemStack& istack : contents)
         if (istack.getItem() == stack.getItem())
@@ -96,3 +99,7 @@ bool Inventory<INV_SIZE>::insertItemStack(ItemStack& stack, std::optional<sf::Ve
 #endif
     return false;
 }
+
+template <size_t INV_SIZE>
+void Inventory<INV_SIZE>::onInsert(const ItemStack& stack)
+{}

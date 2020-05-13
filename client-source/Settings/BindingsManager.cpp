@@ -37,8 +37,9 @@ void BindingsManager::update(const sf::Event &event)
 
             if (binding.type == Binding::Keyboard)
             {
+                bool was_active = binding.active;
                 binding.active = sf::Keyboard::isKeyPressed(binding.key);
-                if (event.type == sf::Event::KeyPressed && event.key.code == binding.key)
+                if (!was_active && binding.active && event.key.code == binding.key) // avoid key repeats
                     binding.pressed = true;
             }
             else if (binding.type == Binding::Mouse)

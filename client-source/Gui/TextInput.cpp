@@ -69,6 +69,11 @@ bool TextInput::handleEvent(sf::Event& e) {
             active = false;
             return true;
         }
+        else if (e.key.code == sf::Keyboard::Escape)
+        {
+            active = false;
+            return true;
+        }
         else if (e.key.code == sf::Keyboard::V && e.key.control)
         {
             sf::String new_string = inputText + sf::Clipboard::getString();

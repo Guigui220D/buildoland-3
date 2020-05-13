@@ -72,7 +72,7 @@ class GameState : public State
 
         Networking::StoC::StoCRequestQueue request_queue;
         std::thread receiver_thread;
-        std::atomic_bool stop_receiver_thread = false;
+        std::atomic_bool stop_receiver_thread { false };
         void receiverLoop();
         void processPacketQueue();
 
@@ -84,9 +84,10 @@ class GameState : public State
         mutable int init_frames_to_skip;
         sf::View base_view;
         bool spyglass_mode = false;
+        bool show_chat = false;
         float zoom = 10.f;
         std::thread chunk_vertices_thread;
-        std::atomic_bool stop_cv_thread = false;
+        std::atomic_bool stop_cv_thread { false };
         mutable sf::Mutex vertex_array_swap_mutex;
         void chunkVerticesGenerationLoop();
         sf::View currentView() const;

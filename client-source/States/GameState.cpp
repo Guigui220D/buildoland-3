@@ -139,10 +139,10 @@ void GameState::init()
     block_pointer_side.setTexture(&getGame().getResourceManager().getTexture("BLOCK_POINTER"));
 
     chat_input.setEnterCallback([this](const sf::String& str)
-    {
-        sendMessage(str);
-        chat_input.clear();
-    });
+                                {
+                                    sendMessage(str);
+                                    chat_input.clear();
+                                });
 
     base_view = sf::View(sf::Vector2f(4.f, 4.f), sf::Vector2f(20.f, 20.f));
 
@@ -167,11 +167,11 @@ void GameState::init()
     }
     else
         if (!handshakeRemoteServer())
-        {
-            log(ERROR, "Could handshake remote server!\n");
-            must_be_destroyed = true;
-            return;
-        }
+    {
+        log(ERROR, "Could handshake remote server!\n");
+        must_be_destroyed = true;
+        return;
+    }
 
     connected = true;
     client_socket.setBlocking(true);
@@ -188,10 +188,16 @@ void GameState::init()
 
 bool GameState::handleEvent(sf::Event& event)
 {
-    if (chatbox.handleEvent(event))
-        return true;
-    if (chat_input.handleEvent(event) || chat_input.isActive())
-        return true;
+    if (getGame().getBindingsManager().pressed("show_chat") && !chat_input.isActive())
+        show_chat = !show_chat;
+
+    if (show_chat)
+    {
+        if (chatbox.handleEvent(event))
+            return true;
+        if (chat_input.handleEvent(event) || chat_input.isActive())
+            return true;
+    }
 
     if (getGame().getBindingsManager().pressed("inventory"))
     {
@@ -322,16 +328,19 @@ void GameState::update(float delta_time)
         }
     }
 
-    chatbox.setPosition(10.f, getGame().getWindow().getSize().y - getGame().getWindow().getSize().y/2.5f - getGame().getWindow().getSize().y/10.f);
-    chatbox.setSize({getGame().getWindow().getSize().x/3.f,
-                     getGame().getWindow().getSize().y/2.5f});
-    chatbox.update(delta_time);
+    if (show_chat)
+    {
+        chatbox.setPosition(10.f, getGame().getWindow().getSize().y - getGame().getWindow().getSize().y/2.5f - getGame().getWindow().getSize().y/10.f);
+        chatbox.setSize({getGame().getWindow().getSize().x/3.f,
+                         getGame().getWindow().getSize().y/2.5f});
+        chatbox.update(delta_time);
 
-    chat_input.setPosition(10.f, chatbox.getPosition().y + getGame().getWindow().getSize().y/2.5f + 5.f);
-    chat_input.setSize({getGame().getWindow().getSize().x/3.f,
-                       getGame().getWindow().getSize().y/15.f});
-    chat_input.setCharacterSize(75);
-    chat_input.update(delta_time);
+        chat_input.setPosition(10.f, chatbox.getPosition().y + getGame().getWindow().getSize().y/2.5f + 5.f);
+        chat_input.setSize({getGame().getWindow().getSize().x/3.f,
+                            getGame().getWindow().getSize().y/15.f});
+        chat_input.setCharacterSize(75);
+        chat_input.update(delta_time);
+    }
 
     if (anim_clock.getElapsedTime().asSeconds() >= .5f)
     {
@@ -432,8 +441,8 @@ void GameState::draw(sf::RenderTarget& target) const
 
     entities.drawAllAbove(target);
     for (auto i = test_world->getChunksBegin(); i != test_world->getChunksEnd(); i++)
-            for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
-                te->drawAbove(target);
+        for (std::shared_ptr<TileEntity>& te : i->second->actual_tile_entities)
+            te->drawAbove(target);
 
     if (isTopState())
     {
@@ -466,8 +475,23 @@ void GameState::draw(sf::RenderTarget& target) const
         shape.setFillColor(sf::Color::Transparent);
 
     target.draw(shape);
-}
-*/
+    }
+    */
+
+    // HUD
+
+    getGame().useDefaultView();
+
+    if (show_chat)
+    {
+        chatbox.draw(target);
+        chat_input.draw(target);
+    }
+    target.draw(hand_item_border);
+    if (Player::this_player && Player::this_player->getInventory().getHand())
+    {
+        target.draw(hand_item_sprite);
+    }
 }
 
 void GameState::updateView()

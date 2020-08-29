@@ -59,6 +59,10 @@ class State
          */
         inline Game& getGame() const { return game; }
 
+        virtual inline bool isMenu() const { return false; }
+
+        virtual void notifyStateStackChange();
+
         bool isTopState() const;
 
         std::atomic<bool> must_be_destroyed {false};

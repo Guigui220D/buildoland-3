@@ -88,6 +88,8 @@ class Game
          */
         void update(float delta_time);
 
+        void notifyStates();
+
         void loadResources();
         void titleScreenInit();
 

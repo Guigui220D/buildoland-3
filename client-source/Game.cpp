@@ -153,6 +153,7 @@ int Game::run()
 
         pimpl->window.display();
 
+        bool update = false;
         //Remove states
         for (auto i = pimpl->states_stack.begin(); i != pimpl->states_stack.end(); )
         {
@@ -160,12 +161,18 @@ int Game::run()
             {
                 (*i).reset();
                 pimpl->states_stack.erase(i);
+                update = true;
             }
             else i++;
         }
+
         //Add states on top
         for (State*& state : pimpl->states_to_add_on_top)
+        {
             pimpl->states_stack.push_back(std::unique_ptr<State>(state));
+            update = true;
+        }
+
         pimpl->states_to_add_on_top.clear();
         //Add states under the top
         if (pimpl->state_to_add_under_the_top)
@@ -173,7 +180,11 @@ int Game::run()
             assert(pimpl->states_stack.size());
             pimpl->states_stack.insert(pimpl->states_stack.end() - 1, std::unique_ptr<State>(pimpl->state_to_add_under_the_top));
             pimpl->state_to_add_under_the_top = nullptr;
+            update = true;
         }
+
+        if (update)
+            notifyStates();
 
         count++;
 		if (count >= 1000)
@@ -258,4 +269,10 @@ void Game::update(float delta_time)
     }
 
     pimpl->audio_manager.update();
+}
+
+void Game::notifyStates()
+{
+    for (std::unique_ptr<State>& s : pimpl->states_stack)
+        s->notifyStateStackChange();
 }

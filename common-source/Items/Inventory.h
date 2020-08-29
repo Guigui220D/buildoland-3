@@ -87,8 +87,9 @@ bool Inventory<INV_SIZE>::insertItemStack(ItemStack& stack, std::optional<sf::Ve
         if (istack.add(stack))
             return true;
 
-    //Inventory is full; create a DroppedItem instead
+
 #ifndef CLIENT_SIDE
+    //Inventory is full; create a DroppedItem instead
     if (drop_place)
     {
         DroppedItemEntity* ent = new DroppedItemEntity(world, world.getEntityManager().getNextEntityId());

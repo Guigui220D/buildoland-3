@@ -23,7 +23,11 @@ World::World(Server& server) :
     game_blocks_manager(server.getBlocksManager()),
     game_grounds_manager(server.getGroundsManager()),
     generator(std::make_unique<NaturalGenerator>()),
-    save_manager(std::make_unique<WorldSaveManager>("TestSave", *this, *generator.get()))
+    #ifdef SOLO
+    save_manager(std::make_unique<WorldSaveManager>("SoloSave", *this, *generator.get()))
+    #else
+    save_manager(std::make_unique<WorldSaveManager>("MultiSave", *this, *generator.get()))
+    #endif // SOLO
 {
 }
 

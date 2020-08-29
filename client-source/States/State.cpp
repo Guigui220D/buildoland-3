@@ -25,6 +25,9 @@ void State::draw(sf::RenderTarget& target) const {}
 
 void State::updateView() {}
 
+void State::notifyStateStackChange()
+{}
+
 bool State::isTopState() const
 {
     return this == game.getTopState();

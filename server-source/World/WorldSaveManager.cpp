@@ -325,7 +325,10 @@ void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)
     if (!json.is_null())
     {
         std::ofstream o(filename);
-        o << std::setw(4) << json << std::endl;
+        if (!o.fail())
+            o << std::setw(4) << json << std::endl;
+        else
+            log(ERROR, "ERROR: Couldn't save chunk! Does the game have access to the place it's trying to save to?\n");
         o.close();
     }
 

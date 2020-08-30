@@ -77,7 +77,7 @@ bool TestTileEntity::readTileEntityPacket(ECCPacket& packet)
 nlohmann::json* TestTileEntity::serializeToJson() const
 {
     nlohmann::json* json = new nlohmann::json();
-    (*json)["type"] = getTypeCode();
+    //(*json)["type"] = getTypeCode();
     (*json)["clk"] = clk.getElapsedTime().asSeconds();
     (*json)["value"] = value;
     return json;
@@ -90,5 +90,10 @@ void TestTileEntity::deserialize(nlohmann::json& json)
         json["clk"].get<float>();
         */
 
+    if (json["value"].is_number())
+    {
+        value = json["value"].get<int>();
+        log(INFO, "Test_te : Loaded value {}. (from {}; {})\n", value, getTilePos().x, getTilePos().y);
+    }
 }
 #endif

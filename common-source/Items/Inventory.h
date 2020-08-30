@@ -23,8 +23,10 @@ class Inventory
 
         void describe();
 
-        //nlohmann::json* serializeToJson() const;
-        //void deserialize(nlohmann::json json);
+        #ifndef CLIENT_SIDE
+        nlohmann::json* serializeToJson() const;
+        void deserialize(nlohmann::json json);
+        #endif // CLIENT_SIDE
 
     protected:
         std::array<ItemStack, INV_SIZE> contents;
@@ -35,7 +37,7 @@ class Inventory
         World& world;
 };
 
-//Aaaaah template class c:
+//Aaaaah we all love template classes c:
 
 #include <algorithm>
 #include <exception>
@@ -47,6 +49,8 @@ class Inventory
 
     #include "../../server-source/World/EntitiesManager.h"
     #include "../../common-source/Entities/GameEntities/DroppedItemEntity.h"
+
+    #include "../../external/json/Json.hpp"
 #endif // CLIENT_SIDE
 
 template <size_t INV_SIZE>
@@ -104,3 +108,27 @@ bool Inventory<INV_SIZE>::insertItemStack(ItemStack& stack, std::optional<sf::Ve
 template <size_t INV_SIZE>
 void Inventory<INV_SIZE>::onInsert(const ItemStack& stack)
 {}
+
+#ifndef CLIENT_SIDE
+template <size_t INV_SIZE>
+nlohmann::json* Inventory<INV_SIZE>::serializeToJson() const {
+    nlohmann::json* json = new nlohmann::json();
+    (*json)["size"] = INV_SIZE;
+
+    unsigned int i = 0;
+    for (const ItemStack& istack : contents) {
+        auto ptr = istack.serializeToJson();
+        (*json)["items"][i] = *ptr;
+        delete ptr;
+        i++;
+    }
+
+    return json;
+}
+
+template <size_t INV_SIZE>
+void Inventory<INV_SIZE>::deserialize(nlohmann::json json) {
+}
+#endif
+
+//Make this not a template class!

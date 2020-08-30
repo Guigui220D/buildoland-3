@@ -30,7 +30,6 @@ Chunk::Chunk(World& world, sf::Vector2i pos) :
     packet(new ECCPacket()),
     packet_ready(false)
 {
-
 }
 
 Chunk::~Chunk()
@@ -150,12 +149,14 @@ void Chunk::prepareTileEntities()
             {
             case TileEntities::TestTE:
                 tile_entities[y * CHUNK_SIZE + x].reset(new TestTileEntity(*this, getBlockPosInWorld(x, y)));
-                actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
                 break;
             default:
             case TileEntities::None:
                 throw std::logic_error("Block " + block->getName() + " has TE client-side but TE code says none or is unknown.");
             }
+
+            if (tile_entities[y * CHUNK_SIZE + x])
+                actual_tile_entities.push_back(tile_entities[y * CHUNK_SIZE + x]);
         }
     }
 }

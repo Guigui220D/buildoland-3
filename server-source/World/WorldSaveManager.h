@@ -22,7 +22,6 @@ struct ChunkWithEntities
     sf::Vector2i chunk_pos;
     Chunk* chunk;
     std::vector<Entity*> entities;
-    bool generate_entities; //Only useful for loaded chunks and not for saving them
 };
 
 class WorldSaveManager
@@ -84,6 +83,7 @@ class WorldSaveManager
         void thread_loop();
 
         void saveChunk(ChunkWithEntities* cwe);
+        ChunkWithEntities* getChunk(sf::Vector2i pos);
 
         Entity* deserializeEntity(nlohmann::json json) const;
 

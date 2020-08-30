@@ -382,6 +382,11 @@ nlohmann::json* Player::serializeToJson() const
     (*json)["pos_x"] = position.x;
     (*json)["pos_y"] = position.y;
     (*json)["player"] = getClient().getNickname();
+    /*
+    auto inv = inventory.serializeToJson();
+    (*json)["inventory"] = *inv;
+    delete inv;
+    */
     //We intentionally don't serialize player with their entity type, won't don't actually care about saving them
     return json;
 }

@@ -124,7 +124,8 @@ ItemStack::operator bool() const
 nlohmann::json* ItemStack::serializeToJson() const
 {
     nlohmann::json* json = new nlohmann::json();
-    (*json)["item"] = item->getName();
+    if (operator bool())    //Item is not written if stack is empty, to gain space
+        (*json)["item"] = item->getName();
     (*json)["amount"] = amount;
     return json;
 }

@@ -29,6 +29,8 @@ CTestTestfile.cmake
 _deps
 
 TestSave/
+SoloSave/
+MultiSave/
 
 #Valgrind
 ValgrindOut.xml

@@ -63,8 +63,10 @@ WorldSaveManager::~WorldSaveManager()
 
     std::ofstream o(fmt::format("{}/world_settings.json", save_dir_path));
 
-    if (o.is_open())
+    if (!o.fail())
         o << json;
+    else
+        log(ERROR, "ERROR: Couldn't save chunk! Does the game have access to the place it's trying to save to?\n");
 
     o.close();
 
@@ -156,94 +158,7 @@ void WorldSaveManager::thread_loop()
                 chunks_to_load.pop();
             load_queue_mutex.unlock();
 
-            ChunkWithEntities* new_chunk = new ChunkWithEntities();
-
-            new_chunk->chunk = new Chunk(world, pos);
-            new_chunk->chunk_pos = pos;
-            new_chunk->generate_entities = true;
-
-            sf::Vector2i region = getRegionFromChunk(pos);
-            std::string filename = fmt::format("{}/region_{}_{}.json", save_dir_path, region.x, region.y);
-
-            bool generate_tiles = true;
-            bool generate_entities = true;
-
-            std::ifstream i(filename);
-
-            if (i.is_open())
-            {
-                nlohmann::json json;
-
-                i >> json;
-
-                if (json.is_object())
-                {
-                    std::string chunk_json = fmt::format("chunk_{}_{}", pos.x, pos.y);
-
-                    auto json_i = json[chunk_json];
-
-                    if (json_i.is_object())
-                    {
-                        log(INFO, "Loading chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.y, filename);
-
-                        generate_entities = false;
-
-                        auto block_layer = json_i["block_layer"];
-                        auto ground_layer = json_i["ground_layer"];
-
-                        bool block_valid = block_layer.is_string() /*&& check size*/;
-                        bool ground_valid = ground_layer.is_string() /*&& check size*/;
-
-                        if (block_valid && ground_valid)
-                        {
-                            std::string block_bytes = base64_decode(block_layer.get<std::string>());
-                            std::string ground_bytes = base64_decode(ground_layer.get<std::string>());
-
-                            if (block_bytes.size() == LAYER_SIZE && ground_bytes.size() == LAYER_SIZE)
-                            {
-                                std::memcpy(new_chunk->chunk->blocks.data(), block_bytes.data(), block_bytes.size());
-                                std::memcpy(new_chunk->chunk->grounds.data(), ground_bytes.data(), ground_bytes.size());
-
-                                generate_tiles = false;
-                            }
-                        }
-
-                        if (json_i["entities"].is_array())
-                        {
-                            for (auto it = json_i["entities"].begin(); it != json_i["entities"].end(); ++it)
-                            {
-                                Entity* e = deserializeEntity(it.value());
-
-                                if (e)
-                                    new_chunk->entities.push_back(e);
-                            }
-                        }
-
-                    }
-                }
-
-                i.close();
-            }
-
-            if (generate_tiles)
-            {
-                if (generate_entities)
-                {
-                    generator.generateChunk(new_chunk->chunk, new_chunk->entities);
-                }
-                else
-                {
-                    std::vector<Entity*> entity_trashcan;
-                    generator.generateChunk(new_chunk->chunk, entity_trashcan); //Litterally asking the generator to make entities and destroy them after
-                    for (Entity* e : entity_trashcan)
-                        delete e;
-                }
-            }
-
-            new_chunk->chunk->modified = false;
-            new_chunk->chunk->ready = true;
-
-            new_chunk->chunk->prepareTileEntities();
+            auto new_chunk = getChunk(pos);
 
             log(INFO, "Loaded chunk ({}; {}).\n", pos.x, pos.x);
 
@@ -252,6 +167,115 @@ void WorldSaveManager::thread_loop()
             loaded_queue_mutex.unlock();
         }
     }
+}
+
+ChunkWithEntities* WorldSaveManager::getChunk(sf::Vector2i pos)
+{
+    ChunkWithEntities* new_chunk = new ChunkWithEntities();
+
+    new_chunk->chunk = new Chunk(world, pos);
+    new_chunk->chunk_pos = pos;
+
+    sf::Vector2i region = getRegionFromChunk(pos);
+    std::string filename = fmt::format("{}/region_{}_{}.json", save_dir_path, region.x, region.y);
+
+    bool generate_tiles = true;
+    bool generate_entities = true;
+
+    std::ifstream i(filename);
+
+    if (i.is_open())
+    {
+        nlohmann::json json;
+
+        i >> json;
+
+        if (json.is_object())
+        {
+            std::string chunk_json = fmt::format("chunk_{}_{}", pos.x, pos.y);
+
+            auto json_i = json[chunk_json];
+
+            if (json_i.is_object())
+            {
+                log(INFO, "Loading chunk ({}; {}) from region file \"{}\".\n", pos.x, pos.y, filename);
+
+                generate_entities = false;
+
+                auto block_layer = json_i["block_layer"];
+                auto ground_layer = json_i["ground_layer"];
+
+                bool block_valid = block_layer.is_string() /*&& check size*/;
+                bool ground_valid = ground_layer.is_string() /*&& check size*/;
+
+                if (block_valid && ground_valid)
+                {
+                    std::string block_bytes = base64_decode(block_layer.get<std::string>());
+                    std::string ground_bytes = base64_decode(ground_layer.get<std::string>());
+
+                    if (block_bytes.size() == LAYER_SIZE && ground_bytes.size() == LAYER_SIZE)
+                    {
+                        std::memcpy(new_chunk->chunk->blocks.data(), block_bytes.data(), block_bytes.size());
+                        std::memcpy(new_chunk->chunk->grounds.data(), ground_bytes.data(), ground_bytes.size());
+
+                        generate_tiles = false;
+                    }
+                }
+
+                auto ents_json = json_i["entities"];
+                if (ents_json.is_array())
+                {
+                    for (auto it = ents_json.begin(); it != ents_json.end(); ++it)
+                    {
+                        Entity* e = deserializeEntity(it.value());
+
+                        if (e)
+                            new_chunk->entities.push_back(e);
+                    }
+                }
+
+                if (!generate_tiles)
+                {
+                    new_chunk->chunk->prepareTileEntities();
+
+                    auto t_ents_json = json_i["tile_entities"];
+                    if (t_ents_json.is_object())
+                    {
+                        for (auto& te : new_chunk->chunk->actual_tile_entities)
+                        {
+                            auto pos = te->getPosInChunk();
+                            auto entry = fmt::format("{}_{}", pos.x, pos.y);
+
+                            if (t_ents_json[entry].is_object())
+                                te->deserialize(t_ents_json[entry]);
+                        }
+                    }
+                }
+            }
+        }
+        i.close();
+    }
+
+    if (generate_tiles)
+    {
+        if (generate_entities)
+        {
+            generator.generateChunk(new_chunk->chunk, new_chunk->entities);
+        }
+        else
+        {
+            std::vector<Entity*> entity_trashcan;
+            generator.generateChunk(new_chunk->chunk, entity_trashcan); //Litterally asking the generator to make entities and destroy them after
+            for (Entity* e : entity_trashcan)
+                delete e;
+        }
+        new_chunk->chunk->prepareTileEntities();
+    }
+
+    new_chunk->chunk->modified = false;
+    new_chunk->chunk->ready = true;
+
+    return new_chunk;
 }
 
 void WorldSaveManager::saveChunk(ChunkWithEntities* cwe)

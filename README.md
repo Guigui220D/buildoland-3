@@ -22,6 +22,6 @@ This project uses {fmt} : https://github.com/fmtlib/fmt
 
 ### Previous versions
 
-Buildoland 1 : https://github.com/Guigui220D/OldBuildoland https://guiguii.itch.io/buildoland-2
+Buildoland 1 : https://github.com/Guigui220D/OldBuildoland https://guiguii.itch.io/buildoland
 
-Buildoland 2 : https://github.com/Guigui220D/BuildOLand https://guiguii.itch.io/buildoland
+Buildoland 2 : https://github.com/Guigui220D/BuildOLand https://guiguii.itch.io/buildoland-2

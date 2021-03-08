@@ -8,8 +8,6 @@ Buildoland is a 2D topdown view building game with an infinite world that can be
 
 Although I took a lot of inspiration from Minecraft, the goal is not to make a 2D minecraft.
 
-This game will stay in a private repos until it's actually playable.
-
 ### Dependencies & Libraries
 
 This project needs SFML 2.5.1 : https://www.sfml-dev.org/
